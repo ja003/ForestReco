@@ -18,14 +18,11 @@ namespace ForestReco
 			Max = ParseLineVector3(pMaxLine);
 		}
 
-		public Vector3 ParseLineVector3(string pLine)
+		private Vector3 ParseLineVector3(string pLine)
 		{
 			string[] split = pLine.Split(null);
 			int length = split.Length;
-			float x = float.Parse(split[length - 3], CultureInfo.InvariantCulture);
-			float y = float.Parse(split[length - 2], CultureInfo.InvariantCulture);
-			float z = float.Parse(split[length - 1], CultureInfo.InvariantCulture);
-			return new Vector3(x, y, z);
+			return CLineParser.ParseVector3(split[length - 3], split[length - 2], split[length - 1]);
 		}
 
 		public override string ToString()
