@@ -10,12 +10,18 @@ namespace ForestReco
 		public Vector3 Min;
 		public Vector3 Max;
 
+		//public float Width;
+		//public float Height;
+
 		public CHeaderInfo(string pScaleFactorLine, string pOffsetLine, string pMinLine, string pMaxLine)
 		{
 			ScaleFactor = ParseLineVector3(pScaleFactorLine);
 			Offset = ParseLineVector3(pOffsetLine);
-			Min = ParseLineVector3(pMinLine);
-			Max = ParseLineVector3(pMaxLine);
+			Min = ParseLineVector3(pMinLine) - Offset;
+			Max = ParseLineVector3(pMaxLine) - Offset;
+
+			//Width = Max.X - Min.X;
+			//Height = Max.Z - Min.Z;
 		}
 
 		private Vector3 ParseLineVector3(string pLine)

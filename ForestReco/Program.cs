@@ -28,21 +28,23 @@ namespace ForestReco
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
 
-			List<Vector3> groundCoord = new List<Vector3>();
-			List<Vector3> uncathCoord = new List<Vector3>();
+			//List<Vector3> groundCoord = new List<Vector3>();
+			//List<Vector3> uncathCoord = new List<Vector3>();
+
+			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, 10);
 
 			for (int i = 19; i < lines.Length; i++)
 			{
-				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i]);
-				if(c.Item1 == 1){ uncathCoord.Add(c.Item2);}
-				else if(c.Item1 == 2){ groundCoord.Add(c.Item2); }
-				if(i%10000 == 0) {Console.WriteLine(c);}
+				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i], header);
+				//if(c.Item1 == 1){ uncathCoord.Add(c.Item2);}
+				if (c.Item1 == 2) { groundField.AddCoordinate(c.Item2); }
+				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
-			Console.WriteLine(groundCoord.Count);
+			Console.WriteLine(groundField);
 
 
 			Console.WriteLine("Press any key to exit.");
-			System.Console.ReadKey();
+			Console.ReadKey();
 		}
 	}
 }
