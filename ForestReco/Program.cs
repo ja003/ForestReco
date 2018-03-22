@@ -8,6 +8,8 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ObjParser;
+using ObjParser.Types;
 
 namespace ForestReco
 {
@@ -24,7 +26,7 @@ namespace ForestReco
 
 
 			string[] lines = File.ReadAllLines(@"D:\Adam\projects\SDIPR\podklady\data-small\TXT\ANE_1000AGL_txt.txt");
-			
+
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
 
@@ -33,14 +35,21 @@ namespace ForestReco
 
 			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, 10);
 
-			for (int i = 19; i < lines.Length; i++)
+
+			//for (int i = 19; i < lines.Length; i++)
+			for (int i = 19; i < 10000; i++)
 			{
 				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i], header);
 				//if(c.Item1 == 1){ uncathCoord.Add(c.Item2);}
-				if (c.Item1 == 2) { groundField.AddCoordinate(c.Item2); }
+				if (c.Item1 == 2)
+				{
+					groundField.AddCoordinate(c.Item2);
+				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 			Console.WriteLine(groundField);
+
+			groundField.ExportToObj();
 
 
 			Console.WriteLine("Press any key to exit.");

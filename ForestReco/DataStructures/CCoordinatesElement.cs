@@ -12,5 +12,17 @@ namespace ForestReco
 			HeightSum += pCoordinate.Y;
 			CoordinatesCount++;
 		}
+
+		public float? GetAverageHeight()
+		{
+			if (CoordinatesCount == 0)
+			{
+				return null;
+			}
+			else
+			{
+				return HeightSum / CoordinatesCount;
+			}
+		}
 	}
 }

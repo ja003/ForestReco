@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Globalization;
+using System.Net.Mime;
 using System.Numerics;
+using ObjParser;
+using ObjParser.Types;
 
 namespace ForestReco
 {
@@ -10,6 +14,9 @@ namespace ForestReco
 		private Vector3 max;
 		private float stepSize;
 
+		private int fieldLengthWidth;
+		private int fieldLengthHeight;
+
 		private int coordinatesCount;
 
 		public CCoordinatesField(Vector3 pMin, Vector3 pMax, float pStepSize)
@@ -19,12 +26,12 @@ namespace ForestReco
 			stepSize = pStepSize;
 			float width = max.X - min.X;
 			float height = max.Z - min.Z;
-			int stepsX = (int)(width / pStepSize) + 1;
-			int stepsZ = (int)(height / pStepSize) + 1;
-			field = new CCoordinatesElement[stepsX, stepsZ];
-			for (int i = 0; i < stepsX; i++)
+			fieldLengthWidth = (int)(width / pStepSize) + 1;
+			fieldLengthHeight = (int)(height / pStepSize) + 1;
+			field = new CCoordinatesElement[fieldLengthWidth, fieldLengthHeight];
+			for (int i = 0; i < fieldLengthWidth; i++)
 			{
-				for (int j = 0; j < stepsZ; j++)
+				for (int j = 0; j < fieldLengthHeight; j++)
 				{
 					field[i, j] = new CCoordinatesElement();
 				}
@@ -40,6 +47,37 @@ namespace ForestReco
 			{
 				Console.WriteLine(index.Item1 + "," + index.Item2 + " = " + pCoordinate);
 			}
+		}
+
+		public void ExportToObj()
+		{
+			Obj obj = new Obj();
+
+			for (int i = 0; i < fieldLengthWidth; i++)
+			{
+				for (int j = 0; j < fieldLengthHeight; j++)
+				{
+					Vertex v = new Vertex();
+					float? averageHeight = field[i,j].GetAverageHeight();
+					if (averageHeight != null)
+					{
+						v.LoadFromStringArray(new[]
+						{
+							"v", i.ToString(), averageHeight.ToString(), j.ToString()
+						});
+						obj.VertexList.Add(v);
+					}
+				}
+			}
+			string path = System.IO.Path.GetDirectoryName(
+				System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\try.obj";
+			Console.WriteLine("write to " + path);
+
+			//String myDocumentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			//path = myDocumentPath + "\\try.obj";
+			//Console.WriteLine("write to " + path);
+
+			obj.WriteObjFile(path, new[] { "ADAM" });
 		}
 
 		public override string ToString()
