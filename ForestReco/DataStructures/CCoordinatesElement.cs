@@ -6,6 +6,12 @@ namespace ForestReco
 	{
 		public float HeightSum;
 		public int CoordinatesCount;
+		public int VertexIndex;
+
+		public CCoordinatesElement()
+		{
+			this.VertexIndex = -1;
+		}
 
 		public void AddCoordinate(Vector3 pCoordinate)
 		{
@@ -17,6 +23,7 @@ namespace ForestReco
 		{
 			if (CoordinatesCount == 0)
 			{
+				return 0;
 				return null;
 			}
 			else

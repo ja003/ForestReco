@@ -15,7 +15,7 @@ namespace ForestReco
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static void Main()
 		{
 			// Example #1
 			// Read the file as one string.
@@ -37,7 +37,8 @@ namespace ForestReco
 
 
 			//for (int i = 19; i < lines.Length; i++)
-			for (int i = 19; i < 10000; i++)
+			int linesToRead = lines.Length;//10000;
+			for (int i = 19; i < linesToRead; i++)
 			{
 				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i], header);
 				//if(c.Item1 == 1){ uncathCoord.Add(c.Item2);}
