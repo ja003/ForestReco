@@ -8,6 +8,8 @@ namespace ForestReco
 		public int CoordinatesCount;
 		public int VertexIndex;
 
+		private const int HEIGHT_MULTIPLY = 1; //only for better visualisation of height difference
+
 		public CCoordinatesElement()
 		{
 			this.VertexIndex = -1;
@@ -31,7 +33,7 @@ namespace ForestReco
 			}
 			else
 			{
-				return HeightSum / CoordinatesCount;
+				return HeightSum * HEIGHT_MULTIPLY / CoordinatesCount;
 			}
 		}
 	}
