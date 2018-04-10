@@ -15,7 +15,7 @@ namespace ForestReco
 
 		public void AddCoordinate(Vector3 pCoordinate)
 		{
-			HeightSum += pCoordinate.Y;
+			HeightSum += pCoordinate.Z;
 			CoordinatesCount++;
 		}
 

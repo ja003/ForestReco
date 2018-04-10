@@ -33,7 +33,7 @@ namespace ForestReco
 			//List<Vector3> groundCoord = new List<Vector3>();
 			//List<Vector3> uncathCoord = new List<Vector3>();
 
-			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, 10);
+			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, 25);
 
 
 			//for (int i = 19; i < lines.Length; i++)
@@ -52,6 +52,7 @@ namespace ForestReco
 
 			groundField.ExportToObj();
 
+			groundField.DebugStringArray();
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

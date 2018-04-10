@@ -11,8 +11,8 @@ namespace ForestReco
 	public class CCoordinatesField
 	{
 		private CCoordinatesElement[,] field;
-		private Vector3 min;
-		private Vector3 max;
+		private Vector2 min; //lower corner
+		private Vector2 max; //upper corner
 		private float stepSize;
 
 		private int fieldLengthWidth;
@@ -23,11 +23,11 @@ namespace ForestReco
 
 		public CCoordinatesField(Vector3 pMin, Vector3 pMax, float pStepSize)
 		{
-			min = pMin;
-			max = pMax;
+			min = new Vector2(pMin.X, pMin.Y);
+			max = new Vector2(pMax.X, pMax.Y);
 			stepSize = pStepSize;
-			float width = max.X - min.X;
-			float height = max.Z - min.Z;
+			float width = pMax.X - pMin.X;
+			float height = pMax.Y - pMin.Y;
 			fieldLengthWidth = (int)(width / pStepSize) + 1;
 			fieldLengthHeight = (int)(height / pStepSize) + 1;
 			field = new CCoordinatesElement[fieldLengthWidth, fieldLengthHeight];
@@ -45,10 +45,10 @@ namespace ForestReco
 			Tuple<int, int> index = GetPositionInField(pCoordinate);
 			field[index.Item1, index.Item2].AddCoordinate(pCoordinate);
 			coordinatesCount++;
-			if (coordinatesCount % 1000 == 0)
-			{
-				Console.WriteLine(index.Item1 + "," + index.Item2 + " = " + pCoordinate);
-			}
+			//if (coordinatesCount % 1000 == 0)
+			//{
+			//	Console.WriteLine(index.Item1 + "," + index.Item2 + " = " + pCoordinate);
+			//}
 		}
 
 		public void ExportToObj()
@@ -126,10 +126,35 @@ namespace ForestReco
 			return "FIELD[" + coordinatesCount + "]. min = " + min + ", max = " + max + ", stepSize = " + stepSize;
 		}
 
+		public void DebugStringArray()
+		{
+			for (int y = 0; y < fieldLengthHeight; y++)
+			{
+				for (int x = 0; x < fieldLengthWidth; x++)
+				{
+					Console.Write($"{field[x, y].GetAverageHeight():000.00}" + " | ");
+					//Console.Write(GetRangeString(GetRangeInField(x, y)) + $"{field[x, y].GetAverageHeight():000.00}" + " | ");
+				}
+				Console.WriteLine(";");
+			}
+		}
+
+		private string GetRangeString(Tuple<Vector2, Vector2> pRange)
+		{
+			return "<" + pRange.Item1 + "," + pRange.Item2 + "> ";
+		}
+
+		private Tuple<Vector2, Vector2> GetRangeInField(int pX, int pY)
+		{
+			Vector2 localMin = min + new Vector2(pX, pY) * stepSize;
+			Vector2 localMax = min + new Vector2(pX, pY) * (stepSize + 1);
+			return new Tuple<Vector2, Vector2>(localMin, localMax);
+		}
+
 		private Tuple<int, int> GetPositionInField(Vector3 pCoordinate)
 		{
 			int xPos = (int)((pCoordinate.X - min.X) / stepSize);
-			int yPos = (int)((pCoordinate.Z - min.Z) / stepSize);
+			int yPos = (int)((pCoordinate.Y - min.Y) / stepSize);
 			return new Tuple<int, int>(xPos, yPos);
 		}
 	}

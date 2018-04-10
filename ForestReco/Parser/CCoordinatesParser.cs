@@ -13,7 +13,7 @@ namespace ForestReco
 			float y = float.Parse(split[1]);
 			float z = float.Parse(split[2]);
 			int cathegory = int.Parse(split[3]);
-			return new Tuple<int, Vector3>(cathegory, new Vector3(x, y, z) - pHeader.Offset);
+			return new Tuple<int, Vector3>(cathegory, new Vector3(x, y, z) /* * pHeader.ScaleFactor*/ - pHeader.Offset);
 		}
 	}
 }
