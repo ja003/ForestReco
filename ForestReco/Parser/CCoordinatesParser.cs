@@ -14,6 +14,8 @@ namespace ForestReco
 			float z = float.Parse(split[2]);
 			int cathegory = int.Parse(split[3]);
 			return new Tuple<int, Vector3>(cathegory, new Vector3(x, y, z) /* * pHeader.ScaleFactor*/ - pHeader.Offset);
+			//return new Tuple<int, Vector3>(cathegory, new Vector3(x, y, z) - 
+			//	new Vector3(pHeader.Offset.X, pHeader.Offset.Y, -pHeader.Min.Z));
 		}
 	}
 }

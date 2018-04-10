@@ -17,11 +17,10 @@ namespace ForestReco
 		{
 			ScaleFactor = ParseLineVector3(pScaleFactorLine);
 			Offset = ParseLineVector3(pOffsetLine);
+			Offset.Z = 0;
 			Min = ParseLineVector3(pMinLine) - Offset;
 			Max = ParseLineVector3(pMaxLine) - Offset;
-
-			//Width = Max.X - Min.X;
-			//Height = Max.Z - Min.Z;
+			Offset.Z = ParseLineVector3(pMinLine).Z;
 		}
 
 		private Vector3 ParseLineVector3(string pLine)

@@ -13,6 +13,9 @@ namespace ForestReco
 			this.VertexIndex = -1;
 		}
 
+		/// <summary>
+		/// Adds coordinate height to the sum of this field position
+		/// </summary>
 		public void AddCoordinate(Vector3 pCoordinate)
 		{
 			HeightSum += pCoordinate.Z;

@@ -5,6 +5,7 @@ using System.Net.Mime;
 using System.Numerics;
 using ObjParser;
 using ObjParser.Types;
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace ForestReco
 {
@@ -40,6 +41,9 @@ namespace ForestReco
 			}
 		}
 
+		/// <summary>
+		/// Adds coordinate to its position in field
+		/// </summary>
 		public void AddCoordinate(Vector3 pCoordinate)
 		{
 			Tuple<int, int> index = GetPositionInField(pCoordinate);
@@ -51,39 +55,59 @@ namespace ForestReco
 			//}
 		}
 
+		private Vector2 GetCenterOffset()
+		{
+			return new Vector2(fieldLengthWidth / 2f * stepSize, fieldLengthHeight / 2f * stepSize);
+		}
+
 		public void ExportToObj()
 		{
 			Obj obj = new Obj();
 
-			for (int i = 0; i < fieldLengthWidth; i++)
+			int missingCoordCount = 0;
+			//prepare vertices
+			for (int x = 0; x < fieldLengthWidth; x++)
 			{
-				for (int j = 0; j < fieldLengthHeight; j++)
+				for (int y = 0; y < fieldLengthHeight; y++)
 				{
 					Vertex v = new Vertex();
-					float? averageHeight = field[i, j].GetAverageHeight();
+					float? averageHeight = field[x, y].GetAverageHeight();
+					//create vertex only if height is defined
 					if (averageHeight != null)
 					{
+						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						v.LoadFromStringArray(new[]
 						{
-							"v", (i*(int)stepSize).ToString(), averageHeight.ToString(), (j*(int)stepSize).ToString()
+							"v", GetXCoordinateString(x), averageHeight.ToString(), GetYCoordinateString(y)
 						});
 						obj.VertexList.Add(v);
-						field[i, j].VertexIndex = obj.VertexList.Count;
+						//record the index of vertex associated with this field position
+						field[x, y].VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)
+					}
+					else
+					{
+						missingCoordCount++;
 					}
 				}
 			}
+			Console.WriteLine("missingCoordCount = " + missingCoordCount);
 
-			for (int i = 0; i < fieldLengthWidth - 1; i++)
+			//generate faces
+			for (int x = 0; x < fieldLengthWidth - 1; x++)
 			{
-				for (int j = 0; j < fieldLengthHeight - 1; j++)
+				for (int y = 0; y < fieldLengthHeight - 1; y++)
 				{
-					int ind1 = field[i, j].VertexIndex;
-					if (ind1 != -1)
+					//create face only if all necessary vertices has been defined. -1 = not defined
+					//| /|	3:[0,1]	2:[1,1]
+					//|/ |  1:[0,0] 4:[1,0]
+					//we create 2 faces: (1,2,3) and (1,2,4) 
+					int ind1 = field[x, y].VertexIndex;
+					if (ind1 != -1) 
 					{
-						int ind2 = field[i + 1, j].VertexIndex;
+						int ind2 = field[x + 1, y + 1].VertexIndex;
 						if (ind2 != -1)
 						{
-							int ind3 = field[i, j + 1].VertexIndex;
+							int ind3 = field[x, y + 1].VertexIndex;
 							if (ind3 != -1)
 							{
 								Face f = new Face();
@@ -94,10 +118,22 @@ namespace ForestReco
 
 								obj.FaceList.Add(f);
 							}
+							int ind4 = field[x + 1, y].VertexIndex;
+							if (ind4 != -1)
+							{
+								Face f = new Face();
+								f.LoadFromStringArray(new[]
+								{
+									"f", ind1.ToString(),ind4.ToString(),ind2.ToString()  
+								});
+
+								obj.FaceList.Add(f);
+							}
 						}
 					}
 				}
 			}
+
 
 			string fileName = DEFAULT_FILENAME;
 			string extension = ".obj";
@@ -119,6 +155,22 @@ namespace ForestReco
 			//Console.WriteLine("write to " + path);
 
 			obj.WriteObjFile(fullPath, new[] { "ADAM" });
+		}
+
+		/// <summary>
+		/// Returns string for x coordinate in field moved by offset
+		/// </summary>
+		private string GetXCoordinateString(int pX)
+		{
+			return (pX * (int)stepSize - GetCenterOffset().X).ToString();
+		}
+
+		/// <summary>
+		/// Returns string for y coordinate in field moved by offset
+		/// </summary>
+		private string GetYCoordinateString(int pY)
+		{
+			return (pY * (int)stepSize - GetCenterOffset().Y).ToString();
 		}
 
 		public override string ToString()
