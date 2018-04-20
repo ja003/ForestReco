@@ -24,35 +24,51 @@ namespace ForestReco
 			CultureInfo ci = new CultureInfo("en");
 			Thread.CurrentThread.CurrentCulture = ci;
 
-
-			string[] lines = File.ReadAllLines(@"D:\Adam\projects\SDIPR\podklady\data-small\TXT\ANE_1000AGL_txt.txt");
+			string fileName = @"BK_1000AGL_classified";
+			string[] lines = File.ReadAllLines(@"D:\Adam\projects\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
 
-			//List<Vector3> groundCoord = new List<Vector3>();
-			//List<Vector3> uncathCoord = new List<Vector3>();
+			//TODO: uncommnent to see just header info
+			//Console.ReadKey();
+			//return;
 
-			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, 25);
+			int stepSize = 25;
+			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, stepSize);
+			CCoordinatesField highVegetationField = new CCoordinatesField(header.Min, header.Max, stepSize);
 
 
 			//for (int i = 19; i < lines.Length; i++)
 			int linesToRead = lines.Length;//10000;
 			for (int i = 19; i < linesToRead; i++)
 			{
+				// <class, coordinate>
 				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i], header);
-				//if(c.Item1 == 1){ uncathCoord.Add(c.Item2);}
+				
 				if (c.Item1 == 2)
 				{
 					groundField.AddCoordinate(c.Item2);
 				}
+				else if (c.Item1 == 5)
+				{
+					highVegetationField.AddCoordinate(c.Item2);
+				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
-			Console.WriteLine(groundField);
+			Console.WriteLine("groundField: " + groundField);
+			Console.WriteLine("\n----------------\n");
+			Console.WriteLine("highVegetationField: " + highVegetationField);
 
-			groundField.ExportToObj();
+			//TODO: uncommnet for OBJ export
+			//groundField.ExportToObj(fileName);
 
-			groundField.DebugStringArray();
+			Console.WriteLine("groundField: ");
+			groundField.DebugStringArray(EHeight.Average);
+			Console.WriteLine("highVegetationField MAX: ");
+			highVegetationField.DebugStringArray(EHeight.Max);
+			Console.WriteLine("highVegetationField MIN: ");
+			highVegetationField.DebugStringArray(EHeight.Min);
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

@@ -28,6 +28,7 @@ namespace ForestReco
 		{
 			string[] split = pLine.Split(null);
 			int length = split.Length;
+			//									X					Y					Z
 			return CLineParser.ParseVector3(split[length - 3], split[length - 2], split[length - 1]);
 		}
 

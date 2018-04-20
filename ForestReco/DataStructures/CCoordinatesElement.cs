@@ -5,6 +5,8 @@ namespace ForestReco
 	public class CCoordinatesElement
 	{
 		public float HeightSum;
+		public float HeightMax = float.MinValue;
+		public float HeightMin = float.MaxValue;
 		public int CoordinatesCount;
 		public int VertexIndex;
 
@@ -20,7 +22,10 @@ namespace ForestReco
 		/// </summary>
 		public void AddCoordinate(Vector3 pCoordinate)
 		{
-			HeightSum += pCoordinate.Z;
+			float height = pCoordinate.Z;
+			HeightSum += height;
+			if (HeightMax < height) { HeightMax = height;}
+			if (HeightMin > height) { HeightMin = height; }
 			CoordinatesCount++;
 		}
 
@@ -29,7 +34,7 @@ namespace ForestReco
 			if (CoordinatesCount == 0)
 			{
 				return 0;
-				return null;
+				//return null;
 			}
 			else
 			{

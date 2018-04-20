@@ -60,7 +60,7 @@ namespace ForestReco
 			return new Vector2(fieldLengthWidth / 2f * stepSize, fieldLengthHeight / 2f * stepSize);
 		}
 
-		public void ExportToObj()
+		public void ExportToObj(string pOutputFileName = "")
 		{
 			Obj obj = new Obj();
 
@@ -102,7 +102,7 @@ namespace ForestReco
 					//|/ |  1:[0,0] 4:[1,0]
 					//we create 2 faces: (1,2,3) and (1,2,4) 
 					int ind1 = field[x, y].VertexIndex;
-					if (ind1 != -1) 
+					if (ind1 != -1)
 					{
 						int ind2 = field[x + 1, y + 1].VertexIndex;
 						if (ind2 != -1)
@@ -124,7 +124,7 @@ namespace ForestReco
 								Face f = new Face();
 								f.LoadFromStringArray(new[]
 								{
-									"f", ind1.ToString(),ind4.ToString(),ind2.ToString()  
+									"f", ind1.ToString(),ind4.ToString(),ind2.ToString()
 								});
 
 								obj.FaceList.Add(f);
@@ -135,7 +135,7 @@ namespace ForestReco
 			}
 
 
-			string fileName = DEFAULT_FILENAME;
+			string fileName = pOutputFileName.Length > 0 ? pOutputFileName : DEFAULT_FILENAME;
 			string extension = ".obj";
 			string path = Path.GetDirectoryName(
 				System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
@@ -178,13 +178,26 @@ namespace ForestReco
 			return "FIELD[" + coordinatesCount + "]. min = " + min + ", max = " + max + ", stepSize = " + stepSize;
 		}
 
-		public void DebugStringArray()
+		public void DebugStringArray(EHeight pHeight)
 		{
 			for (int y = 0; y < fieldLengthHeight; y++)
 			{
 				for (int x = 0; x < fieldLengthWidth; x++)
 				{
-					Console.Write($"{field[x, y].GetAverageHeight():000.00}" + " | ");
+					float? height = 0;
+					switch (pHeight)
+					{
+						case EHeight.Average:
+							height = field[x, y].GetAverageHeight();
+							break;
+						case EHeight.Max:
+							height = field[x, y].HeightMax;
+							break;
+						case EHeight.Min:
+							height = field[x, y].HeightMin;
+							break;
+					}
+					Console.Write($"{height:000.00}" + " | ");
 					//Console.Write(GetRangeString(GetRangeInField(x, y)) + $"{field[x, y].GetAverageHeight():000.00}" + " | ");
 				}
 				Console.WriteLine(";");
@@ -209,5 +222,12 @@ namespace ForestReco
 			int yPos = (int)((pCoordinate.Y - min.Y) / stepSize);
 			return new Tuple<int, int>(xPos, yPos);
 		}
+	}
+
+	public enum EHeight
+	{
+		Average,
+		Max,
+		Min
 	}
 }
