@@ -102,14 +102,19 @@ namespace ForestReco
 				for (int y = 0; y < fieldYRange; y++)
 				{
 					Vertex v = new Vertex();
-					float averageHeight = field[x, y].GetAverageHeight();
+					float height = field[x, y].GetAverageHeight();
+					//float height = field[x, y].GetMostAddedHeightAverage();
+					//float height = field[x, y].GetWeightedAverage();
+					//float height = field[x, y].GetHeightMax();
+					//float height = field[x, y].GetHeightMin();
+
 					//create vertex only if height is defined (0 = default)
-					if ((int)averageHeight != 0)
+					if ((int)height != 0)
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						v.LoadFromStringArray(new[]
 						{
-							"v", GetXCoordinateString(x), averageHeight.ToString(), GetYCoordinateString(y)
+							"v", GetXCoordinateString(x), height.ToString(), GetYCoordinateString(y)
 						});
 						obj.VertexList.Add(v);
 						//record the index of vertex associated with this field position
@@ -167,15 +172,16 @@ namespace ForestReco
 
 
 			string fileName = pOutputFileName.Length > 0 ? pOutputFileName : DEFAULT_FILENAME;
+			string chosenFileName = fileName;
 			string extension = ".obj";
 			string path = Path.GetDirectoryName(
 				System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
-			string fullPath = path + fileName + extension;
+			string fullPath = path + chosenFileName + extension;
 			int fileIndex = 0;
 			while (File.Exists(fullPath))
 			{
-				fileName = DEFAULT_FILENAME + fileIndex;
-				fullPath = path + fileName + extension;
+				chosenFileName = DEFAULT_FILENAME + fileIndex;
+				fullPath = path + chosenFileName + extension;
 				fileIndex++;
 			}
 

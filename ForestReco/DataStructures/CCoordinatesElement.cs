@@ -24,7 +24,7 @@ namespace ForestReco
 		{
 			float height = pCoordinate.Z;
 			HeightSum += height;
-			if (HeightMax < height) { HeightMax = height;}
+			if (HeightMax < height) { HeightMax = height; }
 			if (HeightMin > height) { HeightMin = height; }
 			CoordinatesCount++;
 
@@ -44,5 +44,15 @@ namespace ForestReco
 				return HeightSum * HEIGHT_MULTIPLY / CoordinatesCount;
 			}
 		}
+
+		/// <summary>
+		/// Returns 0 if not defined
+		/// </summary>
+		public float GetHeightMax() { return HeightMax > float.MinValue ? HeightMax : 0; }
+
+		/// <summary>
+		/// Returns 0 if not defined
+		/// </summary>
+		public float GetHeightMin() { return HeightMin < float.MaxValue ? HeightMin : 0; }
 	}
 }
