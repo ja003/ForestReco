@@ -35,12 +35,17 @@ namespace ForestReco
 			//return;
 
 			//prepare data structures 
-			float stepSize = 1f; //in meters
-			CCoordinatesField groundField = new CCoordinatesField(header, stepSize);
-			CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize);
+
+			float stepSize = .5f; //in meters
+
+			//no need to record depth information in groundField
+			CCoordinatesField groundField = new CCoordinatesField(header, stepSize, false);
+			CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, false);
 
 			//store coordinates to corresponding data strucures based on their class
-			int linesToRead = lines.Length;// 10000;
+			int linesToRead = lines.Length;
+			//linesToRead = 10000;
+
 			for (int i = 19; i < linesToRead; i++)
 			{
 				// <class, coordinate>
@@ -48,7 +53,7 @@ namespace ForestReco
 
 				if (c.Item1 == 2) //ground
 				{
-					groundField.AddCoordinate(c.Item2);
+					//groundField.AddCoordinate(c.Item2);
 				}
 				else if (c.Item1 == 5) //high vegetation
 				{
@@ -61,11 +66,12 @@ namespace ForestReco
 			//highVegetationField.DetectLocalMaximas()
 
 
-			Console.WriteLine("groundField: " + groundField);
+			//Console.WriteLine("groundField: " + groundField);
 			Console.WriteLine("highVegetationField: " + highVegetationField);
 
 			//TODO: uncommnet for OBJ export
 			//groundField.ExportToObj(fileName);
+			highVegetationField.ExportToObj(fileName + "_trees");
 
 			/*
 			Console.WriteLine("groundField: ");

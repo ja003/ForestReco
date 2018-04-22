@@ -25,6 +25,8 @@ namespace ForestReco
 		private int coordinatesCount;
 		private const string DEFAULT_FILENAME = "try";
 
+		private bool storeDepthCoordinates;
+
 		//PUBLIC
 
 		/// <summary>
@@ -32,7 +34,7 @@ namespace ForestReco
 		/// </summary>
 		/// <param name="pHeader">Header info</param>
 		/// <param name="pStepSize">Step size in meters</param>
-		public CCoordinatesField(CHeaderInfo pHeader, float pStepSize)
+		public CCoordinatesField(CHeaderInfo pHeader, float pStepSize, bool pStoreDepthCoordinates)
 		{
 			botLeftCorner = pHeader.GetBotLeftCorner();
 			topRightCorner = pHeader.GetTopRightCorner();
@@ -45,12 +47,14 @@ namespace ForestReco
 			maxHeight = pHeader.GetMaxHeight();
 			fieldZRange = (int)((maxHeight - minHeight) / pStepSize) + 1;
 
+			storeDepthCoordinates = pStoreDepthCoordinates;
+
 			field = new CCoordinates2DElement[fieldXRange, fieldYRange];
 			for (int i = 0; i < fieldXRange; i++)
 			{
 				for (int j = 0; j < fieldYRange; j++)
 				{
-					field[i, j] = new CCoordinates2DElement(fieldZRange);
+					field[i, j] = new CCoordinates2DElement(fieldZRange, storeDepthCoordinates);
 				}
 			}
 		}
@@ -69,7 +73,7 @@ namespace ForestReco
 			//}
 		}
 
-		private int GetNumberOfDifinedFields()
+		private int GetNumberOfDefinedFields()
 		{
 			int count = 0;
 			for (int x = 0; x < fieldXRange; x++)
@@ -98,9 +102,9 @@ namespace ForestReco
 				for (int y = 0; y < fieldYRange; y++)
 				{
 					Vertex v = new Vertex();
-					float? averageHeight = field[x, y].GetAverageHeight();
-					//create vertex only if height is defined
-					if (averageHeight != null)
+					float averageHeight = field[x, y].GetAverageHeight();
+					//create vertex only if height is defined (0 = default)
+					if ((int)averageHeight != 0)
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						v.LoadFromStringArray(new[]
@@ -109,7 +113,7 @@ namespace ForestReco
 						});
 						obj.VertexList.Add(v);
 						//record the index of vertex associated with this field position
-						field[x, y].VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)
+						field[x, y].VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
 					}
 					else
 					{
@@ -187,7 +191,7 @@ namespace ForestReco
 		public override string ToString()
 		{
 			return "FIELD[" + fieldXRange + "," + fieldYRange + "]. " +
-			       "Defined:" + GetNumberOfDifinedFields() + "/" + fieldXRange * fieldYRange + ". "+
+				   "Defined:" + GetNumberOfDefinedFields() + "/" + fieldXRange * fieldYRange + ". " +
 				   "Total = " + coordinatesCount + "|" +
 				   "min = " + botLeftCorner + ", max = " + topRightCorner + ", stepSize = " + stepSize;
 		}
@@ -233,7 +237,7 @@ namespace ForestReco
 		/// </summary>
 		private string GetXCoordinateString(int pX)
 		{
-			return (pX * (int)stepSize - GetCenterOffset().X).ToString();
+			return (pX * stepSize - GetCenterOffset().X).ToString();
 		}
 
 		/// <summary>
@@ -241,7 +245,7 @@ namespace ForestReco
 		/// </summary>
 		private string GetYCoordinateString(int pY)
 		{
-			return (pY * (int)stepSize - GetCenterOffset().Y).ToString();
+			return (pY * stepSize - GetCenterOffset().Y).ToString();
 		}
 
 		private string GetRangeString(Tuple<Vector2, Vector2> pRange)

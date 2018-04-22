@@ -6,9 +6,13 @@ namespace ForestReco
 	public class CCoordinates2DElement : CCoordinatesElement
 	{
 		private CCoordinatesDepthElement[] depthElements;
+		private bool storeDepthCoordinates;
 
-		public CCoordinates2DElement(int pZDepth)
+		public CCoordinates2DElement(int pZDepth, bool pStoreDepthCoordinates)
 		{
+			storeDepthCoordinates = pStoreDepthCoordinates;
+			if (!pStoreDepthCoordinates) { return; }
+
 			depthElements = new CCoordinatesDepthElement[pZDepth];
 			for (int i = 0; i < pZDepth; i++)
 			{
@@ -19,6 +23,7 @@ namespace ForestReco
 
 		protected override void OnAddCoordinate(Vector3 pCoordinate, int pZindex)
 		{
+			if (!storeDepthCoordinates) { return; }
 			depthElements[pZindex].AddCoordinate(pCoordinate, pZindex);
 		}
 	}
