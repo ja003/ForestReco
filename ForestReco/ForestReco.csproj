@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructures\CCoordinatesElement.cs" />
+    <Compile Include="DataStructures\CCoordinatesDepthElement.cs" />
+    <Compile Include="DataStructures\CCoordinates2DElement.cs" />
     <Compile Include="DataStructures\CCoordinatesField.cs" />
     <Compile Include="ObjParser\Extent.cs" />
     <Compile Include="ObjParser\Mtl.cs" />

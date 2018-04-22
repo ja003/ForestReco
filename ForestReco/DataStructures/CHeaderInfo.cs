@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Numerics;
 
 namespace ForestReco
@@ -17,12 +18,20 @@ namespace ForestReco
 		{
 			ScaleFactor = ParseLineVector3(pScaleFactorLine);
 			Offset = ParseLineVector3(pOffsetLine);
-			Offset.Z = 0; //given Z offset will not be used
+			//Offset.Z = 0; //given Z offset will not be used
 			Min = ParseLineVector3(pMinLine) - Offset;
 			Max = ParseLineVector3(pMaxLine) - Offset;
 			//we set Z offset so the lowest point will have height 0 (better visualization)
-			Offset.Z = ParseLineVector3(pMinLine).Z; 
+			//Offset.Z = ParseLineVector3(pMinLine).Z;
 		}
+
+		public Vector2 GetBotLeftCorner() { return new Vector2(Min.X, Min.Y); }
+
+		public Vector2 GetTopRightCorner() { return new Vector2(Max.X, Max.Y); }
+
+		public float GetMinHeight() { return Min.Z; }
+
+		public float GetMaxHeight() { return Max.Z; }
 
 		private Vector3 ParseLineVector3(string pLine)
 		{

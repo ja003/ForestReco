@@ -25,7 +25,7 @@ namespace ForestReco
 			Thread.CurrentThread.CurrentCulture = ci;
 
 			string fileName = @"BK_1000AGL_classified";
-			string[] lines = File.ReadAllLines(@"D:\Adam\projects\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -34,41 +34,47 @@ namespace ForestReco
 			//Console.ReadKey();
 			//return;
 
-			int stepSize = 25;
-			CCoordinatesField groundField = new CCoordinatesField(header.Min, header.Max, stepSize);
-			CCoordinatesField highVegetationField = new CCoordinatesField(header.Min, header.Max, stepSize);
+			//prepare data structures 
+			float stepSize = 1f; //in meters
+			CCoordinatesField groundField = new CCoordinatesField(header, stepSize);
+			CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize);
 
-
-			//for (int i = 19; i < lines.Length; i++)
-			int linesToRead = lines.Length;//10000;
+			//store coordinates to corresponding data strucures based on their class
+			int linesToRead = lines.Length;// 10000;
 			for (int i = 19; i < linesToRead; i++)
 			{
 				// <class, coordinate>
 				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i], header);
-				
-				if (c.Item1 == 2)
+
+				if (c.Item1 == 2) //ground
 				{
 					groundField.AddCoordinate(c.Item2);
 				}
-				else if (c.Item1 == 5)
+				else if (c.Item1 == 5) //high vegetation
 				{
 					highVegetationField.AddCoordinate(c.Item2);
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
+
+			//TODO: find local maxima in highVegetationField
+			//highVegetationField.DetectLocalMaximas()
+
+
 			Console.WriteLine("groundField: " + groundField);
-			Console.WriteLine("\n----------------\n");
 			Console.WriteLine("highVegetationField: " + highVegetationField);
 
 			//TODO: uncommnet for OBJ export
 			//groundField.ExportToObj(fileName);
 
+			/*
 			Console.WriteLine("groundField: ");
 			groundField.DebugStringArray(EHeight.Average);
 			Console.WriteLine("highVegetationField MAX: ");
 			highVegetationField.DebugStringArray(EHeight.Max);
 			Console.WriteLine("highVegetationField MIN: ");
 			highVegetationField.DebugStringArray(EHeight.Min);
+			*/
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

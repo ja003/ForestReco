@@ -11,32 +11,46 @@ namespace ForestReco
 {
 	public class CCoordinatesField
 	{
-		private CCoordinatesElement[,] field;
-		private Vector2 min; //lower corner
-		private Vector2 max; //upper corner
+		private CCoordinates2DElement[,] field;
+		private Vector2 botLeftCorner; //lower corner
+		private Vector2 topRightCorner; //upper corner
+		private float minHeight;
+		private float maxHeight;
 		private float stepSize;
 
-		private int fieldLengthWidth;
-		private int fieldLengthHeight;
+		private int fieldXRange;
+		private int fieldYRange;
+		private int fieldZRange;
 
 		private int coordinatesCount;
 		private const string DEFAULT_FILENAME = "try";
 
-		public CCoordinatesField(Vector3 pMin, Vector3 pMax, float pStepSize)
+		//PUBLIC
+
+		/// <summary>
+		/// Constructor for coordinates field
+		/// </summary>
+		/// <param name="pHeader">Header info</param>
+		/// <param name="pStepSize">Step size in meters</param>
+		public CCoordinatesField(CHeaderInfo pHeader, float pStepSize)
 		{
-			min = new Vector2(pMin.X, pMin.Y);
-			max = new Vector2(pMax.X, pMax.Y);
+			botLeftCorner = pHeader.GetBotLeftCorner();
+			topRightCorner = pHeader.GetTopRightCorner();
 			stepSize = pStepSize;
-			float width = pMax.X - pMin.X;
-			float height = pMax.Y - pMin.Y;
-			fieldLengthWidth = (int)(width / pStepSize) + 1;
-			fieldLengthHeight = (int)(height / pStepSize) + 1;
-			field = new CCoordinatesElement[fieldLengthWidth, fieldLengthHeight];
-			for (int i = 0; i < fieldLengthWidth; i++)
+			float w = topRightCorner.X - botLeftCorner.X;
+			float h = topRightCorner.Y - botLeftCorner.Y;
+			fieldXRange = (int)(w / pStepSize) + 1;
+			fieldYRange = (int)(h / pStepSize) + 1;
+			minHeight = pHeader.GetMinHeight();
+			maxHeight = pHeader.GetMaxHeight();
+			fieldZRange = (int)((maxHeight - minHeight) / pStepSize) + 1;
+
+			field = new CCoordinates2DElement[fieldXRange, fieldYRange];
+			for (int i = 0; i < fieldXRange; i++)
 			{
-				for (int j = 0; j < fieldLengthHeight; j++)
+				for (int j = 0; j < fieldYRange; j++)
 				{
-					field[i, j] = new CCoordinatesElement();
+					field[i, j] = new CCoordinates2DElement(fieldZRange);
 				}
 			}
 		}
@@ -46,8 +60,8 @@ namespace ForestReco
 		/// </summary>
 		public void AddCoordinate(Vector3 pCoordinate)
 		{
-			Tuple<int, int> index = GetPositionInField(pCoordinate);
-			field[index.Item1, index.Item2].AddCoordinate(pCoordinate);
+			Tuple<int, int, int> index = GetPositionInField(pCoordinate);
+			field[index.Item1, index.Item2].AddCoordinate(pCoordinate, index.Item3);
 			coordinatesCount++;
 			//if (coordinatesCount % 1000 == 0)
 			//{
@@ -55,9 +69,22 @@ namespace ForestReco
 			//}
 		}
 
+		private int GetNumberOfDifinedFields()
+		{
+			int count = 0;
+			for (int x = 0; x < fieldXRange; x++)
+			{
+				for (int y = 0; y < fieldYRange; y++)
+				{
+					if (field[x, y].CoordinatesCount > 0) { count++; }
+				}
+			}
+			return count;
+		}
+
 		private Vector2 GetCenterOffset()
 		{
-			return new Vector2(fieldLengthWidth / 2f * stepSize, fieldLengthHeight / 2f * stepSize);
+			return new Vector2(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
 		}
 
 		public void ExportToObj(string pOutputFileName = "")
@@ -66,9 +93,9 @@ namespace ForestReco
 
 			int missingCoordCount = 0;
 			//prepare vertices
-			for (int x = 0; x < fieldLengthWidth; x++)
+			for (int x = 0; x < fieldXRange; x++)
 			{
-				for (int y = 0; y < fieldLengthHeight; y++)
+				for (int y = 0; y < fieldYRange; y++)
 				{
 					Vertex v = new Vertex();
 					float? averageHeight = field[x, y].GetAverageHeight();
@@ -93,9 +120,9 @@ namespace ForestReco
 			Console.WriteLine("missingCoordCount = " + missingCoordCount);
 
 			//generate faces
-			for (int x = 0; x < fieldLengthWidth - 1; x++)
+			for (int x = 0; x < fieldXRange - 1; x++)
 			{
-				for (int y = 0; y < fieldLengthHeight - 1; y++)
+				for (int y = 0; y < fieldYRange - 1; y++)
 				{
 					//create face only if all necessary vertices has been defined. -1 = not defined
 					//| /|	3:[0,1]	2:[1,1]
@@ -157,32 +184,19 @@ namespace ForestReco
 			obj.WriteObjFile(fullPath, new[] { "ADAM" });
 		}
 
-		/// <summary>
-		/// Returns string for x coordinate in field moved by offset
-		/// </summary>
-		private string GetXCoordinateString(int pX)
-		{
-			return (pX * (int)stepSize - GetCenterOffset().X).ToString();
-		}
-
-		/// <summary>
-		/// Returns string for y coordinate in field moved by offset
-		/// </summary>
-		private string GetYCoordinateString(int pY)
-		{
-			return (pY * (int)stepSize - GetCenterOffset().Y).ToString();
-		}
-
 		public override string ToString()
 		{
-			return "FIELD[" + coordinatesCount + "]. min = " + min + ", max = " + max + ", stepSize = " + stepSize;
+			return "FIELD[" + fieldXRange + "," + fieldYRange + "]. " +
+			       "Defined:" + GetNumberOfDifinedFields() + "/" + fieldXRange * fieldYRange + ". "+
+				   "Total = " + coordinatesCount + "|" +
+				   "min = " + botLeftCorner + ", max = " + topRightCorner + ", stepSize = " + stepSize;
 		}
 
 		public void DebugStringArray(EHeight pHeight)
 		{
-			for (int y = 0; y < fieldLengthHeight; y++)
+			for (int y = 0; y < fieldYRange; y++)
 			{
-				for (int x = 0; x < fieldLengthWidth; x++)
+				for (int x = 0; x < fieldXRange; x++)
 				{
 					float? height = 0;
 					switch (pHeight)
@@ -204,6 +218,32 @@ namespace ForestReco
 			}
 		}
 
+		//PRIVATE
+
+		private Tuple<int, int, int> GetPositionInField(Vector3 pCoordinate)
+		{
+			int xPos = (int)((pCoordinate.X - botLeftCorner.X) / stepSize);
+			int yPos = (int)((pCoordinate.Y - botLeftCorner.Y) / stepSize);
+			int zPos = (int)((pCoordinate.Z - minHeight) / stepSize);
+			return new Tuple<int, int, int>(xPos, yPos, zPos);
+		}
+
+		/// <summary>
+		/// Returns string for x coordinate in field moved by offset
+		/// </summary>
+		private string GetXCoordinateString(int pX)
+		{
+			return (pX * (int)stepSize - GetCenterOffset().X).ToString();
+		}
+
+		/// <summary>
+		/// Returns string for y coordinate in field moved by offset
+		/// </summary>
+		private string GetYCoordinateString(int pY)
+		{
+			return (pY * (int)stepSize - GetCenterOffset().Y).ToString();
+		}
+
 		private string GetRangeString(Tuple<Vector2, Vector2> pRange)
 		{
 			return "<" + pRange.Item1 + "," + pRange.Item2 + "> ";
@@ -211,17 +251,11 @@ namespace ForestReco
 
 		private Tuple<Vector2, Vector2> GetRangeInField(int pX, int pY)
 		{
-			Vector2 localMin = min + new Vector2(pX, pY) * stepSize;
-			Vector2 localMax = min + new Vector2(pX, pY) * (stepSize + 1);
+			Vector2 localMin = botLeftCorner + new Vector2(pX, pY) * stepSize;
+			Vector2 localMax = botLeftCorner + new Vector2(pX, pY) * (stepSize + 1);
 			return new Tuple<Vector2, Vector2>(localMin, localMax);
 		}
 
-		private Tuple<int, int> GetPositionInField(Vector3 pCoordinate)
-		{
-			int xPos = (int)((pCoordinate.X - min.X) / stepSize);
-			int yPos = (int)((pCoordinate.Y - min.Y) / stepSize);
-			return new Tuple<int, int>(xPos, yPos);
-		}
 	}
 
 	public enum EHeight

@@ -2,7 +2,7 @@
 
 namespace ForestReco
 {
-	public class CCoordinatesElement
+	public abstract class CCoordinatesElement
 	{
 		public float HeightSum;
 		public float HeightMax = float.MinValue;
@@ -12,29 +12,32 @@ namespace ForestReco
 
 		private const int HEIGHT_MULTIPLY = 1; //only for better visualisation of height difference
 
-		public CCoordinatesElement()
+		protected CCoordinatesElement()
 		{
-			this.VertexIndex = -1;
+			VertexIndex = -1;
 		}
 
 		/// <summary>
 		/// Adds coordinate height to the sum of this field position
 		/// </summary>
-		public void AddCoordinate(Vector3 pCoordinate)
+		public void AddCoordinate(Vector3 pCoordinate, int pZindex)
 		{
 			float height = pCoordinate.Z;
 			HeightSum += height;
 			if (HeightMax < height) { HeightMax = height;}
 			if (HeightMin > height) { HeightMin = height; }
 			CoordinatesCount++;
+
+			OnAddCoordinate(pCoordinate, pZindex);
 		}
 
-		public float? GetAverageHeight()
+		protected abstract void OnAddCoordinate(Vector3 pCoordinate, int pZindex);
+
+		public float GetAverageHeight()
 		{
 			if (CoordinatesCount == 0)
 			{
 				return 0;
-				//return null;
 			}
 			else
 			{
