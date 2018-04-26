@@ -34,6 +34,7 @@ namespace ForestReco
 		/// </summary>
 		/// <param name="pHeader">Header info</param>
 		/// <param name="pStepSize">Step size in meters</param>
+		/// <param name="pStoreDepthCoordinates">Heights will be also stored in Z field</param>
 		public CCoordinatesField(CHeaderInfo pHeader, float pStepSize, bool pStoreDepthCoordinates)
 		{
 			botLeftCorner = pHeader.GetBotLeftCorner();
@@ -240,6 +241,9 @@ namespace ForestReco
 
 		//PRIVATE
 
+		/// <summary>
+		/// Claculates average height from closest defined 4-neighbours 
+		/// </summary>
 		private float GetAverageHeightFromNeighbours(int pX, int pY)
 		{
 			int definedHeights = 0;
@@ -309,7 +313,9 @@ namespace ForestReco
 		/// </summary>
 		private string GetYCoordinateString(int pY)
 		{
-			return (pY * stepSize - GetCenterOffset().Y).ToString();
+			//TODO: not sure why I have to use '-pY' and '+GetCenterOffset'. 
+			//But result doesn't match the original file without it
+			return (-pY * stepSize + GetCenterOffset().Y).ToString();
 		}
 
 		private string GetRangeString(Tuple<Vector2, Vector2> pRange)

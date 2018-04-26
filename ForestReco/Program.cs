@@ -38,7 +38,7 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = .5f; //in meters
+			float stepSize = 5;//.5f; //in meters
 
 			//no need to record depth information in groundField
 			CCoordinatesField groundField = new CCoordinatesField(header, stepSize, false);
@@ -74,7 +74,8 @@ namespace ForestReco
 			if (processGround)
 			{
 				Console.WriteLine("groundField: " + groundField);
-				groundField.ExportToObj(fileName, EExportStrategy.FillMissingHeight);
+				//TODO: to fill missong coordinates use FillMissingHeight startegy
+				groundField.ExportToObj(fileName, EExportStrategy.None);
 			}
 			if (processHighVegetation)
 			{
