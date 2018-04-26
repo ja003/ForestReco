@@ -74,7 +74,7 @@ namespace ForestReco
 			if (processGround)
 			{
 				Console.WriteLine("groundField: " + groundField);
-				groundField.ExportToObj(fileName);
+				groundField.ExportToObj(fileName, EExportStrategy.FillMissingHeight);
 			}
 			if (processHighVegetation)
 			{

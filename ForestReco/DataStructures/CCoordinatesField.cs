@@ -91,7 +91,7 @@ namespace ForestReco
 			return new Vector2(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
 		}
 
-		public void ExportToObj(string pOutputFileName = "")
+		public void ExportToObj(string pOutputFileName, EExportStrategy pStrategy = EExportStrategy.None)
 		{
 			Obj obj = new Obj();
 
@@ -107,6 +107,14 @@ namespace ForestReco
 					//float height = field[x, y].GetWeightedAverage();
 					//float height = field[x, y].GetHeightMax();
 					//float height = field[x, y].GetHeightMin();
+
+					if (pStrategy == EExportStrategy.FillMissingHeight)
+					{
+						if ((int)height == 0)
+						{
+							height = GetAverageHeightFromNeighbours(x, y);
+						}
+					}
 
 					//create vertex only if height is defined (0 = default)
 					if ((int)height != 0)
@@ -180,7 +188,7 @@ namespace ForestReco
 			int fileIndex = 0;
 			while (File.Exists(fullPath))
 			{
-				chosenFileName = DEFAULT_FILENAME + fileIndex;
+				chosenFileName = fileName + "_" + fileIndex;
 				fullPath = path + chosenFileName + extension;
 				fileIndex++;
 			}
@@ -193,6 +201,8 @@ namespace ForestReco
 
 			obj.WriteObjFile(fullPath, new[] { "ADAM" });
 		}
+
+		
 
 		public override string ToString()
 		{
@@ -229,6 +239,54 @@ namespace ForestReco
 		}
 
 		//PRIVATE
+
+		private float GetAverageHeightFromNeighbours(int pX, int pY)
+		{
+			int definedHeights = 0;
+			
+			float heightLeft = 0;
+			for (int x = pX - 1; x >= 0; x--)
+			{
+				heightLeft = field[x, pY].GetAverageHeight();
+				if ((int)heightLeft != 0)
+				{
+					definedHeights++;
+					break;
+				}
+			}
+			float heightRight = 0;
+			for (int x = pX + 1; x < fieldXRange; x++)
+			{
+				heightRight = field[x, pY].GetAverageHeight();
+				if ((int)heightRight != 0)
+				{
+					definedHeights++;
+					break;
+				}
+			}
+
+			float heightUp = 0;
+			for (int y = pY - 1; y >= 0; y--)
+			{
+				heightUp = field[pX, y].GetAverageHeight();
+				if ((int)heightUp != 0)
+				{
+					definedHeights++;
+					break;
+				}
+			}
+			float heightDown = 0;
+			for (int y = pY + 1; y < fieldYRange; y++)
+			{
+				heightDown = field[pX, y].GetAverageHeight();
+				if ((int)heightDown != 0)
+				{
+					definedHeights++;
+					break;
+				}
+			}
+			return (heightLeft + heightRight + heightUp + heightDown) / definedHeights;
+		}
 
 		private Tuple<int, int, int> GetPositionInField(Vector3 pCoordinate)
 		{
@@ -273,5 +331,11 @@ namespace ForestReco
 		Average,
 		Max,
 		Min
+	}
+
+	public enum EExportStrategy
+	{
+		None,
+		FillMissingHeight
 	}
 }
