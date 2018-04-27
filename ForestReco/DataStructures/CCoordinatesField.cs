@@ -106,9 +106,9 @@ namespace ForestReco
 					//float height = field[x, y].GetHeightAverage();
 					//float height = field[x, y].GetMostAddedHeightAverage();
 					//float height = field[x, y].GetWeightedAverage();
-					//float height = field[x, y].GetHeightMax();
+					float height = field[x, y].GetHeightMax(true);
 					//float height = field[x, y].GetHeightMin();
-					float height = field[x, y].GetHeightLocalMaxima();
+					//float height = field[x, y].GetHeightLocalMaxima();
 
 					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
@@ -123,7 +123,7 @@ namespace ForestReco
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						//move heights so the lowest point touches the 0
-						//height -= minHeight;
+						height -= minHeight;
 
 						v.LoadFromStringArray(new[]
 						{
@@ -210,16 +210,16 @@ namespace ForestReco
 		/// <summary>
 		/// Marks all elements in field with min/max mark
 		/// </summary>
-		public void DetectLocalExtrems()
+		public void DetectLocalExtrems(int pKernelSize = 1)
 		{
-			for (int x = 1; x < fieldXRange - 1; x++)
+			for (int x = pKernelSize; x < fieldXRange - pKernelSize; x++)
 			{
-				for (int y = 1; y < fieldYRange - 1; y++)
+				for (int y = pKernelSize; y < fieldYRange - pKernelSize; y++)
 				{
 					if (field[x, y].IsDefined())
 					{
-						field[x, y].IsLocalMax = IsLocalExtrem(true, x, y);
-						field[x, y].IsLocalMin = IsLocalExtrem(false, x, y);
+						field[x, y].IsLocalMax = IsLocalExtrem(true, x, y, pKernelSize);
+						field[x, y].IsLocalMin = IsLocalExtrem(false, x, y, pKernelSize);
 					}
 				}
 			}

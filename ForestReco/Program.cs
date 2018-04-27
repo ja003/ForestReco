@@ -82,7 +82,7 @@ namespace ForestReco
 			if (processHighVegetation)
 			{
 				Console.WriteLine("highVegetationField: " + highVegetationField);
-				highVegetationField.DetectLocalExtrems();
+				highVegetationField.DetectLocalExtrems(2);
 				highVegetationField.ExportToObj(fileName + "_trees");
 			}
 			

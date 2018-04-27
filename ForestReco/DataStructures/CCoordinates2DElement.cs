@@ -8,8 +8,7 @@ namespace ForestReco
 		private CCoordinatesDepthElement[] depthElements;
 		//private int mostAddedDepthElementsIndex = -1;
 		private bool storeDepthCoordinates;
-		public bool IsLocalMax;
-		public bool IsLocalMin;
+		
 
 		public CCoordinates2DElement(int pZDepth, bool pStoreDepthCoordinates)
 		{
