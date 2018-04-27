@@ -121,6 +121,9 @@ namespace ForestReco
 					if ((int)height != 0)
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
+						//move heights so the lowest point touches the 0
+						height -= minHeight;
+
 						v.LoadFromStringArray(new[]
 						{
 							"v", GetXCoordinateString(x), height.ToString(), GetYCoordinateString(y)

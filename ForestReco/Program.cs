@@ -27,6 +27,8 @@ namespace ForestReco
 			Thread.CurrentThread.CurrentCulture = ci;
 
 			string fileName = @"BK_1000AGL_classified";
+			fileName = @"BK_1000AGL_cl_split_s_mezerou";
+			
 			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
@@ -38,14 +40,14 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = 5;//.5f; //in meters
+			float stepSize = .5f; //in meters
 
 			//no need to record depth information in groundField
 			CCoordinatesField groundField = new CCoordinatesField(header, stepSize, false);
 			CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
 
-			bool processGround = true;
-			bool processHighVegetation = false;
+			bool processGround = false;
+			bool processHighVegetation = true;
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;
