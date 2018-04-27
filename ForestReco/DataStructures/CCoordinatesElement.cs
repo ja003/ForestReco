@@ -31,9 +31,14 @@ namespace ForestReco
 			OnAddCoordinate(pCoordinate, pZindex);
 		}
 
+		public bool IsDefined()
+		{
+			return CoordinatesCount > 0;
+		}
+
 		protected abstract void OnAddCoordinate(Vector3 pCoordinate, int pZindex);
 
-		public float GetAverageHeight()
+		public float GetHeightAverage()
 		{
 			if (CoordinatesCount == 0)
 			{

@@ -103,11 +103,12 @@ namespace ForestReco
 				for (int y = 0; y < fieldYRange; y++)
 				{
 					Vertex v = new Vertex();
-					float height = field[x, y].GetAverageHeight();
+					//float height = field[x, y].GetHeightAverage();
 					//float height = field[x, y].GetMostAddedHeightAverage();
 					//float height = field[x, y].GetWeightedAverage();
 					//float height = field[x, y].GetHeightMax();
 					//float height = field[x, y].GetHeightMin();
+					float height = field[x, y].GetHeightLocalMaxima();
 
 					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
@@ -122,7 +123,7 @@ namespace ForestReco
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						//move heights so the lowest point touches the 0
-						height -= minHeight;
+						//height -= minHeight;
 
 						v.LoadFromStringArray(new[]
 						{
@@ -206,7 +207,45 @@ namespace ForestReco
 			obj.WriteObjFile(fullPath, new[] { "ADAM" });
 		}
 
-		
+		/// <summary>
+		/// Marks all elements in field with min/max mark
+		/// </summary>
+		public void DetectLocalExtrems()
+		{
+			for (int x = 1; x < fieldXRange - 1; x++)
+			{
+				for (int y = 1; y < fieldYRange - 1; y++)
+				{
+					if (field[x, y].IsDefined())
+					{
+						field[x, y].IsLocalMax = IsLocalExtrem(true, x, y);
+						field[x, y].IsLocalMin = IsLocalExtrem(false, x, y);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns if element on given coordinates is higher/smaller than its neighbours
+		/// </summary>
+		private bool IsLocalExtrem(bool pMax, int pX, int pY, int pKernelSize = 1)
+		{
+			for (int x = pX - pKernelSize; x <= pX + pKernelSize; x++)
+			{
+				for (int y = pY - pKernelSize; y <= pY + pKernelSize; y++)
+				{
+					if (pMax)
+					{
+						if (field[x, y].GetHeightMax() > field[pX, pY].GetHeightMax()) { return false; }
+					}
+					else
+					{
+						if (field[x, y].GetHeightMin() < field[pX, pY].GetHeightMin()) { return false; }
+					}
+				}
+			}
+			return true;
+		}
 
 		public override string ToString()
 		{
@@ -226,7 +265,7 @@ namespace ForestReco
 					switch (pHeight)
 					{
 						case EHeight.Average:
-							height = field[x, y].GetAverageHeight();
+							height = field[x, y].GetHeightAverage();
 							break;
 						case EHeight.Max:
 							height = field[x, y].HeightMax;
@@ -250,11 +289,11 @@ namespace ForestReco
 		private float GetAverageHeightFromNeighbours(int pX, int pY)
 		{
 			int definedHeights = 0;
-			
+
 			float heightLeft = 0;
 			for (int x = pX - 1; x >= 0; x--)
 			{
-				heightLeft = field[x, pY].GetAverageHeight();
+				heightLeft = field[x, pY].GetHeightAverage();
 				if ((int)heightLeft != 0)
 				{
 					definedHeights++;
@@ -264,7 +303,7 @@ namespace ForestReco
 			float heightRight = 0;
 			for (int x = pX + 1; x < fieldXRange; x++)
 			{
-				heightRight = field[x, pY].GetAverageHeight();
+				heightRight = field[x, pY].GetHeightAverage();
 				if ((int)heightRight != 0)
 				{
 					definedHeights++;
@@ -275,7 +314,7 @@ namespace ForestReco
 			float heightUp = 0;
 			for (int y = pY - 1; y >= 0; y--)
 			{
-				heightUp = field[pX, y].GetAverageHeight();
+				heightUp = field[pX, y].GetHeightAverage();
 				if ((int)heightUp != 0)
 				{
 					definedHeights++;
@@ -285,7 +324,7 @@ namespace ForestReco
 			float heightDown = 0;
 			for (int y = pY + 1; y < fieldYRange; y++)
 			{
-				heightDown = field[pX, y].GetAverageHeight();
+				heightDown = field[pX, y].GetHeightAverage();
 				if ((int)heightDown != 0)
 				{
 					definedHeights++;
