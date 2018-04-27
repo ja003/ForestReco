@@ -9,8 +9,6 @@ namespace ForestReco
 		public float HeightMin = float.MaxValue;
 		public int CoordinatesCount;
 		public int VertexIndex;
-		public bool IsLocalMax;
-		public bool IsLocalMin;
 
 		private const int HEIGHT_MULTIPLY = 1; //only for better visualisation of height difference
 
@@ -55,11 +53,10 @@ namespace ForestReco
 		/// <summary>
 		/// Returns 0 if not defined
 		/// </summary>
-		public float GetHeightMax(bool pHighlightMaxima = false)
+		public float GetHeightMax()
 		{
 			float heightMax = HeightMax > float.MinValue ? HeightMax : 0;
-			if (IsLocalMax) { heightMax += 10;}
-			else if (IsLocalMin) { heightMax -= 10; }
+
 			return heightMax;
 		}
 

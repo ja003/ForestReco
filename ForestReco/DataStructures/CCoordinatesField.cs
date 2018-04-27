@@ -58,6 +58,16 @@ namespace ForestReco
 					field[i, j] = new CCoordinates2DElement(fieldZRange, storeDepthCoordinates);
 				}
 			}
+			for (int x = 0; x < fieldXRange; x++)
+			{
+				for (int y = 0; y < fieldYRange; y++)
+				{
+					if (x > 0) { field[x, y].leftNeighbor = field[x - 1, y]; }
+					if (x < fieldXRange - 1) { field[x, y].rightNeighbor = field[x + 1, y]; }
+					if (y > 0) { field[x, y].topNeighbor = field[x, y - 1]; }
+					if (y < fieldYRange - 1) { field[x, y].botNeighbor = field[x, y + 1]; }
+				}
+			}
 		}
 
 		/// <summary>
@@ -106,9 +116,10 @@ namespace ForestReco
 					//float height = field[x, y].GetHeightAverage();
 					//float height = field[x, y].GetMostAddedHeightAverage();
 					//float height = field[x, y].GetWeightedAverage();
-					float height = field[x, y].GetHeightMax(true);
+					//float height = field[x, y].GetHeightMax();
 					//float height = field[x, y].GetHeightMin();
 					//float height = field[x, y].GetHeightLocalMaxima();
+					float height = field[x, y].GetTreeHeight(2);
 
 					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
@@ -123,7 +134,7 @@ namespace ForestReco
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						//move heights so the lowest point touches the 0
-						height -= minHeight;
+						//height -= minHeight;
 
 						v.LoadFromStringArray(new[]
 						{

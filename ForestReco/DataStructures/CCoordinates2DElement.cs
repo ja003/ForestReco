@@ -8,7 +8,15 @@ namespace ForestReco
 		private CCoordinatesDepthElement[] depthElements;
 		//private int mostAddedDepthElementsIndex = -1;
 		private bool storeDepthCoordinates;
-		
+
+		public CCoordinates2DElement leftNeighbor;
+		public CCoordinates2DElement rightNeighbor;
+		public CCoordinates2DElement topNeighbor;
+		public CCoordinates2DElement botNeighbor;
+
+
+		public bool IsLocalMax;
+		public bool IsLocalMin;
 
 		public CCoordinates2DElement(int pZDepth, bool pStoreDepthCoordinates)
 		{
@@ -40,21 +48,6 @@ namespace ForestReco
 			return sum / count;
 		}
 
-		/// <summary>
-		/// Returns average height from depth field with the biggest number of coordinates
-		/// TODO: almost same results as with Max heights. DELETE 
-		/// </summary>
-		/// <returns></returns>
-		/*public float GetMostAddedHeightAverage()
-		{
-			if (!storeDepthCoordinates) { return 0; }
-
-			if (mostAddedDepthElementsIndex != -1)
-			{
-				return depthElements[mostAddedDepthElementsIndex].GetAverageHeight();
-			}
-			return 0;
-		}*/
 
 		protected override void OnAddCoordinate(Vector3 pCoordinate, int pZindex)
 		{
@@ -65,6 +58,33 @@ namespace ForestReco
 			{
 				mostAddedDepthElementsIndex = pZindex;
 			}*/
+		}
+
+		/// <summary>
+		/// Returns height 10 if algorithm thinks its a tree.
+		/// Tree isLocalMax and localMin is in close neighbourhood
+		/// </summary>
+		public float GetTreeHeight(int pKernelSize)
+		{
+			if (IsLocalMax)
+			{
+				if (IsNearExtrema(false, pKernelSize)) { return 10; }
+			}
+			return 1;
+		}
+
+		public bool IsNearExtrema(bool pMax, int pKernelSize)
+		{
+			if (pMax && IsLocalMax) { return true; }
+			if (!pMax && IsLocalMin) { return true; }
+			if (pKernelSize > 0)
+			{
+				return leftNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
+				       rightNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
+				       topNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
+				       botNeighbor.IsNearExtrema(pMax, pKernelSize - 1);
+			}
+			return false;
 		}
 
 		public float GetHeightLocalMaxima()
