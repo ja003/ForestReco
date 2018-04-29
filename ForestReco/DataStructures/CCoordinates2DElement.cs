@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Microsoft.Win32.SafeHandles;
@@ -16,12 +17,16 @@ namespace ForestReco
 		public CCoordinates2DElement topNeighbor;
 		public CCoordinates2DElement botNeighbor;
 
+		private int xPositionInField;
+		private int yPositionInField;
 
 		public bool IsLocalMax;
 		public bool IsLocalMin;
 
-		public CCoordinates2DElement(int pZDepth, bool pStoreDepthCoordinates)
+		public CCoordinates2DElement(int pXPositionInField, int pYPositionInField, int pZDepth, bool pStoreDepthCoordinates)
 		{
+			xPositionInField = pXPositionInField;
+			yPositionInField = pYPositionInField;
 			storeDepthCoordinates = pStoreDepthCoordinates;
 			if (!pStoreDepthCoordinates) { return; }
 
@@ -66,17 +71,101 @@ namespace ForestReco
 			}*/
 		}
 
+		public CCoordinates2DElement tree;
+		public List<CCoordinates2DElement> subTree = new List<CCoordinates2DElement>();
+
+		public void AssignTree(int pKernelSize)
+		{
+			//tree = GetMaxNeighbour();
+			tree = GetTreeNeighbour(pKernelSize);
+			tree?.AssignSubtree(this);
+		}
+
+		public void AssignSubtree(CCoordinates2DElement pSubtree)
+		{
+			if (tree != null)
+			{
+				if (tree == this)
+				{
+					pSubtree.tree = tree; //== this
+					tree.subTree.Add(pSubtree);
+					tree.subTree.AddRange(pSubtree.subTree);
+					pSubtree.subTree.Clear(); //dont need anymore
+					return;
+				}
+				tree.AssignSubtree(pSubtree);
+			}
+			else
+			{
+				subTree.Add(pSubtree);
+				subTree.AddRange(pSubtree.subTree);
+				pSubtree.subTree.Clear(); //dont need anymore
+			}
+		}
+
+		private CCoordinates2DElement GetTreeNeighbour(int pKernelSize)
+		{
+			if (IsLocalMax) { return this;}
+			//if (leftNeighbor != null && leftNeighbor.IsLocalMax) { return leftNeighbor; }
+			//if (rightNeighbor != null && rightNeighbor.IsLocalMax) { return rightNeighbor; }
+			//if (topNeighbor != null && topNeighbor.IsLocalMax) { return topNeighbor; }
+			//if (botNeighbor != null && botNeighbor.IsLocalMax) { return botNeighbor; }
+			if (pKernelSize > 0)
+			{
+				CCoordinates2DElement leftTree = leftNeighbor?.GetTreeNeighbour(pKernelSize - 1);
+				if (leftTree != null) { return leftTree; }
+				CCoordinates2DElement rightTree = rightNeighbor?.GetTreeNeighbour(pKernelSize - 1);
+				if (rightTree != null) { return rightTree; }
+				CCoordinates2DElement topTree = topNeighbor?.GetTreeNeighbour(pKernelSize - 1);
+				if (topTree != null) { return topTree; }
+				CCoordinates2DElement botTree = botNeighbor?.GetTreeNeighbour(pKernelSize - 1);
+				if (botTree != null) { return botTree; }
+			}
+			return null;
+		}
+
+		private CCoordinates2DElement GetMaxNeighbour()
+		{
+			List<CCoordinates2DElement> elements = new List<CCoordinates2DElement>();
+			elements.Add(this);
+			if (leftNeighbor != null) { elements.Add(leftNeighbor); }
+			if (rightNeighbor != null) { elements.Add(rightNeighbor); }
+			if (topNeighbor != null) { elements.Add(topNeighbor); }
+			if (botNeighbor != null) { elements.Add(botNeighbor); }
+			return elements.OrderByDescending(x => x.HeightMax).First();
+		}
+
 		/// <summary>
 		/// Returns height 10 if algorithm thinks its a tree.
 		/// </summary>
 		public float GetTreeHeight()
 		{
+			return 10 - GetDistanceToTree();
+
 			if (IsLocalMax)
 			{
-				return 10;
+				return 10 - GetDistanceToTree();
 				//if (IsNearExtrema(false, pKernelSize)) { return 10; }
 			}
 			return 0;
+		}
+
+		private float GetDistanceToTree()
+		{
+			if (tree == null)
+			{
+				//Console.WriteLine(this + " has no tree assigned.");
+				return 10;
+			}
+			Tuple<int, int> pos = GetPositionInField();
+			Tuple<int, int> treePos = tree.GetPositionInField();
+			return Vector2.Distance(new Vector2(pos.Item1, pos.Item2),
+				new Vector2(treePos.Item1, treePos.Item2));
+		}
+
+		public Tuple<int, int> GetPositionInField()
+		{
+			return new Tuple<int, int>(xPositionInField, yPositionInField);
 		}
 
 		//..nonsense
@@ -114,10 +203,10 @@ namespace ForestReco
 		public bool IsNeighbourhoodDefined(EHeight pHeight, int pKernelSize = 1)
 		{
 			if (pKernelSize > 1) { return IsNeighbourhoodDefined(pHeight, pKernelSize - 1); }
-			return IsDefined(pHeight) || 
+			return IsDefined(pHeight) ||
 				IsNeighbourDefined(ENeighbour.Left, pHeight) ||
-				IsNeighbourDefined(ENeighbour.Right, pHeight) || 
-				IsNeighbourDefined(ENeighbour.Top, pHeight) || 
+				IsNeighbourDefined(ENeighbour.Right, pHeight) ||
+				IsNeighbourDefined(ENeighbour.Top, pHeight) ||
 				IsNeighbourDefined(ENeighbour.Bot, pHeight);
 		}
 
@@ -146,7 +235,10 @@ namespace ForestReco
 			return false;
 		}
 
-		
+		public override string ToString()
+		{
+			return "[" + xPositionInField + "," + yPositionInField + "]";
+		}
 
 		private bool IsNearExtrema(bool pMax, int pKernelSize)
 		{
@@ -155,9 +247,9 @@ namespace ForestReco
 			if (pKernelSize > 0)
 			{
 				return leftNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
-				       rightNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
-				       topNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
-				       botNeighbor.IsNearExtrema(pMax, pKernelSize - 1);
+					   rightNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
+					   topNeighbor.IsNearExtrema(pMax, pKernelSize - 1) ||
+					   botNeighbor.IsNearExtrema(pMax, pKernelSize - 1);
 			}
 			return false;
 		}
@@ -178,6 +270,6 @@ namespace ForestReco
 			Bot
 		}
 
-		
+
 	}
 }

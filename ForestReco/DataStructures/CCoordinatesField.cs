@@ -51,11 +51,11 @@ namespace ForestReco
 			storeDepthCoordinates = pStoreDepthCoordinates;
 
 			field = new CCoordinates2DElement[fieldXRange, fieldYRange];
-			for (int i = 0; i < fieldXRange; i++)
+			for (int x = 0; x < fieldXRange; x++)
 			{
-				for (int j = 0; j < fieldYRange; j++)
+				for (int y = 0; y < fieldYRange; y++)
 				{
-					field[i, j] = new CCoordinates2DElement(fieldZRange, storeDepthCoordinates);
+					field[x, y] = new CCoordinates2DElement(x,y,fieldZRange, storeDepthCoordinates);
 				}
 			}
 			for (int x = 0; x < fieldXRange; x++)
@@ -230,8 +230,25 @@ namespace ForestReco
 
 		public void DetectLocalExtrems(float pStepSize)
 		{
-			int kernelSize = (int)(MIN_TREES_DISTANCE / pStepSize);
+			int kernelSize = GetKernelSize(pStepSize);
 			DetectLocalExtrems(kernelSize);
+		}
+
+		
+
+		/// <summary>
+		/// Assigns tree to each coordinate
+		/// </summary>
+		public void AssignTrees(float pStepSize)
+		{
+			int kernelSize = GetKernelSize(stepSize);
+			for (int x = 0; x < fieldXRange; x++)
+			{
+				for (int y = 0; y < fieldYRange; y++)
+				{
+					field[x, y].AssignTree(kernelSize);
+				}
+			}
 		}
 
 		/// <summary>
@@ -314,6 +331,14 @@ namespace ForestReco
 		}
 
 		//PRIVATE
+
+		/// <summary>
+		/// Calculates appropriate kernel size base on step size
+		/// </summary>
+		private static int GetKernelSize(float pStepSize)
+		{
+			return (int)(MIN_TREES_DISTANCE / pStepSize);
+		}
 
 		/// <summary>
 		/// Claculates average height from closest defined 4-neighbours 
