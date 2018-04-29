@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using Microsoft.Win32.SafeHandles;
 
 namespace ForestReco
 {
@@ -30,7 +32,11 @@ namespace ForestReco
 			}
 		}
 
-
+		/// <summary>
+		/// Returns weighted average of all stored heights.
+		/// If storeDepthCoordinates = false, it returns 0
+		/// </summary>
+		/// <returns></returns>
 		public float GetWeightedAverage()
 		{
 			if (!storeDepthCoordinates) { return 0; }
@@ -62,18 +68,87 @@ namespace ForestReco
 
 		/// <summary>
 		/// Returns height 10 if algorithm thinks its a tree.
-		/// Tree isLocalMax and localMin is in close neighbourhood
 		/// </summary>
-		public float GetTreeHeight(int pKernelSize)
+		public float GetTreeHeight()
 		{
 			if (IsLocalMax)
 			{
-				if (IsNearExtrema(false, pKernelSize)) { return 10; }
+				return 10;
+				//if (IsNearExtrema(false, pKernelSize)) { return 10; }
 			}
-			return 1;
+			return 0;
 		}
 
-		public bool IsNearExtrema(bool pMax, int pKernelSize)
+		//..nonsense
+		/*private CCoordinates2DElement GetNearExtrema(bool pMax, int pKernelSize)
+		{
+			if (pKernelSize > 1)
+			{
+				return GetNearExtrema(pMax, pKernelSize);
+			}
+			else
+			{
+				List<CCoordinates2DElement> elements = new List<CCoordinates2DElement>();
+				elements.Add(this);
+				elements.Add(leftNeighbor);
+				elements.Add(rightNeighbor);
+				elements.Add(topNeighbor);
+				elements.Add(botNeighbor);
+				return pMax ? elements.OrderByDescending(x => x.HeightMax).First() :
+					elements.OrderByDescending(x => x.HeightMin).Last();
+			}
+		}*/
+
+		public float GetHeight(EHeight pHeight)
+		{
+			switch (pHeight)
+			{
+				case EHeight.Tree: return GetTreeHeight();
+				case EHeight.Average: return GetHeightAverage();
+				case EHeight.Max: return GetHeightMax();
+				case EHeight.Min: return GetHeightMin();
+			}
+			return 0;
+		}
+
+		public bool IsNeighbourhoodDefined(EHeight pHeight, int pKernelSize = 1)
+		{
+			if (pKernelSize > 1) { return IsNeighbourhoodDefined(pHeight, pKernelSize - 1); }
+			return IsDefined(pHeight) || 
+				IsNeighbourDefined(ENeighbour.Left, pHeight) ||
+				IsNeighbourDefined(ENeighbour.Right, pHeight) || 
+				IsNeighbourDefined(ENeighbour.Top, pHeight) || 
+				IsNeighbourDefined(ENeighbour.Bot, pHeight);
+		}
+
+		public override bool IsDefined(EHeight pHeight = EHeight.None)
+		{
+			switch (pHeight)
+			{
+				case EHeight.Tree: return (int)GetTreeHeight() != 0;
+			}
+			return base.IsDefined(pHeight);
+		}
+
+		private bool IsNeighbourDefined(ENeighbour pNeighbour, EHeight pHeight)
+		{
+			switch (pNeighbour)
+			{
+				case ENeighbour.Left:
+					return leftNeighbor == null || leftNeighbor.IsDefined(pHeight);
+				case ENeighbour.Right:
+					return rightNeighbor == null || rightNeighbor.IsDefined(pHeight);
+				case ENeighbour.Top:
+					return topNeighbor == null || topNeighbor.IsDefined(pHeight);
+				case ENeighbour.Bot:
+					return botNeighbor == null || botNeighbor.IsDefined(pHeight);
+			}
+			return false;
+		}
+
+		
+
+		private bool IsNearExtrema(bool pMax, int pKernelSize)
 		{
 			if (pMax && IsLocalMax) { return true; }
 			if (!pMax && IsLocalMin) { return true; }
@@ -93,5 +168,16 @@ namespace ForestReco
 			if (IsLocalMin) { return -10; }
 			return 1;
 		}
+
+		private enum ENeighbour
+		{
+			None,
+			Left,
+			Right,
+			Top,
+			Bot
+		}
+
+		
 	}
 }

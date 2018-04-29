@@ -31,7 +31,7 @@ namespace ForestReco
 			OnAddCoordinate(pCoordinate, pZindex);
 		}
 
-		public bool IsDefined()
+		public virtual bool IsDefined(EHeight pHeight)
 		{
 			return CoordinatesCount > 0;
 		}

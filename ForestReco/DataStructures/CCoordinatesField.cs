@@ -102,7 +102,7 @@ namespace ForestReco
 			return new Vector2(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
 		}
 
-		public void ExportToObj(string pOutputFileName, EExportStrategy pStrategy = EExportStrategy.None)
+		public void ExportToObj(string pOutputFileName, EExportStrategy pStrategy, EHeight pHeight)
 		{
 			Obj obj = new Obj();
 
@@ -119,13 +119,21 @@ namespace ForestReco
 					//float height = field[x, y].GetHeightMax();
 					//float height = field[x, y].GetHeightMin();
 					//float height = field[x, y].GetHeightLocalMaxima();
-					float height = field[x, y].GetTreeHeight(2);
+					float height = field[x, y].GetHeight(pHeight);
+					//float height = field[x, y].GetTreeHeight(2);
 
 					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
 						if ((int)height == 0)
 						{
 							height = GetAverageHeightFromNeighbours(x, y);
+						}
+					}
+					else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)
+					{
+						if ((int)height == 0 && field[x, y].IsNeighbourhoodDefined(pHeight))
+						{
+							height = 1;
 						}
 					}
 
@@ -218,11 +226,24 @@ namespace ForestReco
 			obj.WriteObjFile(fullPath, new[] { "ADAM" });
 		}
 
+		private const float MIN_TREES_DISTANCE = 1;
+
+		public void DetectLocalExtrems(float pStepSize)
+		{
+			int kernelSize = (int)(MIN_TREES_DISTANCE / pStepSize);
+			DetectLocalExtrems(kernelSize);
+		}
+
 		/// <summary>
 		/// Marks all elements in field with min/max mark
 		/// </summary>
 		public void DetectLocalExtrems(int pKernelSize = 1)
 		{
+			if (pKernelSize < 1)
+			{
+				Console.WriteLine("Kernel cant be < 1!");
+				pKernelSize = 1;
+			}
 			for (int x = pKernelSize; x < fieldXRange - pKernelSize; x++)
 			{
 				for (int y = pKernelSize; y < fieldYRange - pKernelSize; y++)
@@ -387,14 +408,17 @@ namespace ForestReco
 
 	public enum EHeight
 	{
+		None,
 		Average,
 		Max,
-		Min
+		Min,
+		Tree
 	}
 
 	public enum EExportStrategy
 	{
 		None,
-		FillMissingHeight
+		FillMissingHeight,
+		FillHeightsAroundDefined
 	}
 }
