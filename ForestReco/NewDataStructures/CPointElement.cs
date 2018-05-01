@@ -51,5 +51,24 @@ namespace ForestReco
 			if (!IsDefined()) { return null; }
 			return Sum / points.Count;
 		}
+
+		public void CalculateLocalExtrem(bool pExtrem, int pKernelSize)
+		{
+			return;
+		}
+
+		private CPointElement GetElement(int pIndexOffsetX, int pIndexOffsetY)
+		{
+			CPointElement el = this;
+			for (int x = 0; x < pIndexOffsetX; x++)
+			{
+				el = pIndexOffsetX > 0 ? el.Right : el.Left;
+			}
+			for (int y = 0; y < pIndexOffsetY; y++)
+			{
+				el = pIndexOffsetY > 0 ? el.Top: el.Bot;
+			}
+			return el;
+		}
 	}
 }

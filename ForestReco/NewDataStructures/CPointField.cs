@@ -4,6 +4,9 @@ using System.Numerics;
 
 namespace ForestReco
 {
+	/// <summary>
+	/// Field orientation is from topLeft -> botRight, topLeft = [0,0]
+	/// </summary>
 	public class CPointField
 	{
 		private CPointElement[,] field;
@@ -66,9 +69,7 @@ namespace ForestReco
 		/// </summary>
 		public string GetYElementString(int pYindex)
 		{
-			//TODO: not sure why I have to use '-pY' and '+GetCenterOffset'. 
-			//But result doesn't match the original file without it
-			return (-pYindex * stepSize + GetCenterOffset().Y).ToString();
+			return (pYindex * stepSize - GetCenterOffset().Y).ToString();
 		}
 
 		public CPointElement GetElement(int pX, int pY)
@@ -79,13 +80,52 @@ namespace ForestReco
 		private Tuple<int, int> GetPositionInField(Vector3 pPoint)
 		{
 			int xPos = (int)((pPoint.X - controller.botLeftCorner.X) / stepSize);
-			int yPos = (int)((pPoint.Y - controller.botLeftCorner.Y) / stepSize);
+			//due to field orientation
+			int yPos = fieldYRange - (int)((pPoint.Y - controller.botLeftCorner.Y) / stepSize) - 1;
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
 		private Vector2 GetCenterOffset()
 		{
 			return new Vector2(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
+		}
+
+		private const float MIN_TREES_DISTANCE = 1; //meter
+
+		public void DetectLocalExtrems(float pStepSize)
+		{
+			int kernelSize = GetKernelSize(pStepSize);
+			DetectLocalExtrems(kernelSize);
+		}
+
+		/// <summary>
+		/// Marks all elements in field with min/max mark
+		/// </summary>
+		private void DetectLocalExtrems(int pKernelSize = 1)
+		{
+			if (pKernelSize < 1)
+			{
+				Console.WriteLine("Kernel cant be < 1!");
+				pKernelSize = 1;
+			}
+			for (int x = pKernelSize; x < fieldXRange - pKernelSize; x++)
+			{
+				for (int y = pKernelSize; y < fieldYRange - pKernelSize; y++)
+				{
+					if (field[x, y].IsDefined())
+					{
+						field[x, y].CalculateLocalExtrem(true, pKernelSize);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Calculates appropriate kernel size base on step size
+		/// </summary>
+		private static int GetKernelSize(float pStepSize)
+		{
+			return (int)(MIN_TREES_DISTANCE / pStepSize);
 		}
 	}
 }

@@ -20,6 +20,7 @@ namespace ForestReco
 		{
 			botLeftCorner = pHeader.GetBotLeftCorner();
 			topRightCorner = pHeader.GetTopRightCorner();
+
 			minHeight = pHeader.GetMinHeight();
 			maxHeight = pHeader.GetMaxHeight();
 			//init fields
@@ -43,6 +44,11 @@ namespace ForestReco
 		public void ExportToObj(string pFileName, EExportStrategy pStrategy, EHeight pHeight)
 		{
 			CPointFieldExporter.ExportToObj(fields[0], pFileName, pStrategy, pHeight, minHeight);
+		}
+
+		public void DetectLocalExtrems(float pStepSize, int pLOD)
+		{
+			fields[pLOD].DetectLocalExtrems(pStepSize);
 		}
 	}
 }

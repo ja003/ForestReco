@@ -84,7 +84,7 @@ namespace ForestReco
 			if (processHighVegetation)
 			{
 				Console.WriteLine("highVegetationField: " + highVegetationField);
-				//highVegetationField.DetectLocalExtrems(stepSize);
+				highVegetationField.DetectLocalExtrems(stepSize, 0);
 				//highVegetationField.AssignTrees(stepSize);
 				highVegetationField.ExportToObj(saveFileName + "_trees", 
 					EExportStrategy.FillHeightsAroundDefined, EHeight.Max);

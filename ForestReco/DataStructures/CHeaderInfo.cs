@@ -29,6 +29,8 @@ namespace ForestReco
 
 		public Vector2 GetTopRightCorner() { return new Vector2(Max.X, Max.Y); }
 
+		public Vector2 GetTopLeftCorner() { return new Vector2(Min.X, Max.Y); }
+
 		public float GetMinHeight() { return Min.Z; }
 
 		public float GetMaxHeight() { return Max.Z; }
