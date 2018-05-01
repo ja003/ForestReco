@@ -2,7 +2,7 @@
 
 namespace ForestReco
 {
-	public class CCoordinatesDepthElement : CCoordinatesElement
+	public class CCoordinates2DSubelement : CCoordinatesElement
 	{
 		protected override void OnAddCoordinate(Vector3 pCoordinate, int pZindex)
 		{

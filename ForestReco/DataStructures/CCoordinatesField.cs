@@ -254,7 +254,7 @@ namespace ForestReco
 		/// <summary>
 		/// Marks all elements in field with min/max mark
 		/// </summary>
-		public void DetectLocalExtrems(int pKernelSize = 1)
+		private void DetectLocalExtrems(int pKernelSize = 1)
 		{
 			if (pKernelSize < 1)
 			{
@@ -268,7 +268,10 @@ namespace ForestReco
 					if (field[x, y].IsDefined())
 					{
 						field[x, y].IsLocalMax = IsLocalExtrem(true, x, y, pKernelSize);
-						field[x, y].IsLocalMin = IsLocalExtrem(false, x, y, pKernelSize);
+						if (!field[x, y].IsLocalMax)
+						{
+							field[x, y].IsLocalMin = IsLocalExtrem(false, x, y, pKernelSize);
+						}
 					}
 				}
 			}

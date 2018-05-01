@@ -8,33 +8,34 @@ namespace ForestReco
 {
 	public class CCoordinates2DElement : CCoordinatesElement
 	{
-		private CCoordinatesDepthElement[] depthElements;
+		List<Vector3> coordinates = new List<Vector3>();
+		private CCoordinates2DSubelement[] subelements;
+
+
 		//private int mostAddedDepthElementsIndex = -1;
-		private bool storeDepthCoordinates;
+		private bool storeCoordinates;
 
 		public CCoordinates2DElement leftNeighbor;
 		public CCoordinates2DElement rightNeighbor;
 		public CCoordinates2DElement topNeighbor;
 		public CCoordinates2DElement botNeighbor;
 
-		private int xPositionInField;
-		private int yPositionInField;
+		public Tuple<int, int> PositionInField { get; }
 
 		public bool IsLocalMax;
 		public bool IsLocalMin;
 
-		public CCoordinates2DElement(int pXPositionInField, int pYPositionInField, int pZDepth, bool pStoreDepthCoordinates)
+		public CCoordinates2DElement(int pXPositionInField, int pYPositionInField, int pZDepth, bool pStoreCoordinates)
 		{
-			xPositionInField = pXPositionInField;
-			yPositionInField = pYPositionInField;
-			storeDepthCoordinates = pStoreDepthCoordinates;
-			if (!pStoreDepthCoordinates) { return; }
+			PositionInField = new Tuple<int, int>(pXPositionInField, pYPositionInField);
+			storeCoordinates = pStoreCoordinates;
+			if (!pStoreCoordinates) { return; }
 
-			depthElements = new CCoordinatesDepthElement[pZDepth];
+			/*depthElements = new CCoordinatesDepthElement[pZDepth];
 			for (int i = 0; i < pZDepth; i++)
 			{
 				depthElements[i] = new CCoordinatesDepthElement();
-			}
+			}*/
 		}
 
 		/// <summary>
@@ -42,7 +43,7 @@ namespace ForestReco
 		/// If storeDepthCoordinates = false, it returns 0
 		/// </summary>
 		/// <returns></returns>
-		public float GetWeightedAverage()
+		/*public float GetWeightedAverage()
 		{
 			if (!storeDepthCoordinates) { return 0; }
 			float sum = 0;
@@ -57,13 +58,13 @@ namespace ForestReco
 			}
 			if (count == 0) { return 0; }
 			return sum / count;
-		}
+		}*/
 
 
 		protected override void OnAddCoordinate(Vector3 pCoordinate, int pZindex)
 		{
-			if (!storeDepthCoordinates) { return; }
-			depthElements[pZindex].AddCoordinate(pCoordinate, pZindex);
+			if (!storeCoordinates) { return; }
+			coordinates.Add(pCoordinate);
 			/*if (mostAddedDepthElementsIndex == -1 || 
 				depthElements[pZindex].CoordinatesCount > depthElements[mostAddedDepthElementsIndex].CoordinatesCount)
 			{
@@ -105,7 +106,7 @@ namespace ForestReco
 
 		private CCoordinates2DElement GetTreeNeighbour(int pKernelSize)
 		{
-			if (IsLocalMax) { return this;}
+			if (IsLocalMax) { return this; }
 			//if (leftNeighbor != null && leftNeighbor.IsLocalMax) { return leftNeighbor; }
 			//if (rightNeighbor != null && rightNeighbor.IsLocalMax) { return rightNeighbor; }
 			//if (topNeighbor != null && topNeighbor.IsLocalMax) { return topNeighbor; }
@@ -157,15 +158,8 @@ namespace ForestReco
 				//Console.WriteLine(this + " has no tree assigned.");
 				return 10;
 			}
-			Tuple<int, int> pos = GetPositionInField();
-			Tuple<int, int> treePos = tree.GetPositionInField();
-			return Vector2.Distance(new Vector2(pos.Item1, pos.Item2),
-				new Vector2(treePos.Item1, treePos.Item2));
-		}
-
-		public Tuple<int, int> GetPositionInField()
-		{
-			return new Tuple<int, int>(xPositionInField, yPositionInField);
+			return Vector2.Distance(new Vector2(PositionInField.Item1, PositionInField.Item2),
+				new Vector2(tree.PositionInField.Item1, tree.PositionInField.Item2));
 		}
 
 		//..nonsense
@@ -237,7 +231,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return "[" + xPositionInField + "," + yPositionInField + "]";
+			return "[" + PositionInField + "]";
 		}
 
 		private bool IsNearExtrema(bool pMax, int pKernelSize)

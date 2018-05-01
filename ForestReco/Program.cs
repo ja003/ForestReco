@@ -40,11 +40,12 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = .3f; //in meters
+			float stepSize = .5f; //in meters
 
 			//no need to record depth information in groundField
-			CCoordinatesField groundField = new CCoordinatesField(header, stepSize, false);
-			CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
+			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);
+			CPointFieldController highVegetationField = new CPointFieldController(header, stepSize, 0);
+			//CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
 
 			bool processGround = false;
 			bool processHighVegetation = true;
@@ -60,11 +61,11 @@ namespace ForestReco
 
 				if (c.Item1 == 2 && processGround) //ground
 				{
-					groundField.AddCoordinate(c.Item2);
+					groundField.AddPointInFields(c.Item2);
 				}
 				else if (c.Item1 == 5 && processHighVegetation) //high vegetation
 				{
-					highVegetationField.AddCoordinate(c.Item2);
+					highVegetationField.AddPointInFields(c.Item2);
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
@@ -72,32 +73,23 @@ namespace ForestReco
 			//TODO: find local maxima in highVegetationField
 			//highVegetationField.DetectLocalMaximas()
 
+			string saveFileName = "Cesta_";
 
 			if (processGround)
 			{
 				Console.WriteLine("groundField: " + groundField);
 				//TODO: to fill missong coordinates use FillMissingHeight startegy
-				groundField.ExportToObj(fileName, EExportStrategy.None, EHeight.Average);
+				groundField.ExportToObj(saveFileName, EExportStrategy.None, EHeight.Max);
 			}
 			if (processHighVegetation)
 			{
 				Console.WriteLine("highVegetationField: " + highVegetationField);
-				highVegetationField.DetectLocalExtrems(stepSize);
-				highVegetationField.AssignTrees(stepSize);
-				highVegetationField.ExportToObj(fileName + "_trees", 
-					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
+				//highVegetationField.DetectLocalExtrems(stepSize);
+				//highVegetationField.AssignTrees(stepSize);
+				highVegetationField.ExportToObj(saveFileName + "_trees", 
+					EExportStrategy.FillHeightsAroundDefined, EHeight.Max);
 			}
 			
-
-			/*
-			Console.WriteLine("groundField: ");
-			groundField.DebugStringArray(EHeight.Average);
-			Console.WriteLine("highVegetationField MAX: ");
-			highVegetationField.DebugStringArray(EHeight.Max);
-			Console.WriteLine("highVegetationField MIN: ");
-			highVegetationField.DebugStringArray(EHeight.Min);
-			*/
-
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();
 		}

@@ -43,10 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CPointFieldController.cs" />
+    <Compile Include="Controllers\CPointFieldExporter.cs" />
     <Compile Include="DataStructures\CCoordinatesElement.cs" />
-    <Compile Include="DataStructures\CCoordinatesDepthElement.cs" />
+    <Compile Include="DataStructures\CCoordinates2DSubElement.cs" />
     <Compile Include="DataStructures\CCoordinates2DElement.cs" />
     <Compile Include="DataStructures\CCoordinatesField.cs" />
+    <Compile Include="NewDataStructures\CPointField.cs" />
+    <Compile Include="NewDataStructures\CPointElement.cs" />
     <Compile Include="ObjParser\Extent.cs" />
     <Compile Include="ObjParser\Mtl.cs" />
     <Compile Include="ObjParser\Obj.cs" />
