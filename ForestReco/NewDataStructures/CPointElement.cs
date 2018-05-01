@@ -26,7 +26,7 @@ namespace ForestReco
 			points.Add(pPoint);
 			float height = pPoint.Z;
 			if (Sum != null) { Sum += height; }
-			else { Sum = height;}
+			else { Sum = height; }
 			if (height > Max || Max == null) { Max = height; }
 			if (height < Min || Min == null) { Min = height; }
 		}
@@ -42,6 +42,7 @@ namespace ForestReco
 			{
 				case EHeight.Max: return Max;
 				case EHeight.Average: return GetAverage();
+				case EHeight.Tree: return IsLocalMax ? 10 : 0;
 			}
 			return null;
 		}
@@ -52,21 +53,60 @@ namespace ForestReco
 			return Sum / points.Count;
 		}
 
-		public void CalculateLocalExtrem(bool pExtrem, int pKernelSize)
+		/// <summary>
+		/// All elements but those at edge should have assigned neigbours
+		/// </summary>
+		private bool HasAllNeighbours()
 		{
-			return;
+			return Left != null && Right != null && Top != null && Bot != null;
 		}
 
-		private CPointElement GetElement(int pIndexOffsetX, int pIndexOffsetY)
+		public void CalculateLocalExtrem(bool pExtrem, int pKernelSize)
+		{
+			if (!HasAllNeighbours()) { return; }
+			IsLocalMax = true;
+			IsLocalMin = true;
+			for (int x = -pKernelSize; x < pKernelSize; x++)
+			{
+				for (int y = -pKernelSize; y < pKernelSize; y++)
+				{
+					CPointElement otherEl = GetElementWithOffset(x, y);
+
+					if (pExtrem)
+					{
+						if (otherEl != null && otherEl.Max > Max)
+						{
+							IsLocalMax = false;
+							return;
+						}
+					}
+					else
+					{
+						if (otherEl != null && otherEl.Min < Min)
+						{
+							IsLocalMin = false;
+							return;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returnd element with given local position to this element
+		/// </summary>
+		private CPointElement GetElementWithOffset(int pIndexOffsetX, int pIndexOffsetY)
 		{
 			CPointElement el = this;
-			for (int x = 0; x < pIndexOffsetX; x++)
+			for (int x = 0; x < Math.Abs(pIndexOffsetX); x++)
 			{
 				el = pIndexOffsetX > 0 ? el.Right : el.Left;
+				if (el == null) { return null; }
 			}
-			for (int y = 0; y < pIndexOffsetY; y++)
+			for (int y = 0; y < Math.Abs(pIndexOffsetY); y++)
 			{
-				el = pIndexOffsetY > 0 ? el.Top: el.Bot;
+				el = pIndexOffsetY > 0 ? el.Top : el.Bot;
+				if (el == null) { return null; }
 			}
 			return el;
 		}

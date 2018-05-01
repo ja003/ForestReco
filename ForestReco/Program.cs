@@ -40,7 +40,7 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = .5f; //in meters
+			float stepSize = 1f; //in meters
 
 			//no need to record depth information in groundField
 			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);
@@ -84,10 +84,10 @@ namespace ForestReco
 			if (processHighVegetation)
 			{
 				Console.WriteLine("highVegetationField: " + highVegetationField);
-				highVegetationField.DetectLocalExtrems(stepSize, 0);
+				highVegetationField.CalculateLocalExtrems(0);
 				//highVegetationField.AssignTrees(stepSize);
 				highVegetationField.ExportToObj(saveFileName + "_trees", 
-					EExportStrategy.FillHeightsAroundDefined, EHeight.Max);
+					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
 			}
 			
 			Console.WriteLine("Press any key to exit.");

@@ -42,7 +42,7 @@ namespace ForestReco
 					{
 						//TODO: ATTENTION! in OBJ the height value = Y, while in LAS format it is Z and X,Y are space coordinates
 						//move heights so the lowest point touches the 0
-						height -= pMinHeight;
+						if (pHeight != EHeight.Tree) { height -= pMinHeight; }
 
 						v.LoadFromStringArray(new[]
 						{
@@ -107,7 +107,7 @@ namespace ForestReco
 			string chosenFileName = fileName;
 			string extension = ".obj";
 			string path = Path.GetDirectoryName(
-				              System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
 			string fullPath = path + chosenFileName + extension;
 			int fileIndex = 0;
 			while (File.Exists(fullPath))

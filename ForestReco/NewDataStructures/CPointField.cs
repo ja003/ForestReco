@@ -92,25 +92,24 @@ namespace ForestReco
 
 		private const float MIN_TREES_DISTANCE = 1; //meter
 
-		public void DetectLocalExtrems(float pStepSize)
+		public void CalculateLocalExtrems()
 		{
-			int kernelSize = GetKernelSize(pStepSize);
-			DetectLocalExtrems(kernelSize);
+			CalculateLocalExtrems(GetKernelSize());
 		}
 
 		/// <summary>
 		/// Marks all elements in field with min/max mark
 		/// </summary>
-		private void DetectLocalExtrems(int pKernelSize = 1)
+		private void CalculateLocalExtrems(int pKernelSize = 1)
 		{
 			if (pKernelSize < 1)
 			{
 				Console.WriteLine("Kernel cant be < 1!");
 				pKernelSize = 1;
 			}
-			for (int x = pKernelSize; x < fieldXRange - pKernelSize; x++)
+			for (int x = 0; x < fieldXRange; x++)
 			{
-				for (int y = pKernelSize; y < fieldYRange - pKernelSize; y++)
+				for (int y = 0; y < fieldYRange; y++)
 				{
 					if (field[x, y].IsDefined())
 					{
@@ -123,9 +122,9 @@ namespace ForestReco
 		/// <summary>
 		/// Calculates appropriate kernel size base on step size
 		/// </summary>
-		private static int GetKernelSize(float pStepSize)
+		private int GetKernelSize()
 		{
-			return (int)(MIN_TREES_DISTANCE / pStepSize);
+			return (int)(MIN_TREES_DISTANCE / stepSize);
 		}
 	}
 }
