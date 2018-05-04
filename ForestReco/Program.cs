@@ -40,7 +40,7 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = 1f; //in meters
+			float stepSize = .25f; //in meters
 
 			//no need to record depth information in groundField
 			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);

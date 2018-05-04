@@ -42,7 +42,34 @@ namespace ForestReco
 			{
 				case EHeight.Max: return Max;
 				case EHeight.Average: return GetAverage();
-				case EHeight.Tree: return IsLocalMax ? 10 : 0;
+				case EHeight.Tree: return GetHeightTree();
+			}
+			return null;
+		}
+
+		private float? GetHeightTree()
+		{
+			if (IsLocalMax) { return 10; }
+			if (IsNeighbourLocalMax(ENeigbour.Left) || 
+				IsNeighbourLocalMax(ENeigbour.Top) || 
+				IsNeighbourLocalMax(ENeigbour.Right) || 
+				IsNeighbourLocalMax(ENeigbour.Bot) ) { return 0; }
+			return null;
+		}
+
+		private bool IsNeighbourLocalMax(ENeigbour pNeighbour)
+		{
+			return GetNeighbour(pNeighbour) != null && GetNeighbour(pNeighbour).IsLocalMax;
+		}
+
+		private CPointElement GetNeighbour(ENeigbour pNeighbour)
+		{
+			switch (pNeighbour)
+			{
+				case ENeigbour.Bot: return Bot;
+				case ENeigbour.Left: return Left;
+				case ENeigbour.Right: return Right;
+				case ENeigbour.Top: return Top;
 			}
 			return null;
 		}
@@ -66,9 +93,9 @@ namespace ForestReco
 			if (!HasAllNeighbours()) { return; }
 			IsLocalMax = true;
 			IsLocalMin = true;
-			for (int x = -pKernelSize; x < pKernelSize; x++)
+			for (int x = -pKernelSize; x <= pKernelSize; x++)
 			{
-				for (int y = -pKernelSize; y < pKernelSize; y++)
+				for (int y = -pKernelSize; y <= pKernelSize; y++)
 				{
 					CPointElement otherEl = GetElementWithOffset(x, y);
 
@@ -110,5 +137,13 @@ namespace ForestReco
 			}
 			return el;
 		}
+	}
+
+	public enum ENeigbour
+	{
+		Left,
+		Right,
+		Top,
+		Bot
 	}
 }
