@@ -33,11 +33,11 @@ namespace ForestReco
 		/// <summary>
 		/// Adds point on all defined fields
 		/// </summary>
-		public void AddPointInFields(Vector3 pPoint)
+		public void AddPointInFields(int pClass, Vector3 pPoint)
 		{
 			foreach (CPointField field in fields)
 			{
-				field.AddPointInField(pPoint);
+				field.AddPointInField(pClass, pPoint);
 			}
 		}
 
@@ -49,6 +49,11 @@ namespace ForestReco
 		public void CalculateLocalExtrems(int pLOD)
 		{
 			fields[pLOD].CalculateLocalExtrems();
+		}
+
+		public override string ToString()
+		{
+			return this.fields[0].ToString();
 		}
 	}
 }

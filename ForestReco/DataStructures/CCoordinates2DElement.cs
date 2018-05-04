@@ -187,9 +187,9 @@ namespace ForestReco
 			switch (pHeight)
 			{
 				case EHeight.Tree: return GetTreeHeight();
-				case EHeight.Average: return GetHeightAverage();
-				case EHeight.Max: return GetHeightMax();
-				case EHeight.Min: return GetHeightMin();
+				case EHeight.VegeAverage: return GetHeightAverage();
+				case EHeight.VegeMax: return GetHeightMax();
+				case EHeight.VegeMin: return GetHeightMin();
 			}
 			return 0;
 		}

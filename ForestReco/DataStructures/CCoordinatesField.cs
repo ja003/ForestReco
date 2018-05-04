@@ -265,6 +265,7 @@ namespace ForestReco
 			{
 				for (int y = pKernelSize; y < fieldYRange - pKernelSize; y++)
 				{
+
 					if (field[x, y].IsDefined())
 					{
 						field[x, y].IsLocalMax = IsLocalExtrem(true, x, y, pKernelSize);
@@ -316,13 +317,13 @@ namespace ForestReco
 					float? height = 0;
 					switch (pHeight)
 					{
-						case EHeight.Average:
+						case EHeight.VegeAverage:
 							height = field[x, y].GetHeightAverage();
 							break;
-						case EHeight.Max:
+						case EHeight.VegeMax:
 							height = field[x, y].HeightMax;
 							break;
-						case EHeight.Min:
+						case EHeight.VegeMin:
 							height = field[x, y].HeightMin;
 							break;
 					}
@@ -437,10 +438,12 @@ namespace ForestReco
 	public enum EHeight
 	{
 		None,
-		Average,
-		Max,
-		Min,
-		Tree
+		VegeAverage,
+		VegeMax,
+		VegeMin,
+		Tree,
+		GroundMin,
+		GroundMax
 	}
 
 	public enum EExportStrategy

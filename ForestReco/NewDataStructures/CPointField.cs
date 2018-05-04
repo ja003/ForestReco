@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Numerics;
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace ForestReco
 {
@@ -27,13 +28,13 @@ namespace ForestReco
 
 			fieldXRange = (int)(w / pStepSize) + 1;
 			fieldYRange = (int)(h / pStepSize) + 1;
-			
+
 			field = new CPointElement[fieldXRange, fieldYRange];
 			for (int x = 0; x < fieldXRange; x++)
 			{
 				for (int y = 0; y < fieldYRange; y++)
 				{
-					field[x, y] = new CPointElement();//x, y);
+					field[x, y] = new CPointElement(new Tuple<int, int>(x, y));//x, y);
 				}
 			}
 			for (int x = 0; x < fieldXRange; x++)
@@ -48,10 +49,10 @@ namespace ForestReco
 			}
 		}
 
-		public void AddPointInField(Vector3 pPoint)
+		public void AddPointInField(int pClass, Vector3 pPoint)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
-			field[index.Item1, index.Item2].AddPoint(pPoint);
+			field[index.Item1, index.Item2].AddPoint(pClass, pPoint);
 			//Console.WriteLine(index + " = " + pPoint);
 			coordinatesCount++;
 		}
@@ -111,7 +112,7 @@ namespace ForestReco
 			{
 				for (int y = 0; y < fieldYRange; y++)
 				{
-					if (field[x, y].IsDefined())
+					if (field[x, y].IsDefined(EClass.Vege))
 					{
 						field[x, y].CalculateLocalExtrem(true, pKernelSize);
 					}
@@ -125,6 +126,11 @@ namespace ForestReco
 		private int GetKernelSize()
 		{
 			return (int)(MIN_TREES_DISTANCE / stepSize);
+		}
+
+		public override string ToString()
+		{
+			return "Field " + fieldXRange + " x " + fieldYRange;
 		}
 	}
 }

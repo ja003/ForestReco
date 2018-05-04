@@ -45,10 +45,12 @@ namespace ForestReco
 			//no need to record depth information in groundField
 			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);
 			CPointFieldController highVegetationField = new CPointFieldController(header, stepSize, 0);
+			CPointFieldController combinedField = new CPointFieldController(header, stepSize, 0);
 			//CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
 
 			bool processGround = false;
-			bool processHighVegetation = true;
+			bool processHighVegetation = false;
+			bool processCombined = true;
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;
@@ -61,11 +63,15 @@ namespace ForestReco
 
 				if (c.Item1 == 2 && processGround) //ground
 				{
-					groundField.AddPointInFields(c.Item2);
+					groundField.AddPointInFields(c.Item1, c.Item2);
 				}
-				else if (c.Item1 == 5 && processHighVegetation) //high vegetation
+				else if (c.Item1 == 5 && processHighVegetation) //ground + vegetation
 				{
-					highVegetationField.AddPointInFields(c.Item2);
+					highVegetationField.AddPointInFields(c.Item1, c.Item2);
+				}
+				else if (c.Item1 == 2 || c.Item1 == 5 && processCombined) //high vegetation
+				{
+					combinedField.AddPointInFields(c.Item1, c.Item2);
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
@@ -79,7 +85,7 @@ namespace ForestReco
 			{
 				Console.WriteLine("groundField: " + groundField);
 				//TODO: to fill missong coordinates use FillMissingHeight startegy
-				groundField.ExportToObj(saveFileName, EExportStrategy.None, EHeight.Max);
+				groundField.ExportToObj(saveFileName, EExportStrategy.None, EHeight.VegeMax);
 			}
 			if (processHighVegetation)
 			{
@@ -89,7 +95,15 @@ namespace ForestReco
 				highVegetationField.ExportToObj(saveFileName + "_trees", 
 					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
 			}
-			
+			if (processCombined)
+			{
+				Console.WriteLine("combinedField: " + combinedField);
+				combinedField.CalculateLocalExtrems(0);
+				//highVegetationField.AssignTrees(stepSize);
+				combinedField.ExportToObj(saveFileName + "_comb",
+					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
+			}
+
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();
 		}
