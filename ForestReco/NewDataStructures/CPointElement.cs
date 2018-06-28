@@ -68,9 +68,15 @@ namespace ForestReco
 			return false;
 		}
 
+		/// <summary>
+		/// Determines whether this point is local extrem in area defined by given kernel size
+		/// </summary>
+		/// <param name="pExtrem">True = Max, False = Min</param>
+		/// <param name="pKernelSize"></param>
 		public void CalculateLocalExtrem(bool pExtrem, int pKernelSize)
 		{
 			//if(indexInField == null){ Console.WriteLine("!");}
+			//dont calculate extrem if not all neighbours are defined (at border)
 			if (!HasAllNeighbours()) { return; }
 			IsLocalMax = true;
 			IsLocalMin = true;

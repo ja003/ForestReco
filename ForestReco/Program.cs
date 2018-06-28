@@ -28,8 +28,15 @@ namespace ForestReco
 
 			string fileName = @"BK_1000AGL_classified";
 			fileName = @"BK_1000AGL_cl_split_s_mezerou";
-			
-			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			fileName = @"BK_1000AGL_classified_0007559_0182972";
+			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			string saveFileName = "BKAGL_59_72_97";
+
+
+			//notebook
+			//string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			//home PC
+			string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -79,7 +86,6 @@ namespace ForestReco
 			//TODO: find local maxima in highVegetationField
 			//highVegetationField.DetectLocalMaximas()
 
-			string saveFileName = "Cesta_";
 
 			if (processGround)
 			{
