@@ -46,6 +46,12 @@ namespace ForestReco
 			CPointFieldExporter.ExportToObj(fields[0], pFileName, pStrategy, pHeight, minHeight);
 		}
 
+		public void AssignTrees(int pLOD)
+		{
+			fields[pLOD].AssignTrees();
+		}
+
+
 		public void CalculateLocalExtrems(int pLOD)
 		{
 			fields[pLOD].CalculateLocalExtrems();

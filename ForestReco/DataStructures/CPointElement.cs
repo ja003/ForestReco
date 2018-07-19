@@ -34,6 +34,8 @@ namespace ForestReco
 			indexInField = pIndexInField;
 		}
 
+		public int TreeIndex = -1; //tree, which this element belongs.
+
 		public void AddPoint(int pClass, Vector3 pPoint)
 		{
 			float height = pPoint.Z;
@@ -70,16 +72,19 @@ namespace ForestReco
 
 		/// <summary>
 		/// Determines whether this point is local extrem in area defined by given kernel size
+		/// TODO: oddělat parametr pExtrem a vracet EExtrem
 		/// </summary>
 		/// <param name="pExtrem">True = Max, False = Min</param>
 		/// <param name="pKernelSize"></param>
-		public void CalculateLocalExtrem(bool pExtrem, int pKernelSize)
+		public bool CalculateLocalExtrem(bool pExtrem, int pKernelSize)
 		{
 			//if(indexInField == null){ Console.WriteLine("!");}
 			//dont calculate extrem if not all neighbours are defined (at border)
-			if (!HasAllNeighbours()) { return; }
-			IsLocalMax = true;
-			IsLocalMin = true;
+			if (!HasAllNeighbours()) { return false; }
+
+			if (pExtrem) { IsLocalMax = true; }
+			else { IsLocalMin = true; }
+
 			for (int x = -pKernelSize; x <= pKernelSize; x++)
 			{
 				for (int y = -pKernelSize; y <= pKernelSize; y++)
@@ -91,7 +96,7 @@ namespace ForestReco
 						if (otherEl != null && otherEl.MaxVege > MaxVege)
 						{
 							IsLocalMax = false;
-							return;
+							return false;
 						}
 					}
 					else
@@ -99,11 +104,12 @@ namespace ForestReco
 						if (otherEl != null && otherEl.MinVege < MinVege)
 						{
 							IsLocalMin = false;
-							return;
+							return false;
 						}
 					}
 				}
 			}
+			return true;
 		}
 
 		public float? GetHeight(EHeight pHeight)
@@ -121,15 +127,23 @@ namespace ForestReco
 
 		private float? GetHeightTree()
 		{
-			//if (IsLocalMax) { return 10; }
-			if (IsLocalMax)
+			if (IsLocalMax || TreeIndex != -1)
 			{
 				return MaxVege - (GetHeightExtrem(true, EClass.Ground, true) ?? MaxVege + 10);
 			}
+			//if (TreeIndex != -1) { return 10; }
+			foreach (CPointElement n in GetNeighbours())
+			{
+				if (n.TreeIndex != -1) { return 0; }
+			}
+
 			if (IsNeighbourLocalMax(ENeigbour.Left) ||
 				IsNeighbourLocalMax(ENeigbour.Top) ||
 				IsNeighbourLocalMax(ENeigbour.Right) ||
-				IsNeighbourLocalMax(ENeigbour.Bot)) { return 0; }
+				IsNeighbourLocalMax(ENeigbour.Bot))
+			{
+				return 0;
+			}
 			//return -1;
 			return null;
 		}
@@ -152,7 +166,7 @@ namespace ForestReco
 		/// Returns extrem of given class.
 		/// pMax: True = maximum, False = minimum
 		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used
-		/// pExcludeNeighbour: dont use this neighbour (prevent cycle)
+		/// pExcludeNeighbour: dont use this neighbour (prevents cycle)
 		/// </summary>
 		public float? GetHeightExtrem(bool pMax, EClass pClass, bool pGetHeightFromNeighbour = false, ENeigbour pExcludeNeighbour = ENeigbour.None)// int pGetFromNeigbourMaxDistance = 0)
 		{
@@ -182,6 +196,50 @@ namespace ForestReco
 				case EClass.Vege: return pMax ? MaxVege : MinVege;
 			}
 			return null;
+		}
+
+		public void AssignTreeToNeighbours()
+		{
+			if (!HasAllNeighbours()) { return; }
+
+			List<CPointElement> neighbours = GetNeighbours();
+			foreach (CPointElement n in neighbours)
+			{
+				//already belongs to other tree
+				if (!n.HasAssignedTree())
+				{
+					float? height = GetHeight(EHeight.VegeMax);
+					float? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
+
+					//TODO: zkontrolovat, proč je tam tolik undefined polí
+					if (TreeIndex == 32)
+					{
+						Console.WriteLine(this);
+					}
+
+					if (height != null && neighbourHeight != null)
+					{
+						float heightDiff = (float)height - (float)neighbourHeight;
+						//this element is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
+						const float MIN_HEIGHT_DIFF = 1.5f;
+						if ( /*heightDiff > 0 &&*/ heightDiff < MIN_HEIGHT_DIFF)
+						{
+							n.TreeIndex = TreeIndex;
+							n.AssignTreeToNeighbours();
+							//Console.WriteLine(TreeIndex + " : " + n);
+						}
+					}
+					else
+					{
+						//Console.WriteLine("XXXXX " + TreeIndex + " : " + n);
+					}
+				}
+			}
+		}
+
+		private bool HasAssignedTree()
+		{
+			return TreeIndex != -1;
 		}
 
 		/// <summary>
@@ -225,6 +283,19 @@ namespace ForestReco
 			return GetNeighbour(pNeighbour) != null && GetNeighbour(pNeighbour).IsLocalMax;
 		}
 
+		private List<CPointElement> GetNeighbours()
+		{
+			List<CPointElement> neighbours = new List<CPointElement>();
+			if (HasAllNeighbours())
+			{
+				neighbours.Add(GetNeighbour(ENeigbour.Left));
+				neighbours.Add(GetNeighbour(ENeigbour.Top));
+				neighbours.Add(GetNeighbour(ENeigbour.Right));
+				neighbours.Add(GetNeighbour(ENeigbour.Bot));
+			}
+			return neighbours;
+		}
+
 		private CPointElement GetNeighbour(ENeigbour pNeighbour)
 		{
 			switch (pNeighbour)
@@ -248,7 +319,16 @@ namespace ForestReco
 			}
 			return ENeigbour.None;
 		}
+
+
 	}
+
+	/*public enum EExtrem
+	{
+		None,
+		Min,
+		Max
+	}*/
 
 	public enum ENeigbour
 	{

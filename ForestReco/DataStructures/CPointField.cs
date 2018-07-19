@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
@@ -17,6 +18,9 @@ namespace ForestReco
 		public int fieldXRange { get; }
 		public int fieldYRange { get; }
 		private int coordinatesCount;
+
+		private List<Tuple<int, int>> maximas = new List<Tuple<int, int>>();
+		private List<Tuple<int, int>> minimas = new List<Tuple<int, int>>();
 
 		public CPointField(CPointFieldController pController, float pStepSize)
 		{
@@ -98,10 +102,41 @@ namespace ForestReco
 			CalculateLocalExtrems(GetKernelSize());
 		}
 
+		public void AssignTrees()
+		{
+			for (int i = 0; i < maximas.Count; i++)
+			{
+				field[maximas[i].Item1, maximas[i].Item2].TreeIndex = i;
+			}
+
+			foreach (Tuple<int, int> m in maximas)
+			{
+				field[m.Item1, m.Item2].AssignTreeToNeighbours();
+			}
+
+			int[] treeElements = new int[maximas.Count];
+			for (int x = 0; x < fieldXRange; x++)
+			{
+				for (int y = 0; y < fieldYRange; y++)
+				{
+					if (field[x, y].TreeIndex != -1)
+					{
+						treeElements[field[x, y].TreeIndex]++;
+					}
+				}
+			}
+
+			for (int i = 0; i < treeElements.Length; i++)
+			{
+				Console.WriteLine(i + " = " + treeElements[i]);
+			}
+		}
+
+
 		/// <summary>
 		/// Marks all elements in field with min/max mark
 		/// </summary>
-		private void CalculateLocalExtrems(int pKernelSize = 1)
+		private void CalculateLocalExtrems(int pKernelSize)
 		{
 			if (pKernelSize < 1)
 			{
@@ -114,10 +149,26 @@ namespace ForestReco
 				{
 					if (field[x, y].IsDefined(EClass.Vege))
 					{
-						field[x, y].CalculateLocalExtrem(true, pKernelSize);
+						bool isMaximum = field[x, y].CalculateLocalExtrem(true, pKernelSize);
+						bool isMinimum = field[x, y].CalculateLocalExtrem(false, pKernelSize);
+						if (isMaximum){ this.maximas.Add(new Tuple<int, int>(x, y));}
+						if (isMinimum) { this.minimas.Add(new Tuple<int, int>(x, y)); }
 					}
 				}
 			}
+
+			Console.WriteLine("Maximas:" + maximas.Count);
+			Console.WriteLine("Minimas:" + minimas.Count);
+
+			/*foreach (Tuple<int, int> m in maximas)
+			{
+				Console.WriteLine(m);
+			}
+
+			foreach (Tuple<int, int> m in minimas)
+			{
+				Console.WriteLine(m);
+			}*/
 		}
 
 		/// <summary>

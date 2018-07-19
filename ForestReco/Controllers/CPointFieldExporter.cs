@@ -22,14 +22,14 @@ namespace ForestReco
 					Vertex v = new Vertex();
 					float? height = pField.GetElement(x, y).GetHeight(pHeight);
 
-					/*if (pStrategy == EExportStrategy.FillMissingHeight)
+					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
-						if ((int)height == 0)
+						if (height == null)
 						{
-							height = GetAverageHeightFromNeighbours(x, y);
+							height = pField.GetElement(x, y).GetHeightExtrem(true, EClass.Ground, true);
 						}
 					}
-					else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)
+					/*else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)
 					{
 						if ((int)height == 0 && field[x, y].IsNeighbourhoodDefined(pHeight))
 						{

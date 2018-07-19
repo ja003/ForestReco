@@ -34,9 +34,9 @@ namespace ForestReco
 
 
 			//notebook
-			//string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 			//home PC
-			string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -91,7 +91,7 @@ namespace ForestReco
 			{
 				Console.WriteLine("groundField: " + groundField);
 				//TODO: to fill missong coordinates use FillMissingHeight startegy
-				groundField.ExportToObj(saveFileName, EExportStrategy.None, EHeight.VegeMax);
+				groundField.ExportToObj(saveFileName, EExportStrategy.None, EHeight.GroundMax);
 			}
 			if (processHighVegetation)
 			{
@@ -105,9 +105,10 @@ namespace ForestReco
 			{
 				Console.WriteLine("combinedField: " + combinedField);
 				combinedField.CalculateLocalExtrems(0);
+				combinedField.AssignTrees(0);
 				//highVegetationField.AssignTrees(stepSize);
 				combinedField.ExportToObj(saveFileName + "_comb",
-					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
+					EExportStrategy.None, EHeight.Tree);
 			}
 
 			Console.WriteLine("Press any key to exit.");
