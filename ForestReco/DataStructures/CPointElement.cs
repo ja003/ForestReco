@@ -116,8 +116,41 @@ namespace ForestReco
 			return true;
 		}
 
-		public float? GetHeight(EHeight pHeight)
+		/// <summary>
+		/// Returns height of given type.
+		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
+		/// pVisited: dont use these elements in DFS
+		/// </summary>
+		public float? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
+			List<CPointElement> pVisited = null)
 		{
+			bool isDefined = true;
+			switch (pHeight)
+			{
+				case EHeight.GroundMax:
+				case EHeight.GroundMin:
+					isDefined = IsDefined(EClass.Ground);
+					break;
+				case EHeight.VegeAverage:
+				case EHeight.VegeMax:
+				case EHeight.VegeMin:
+					isDefined = IsDefined(EClass.Vege);
+					break;
+			}
+			if (!isDefined && pGetHeightFromNeighbour)
+			{
+				if (pVisited == null){pVisited = new List<CPointElement>();}
+
+				foreach (CPointElement n in GetNeighbours())
+				{
+					if (!pVisited.Contains(n))
+					{
+						pVisited.Add(this);
+						return n.GetHeight(pHeight, true, pVisited);
+					}
+				}
+				return null;
+			}
 			switch (pHeight)
 			{
 				case EHeight.VegeMax: return MaxVege;
@@ -129,13 +162,28 @@ namespace ForestReco
 			return null;
 		}
 
+		/// <summary>
+		/// Returns extrem of given class.
+		/// pMax: True = maximum, False = minimum
+		/// </summary>
+		private float? GetHeightExtrem(bool pMax, EClass pClass)
+		{
+
+			switch (pClass)
+			{
+				case EClass.Ground: return pMax ? MaxGround : MinGround;
+
+				case EClass.Vege: return pMax ? MaxVege : MinVege;
+			}
+			return null;
+		}
+
 		private float? GetHeightTree()
 		{
 			//if (IsLocalMax || HasAssignedTree())
 			if (HasAssignedTree())
 			{
-				float? heightTree = Tree.MaxVege - 
-					(Tree.GetHeightExtrem(true, EClass.Ground, true) ?? Tree.MaxVege + 10);
+				float? heightTree = Tree.MaxVege;// - (Tree.GetHeightExtrem(true, EClass.Ground, true) ?? Tree.MaxVege + 10);
 				if (Tree == this)
 				{
 					return heightTree;
@@ -145,7 +193,7 @@ namespace ForestReco
 					return heightTree - GetDistanceToTree() * 1f;
 				}
 			}
-			return 0;
+			return null;
 
 			if (IsNeighbourLocalMax(ENeigbour.Left) ||
 				IsNeighbourLocalMax(ENeigbour.Top) ||
@@ -183,41 +231,7 @@ namespace ForestReco
 			return null;
 		}
 
-		/// <summary>
-		/// Returns extrem of given class.
-		/// pMax: True = maximum, False = minimum
-		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used
-		/// pExcludeNeighbour: dont use this neighbour (prevents cycle)
-		/// </summary>
-		public float? GetHeightExtrem(bool pMax, EClass pClass, bool pGetHeightFromNeighbour = false, ENeigbour pExcludeNeighbour = ENeigbour.None)// int pGetFromNeigbourMaxDistance = 0)
-		{
-			if (!IsDefined(pClass))
-			{
-				if (pGetHeightFromNeighbour)
-				{
-					for (int i = 1; i <= 4; i++)
-					{
-						ENeigbour eNeigbour = (ENeigbour)i;
-						if (eNeigbour != pExcludeNeighbour)
-						{
-							CPointElement neighbour = GetNeighbour(eNeigbour);
-							if (neighbour != null)
-							{
-								return neighbour.GetHeightExtrem(pMax, pClass, true, GetOpositeNeighbour(eNeigbour));
-							}
-						}
-					}
-				}
-				return null;
-			}
-			switch (pClass)
-			{
-				case EClass.Ground: return pMax ? MaxGround : MinGround;
 
-				case EClass.Vege: return pMax ? MaxVege : MinVege;
-			}
-			return null;
-		}
 
 		public void AssignTreeToNeighbours()
 		{
@@ -243,7 +257,7 @@ namespace ForestReco
 						float heightDiff = (float)height - (float)neighbourHeight;
 						//this element is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
 						const float MIN_HEIGHT_DIFF = 1.5f;
-						if ( heightDiff > 0 && heightDiff < MIN_HEIGHT_DIFF)
+						if (heightDiff > 0 && heightDiff < MIN_HEIGHT_DIFF)
 						{
 							n.Tree = Tree;
 							Tree.TreeElementsCount++;
@@ -297,7 +311,7 @@ namespace ForestReco
 			if (MaxVege != null) { maxV = MaxVege.ToString(); }
 			string maxG = "-";
 			if (MaxGround != null) { maxG = MaxGround.ToString(); }
-			return "["+indexInField+"]";
+			return "[" + indexInField + "]";
 			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
 		}
 

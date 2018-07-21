@@ -9,7 +9,8 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "try";
 
-		public static void ExportToObj(CPointField pField, string pOutputFileName, EExportStrategy pStrategy, EHeight pHeight, float pMinHeight)
+		public static void ExportToObj(CPointField pField, string pOutputFileName, 
+			EExportStrategy pStrategy, EHeight pHeight, float pMinHeight)
 		{
 			Obj obj = new Obj();
 
@@ -20,13 +21,14 @@ namespace ForestReco
 				for (int y = 0; y < pField.fieldYRange; y++)
 				{
 					Vertex v = new Vertex();
-					float? height = pField.GetElement(x, y).GetHeight(pHeight);
+					CPointElement el = pField.GetElement(x, y);
+					float? height = el.GetHeight(pHeight);
 
 					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
 						if (height == null)
 						{
-							height = pField.GetElement(x, y).GetHeightExtrem(true, EClass.Ground, true);
+							height = el.GetHeight(EHeight.GroundMax, true);
 						}
 					}
 					/*else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)
@@ -50,7 +52,7 @@ namespace ForestReco
 						});
 						obj.VertexList.Add(v);
 						//record the index of vertex associated with this field position
-						pField.GetElement(x, y).VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
+						el.VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
 					}
 					else
 					{
