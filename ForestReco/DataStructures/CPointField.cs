@@ -19,8 +19,10 @@ namespace ForestReco
 		public int fieldYRange { get; }
 		private int coordinatesCount;
 
-		private List<Tuple<int, int>> maximas = new List<Tuple<int, int>>();
-		private List<Tuple<int, int>> minimas = new List<Tuple<int, int>>();
+		//private List<Tuple<int, int>> maximas = new List<Tuple<int, int>>();
+		private List<CPointElement> maximas = new List<CPointElement>();
+		private List<CPointElement> minimas = new List<CPointElement>();
+		//private List<Tuple<int, int>> minimas = new List<Tuple<int, int>>();
 
 		public CPointField(CPointFieldController pController, float pStepSize)
 		{
@@ -104,31 +106,46 @@ namespace ForestReco
 
 		public void AssignTrees()
 		{
-			for (int i = 0; i < maximas.Count; i++)
+			foreach (CPointElement m in maximas)
 			{
-				field[maximas[i].Item1, maximas[i].Item2].TreeIndex = i;
+				m.Tree = m;
+				m.TreeElementsCount++;
+			}
+			Console.WriteLine("maximas = " + maximas.Count);
+
+
+			foreach (CPointElement m in maximas)
+			{
+				m.AssignTreeToNeighbours();
+				Console.WriteLine(m + " = " + m.TreeElementsCount);
 			}
 
-			foreach (Tuple<int, int> m in maximas)
-			{
-				field[m.Item1, m.Item2].AssignTreeToNeighbours();
-			}
+			return;
 
-			int[] treeElements = new int[maximas.Count];
+			//int[] treeElements = new int[maximas.Count];
+			Dictionary<CPointElement, int> treeElements = new Dictionary<CPointElement, int>();
+
 			for (int x = 0; x < fieldXRange; x++)
 			{
 				for (int y = 0; y < fieldYRange; y++)
 				{
-					if (field[x, y].TreeIndex != -1)
+					if (field[x, y].HasAssignedTree())
 					{
-						treeElements[field[x, y].TreeIndex]++;
+						if (treeElements.ContainsKey(field[x, y]))
+						{
+							treeElements[field[x, y]]++;
+						}
+						else
+						{
+							treeElements.Add(field[x, y], 1);
+						}
 					}
 				}
 			}
 
-			for (int i = 0; i < treeElements.Length; i++)
+			foreach (KeyValuePair<CPointElement, int> te in treeElements)
 			{
-				Console.WriteLine(i + " = " + treeElements[i]);
+				Console.WriteLine(te.Key + " = " + te);
 			}
 		}
 
@@ -147,12 +164,13 @@ namespace ForestReco
 			{
 				for (int y = 0; y < fieldYRange; y++)
 				{
-					if (field[x, y].IsDefined(EClass.Vege))
+					CPointElement el = field[x, y];
+					if (el.IsDefined(EClass.Vege))
 					{
 						bool isMaximum = field[x, y].CalculateLocalExtrem(true, pKernelSize);
 						bool isMinimum = field[x, y].CalculateLocalExtrem(false, pKernelSize);
-						if (isMaximum){ this.maximas.Add(new Tuple<int, int>(x, y));}
-						if (isMinimum) { this.minimas.Add(new Tuple<int, int>(x, y)); }
+						if (isMaximum) { this.maximas.Add(el); }
+						if (isMinimum) { this.minimas.Add(el); }
 					}
 				}
 			}

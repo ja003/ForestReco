@@ -27,14 +27,18 @@ namespace ForestReco
 		public bool IsLocalMin;
 		public int VertexIndex = -1;
 
-		private Tuple<int, int> indexInField;
+		private readonly Tuple<int, int> indexInField;
+
+		//public int TreeIndex = -1; //tree, which this element belongs.
+		public CPointElement Tree; //tree, which this element belongs.
+		public int TreeElementsCount;
+
 
 		public CPointElement(Tuple<int, int> pIndexInField)
 		{
 			indexInField = pIndexInField;
 		}
 
-		public int TreeIndex = -1; //tree, which this element belongs.
 
 		public void AddPoint(int pClass, Vector3 pPoint)
 		{
@@ -127,15 +131,21 @@ namespace ForestReco
 
 		private float? GetHeightTree()
 		{
-			if (IsLocalMax || TreeIndex != -1)
+			//if (IsLocalMax || HasAssignedTree())
+			if (HasAssignedTree())
 			{
-				return MaxVege - (GetHeightExtrem(true, EClass.Ground, true) ?? MaxVege + 10);
+				float? heightTree = Tree.MaxVege - 
+					(Tree.GetHeightExtrem(true, EClass.Ground, true) ?? Tree.MaxVege + 10);
+				if (Tree == this)
+				{
+					return heightTree;
+				}
+				else
+				{
+					return heightTree - GetDistanceToTree() * 1f;
+				}
 			}
-			//if (TreeIndex != -1) { return 10; }
-			foreach (CPointElement n in GetNeighbours())
-			{
-				if (n.TreeIndex != -1) { return 0; }
-			}
+			return 0;
 
 			if (IsNeighbourLocalMax(ENeigbour.Left) ||
 				IsNeighbourLocalMax(ENeigbour.Top) ||
@@ -146,6 +156,17 @@ namespace ForestReco
 			}
 			//return -1;
 			return null;
+		}
+
+		private int GetDistanceToTree()
+		{
+			if (Tree == null)
+			{
+				Console.Write(this + " Error. Tree not defined.");
+				return -1;
+			}
+			return Math.Abs(indexInField.Item1 - Tree.indexInField.Item1) +
+					 Math.Abs(indexInField.Item2 - Tree.indexInField.Item2);
 		}
 
 		private float? GetHeightAverage(EClass pClass)
@@ -212,19 +233,20 @@ namespace ForestReco
 					float? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
 
 					//TODO: zkontrolovat, proč je tam tolik undefined polí
-					if (TreeIndex == 32)
+					/*if (TreeIndex == 32)
 					{
 						Console.WriteLine(this);
-					}
+					}*/
 
 					if (height != null && neighbourHeight != null)
 					{
 						float heightDiff = (float)height - (float)neighbourHeight;
 						//this element is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
 						const float MIN_HEIGHT_DIFF = 1.5f;
-						if ( /*heightDiff > 0 &&*/ heightDiff < MIN_HEIGHT_DIFF)
+						if ( heightDiff > 0 && heightDiff < MIN_HEIGHT_DIFF)
 						{
-							n.TreeIndex = TreeIndex;
+							n.Tree = Tree;
+							Tree.TreeElementsCount++;
 							n.AssignTreeToNeighbours();
 							//Console.WriteLine(TreeIndex + " : " + n);
 						}
@@ -237,9 +259,9 @@ namespace ForestReco
 			}
 		}
 
-		private bool HasAssignedTree()
+		public bool HasAssignedTree()
 		{
-			return TreeIndex != -1;
+			return Tree != null;
 		}
 
 		/// <summary>
@@ -275,6 +297,7 @@ namespace ForestReco
 			if (MaxVege != null) { maxV = MaxVege.ToString(); }
 			string maxG = "-";
 			if (MaxGround != null) { maxG = MaxGround.ToString(); }
+			return "["+indexInField+"]";
 			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
 		}
 

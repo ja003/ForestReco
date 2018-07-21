@@ -34,9 +34,9 @@ namespace ForestReco
 
 
 			//notebook
-			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			//string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 			//home PC
-			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -47,10 +47,10 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = .25f; //in meters
+			float stepSize = .4f; //in meters
 
 			//no need to record depth information in groundField
-			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);
+			CPointFieldController groundField = new CPointFieldController(header, 10*stepSize, 0);
 			CPointFieldController highVegetationField = new CPointFieldController(header, stepSize, 0);
 			CPointFieldController combinedField = new CPointFieldController(header, stepSize, 0);
 			//CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
@@ -82,16 +82,13 @@ namespace ForestReco
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
-
-			//TODO: find local maxima in highVegetationField
-			//highVegetationField.DetectLocalMaximas()
-
+			
 
 			if (processGround)
 			{
 				Console.WriteLine("groundField: " + groundField);
 				//TODO: to fill missong coordinates use FillMissingHeight startegy
-				groundField.ExportToObj(saveFileName, EExportStrategy.None, EHeight.GroundMax);
+				groundField.ExportToObj(saveFileName + "_ground", EExportStrategy.FillMissingHeight, EHeight.GroundMax);
 			}
 			if (processHighVegetation)
 			{
