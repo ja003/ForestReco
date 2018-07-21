@@ -443,7 +443,9 @@ namespace ForestReco
 		VegeMin,
 		Tree,
 		GroundMin,
-		GroundMax
+		GroundMax,
+		IndexX,
+		IndexY
 	}
 
 	public enum EExportStrategy

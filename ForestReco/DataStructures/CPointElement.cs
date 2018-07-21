@@ -139,7 +139,7 @@ namespace ForestReco
 			}
 			if (!isDefined && pGetHeightFromNeighbour)
 			{
-				if (pVisited == null){pVisited = new List<CPointElement>();}
+				if (pVisited == null) { pVisited = new List<CPointElement>(); }
 
 				foreach (CPointElement n in GetNeighbours())
 				{
@@ -158,6 +158,8 @@ namespace ForestReco
 				case EHeight.Tree: return GetHeightTree();
 				case EHeight.GroundMin: return GetHeightExtrem(false, EClass.Ground);
 				case EHeight.GroundMax: return GetHeightExtrem(true, EClass.Ground);
+				case EHeight.IndexX: return indexInField.Item1;
+				case EHeight.IndexY: return indexInField.Item2;
 			}
 			return null;
 		}
@@ -168,11 +170,9 @@ namespace ForestReco
 		/// </summary>
 		private float? GetHeightExtrem(bool pMax, EClass pClass)
 		{
-
 			switch (pClass)
 			{
 				case EClass.Ground: return pMax ? MaxGround : MinGround;
-
 				case EClass.Vege: return pMax ? MaxVege : MinVege;
 			}
 			return null;
@@ -180,18 +180,11 @@ namespace ForestReco
 
 		private float? GetHeightTree()
 		{
-			//if (IsLocalMax || HasAssignedTree())
 			if (HasAssignedTree())
 			{
 				float? heightTree = Tree.MaxVege;// - (Tree.GetHeightExtrem(true, EClass.Ground, true) ?? Tree.MaxVege + 10);
-				if (Tree == this)
-				{
-					return heightTree;
-				}
-				else
-				{
-					return heightTree - GetDistanceToTree() * 1f;
-				}
+				if (Tree == this) { return heightTree; }
+				else { return heightTree - GetDistanceToTree() * 1f; }
 			}
 			return null;
 
@@ -202,7 +195,6 @@ namespace ForestReco
 			{
 				return 0;
 			}
-			//return -1;
 			return null;
 		}
 
@@ -323,13 +315,12 @@ namespace ForestReco
 		private List<CPointElement> GetNeighbours()
 		{
 			List<CPointElement> neighbours = new List<CPointElement>();
-			if (HasAllNeighbours())
-			{
-				neighbours.Add(GetNeighbour(ENeigbour.Left));
-				neighbours.Add(GetNeighbour(ENeigbour.Top));
-				neighbours.Add(GetNeighbour(ENeigbour.Right));
-				neighbours.Add(GetNeighbour(ENeigbour.Bot));
-			}
+
+			if (GetNeighbour(ENeigbour.Left) != null) { neighbours.Add(GetNeighbour(ENeigbour.Left)); }
+			if (GetNeighbour(ENeigbour.Top) != null) { neighbours.Add(GetNeighbour(ENeigbour.Top)); }
+			if (GetNeighbour(ENeigbour.Right) != null) { neighbours.Add(GetNeighbour(ENeigbour.Right)); }
+			if (GetNeighbour(ENeigbour.Bot) != null) { neighbours.Add(GetNeighbour(ENeigbour.Bot)); }
+			
 			return neighbours;
 		}
 

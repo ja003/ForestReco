@@ -57,6 +57,7 @@ namespace ForestReco
 					else
 					{
 						missingCoordCount++;
+						Console.WriteLine("missing = " + el);
 					}
 				}
 			}
