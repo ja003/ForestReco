@@ -149,6 +149,17 @@ namespace ForestReco
 			}
 		}
 
+		public void FillMissingHeights(EHeight pHeight)
+		{
+			for (int x = 0; x < fieldXRange; x++)
+			{
+				for (int y = 0; y < fieldYRange; y++)
+				{
+					CPointElement el = field[x, y];
+					el.FillMissingHeight(pHeight);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Marks all elements in field with min/max mark
@@ -201,5 +212,7 @@ namespace ForestReco
 		{
 			return "Field " + fieldXRange + " x " + fieldYRange;
 		}
+
+		
 	}
 }

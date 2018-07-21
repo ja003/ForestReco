@@ -85,9 +85,9 @@ namespace ForestReco
 			switch (pClass)
 			{
 				case EClass.Ground:
-					return pointsGround.Count > 0;
+					return pointsGround.Count > 0 || MaxGround != null || MinGround != null;
 				case EClass.Vege:
-					return pointsVege.Count > 0;
+					return pointsVege.Count > 0 || MaxVege != null || MinVege != null;
 			}
 			return false;
 		}
@@ -142,6 +142,11 @@ namespace ForestReco
 
 		public float? GetAverageHeightFromClosestDefined(EHeight pHeight)
 		{
+			if (this.Equals(new CPointElement(new Tuple<int, int>(10, 2))))
+			{
+				Console.Write("!");
+			}
+
 			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
 			//
 			CPointElement closestFirst = GetClosestDefined(pHeight, EDirection.Left);
@@ -345,15 +350,6 @@ namespace ForestReco
 			return el;
 		}
 
-		public override string ToString()
-		{
-			string maxV = "-";
-			if (MaxVege != null) { maxV = MaxVege.ToString(); }
-			string maxG = "-";
-			if (MaxGround != null) { maxG = MaxGround.ToString(); }
-			return "[" + indexInField + "]";
-			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
-		}
 
 		private bool IsNeighbourLocalMax(EDirection pNeighbour)
 		{
@@ -396,8 +392,38 @@ namespace ForestReco
 			return EDirection.None;
 		}
 
+		public void FillMissingHeight(EHeight pHeight)
+		{
+			if (IsDefined(pHeight)) { return; }
+			switch (pHeight)
+			{
+				case EHeight.GroundMax:
+					MaxGround = GetAverageHeightFromClosestDefined(pHeight);
+					break;
+			}
+		}
 
+		public override string ToString()
+		{
+			string maxV = "-";
+			if (MaxVege != null) { maxV = MaxVege.ToString(); }
+			string maxG = "-";
+			if (MaxGround != null) { maxG = MaxGround.ToString(); }
+			return "[" + indexInField + "]";
+			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
+		}
+
+		public override bool Equals(object obj)
+		{
+			// Check for null values and compare run-time types.
+			if (obj == null || GetType() != obj.GetType())
+				return false;
+
+			CPointElement e = (CPointElement)obj;
+			return (indexInField.Item1 == e.indexInField.Item1) && (indexInField.Item2 == e.indexInField.Item2);
+		}
 	}
+
 
 	/*public enum EExtrem
 	{

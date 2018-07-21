@@ -50,7 +50,7 @@ namespace ForestReco
 			float stepSize = .4f; //in meters
 
 			//no need to record depth information in groundField
-			CPointFieldController groundField = new CPointFieldController(header, 5*stepSize, 0);
+			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);
 			CPointFieldController highVegetationField = new CPointFieldController(header, stepSize, 0);
 			CPointFieldController combinedField = new CPointFieldController(header, stepSize, 0);
 			//CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
@@ -88,7 +88,9 @@ namespace ForestReco
 			{
 				Console.WriteLine("groundField: " + groundField);
 				//TODO: to fill missong coordinates use FillMissingHeight startegy
-				groundField.ExportToObj(saveFileName + "_ground", EExportStrategy.FillMissingHeight, EHeight.GroundMax);
+				groundField.FillMissingHeights(0, EHeight.GroundMax);
+				groundField.FillMissingHeights(0, EHeight.GroundMax);
+				groundField.ExportToObj(saveFileName + "_ground", EExportStrategy.None, EHeight.GroundMax);
 				//groundField.ExportToObj(saveFileName + "_X", EExportStrategy.None, EHeight.IndexX);
 				//groundField.ExportToObj(saveFileName + "_Y", EExportStrategy.None, EHeight.IndexY);
 			}
@@ -103,6 +105,8 @@ namespace ForestReco
 			if (processCombined)
 			{
 				Console.WriteLine("combinedField: " + combinedField);
+				combinedField.FillMissingHeights(0, EHeight.GroundMax);
+				combinedField.FillMissingHeights(0, EHeight.GroundMax);
 				combinedField.CalculateLocalExtrems(0);
 				combinedField.AssignTrees(0);
 				//highVegetationField.AssignTrees(stepSize);

@@ -51,6 +51,10 @@ namespace ForestReco
 			fields[pLOD].AssignTrees();
 		}
 
+		public void FillMissingHeights(int pLOD, EHeight pHeight)
+		{
+			fields[pLOD].FillMissingHeights(pHeight);
+		}
 
 		public void CalculateLocalExtrems(int pLOD)
 		{
