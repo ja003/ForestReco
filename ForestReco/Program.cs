@@ -47,7 +47,7 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			float stepSize = .25f; //in meters
+			float stepSize = .4f; //in meters
 
 			//no need to record depth information in groundField
 			CPointFieldController groundField = new CPointFieldController(header, 5*stepSize, 0);
@@ -55,9 +55,9 @@ namespace ForestReco
 			CPointFieldController combinedField = new CPointFieldController(header, stepSize, 0);
 			//CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
 
-			bool processGround = true;
+			bool processGround = false;
 			bool processHighVegetation = false;
-			bool processCombined = false;
+			bool processCombined = true;
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;

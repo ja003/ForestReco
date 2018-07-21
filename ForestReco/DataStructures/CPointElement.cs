@@ -62,6 +62,24 @@ namespace ForestReco
 			}
 		}
 
+		public bool IsDefined(EHeight pHeight)
+		{
+			bool isDefined = true;
+			switch (pHeight)
+			{
+				case EHeight.GroundMax:
+				case EHeight.GroundMin:
+					isDefined = IsDefined(EClass.Ground);
+					break;
+				case EHeight.VegeAverage:
+				case EHeight.VegeMax:
+				case EHeight.VegeMin:
+					isDefined = IsDefined(EClass.Vege);
+					break;
+			}
+			return isDefined;
+		}
+
 		public bool IsDefined(EClass pClass)
 		{
 			switch (pClass)
@@ -116,6 +134,46 @@ namespace ForestReco
 			return true;
 		}
 
+		private CPointElement GetClosestDefined(EHeight pHeight, EDirection pDirection)
+		{
+			if (IsDefined(pHeight)) { return this; }
+			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection);
+		}
+
+		public float? GetAverageHeightFromClosestDefined(EHeight pHeight)
+		{
+			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
+			//
+			CPointElement closestFirst = GetClosestDefined(pHeight, EDirection.Left);
+			CPointElement closestSecond = GetClosestDefined(pHeight, EDirection.Right);
+			//
+			if (closestFirst == null || closestSecond == null)
+			{
+				closestFirst = GetClosestDefined(pHeight, EDirection.Top);
+				closestSecond = GetClosestDefined(pHeight, EDirection.Bot);
+			}
+
+			if (closestFirst != null && closestSecond != null)
+			{
+				CPointElement smaller = closestFirst;
+				CPointElement higher = closestSecond;
+				if (closestSecond.GetHeight(pHeight) < closestFirst.GetHeight(pHeight))
+				{
+					higher = closestFirst;
+					smaller = closestSecond;
+				}
+				int totalDistance = smaller.GetDistanceTo(higher);
+				float? heightDiff = higher.GetHeight(pHeight) - smaller.GetHeight(pHeight);
+				if (heightDiff != null)
+				{
+					float? smallerHeight = smaller.GetHeight(pHeight);
+					float distanceToSmaller = GetDistanceTo(smaller);
+					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
+				}
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// Returns height of given type.
 		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
@@ -124,20 +182,7 @@ namespace ForestReco
 		public float? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
 			List<CPointElement> pVisited = null)
 		{
-			bool isDefined = true;
-			switch (pHeight)
-			{
-				case EHeight.GroundMax:
-				case EHeight.GroundMin:
-					isDefined = IsDefined(EClass.Ground);
-					break;
-				case EHeight.VegeAverage:
-				case EHeight.VegeMax:
-				case EHeight.VegeMin:
-					isDefined = IsDefined(EClass.Vege);
-					break;
-			}
-			if (!isDefined && pGetHeightFromNeighbour)
+			if (!IsDefined(pHeight) && pGetHeightFromNeighbour)
 			{
 				if (pVisited == null) { pVisited = new List<CPointElement>(); }
 
@@ -188,10 +233,10 @@ namespace ForestReco
 			}
 			return null;
 
-			if (IsNeighbourLocalMax(ENeigbour.Left) ||
-				IsNeighbourLocalMax(ENeigbour.Top) ||
-				IsNeighbourLocalMax(ENeigbour.Right) ||
-				IsNeighbourLocalMax(ENeigbour.Bot))
+			if (IsNeighbourLocalMax(EDirection.Left) ||
+				IsNeighbourLocalMax(EDirection.Top) ||
+				IsNeighbourLocalMax(EDirection.Right) ||
+				IsNeighbourLocalMax(EDirection.Bot))
 			{
 				return 0;
 			}
@@ -205,8 +250,13 @@ namespace ForestReco
 				Console.Write(this + " Error. Tree not defined.");
 				return -1;
 			}
-			return Math.Abs(indexInField.Item1 - Tree.indexInField.Item1) +
-					 Math.Abs(indexInField.Item2 - Tree.indexInField.Item2);
+			return GetDistanceTo(Tree);
+		}
+
+		private int GetDistanceTo(CPointElement pElement)
+		{
+			return Math.Abs(indexInField.Item1 - pElement.indexInField.Item1) +
+					 Math.Abs(indexInField.Item2 - pElement.indexInField.Item2);
 		}
 
 		private float? GetHeightAverage(EClass pClass)
@@ -222,8 +272,6 @@ namespace ForestReco
 			}
 			return null;
 		}
-
-
 
 		public void AssignTreeToNeighbours()
 		{
@@ -307,7 +355,7 @@ namespace ForestReco
 			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
 		}
 
-		private bool IsNeighbourLocalMax(ENeigbour pNeighbour)
+		private bool IsNeighbourLocalMax(EDirection pNeighbour)
 		{
 			return GetNeighbour(pNeighbour) != null && GetNeighbour(pNeighbour).IsLocalMax;
 		}
@@ -316,36 +364,36 @@ namespace ForestReco
 		{
 			List<CPointElement> neighbours = new List<CPointElement>();
 
-			if (GetNeighbour(ENeigbour.Left) != null) { neighbours.Add(GetNeighbour(ENeigbour.Left)); }
-			if (GetNeighbour(ENeigbour.Top) != null) { neighbours.Add(GetNeighbour(ENeigbour.Top)); }
-			if (GetNeighbour(ENeigbour.Right) != null) { neighbours.Add(GetNeighbour(ENeigbour.Right)); }
-			if (GetNeighbour(ENeigbour.Bot) != null) { neighbours.Add(GetNeighbour(ENeigbour.Bot)); }
-			
+			if (GetNeighbour(EDirection.Left) != null) { neighbours.Add(GetNeighbour(EDirection.Left)); }
+			if (GetNeighbour(EDirection.Top) != null) { neighbours.Add(GetNeighbour(EDirection.Top)); }
+			if (GetNeighbour(EDirection.Right) != null) { neighbours.Add(GetNeighbour(EDirection.Right)); }
+			if (GetNeighbour(EDirection.Bot) != null) { neighbours.Add(GetNeighbour(EDirection.Bot)); }
+
 			return neighbours;
 		}
 
-		private CPointElement GetNeighbour(ENeigbour pNeighbour)
+		private CPointElement GetNeighbour(EDirection pNeighbour)
 		{
 			switch (pNeighbour)
 			{
-				case ENeigbour.Bot: return Bot;
-				case ENeigbour.Left: return Left;
-				case ENeigbour.Right: return Right;
-				case ENeigbour.Top: return Top;
+				case EDirection.Bot: return Bot;
+				case EDirection.Left: return Left;
+				case EDirection.Right: return Right;
+				case EDirection.Top: return Top;
 			}
 			return null;
 		}
 
-		private ENeigbour GetOpositeNeighbour(ENeigbour pNeighbour)
+		private EDirection GetOpositeNeighbour(EDirection pNeighbour)
 		{
 			switch (pNeighbour)
 			{
-				case ENeigbour.Bot: return ENeigbour.Top;
-				case ENeigbour.Top: return ENeigbour.Bot;
-				case ENeigbour.Left: return ENeigbour.Right;
-				case ENeigbour.Right: return ENeigbour.Left;
+				case EDirection.Bot: return EDirection.Top;
+				case EDirection.Top: return EDirection.Bot;
+				case EDirection.Left: return EDirection.Right;
+				case EDirection.Right: return EDirection.Left;
 			}
-			return ENeigbour.None;
+			return EDirection.None;
 		}
 
 
@@ -358,7 +406,7 @@ namespace ForestReco
 		Max
 	}*/
 
-	public enum ENeigbour
+	public enum EDirection
 	{
 		None = 0,
 		Left,
