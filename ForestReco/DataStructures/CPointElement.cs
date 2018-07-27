@@ -23,6 +23,8 @@ namespace ForestReco
 		public float? MaxGround;
 		public float? SumGround;
 
+		public float? TreeHeight;
+
 		public bool IsLocalMax;
 		public bool IsLocalMin;
 		public int VertexIndex = -1;
@@ -62,6 +64,15 @@ namespace ForestReco
 			}
 		}
 
+		public bool IsAnyNeigbourDefined(EHeight pHeight)
+		{
+			foreach (CPointElement n in GetNeighbours())
+			{
+				if (n.IsDefined(pHeight)) { return true; }
+			}
+			return false;
+		}
+
 		public bool IsDefined(EHeight pHeight)
 		{
 			bool isDefined = true;
@@ -75,6 +86,9 @@ namespace ForestReco
 				case EHeight.VegeMax:
 				case EHeight.VegeMin:
 					isDefined = IsDefined(EClass.Vege);
+					break;
+				case EHeight.Tree:
+					isDefined = GetHeightTree() != null;
 					break;
 			}
 			return isDefined;
@@ -230,22 +244,22 @@ namespace ForestReco
 
 		private float? GetHeightTree()
 		{
-			if (HasAssignedTree())
+			if (TreeHeight == null)
 			{
-				float? heightTree = Tree.MaxVege;// - (Tree.GetHeightExtrem(true, EClass.Ground, true) ?? Tree.MaxVege + 10);
-				if (Tree == this) { return heightTree; }
-				else { return heightTree - GetDistanceToTree() * 1f; }
+				if (HasAssignedTree())
+				{
+					float? heightTree = Tree.MaxVege;
+					if (Tree.Equals(this))
+					{
+						TreeHeight = heightTree;
+					}
+					else
+					{
+						TreeHeight = heightTree - GetDistanceToTree() * 1f;
+					}
+				}
 			}
-			return null;
-
-			if (IsNeighbourLocalMax(EDirection.Left) ||
-				IsNeighbourLocalMax(EDirection.Top) ||
-				IsNeighbourLocalMax(EDirection.Right) ||
-				IsNeighbourLocalMax(EDirection.Bot))
-			{
-				return 0;
-			}
-			return null;
+			return TreeHeight;
 		}
 
 		private int GetDistanceToTree()
@@ -400,8 +414,17 @@ namespace ForestReco
 				case EHeight.GroundMax:
 					MaxGround = GetAverageHeightFromClosestDefined(pHeight);
 					break;
+				default:
+					Console.WriteLine("FillMissingHeight not defined for " + pHeight);
+					return;
 			}
 		}
+
+		public string ToStringIndex()
+		{
+			return "[" + indexInField + "].";
+		}
+
 
 		public override string ToString()
 		{
@@ -409,7 +432,7 @@ namespace ForestReco
 			if (MaxVege != null) { maxV = MaxVege.ToString(); }
 			string maxG = "-";
 			if (MaxGround != null) { maxG = MaxGround.ToString(); }
-			return "[" + indexInField + "]";
+			return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
 		}
 

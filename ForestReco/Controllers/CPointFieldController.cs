@@ -43,7 +43,12 @@ namespace ForestReco
 
 		public void ExportToObj(string pFileName, EExportStrategy pStrategy, EHeight pHeight)
 		{
-			CPointFieldExporter.ExportToObj(fields[0], pFileName, pStrategy, pHeight, minHeight);
+			ExportToObj(pFileName, pStrategy, new List<EHeight> { pHeight });
+		}
+
+		public void ExportToObj(string pFileName, EExportStrategy pStrategy, List<EHeight> pHeights)
+		{
+			CPointFieldExporter.ExportToObj(fields[0], pFileName, pStrategy, pHeights, minHeight);
 		}
 
 		public void AssignTrees(int pLOD)

@@ -117,36 +117,39 @@ namespace ForestReco
 			foreach (CPointElement m in maximas)
 			{
 				m.AssignTreeToNeighbours();
-				Console.WriteLine(m + " = " + m.TreeElementsCount);
+				//Console.WriteLine(m + " = " + m.TreeElementsCount);
 			}
-
 			return;
 
-			//int[] treeElements = new int[maximas.Count];
-			Dictionary<CPointElement, int> treeElements = new Dictionary<CPointElement, int>();
+			Console.WriteLine("================");
+			Console.WriteLine("AssignTrees");
 
-			for (int x = 0; x < fieldXRange; x++)
+			foreach (CPointElement e in GetElements())
 			{
-				for (int y = 0; y < fieldYRange; y++)
+				Console.WriteLine(e);			
+			}
+			
+			Console.WriteLine("================");
+
+			return;
+		}
+
+		private List<CPointElement> elements;
+
+		private List<CPointElement> GetElements()
+		{
+			if (elements == null)
+			{
+				elements = new List<CPointElement>();
+				for (int x = 0; x < fieldXRange; x++)
 				{
-					if (field[x, y].HasAssignedTree())
+					for (int y = 0; y < fieldYRange; y++)
 					{
-						if (treeElements.ContainsKey(field[x, y]))
-						{
-							treeElements[field[x, y]]++;
-						}
-						else
-						{
-							treeElements.Add(field[x, y], 1);
-						}
+						elements.Add(field[x, y]);
 					}
 				}
 			}
-
-			foreach (KeyValuePair<CPointElement, int> te in treeElements)
-			{
-				Console.WriteLine(te.Key + " = " + te);
-			}
+			return elements;
 		}
 
 		public void FillMissingHeights(EHeight pHeight)

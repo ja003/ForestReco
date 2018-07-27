@@ -82,7 +82,7 @@ namespace ForestReco
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
-			
+
 
 			if (processGround)
 			{
@@ -99,7 +99,7 @@ namespace ForestReco
 				Console.WriteLine("highVegetationField: " + highVegetationField);
 				highVegetationField.CalculateLocalExtrems(0);
 				//highVegetationField.AssignTrees(stepSize);
-				highVegetationField.ExportToObj(saveFileName + "_trees", 
+				highVegetationField.ExportToObj(saveFileName + "_trees",
 					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
 			}
 			if (processCombined)
@@ -111,7 +111,7 @@ namespace ForestReco
 				combinedField.AssignTrees(0);
 				//highVegetationField.AssignTrees(stepSize);
 				combinedField.ExportToObj(saveFileName + "_comb",
-					EExportStrategy.FillMissingHeight, EHeight.Tree);
+					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
 			}
 
 			Console.WriteLine("Press any key to exit.");
