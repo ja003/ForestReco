@@ -12,7 +12,7 @@ namespace ForestReco
 
 
 		public static void ExportToObj(CPointField pField, string pOutputFileName,
-			EExportStrategy pStrategy, List<EHeight> pHeights, float pMinHeight)
+			EExportStrategy pStrategy, List<EHeight> pHeights, double pMinHeight)
 		{
 			Obj obj = new Obj();
 
@@ -27,7 +27,7 @@ namespace ForestReco
 					{
 						Vertex v = new Vertex();
 						CPointElement el = pField.GetElement(x, y);
-						float? height = el.GetHeight(pHeight);
+						double? height = el.GetHeight(pHeight);
 
 						if (pStrategy == EExportStrategy.FillMissingHeight)
 						{

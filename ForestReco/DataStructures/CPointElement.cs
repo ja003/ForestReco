@@ -12,18 +12,18 @@ namespace ForestReco
 		public CPointElement Top;
 		public CPointElement Bot;
 
-		private List<Vector3> pointsVege = new List<Vector3>(); //high vegetation (class 5)
-		private List<Vector3> pointsGround = new List<Vector3>(); //ground (class 1)
+		private List<SVector3> pointsVege = new List<SVector3>(); //high vegetation (class 5)
+		private List<SVector3> pointsGround = new List<SVector3>(); //ground (class 1)
 
-		public float? MinVege;
-		public float? MaxVege;
-		public float? SumVege;
+		public double? MinVege;
+		public double? MaxVege;
+		public double? SumVege;
 
-		public float? MinGround;
-		public float? MaxGround;
-		public float? SumGround;
+		public double? MinGround;
+		public double? MaxGround;
+		public double? SumGround;
 
-		public float? TreeHeight;
+		public double? TreeHeight;
 
 		public bool IsLocalMax;
 		public bool IsLocalMin;
@@ -42,9 +42,9 @@ namespace ForestReco
 		}
 
 
-		public void AddPoint(int pClass, Vector3 pPoint)
+		public void AddPoint(int pClass, SVector3 pPoint)
 		{
-			float height = pPoint.Z;
+			double height = pPoint.Z;
 
 			if (pClass == 2)
 			{
@@ -88,7 +88,7 @@ namespace ForestReco
 					isDefined = IsDefined(EClass.Vege);
 					break;
 				case EHeight.Tree:
-					isDefined = GetHeightTree() != null;
+					isDefined = GetTreeHeight() != null;
 					break;
 			}
 			return isDefined;
@@ -154,7 +154,7 @@ namespace ForestReco
 			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection);
 		}
 
-		public float? GetAverageHeightFromClosestDefined(EHeight pHeight)
+		public double? GetAverageHeightFromClosestDefined(EHeight pHeight)
 		{
 			if (this.Equals(new CPointElement(new Tuple<int, int>(10, 2))))
 			{
@@ -182,10 +182,10 @@ namespace ForestReco
 					smaller = closestSecond;
 				}
 				int totalDistance = smaller.GetDistanceTo(higher);
-				float? heightDiff = higher.GetHeight(pHeight) - smaller.GetHeight(pHeight);
+				double? heightDiff = higher.GetHeight(pHeight) - smaller.GetHeight(pHeight);
 				if (heightDiff != null)
 				{
-					float? smallerHeight = smaller.GetHeight(pHeight);
+					double? smallerHeight = smaller.GetHeight(pHeight);
 					float distanceToSmaller = GetDistanceTo(smaller);
 					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
 				}
@@ -198,7 +198,7 @@ namespace ForestReco
 		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
 		/// pVisited: dont use these elements in DFS
 		/// </summary>
-		public float? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
+		public double? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
 			List<CPointElement> pVisited = null)
 		{
 			if (!IsDefined(pHeight) && pGetHeightFromNeighbour)
@@ -219,7 +219,7 @@ namespace ForestReco
 			{
 				case EHeight.VegeMax: return MaxVege;
 				case EHeight.VegeAverage: return GetHeightAverage(EClass.Vege);
-				case EHeight.Tree: return GetHeightTree();
+				case EHeight.Tree: return GetTreeHeight();
 				case EHeight.GroundMin: return GetHeightExtrem(false, EClass.Ground);
 				case EHeight.GroundMax: return GetHeightExtrem(true, EClass.Ground);
 				case EHeight.IndexX: return indexInField.Item1;
@@ -232,7 +232,7 @@ namespace ForestReco
 		/// Returns extrem of given class.
 		/// pMax: True = maximum, False = minimum
 		/// </summary>
-		private float? GetHeightExtrem(bool pMax, EClass pClass)
+		private double? GetHeightExtrem(bool pMax, EClass pClass)
 		{
 			switch (pClass)
 			{
@@ -242,20 +242,20 @@ namespace ForestReco
 			return null;
 		}
 
-		private float? GetHeightTree()
+		private double? GetTreeHeight()
 		{
 			if (TreeHeight == null)
 			{
 				if (HasAssignedTree())
 				{
-					float? heightTree = Tree.MaxVege;
+					double? heightTree = Tree.MaxVege;
 					if (Tree.Equals(this))
 					{
 						TreeHeight = heightTree;
 					}
 					else
 					{
-						TreeHeight = heightTree - GetDistanceToTree() * 1f;
+						TreeHeight = heightTree - GetDistanceToTree() * 0.5f;
 					}
 				}
 			}
@@ -272,13 +272,13 @@ namespace ForestReco
 			return GetDistanceTo(Tree);
 		}
 
-		private int GetDistanceTo(CPointElement pElement)
+		public int GetDistanceTo(CPointElement pElement)
 		{
 			return Math.Abs(indexInField.Item1 - pElement.indexInField.Item1) +
 					 Math.Abs(indexInField.Item2 - pElement.indexInField.Item2);
 		}
 
-		private float? GetHeightAverage(EClass pClass)
+		private double? GetHeightAverage(EClass pClass)
 		{
 			if (!IsDefined(pClass)) { return null; }
 			switch (pClass)
@@ -291,10 +291,23 @@ namespace ForestReco
 			}
 			return null;
 		}
-
+		
+		public void AssignTree(CPointElement pTree)
+		{
+			//if(HasAssignedTree()){ return; }
+			//if(GetHeight(EHeight.VegeMax) == null){ return; }
+			Tree = pTree;
+			Tree.TreeElementsCount++;
+		}
+		
 		public void AssignTreeToNeighbours()
 		{
 			if (!HasAllNeighbours()) { return; }
+
+			if (this.Equals(new CPointElement(new Tuple<int, int>(13, 23))))
+			{
+				Console.Write("!");
+			}
 
 			List<CPointElement> neighbours = GetNeighbours();
 			foreach (CPointElement n in neighbours)
@@ -302,21 +315,15 @@ namespace ForestReco
 				//already belongs to other tree
 				if (!n.HasAssignedTree())
 				{
-					float? height = GetHeight(EHeight.VegeMax);
-					float? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
-
-					//TODO: zkontrolovat, proč je tam tolik undefined polí
-					/*if (TreeIndex == 32)
-					{
-						Console.WriteLine(this);
-					}*/
-
+					double? height = GetHeight(EHeight.VegeMax);
+					double? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
+					
 					if (height != null && neighbourHeight != null)
 					{
 						float heightDiff = (float)height - (float)neighbourHeight;
 						//this element is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
-						const float MIN_HEIGHT_DIFF = 1.5f;
-						if (heightDiff > 0 && heightDiff < MIN_HEIGHT_DIFF)
+						const float MAX_HEIGHT_DIFF = 2.5f;
+						if (heightDiff > 0 && heightDiff < MAX_HEIGHT_DIFF)
 						{
 							n.Tree = Tree;
 							Tree.TreeElementsCount++;

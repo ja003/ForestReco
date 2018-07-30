@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Controllers\CPointFieldController.cs" />
     <Compile Include="Controllers\CPointFieldExporter.cs" />
+    <Compile Include="DataStructures\SVector3.cs" />
     <Compile Include="Unused\CCoordinatesElement.cs" />
     <Compile Include="Unused\CCoordinates2DSubElement.cs" />
     <Compile Include="Unused\CCoordinates2DElement.cs" />

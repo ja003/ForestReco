@@ -12,11 +12,11 @@ namespace ForestReco
 	public class CCoordinatesField
 	{
 		private CCoordinates2DElement[,] field;
-		private Vector2 botLeftCorner; //lower corner
-		private Vector2 topRightCorner; //upper corner
-		private float minHeight;
-		private float maxHeight;
-		private float stepSize;
+		private SVector3 botLeftCorner; //lower corner
+		private SVector3 topRightCorner; //upper corner
+		private double minHeight;
+		private double maxHeight;
+		private double stepSize;
 
 		private int fieldXRange;
 		private int fieldYRange;
@@ -40,8 +40,8 @@ namespace ForestReco
 			botLeftCorner = pHeader.GetBotLeftCorner();
 			topRightCorner = pHeader.GetTopRightCorner();
 			stepSize = pStepSize;
-			float w = topRightCorner.X - botLeftCorner.X;
-			float h = topRightCorner.Y - botLeftCorner.Y;
+			double w = topRightCorner.X - botLeftCorner.X;
+			double h = topRightCorner.Y - botLeftCorner.Y;
 			fieldXRange = (int)(w / pStepSize) + 1;
 			fieldYRange = (int)(h / pStepSize) + 1;
 			minHeight = pHeader.GetMinHeight();
@@ -97,9 +97,9 @@ namespace ForestReco
 			return count;
 		}
 
-		private Vector2 GetCenterOffset()
+		private SVector3 GetCenterOffset()
 		{
-			return new Vector2(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
+			return new SVector3(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
 		}
 
 		public void ExportToObj(string pOutputFileName, EExportStrategy pStrategy, EHeight pHeight)
@@ -228,7 +228,7 @@ namespace ForestReco
 
 		private const float MIN_TREES_DISTANCE = 1;
 
-		public void DetectLocalExtrems(float pStepSize)
+		public void DetectLocalExtrems(double pStepSize)
 		{
 			int kernelSize = GetKernelSize(pStepSize);
 			DetectLocalExtrems(kernelSize);
@@ -239,7 +239,7 @@ namespace ForestReco
 		/// <summary>
 		/// Assigns tree to each coordinate
 		/// </summary>
-		public void AssignTrees(float pStepSize)
+		public void AssignTrees(double pStepSize)
 		{
 			int kernelSize = GetKernelSize(stepSize);
 			for (int x = 0; x < fieldXRange; x++)
@@ -339,7 +339,7 @@ namespace ForestReco
 		/// <summary>
 		/// Calculates appropriate kernel size base on step size
 		/// </summary>
-		private static int GetKernelSize(float pStepSize)
+		private static int GetKernelSize(double pStepSize)
 		{
 			return (int)(MIN_TREES_DISTANCE / pStepSize);
 		}
@@ -426,11 +426,11 @@ namespace ForestReco
 			return "<" + pRange.Item1 + "," + pRange.Item2 + "> ";
 		}
 
-		private Tuple<Vector2, Vector2> GetRangeInField(int pX, int pY)
+		private Tuple<SVector3, SVector3> GetRangeInField(int pX, int pY)
 		{
-			Vector2 localMin = botLeftCorner + new Vector2(pX, pY) * stepSize;
-			Vector2 localMax = botLeftCorner + new Vector2(pX, pY) * (stepSize + 1);
-			return new Tuple<Vector2, Vector2>(localMin, localMax);
+			SVector3 localMin = botLeftCorner + new SVector3(pX, pY) * stepSize;
+			SVector3 localMax = botLeftCorner + new SVector3(pX, pY) * (stepSize + 1);
+			return new Tuple<SVector3, SVector3>(localMin, localMax);
 		}
 
 	}

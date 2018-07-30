@@ -34,9 +34,9 @@ namespace ForestReco
 
 
 			//notebook
-			//string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 			//home PC
-			string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -66,7 +66,7 @@ namespace ForestReco
 			for (int i = 19; i < linesToRead; i++)
 			{
 				// <class, coordinate>
-				Tuple<int, Vector3> c = CCoordinatesParser.ParseLine(lines[i], header);
+				Tuple<int, SVector3> c = CCoordinatesParser.ParseLine(lines[i], header);
 
 				if (c.Item1 == 2 && processGround) //ground
 				{
@@ -109,7 +109,10 @@ namespace ForestReco
 				combinedField.FillMissingHeights(0, EHeight.GroundMax);
 				combinedField.CalculateLocalExtrems(0);
 				combinedField.AssignTrees(0);
+				//combinedField.AssignTreesToAll(0);
 				//highVegetationField.AssignTrees(stepSize);
+				//combinedField.ExportToObj(saveFileName + "_comb",
+				//	EExportStrategy.None, new List<EHeight> { EHeight.Tree });
 				combinedField.ExportToObj(saveFileName + "_comb",
 					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
 			}

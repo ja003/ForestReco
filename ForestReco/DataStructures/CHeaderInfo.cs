@@ -6,10 +6,10 @@ namespace ForestReco
 {
 	public class CHeaderInfo
 	{
-		public Vector3 ScaleFactor;
-		public Vector3 Offset;
-		public Vector3 Min;
-		public Vector3 Max;
+		public SVector3 ScaleFactor;
+		public SVector3 Offset;
+		public SVector3 Min;
+		public SVector3 Max;
 
 		//public float Width;
 		//public float Height;
@@ -25,17 +25,17 @@ namespace ForestReco
 			//Offset.Z = ParseLineVector3(pMinLine).Z;
 		}
 
-		public Vector2 GetBotLeftCorner() { return new Vector2(Min.X, Min.Y); }
+		public SVector3 GetBotLeftCorner() { return new SVector3(Min.X, Min.Y); }
 
-		public Vector2 GetTopRightCorner() { return new Vector2(Max.X, Max.Y); }
+		public SVector3 GetTopRightCorner() { return new SVector3(Max.X, Max.Y); }
 
-		public Vector2 GetTopLeftCorner() { return new Vector2(Min.X, Max.Y); }
+		public SVector3 GetTopLeftCorner() { return new SVector3(Min.X, Max.Y); }
 
-		public float GetMinHeight() { return Min.Z; }
+		public double GetMinHeight() { return Min.Z; }
 
-		public float GetMaxHeight() { return Max.Z; }
+		public double GetMaxHeight() { return Max.Z; }
 
-		private Vector3 ParseLineVector3(string pLine)
+		private SVector3 ParseLineVector3(string pLine)
 		{
 			string[] split = pLine.Split(null);
 			int length = split.Length;

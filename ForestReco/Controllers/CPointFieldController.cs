@@ -11,10 +11,10 @@ namespace ForestReco
 	{
 		private List<CPointField> fields = new List<CPointField>();
 
-		public Vector2 botLeftCorner; //lower corner
-		public Vector2 topRightCorner; //upper corner
-		private float minHeight;
-		private float maxHeight;
+		public SVector3 botLeftCorner; //lower corner
+		public SVector3 topRightCorner; //upper corner
+		private double minHeight;
+		private double maxHeight;
 
 		public CPointFieldController(CHeaderInfo pHeader, float pStepSize, int pLOD)
 		{
@@ -33,7 +33,7 @@ namespace ForestReco
 		/// <summary>
 		/// Adds point on all defined fields
 		/// </summary>
-		public void AddPointInFields(int pClass, Vector3 pPoint)
+		public void AddPointInFields(int pClass, SVector3 pPoint)
 		{
 			foreach (CPointField field in fields)
 			{
@@ -54,6 +54,11 @@ namespace ForestReco
 		public void AssignTrees(int pLOD)
 		{
 			fields[pLOD].AssignTrees();
+		}
+
+		public void AssignTreesToAll(int pLOD)
+		{
+			fields[pLOD].AssignTreesToAll();
 		}
 
 		public void FillMissingHeights(int pLOD, EHeight pHeight)
