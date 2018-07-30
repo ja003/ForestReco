@@ -14,7 +14,7 @@ namespace ForestReco
 		private CPointElement[,] field;
 		private CPointFieldController controller;
 
-		private float stepSize;
+		private double stepSize;
 		public int fieldXRange { get; }
 		public int fieldYRange { get; }
 		private int coordinatesCount;
@@ -25,7 +25,7 @@ namespace ForestReco
 		private List<CPointElement> minimas = new List<CPointElement>();
 		//private List<Tuple<int, int>> minimas = new List<Tuple<int, int>>();
 
-		public CPointField(CPointFieldController pController, float pStepSize)
+		public CPointField(CPointFieldController pController, double pStepSize)
 		{
 			controller = pController;
 			stepSize = pStepSize;
@@ -33,8 +33,9 @@ namespace ForestReco
 			double w = pController.topRightCorner.X - pController.botLeftCorner.X;
 			double h = pController.topRightCorner.Y - pController.botLeftCorner.Y;
 
-			fieldXRange = (int)(w / pStepSize) + 1;
-			fieldYRange = (int)(h / pStepSize) + 1;
+			//TODO: if not +2, GetPositionInField is OOR
+			fieldXRange = (int)(w / pStepSize) + 2;
+			fieldYRange = (int)(h / pStepSize) + 2;
 
 			field = new CPointElement[fieldXRange, fieldYRange];
 			for (int x = 0; x < fieldXRange; x++)
@@ -94,9 +95,9 @@ namespace ForestReco
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
-		private Vector2 GetCenterOffset()
+		private SVector3 GetCenterOffset()
 		{
-			return new Vector2(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
+			return new SVector3(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
 		}
 
 		private const float MIN_TREES_DISTANCE = 1; //meter
@@ -115,11 +116,10 @@ namespace ForestReco
 			}
 			Console.WriteLine("maximas = " + maximas.Count);
 
-
 			foreach (CPointElement m in maximas)
 			{
 				m.AssignTreeToNeighbours();
-				Console.WriteLine(m + " = " + m.TreeElementsCount);
+				//Console.WriteLine(m + " = " + m.TreeElementsCount);
 			}
 			return;
 

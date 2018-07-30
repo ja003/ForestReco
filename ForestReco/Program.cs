@@ -27,10 +27,12 @@ namespace ForestReco
 			Thread.CurrentThread.CurrentCulture = ci;
 
 			string fileName = @"BK_1000AGL_classified";
-			fileName = @"BK_1000AGL_cl_split_s_mezerou";
-			fileName = @"BK_1000AGL_classified_0007559_0182972";
+			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
+			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			
 			string saveFileName = "BKAGL_59_72_97";
+			//string saveFileName = "BK_1000AGL_";
 
 
 			//notebook
@@ -110,9 +112,9 @@ namespace ForestReco
 				combinedField.CalculateLocalExtrems(0);
 				combinedField.AssignTrees(0);
 				//combinedField.AssignTreesToAll(0);
-				//highVegetationField.AssignTrees(stepSize);
+
 				//combinedField.ExportToObj(saveFileName + "_comb",
-				//	EExportStrategy.None, new List<EHeight> { EHeight.Tree });
+				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 				combinedField.ExportToObj(saveFileName + "_comb",
 					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
 			}
