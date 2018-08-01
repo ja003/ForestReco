@@ -12,37 +12,51 @@ namespace ForestReco
 	public class CPointField
 	{
 		private CPointElement[,] field;
-		private CPointFieldController controller;
+		private List<CPointElement> elements;
+
+		public SVector3 botLeftCorner; //lower corner
+		public SVector3 topRightCorner; //upper corner
+		public double minHeight;
+		public double maxHeight;
 
 		private double stepSize;
 		public int fieldXRange { get; }
 		public int fieldYRange { get; }
+		// ReSharper disable once NotAccessedField.Local
 		private int coordinatesCount;
-		private List<CPointElement> elements;
 
-		//private List<Tuple<int, int>> maximas = new List<Tuple<int, int>>();
 		private List<CPointElement> maximas = new List<CPointElement>();
 		private List<CPointElement> minimas = new List<CPointElement>();
-		//private List<Tuple<int, int>> minimas = new List<Tuple<int, int>>();
 
-		public CPointField(CPointFieldController pController, double pStepSize)
+		private const float MIN_TREES_DISTANCE = 1; //meter
+
+		//--------------------------------------------------------------
+
+		public CPointField(CHeaderInfo pHeader, double pStepSize)
 		{
-			controller = pController;
 			stepSize = pStepSize;
+			botLeftCorner = pHeader.GetBotLeftCorner();
+			topRightCorner = pHeader.GetTopRightCorner();
 
-			double w = pController.topRightCorner.X - pController.botLeftCorner.X;
-			double h = pController.topRightCorner.Y - pController.botLeftCorner.Y;
+			minHeight = pHeader.GetMinHeight();
+			maxHeight = pHeader.GetMaxHeight();
+
+			double w = topRightCorner.X - botLeftCorner.X;
+			double h = topRightCorner.Y - botLeftCorner.Y;
 
 			//TODO: if not +2, GetPositionInField is OOR
 			fieldXRange = (int)(w / pStepSize) + 2;
 			fieldYRange = (int)(h / pStepSize) + 2;
 
 			field = new CPointElement[fieldXRange, fieldYRange];
+			elements = new List<CPointElement>();
 			for (int x = 0; x < fieldXRange; x++)
 			{
 				for (int y = 0; y < fieldYRange; y++)
 				{
-					field[x, y] = new CPointElement(new Tuple<int, int>(x, y));//x, y);
+					CPointElement newElement = new CPointElement(new Tuple<int, int>(x, y));
+					field[x, y] = newElement;
+					elements.Add(newElement);
 				}
 			}
 			for (int x = 0; x < fieldXRange; x++)
@@ -57,55 +71,7 @@ namespace ForestReco
 			}
 		}
 
-		public void AddPointInField(int pClass, SVector3 pPoint)
-		{
-			Tuple<int, int> index = GetPositionInField(pPoint);
-			field[index.Item1, index.Item2].AddPoint(pClass, pPoint);
-			//Console.WriteLine(index + " = " + pPoint);
-			coordinatesCount++;
-		}
-
-		/// <summary>
-		/// Returns string for x coordinate in field moved by offset
-		/// </summary>
-		public string GetXElementString(int pXindex)
-		{
-			return (pXindex * stepSize - GetCenterOffset().X).ToString();
-		}
-
-		/// <summary>
-		/// Returns string for y coordinate in field moved by offset
-		/// </summary>
-		public string GetYElementString(int pYindex)
-		{
-			return (pYindex * stepSize - GetCenterOffset().Y).ToString();
-		}
-
-		public CPointElement GetElement(int pX, int pY)
-		{
-			return field[pX, pY];
-		}
-
-		private Tuple<int, int> GetPositionInField(SVector3 pPoint)
-		{
-			int xPos = (int)((pPoint.X - controller.botLeftCorner.X) / stepSize);
-			//due to field orientation
-			int yPos = fieldYRange - (int)((pPoint.Y - controller.botLeftCorner.Y) / stepSize) - 1;
-			//int yPos = (int)((pPoint.Y - controller.botLeftCorner.Y) / stepSize);
-			return new Tuple<int, int>(xPos, yPos);
-		}
-
-		private SVector3 GetCenterOffset()
-		{
-			return new SVector3(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
-		}
-
-		private const float MIN_TREES_DISTANCE = 1; //meter
-
-		public void CalculateLocalExtrems()
-		{
-			CalculateLocalExtrems(GetKernelSize());
-		}
+		//TREE
 
 		public void AssignTrees()
 		{
@@ -121,19 +87,15 @@ namespace ForestReco
 				m.AssignTreeToNeighbours();
 				//Console.WriteLine(m + " = " + m.TreeElementsCount);
 			}
-			return;
 
-			Console.WriteLine("================");
-			Console.WriteLine("AssignTrees");
+			//Console.WriteLine("================");
+			//Console.WriteLine("AssignTrees");
 
-			foreach (CPointElement e in GetElements())
-			{
-				Console.WriteLine(e);
-			}
-
-			Console.WriteLine("================");
-
-			return;
+			//foreach (CPointElement e in elements)
+			//{
+			//	Console.WriteLine(e);
+			//}
+			//Console.WriteLine("================");
 		}
 
 		public void AssignTreesToAll()
@@ -141,7 +103,7 @@ namespace ForestReco
 			Console.WriteLine("================");
 			Console.WriteLine("AssignTreesToAll");
 
-			foreach (CPointElement e in GetElements())
+			foreach (CPointElement e in elements)
 			{
 				if (!e.HasAssignedTree() && e.GetHeight(EHeight.VegeMax) != null)
 				{
@@ -150,8 +112,6 @@ namespace ForestReco
 			}
 
 			Console.WriteLine("================");
-
-			return;
 		}
 
 		private CPointElement GetClosestTree(CPointElement pPoint)
@@ -170,6 +130,49 @@ namespace ForestReco
 			return closestTree;
 		}
 
+		///GETTER
+		public CPointElement GetElement(int pX, int pY)
+		{
+			return field[pX, pY];
+		}
+		
+		private Tuple<int, int> GetPositionInField(SVector3 pPoint)
+		{
+			int xPos = (int)((pPoint.X - botLeftCorner.X) / stepSize);
+			//due to field orientation
+			int yPos = fieldYRange - (int)((pPoint.Y - botLeftCorner.Y) / stepSize) - 1;
+			//int yPos = (int)((pPoint.Y - controller.botLeftCorner.Y) / stepSize);
+			return new Tuple<int, int>(xPos, yPos);
+		}
+		
+		private SVector3 GetCenterOffset()
+		{
+			return new SVector3(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
+		}
+
+		/// <summary>
+		/// Calculates appropriate kernel size base on step size
+		/// </summary>
+		private int GetKernelSize()
+		{
+			return (int)(MIN_TREES_DISTANCE / stepSize);
+		}
+
+		//PUBLIC
+
+		public void AddPointInField(int pClass, SVector3 pPoint)
+		{
+			Tuple<int, int> index = GetPositionInField(pPoint);
+			field[index.Item1, index.Item2].AddPoint(pClass, pPoint);
+			//Console.WriteLine(index + " = " + pPoint);
+			coordinatesCount++;
+		}
+
+		public void CalculateLocalExtrems()
+		{
+			CalculateLocalExtrems(GetKernelSize());
+		}
+
 		public void FillMissingHeights(EHeight pHeight)
 		{
 			for (int x = 0; x < fieldXRange; x++)
@@ -182,6 +185,8 @@ namespace ForestReco
 			}
 		}
 
+		///PRIVATE
+		
 		/// <summary>
 		/// Marks all elements in field with min/max mark
 		/// </summary>
@@ -220,36 +225,28 @@ namespace ForestReco
 				Console.WriteLine(m);
 			}*/
 		}
+		
+		//OTHER
+		/// <summary>
+		/// Returns string for x coordinate in field moved by offset
+		/// </summary>
+		public string GetXElementString(int pXindex)
+		{
+			return (pXindex * stepSize - GetCenterOffset().X).ToString();
+		}
 
 		/// <summary>
-		/// Calculates appropriate kernel size base on step size
+		/// Returns string for y coordinate in field moved by offset
 		/// </summary>
-		private int GetKernelSize()
+		public string GetYElementString(int pYindex)
 		{
-			return (int)(MIN_TREES_DISTANCE / stepSize);
+			return (pYindex * stepSize - GetCenterOffset().Y).ToString();
 		}
-
-		private List<CPointElement> GetElements()
-		{
-			if (elements == null)
-			{
-				elements = new List<CPointElement>();
-				for (int x = 0; x < fieldXRange; x++)
-				{
-					for (int y = 0; y < fieldYRange; y++)
-					{
-						elements.Add(field[x, y]);
-					}
-				}
-			}
-			return elements;
-		}
-
+		
 		public override string ToString()
 		{
 			return "Field " + fieldXRange + " x " + fieldYRange;
 		}
-
 
 	}
 }

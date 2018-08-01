@@ -9,10 +9,9 @@ namespace ForestReco
 	public static class CPointFieldExporter
 	{
 		private const string DEFAULT_FILENAME = "try";
-
-
+		
 		public static void ExportToObj(CPointField pField, string pOutputFileName,
-			EExportStrategy pStrategy, List<EHeight> pHeights, double pMinHeight)
+			EExportStrategy pStrategy, List<EHeight> pHeights)
 		{
 			Obj obj = new Obj();
 
@@ -39,7 +38,7 @@ namespace ForestReco
 						}
 						else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)
 						{
-							if (height == null && el.IsAnyNeigbourDefined(pHeight))
+							if (height == null && el.IsAnyNeighbourDefined(pHeight))
 							{
 								height = el.GetHeight(EHeight.GroundMax, true);
 								//Console.WriteLine("Fill " + el + " = " + height);
@@ -53,7 +52,7 @@ namespace ForestReco
 							//move heights so the lowest point touches the 0
 							//if (pHeight != EHeight.Tree)
 							{
-								height -= pMinHeight;
+								height -= pField.minHeight;
 							}
 
 							v.LoadFromStringArray(new[]{"v", pField.GetXElementString(x),

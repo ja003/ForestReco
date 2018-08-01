@@ -43,15 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\CPointFieldController.cs" />
     <Compile Include="Controllers\CPointFieldExporter.cs" />
     <Compile Include="DataStructures\SVector3.cs" />
-    <Compile Include="Unused\CCoordinatesElement.cs" />
-    <Compile Include="Unused\CCoordinates2DSubElement.cs" />
-    <Compile Include="Unused\CCoordinates2DElement.cs" />
-    <Compile Include="Unused\CCoordinatesField.cs" />
     <Compile Include="DataStructures\CPointField.cs" />
     <Compile Include="DataStructures\CPointElement.cs" />
+    <Compile Include="Enums\EClass.cs" />
+    <Compile Include="Enums\EDirection.cs" />
+    <Compile Include="Enums\EExportStrategy.cs" />
+    <Compile Include="Enums\EHeight.cs" />
     <Compile Include="ObjParser\Extent.cs" />
     <Compile Include="ObjParser\Mtl.cs" />
     <Compile Include="ObjParser\Obj.cs" />
@@ -69,6 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Unused\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

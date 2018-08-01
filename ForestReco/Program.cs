@@ -19,10 +19,6 @@ namespace ForestReco
 	{
 		static void Main()
 		{
-			// Example #1
-			// Read the file as one string.
-			//string text = File.ReadAllText(@"D:\Adam\projects\SDIPR\ForestReco\ForestReco\src\ANE_1000AGL.las");
-
 			CultureInfo ci = new CultureInfo("en");
 			Thread.CurrentThread.CurrentCulture = ci;
 
@@ -51,14 +47,8 @@ namespace ForestReco
 
 			float stepSize = .4f; //in meters
 
-			//no need to record depth information in groundField
-			CPointFieldController groundField = new CPointFieldController(header, stepSize, 0);
-			CPointFieldController highVegetationField = new CPointFieldController(header, stepSize, 0);
-			CPointFieldController combinedField = new CPointFieldController(header, stepSize, 0);
-			//CCoordinatesField highVegetationField = new CCoordinatesField(header, stepSize, true);
+			CPointField combinedField = new CPointField(header, stepSize);
 
-			bool processGround = false;
-			bool processHighVegetation = false;
 			bool processCombined = true;
 
 			//store coordinates to corresponding data strucures based on their class
@@ -70,52 +60,26 @@ namespace ForestReco
 				// <class, coordinate>
 				Tuple<int, SVector3> c = CCoordinatesParser.ParseLine(lines[i], header);
 
-				if (c.Item1 == 2 && processGround) //ground
+				if (c.Item1 == 2 || c.Item1 == 5 && processCombined) //high vegetation
 				{
-					groundField.AddPointInFields(c.Item1, c.Item2);
-				}
-				else if (c.Item1 == 5 && processHighVegetation) //ground + vegetation
-				{
-					highVegetationField.AddPointInFields(c.Item1, c.Item2);
-				}
-				else if (c.Item1 == 2 || c.Item1 == 5 && processCombined) //high vegetation
-				{
-					combinedField.AddPointInFields(c.Item1, c.Item2);
+					combinedField.AddPointInField(c.Item1, c.Item2);
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 
 
-			if (processGround)
-			{
-				Console.WriteLine("groundField: " + groundField);
-				//TODO: to fill missong coordinates use FillMissingHeight startegy
-				groundField.FillMissingHeights(0, EHeight.GroundMax);
-				groundField.FillMissingHeights(0, EHeight.GroundMax);
-				groundField.ExportToObj(saveFileName + "_ground", EExportStrategy.None, EHeight.GroundMax);
-				//groundField.ExportToObj(saveFileName + "_X", EExportStrategy.None, EHeight.IndexX);
-				//groundField.ExportToObj(saveFileName + "_Y", EExportStrategy.None, EHeight.IndexY);
-			}
-			if (processHighVegetation)
-			{
-				Console.WriteLine("highVegetationField: " + highVegetationField);
-				highVegetationField.CalculateLocalExtrems(0);
-				//highVegetationField.AssignTrees(stepSize);
-				highVegetationField.ExportToObj(saveFileName + "_trees",
-					EExportStrategy.FillHeightsAroundDefined, EHeight.Tree);
-			}
 			if (processCombined)
 			{
 				Console.WriteLine("combinedField: " + combinedField);
-				combinedField.FillMissingHeights(0, EHeight.GroundMax);
-				combinedField.FillMissingHeights(0, EHeight.GroundMax);
-				combinedField.CalculateLocalExtrems(0);
-				combinedField.AssignTrees(0);
-				//combinedField.AssignTreesToAll(0);
+				combinedField.FillMissingHeights(EHeight.GroundMax);
+				combinedField.FillMissingHeights(EHeight.GroundMax);
+				combinedField.CalculateLocalExtrems();
+				combinedField.AssignTrees();
+				//combinedField.AssignTreesToAll();
 
 				//combinedField.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
-				combinedField.ExportToObj(saveFileName + "_comb",
+				CPointFieldExporter.ExportToObj(combinedField, saveFileName + "_comb",
 					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
 			}
 

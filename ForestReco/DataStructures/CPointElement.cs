@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+#pragma warning disable 659
 
 namespace ForestReco
 {
@@ -11,10 +12,11 @@ namespace ForestReco
 		public CPointElement Right;
 		public CPointElement Top;
 		public CPointElement Bot;
+		private List<CPointElement> neighbours;
 
 		private List<SVector3> pointsVege = new List<SVector3>(); //high vegetation (class 5)
 		private List<SVector3> pointsGround = new List<SVector3>(); //ground (class 1)
-
+		
 		public double? MinVege;
 		public double? MaxVege;
 		public double? SumVege;
@@ -23,7 +25,6 @@ namespace ForestReco
 		public double? MaxGround;
 		public double? SumGround;
 
-		public double? TreeHeight;
 
 		public bool IsLocalMax;
 		public bool IsLocalMin;
@@ -31,16 +32,148 @@ namespace ForestReco
 
 		private readonly Tuple<int, int> indexInField;
 
-		//public int TreeIndex = -1; //tree, which this element belongs.
+		public double? TreeHeight;
 		public CPointElement Tree; //tree, which this element belongs.
 		public int TreeElementsCount;
 
+		//--------------------------------------------------------------
 
 		public CPointElement(Tuple<int, int> pIndexInField)
 		{
 			indexInField = pIndexInField;
 		}
 
+		//TREE
+
+		public void AssignTree(CPointElement pTree)
+		{
+			//if(HasAssignedTree()){ return; }
+			//if(GetHeight(EHeight.VegeMax) == null){ return; }
+			Tree = pTree;
+			Tree.TreeElementsCount++;
+		}
+
+		public void AssignTreeToNeighbours()
+		{
+			if (!HasAllNeighbours()) { return; }
+
+			if (this.Equals(new CPointElement(new Tuple<int, int>(13, 23))))
+			{
+				Console.Write("!");
+			}
+
+			foreach (CPointElement n in GetNeighbours())
+			{
+				//already belongs to other tree
+				if (!n.HasAssignedTree())
+				{
+					double? height = GetHeight(EHeight.VegeMax);
+					double? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
+
+					if (height != null && neighbourHeight != null)
+					{
+						float heightDiff = (float)height - (float)neighbourHeight;
+						//this element is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
+						const float MAX_HEIGHT_DIFF = 2.5f;
+						if (heightDiff > 0 && heightDiff < MAX_HEIGHT_DIFF)
+						{
+							n.Tree = Tree;
+							Tree.TreeElementsCount++;
+							n.AssignTreeToNeighbours();
+							//Console.WriteLine(TreeIndex + " : " + n);
+						}
+					}
+					else
+					{
+						//Console.WriteLine("XXXXX " + TreeIndex + " : " + n);
+					}
+				}
+			}
+		}
+
+		public bool HasAssignedTree()
+		{
+			return Tree != null;
+		}
+
+		private double? GetTreeHeight()
+		{
+			if (TreeHeight == null)
+			{
+				if (HasAssignedTree())
+				{
+					double? heightTree = Tree.MaxVege;
+					if (Tree.Equals(this))
+					{
+						TreeHeight = heightTree;
+					}
+					else
+					{
+						TreeHeight = heightTree - GetDistanceToTree() * 0.5f;
+					}
+				}
+			}
+			return TreeHeight;
+		}
+
+		private int GetDistanceToTree()
+		{
+			if (Tree == null)
+			{
+				Console.Write(this + " Error. Tree not defined.");
+				return -1;
+			}
+			return GetDistanceTo(Tree);
+		}
+
+		//NEIGHBOUR
+		
+		public bool IsAnyNeighbourDefined(EHeight pHeight)
+		{
+			foreach (CPointElement n in GetNeighbours())
+			{
+				if (n.IsDefined(pHeight)) { return true; }
+			}
+			return false;
+		}
+
+		private CPointElement GetNeighbour(EDirection pNeighbour)
+		{
+			switch (pNeighbour)
+			{
+				case EDirection.Bot: return Bot;
+				case EDirection.Left: return Left;
+				case EDirection.Right: return Right;
+				case EDirection.Top: return Top;
+			}
+			return null;
+		}
+		
+		/// <summary>
+		/// All elements but those at edge should have assigned neigbours
+		/// </summary>
+		private bool HasAllNeighbours()
+		{
+			return Left != null && Right != null && Top != null && Bot != null;
+		}
+
+
+		private List<CPointElement> GetNeighbours()
+		{
+			if (neighbours != null) { return this.neighbours;}
+
+			neighbours = new List<CPointElement>();
+			var directions = Enum.GetValues(typeof(EDirection));
+			foreach (EDirection d in directions)
+			{
+				CPointElement neighour = GetNeighbour(d);
+				if (neighour != null) { neighbours.Add(neighour); }
+			}
+
+			return neighbours;
+		}
+
+		//PUBLIC
 
 		public void AddPoint(int pClass, SVector3 pPoint)
 		{
@@ -63,16 +196,7 @@ namespace ForestReco
 				if (height < MinVege || MinVege == null) { MinVege = height; }
 			}
 		}
-
-		public bool IsAnyNeigbourDefined(EHeight pHeight)
-		{
-			foreach (CPointElement n in GetNeighbours())
-			{
-				if (n.IsDefined(pHeight)) { return true; }
-			}
-			return false;
-		}
-
+		
 		public bool IsDefined(EHeight pHeight)
 		{
 			bool isDefined = true;
@@ -147,13 +271,7 @@ namespace ForestReco
 			}
 			return true;
 		}
-
-		private CPointElement GetClosestDefined(EHeight pHeight, EDirection pDirection)
-		{
-			if (IsDefined(pHeight)) { return this; }
-			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection);
-		}
-
+		
 		public double? GetAverageHeightFromClosestDefined(EHeight pHeight)
 		{
 			if (this.Equals(new CPointElement(new Tuple<int, int>(10, 2))))
@@ -227,6 +345,34 @@ namespace ForestReco
 			}
 			return null;
 		}
+		
+		public int GetDistanceTo(CPointElement pElement)
+		{
+			return Math.Abs(indexInField.Item1 - pElement.indexInField.Item1) +
+			       Math.Abs(indexInField.Item2 - pElement.indexInField.Item2);
+		}
+		
+		public void FillMissingHeight(EHeight pHeight)
+		{
+			if (IsDefined(pHeight)) { return; }
+			switch (pHeight)
+			{
+				case EHeight.GroundMax:
+					MaxGround = GetAverageHeightFromClosestDefined(pHeight);
+					break;
+				default:
+					Console.WriteLine("FillMissingHeight not defined for " + pHeight);
+					return;
+			}
+		}
+
+		///PRIVATE
+
+		private CPointElement GetClosestDefined(EHeight pHeight, EDirection pDirection)
+		{
+			if (IsDefined(pHeight)) { return this; }
+			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection);
+		}
 
 		/// <summary>
 		/// Returns extrem of given class.
@@ -241,43 +387,7 @@ namespace ForestReco
 			}
 			return null;
 		}
-
-		private double? GetTreeHeight()
-		{
-			if (TreeHeight == null)
-			{
-				if (HasAssignedTree())
-				{
-					double? heightTree = Tree.MaxVege;
-					if (Tree.Equals(this))
-					{
-						TreeHeight = heightTree;
-					}
-					else
-					{
-						TreeHeight = heightTree - GetDistanceToTree() * 0.5f;
-					}
-				}
-			}
-			return TreeHeight;
-		}
-
-		private int GetDistanceToTree()
-		{
-			if (Tree == null)
-			{
-				Console.Write(this + " Error. Tree not defined.");
-				return -1;
-			}
-			return GetDistanceTo(Tree);
-		}
-
-		public int GetDistanceTo(CPointElement pElement)
-		{
-			return Math.Abs(indexInField.Item1 - pElement.indexInField.Item1) +
-					 Math.Abs(indexInField.Item2 - pElement.indexInField.Item2);
-		}
-
+		
 		private double? GetHeightAverage(EClass pClass)
 		{
 			if (!IsDefined(pClass)) { return null; }
@@ -292,65 +402,6 @@ namespace ForestReco
 			return null;
 		}
 		
-		public void AssignTree(CPointElement pTree)
-		{
-			//if(HasAssignedTree()){ return; }
-			//if(GetHeight(EHeight.VegeMax) == null){ return; }
-			Tree = pTree;
-			Tree.TreeElementsCount++;
-		}
-		
-		public void AssignTreeToNeighbours()
-		{
-			if (!HasAllNeighbours()) { return; }
-
-			if (this.Equals(new CPointElement(new Tuple<int, int>(13, 23))))
-			{
-				Console.Write("!");
-			}
-
-			List<CPointElement> neighbours = GetNeighbours();
-			foreach (CPointElement n in neighbours)
-			{
-				//already belongs to other tree
-				if (!n.HasAssignedTree())
-				{
-					double? height = GetHeight(EHeight.VegeMax);
-					double? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
-					
-					if (height != null && neighbourHeight != null)
-					{
-						float heightDiff = (float)height - (float)neighbourHeight;
-						//this element is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
-						const float MAX_HEIGHT_DIFF = 2.5f;
-						if (heightDiff > 0 && heightDiff < MAX_HEIGHT_DIFF)
-						{
-							n.Tree = Tree;
-							Tree.TreeElementsCount++;
-							n.AssignTreeToNeighbours();
-							//Console.WriteLine(TreeIndex + " : " + n);
-						}
-					}
-					else
-					{
-						//Console.WriteLine("XXXXX " + TreeIndex + " : " + n);
-					}
-				}
-			}
-		}
-
-		public bool HasAssignedTree()
-		{
-			return Tree != null;
-		}
-
-		/// <summary>
-		/// All elements but those at edge should have assigned neigbours
-		/// </summary>
-		private bool HasAllNeighbours()
-		{
-			return Left != null && Right != null && Top != null && Bot != null;
-		}
 
 		/// <summary>
 		/// Returnd element with given local position to this element
@@ -370,35 +421,13 @@ namespace ForestReco
 			}
 			return el;
 		}
-
+		
+		
+		//UNUSED
 
 		private bool IsNeighbourLocalMax(EDirection pNeighbour)
 		{
 			return GetNeighbour(pNeighbour) != null && GetNeighbour(pNeighbour).IsLocalMax;
-		}
-
-		private List<CPointElement> GetNeighbours()
-		{
-			List<CPointElement> neighbours = new List<CPointElement>();
-
-			if (GetNeighbour(EDirection.Left) != null) { neighbours.Add(GetNeighbour(EDirection.Left)); }
-			if (GetNeighbour(EDirection.Top) != null) { neighbours.Add(GetNeighbour(EDirection.Top)); }
-			if (GetNeighbour(EDirection.Right) != null) { neighbours.Add(GetNeighbour(EDirection.Right)); }
-			if (GetNeighbour(EDirection.Bot) != null) { neighbours.Add(GetNeighbour(EDirection.Bot)); }
-
-			return neighbours;
-		}
-
-		private CPointElement GetNeighbour(EDirection pNeighbour)
-		{
-			switch (pNeighbour)
-			{
-				case EDirection.Bot: return Bot;
-				case EDirection.Left: return Left;
-				case EDirection.Right: return Right;
-				case EDirection.Top: return Top;
-			}
-			return null;
 		}
 
 		private EDirection GetOpositeNeighbour(EDirection pNeighbour)
@@ -413,34 +442,17 @@ namespace ForestReco
 			return EDirection.None;
 		}
 
-		public void FillMissingHeight(EHeight pHeight)
-		{
-			if (IsDefined(pHeight)) { return; }
-			switch (pHeight)
-			{
-				case EHeight.GroundMax:
-					MaxGround = GetAverageHeightFromClosestDefined(pHeight);
-					break;
-				default:
-					Console.WriteLine("FillMissingHeight not defined for " + pHeight);
-					return;
-			}
-		}
+
+		//OTHER
 
 		public string ToStringIndex()
 		{
 			return "[" + indexInField + "].";
 		}
-
-
+		
 		public override string ToString()
 		{
-			string maxV = "-";
-			if (MaxVege != null) { maxV = MaxVege.ToString(); }
-			string maxG = "-";
-			if (MaxGround != null) { maxG = MaxGround.ToString(); }
 			return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
-			return indexInField + ": MaxVege = " + maxV + "," + "MaxGround = " + maxG;
 		}
 
 		public override bool Equals(object obj)
@@ -452,28 +464,5 @@ namespace ForestReco
 			CPointElement e = (CPointElement)obj;
 			return (indexInField.Item1 == e.indexInField.Item1) && (indexInField.Item2 == e.indexInField.Item2);
 		}
-	}
-
-
-	/*public enum EExtrem
-	{
-		None,
-		Min,
-		Max
-	}*/
-
-	public enum EDirection
-	{
-		None = 0,
-		Left,
-		Right,
-		Top,
-		Bot
-	}
-
-	public enum EClass
-	{
-		Ground,
-		Vege
 	}
 }
