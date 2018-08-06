@@ -76,11 +76,14 @@ namespace ForestReco
 				combinedArray.CalculateLocalExtrems();
 				combinedArray.AssignTreesToNeighbourFields();
 				combinedArray.AssignPointsToTrees();
+
+				CPointFieldExporter.ExportTreePointsToObj(combinedArray, saveFileName + "_TP_");
+
 				//combinedArray.AssignTreesToAllFields();
 
 				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
-				
+
 				//CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_comb",
 				//	EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
 			}

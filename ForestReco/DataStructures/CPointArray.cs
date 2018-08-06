@@ -26,6 +26,7 @@ namespace ForestReco
 		private int coordinatesCount;
 
 		private List<CPointField> maximas = new List<CPointField>();
+		public List<CPointField> Maximas => maximas;
 		private List<CPointField> minimas = new List<CPointField>();
 
 		private const float MIN_TREES_DISTANCE = 1; //meter

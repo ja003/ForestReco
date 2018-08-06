@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using ObjParser.Types;
 
 namespace ForestReco
 {
@@ -38,6 +39,17 @@ namespace ForestReco
 		public Vector3 ToVector3()
 		{
 			return new Vector3((float)X, (float)Y, (float)Z);
+		}
+
+		public Vertex ToVertex(int pIndex, Vector3 pOffset )
+		{
+			return new Vertex()
+			{
+				Index = pIndex,
+				X = X + pOffset.X,
+				Y = Y + pOffset.Y,
+				Z = Z + pOffset.Z,
+			};
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using ObjParser;
 using ObjParser.Types;
 
@@ -9,7 +10,7 @@ namespace ForestReco
 	public static class CPointFieldExporter
 	{
 		private const string DEFAULT_FILENAME = "try";
-		
+
 		public static void ExportToObj(CPointArray pArray, string pOutputFileName,
 			EExportStrategy pStrategy, List<EHeight> pHeights)
 		{
@@ -137,6 +138,90 @@ namespace ForestReco
 			//Console.WriteLine("write to " + path);
 
 			obj.WriteObjFile(fullPath, new[] { "ADAM" });
+		}
+
+
+		private const float POINT_OFFSET = 0.1f;
+
+		public static void ExportTreePointsToObj(CPointArray pArray, string pOutputFileName)
+		{
+			Obj obj = new Obj();
+			int vertexIndex = 1;
+			foreach (CPointField t in pArray.Maximas)
+			{
+				foreach (SVector3 tp in t.TreePoints)
+				{
+					List<Vertex> pointVertices = new List<Vertex>();
+
+					Vertex v1 = tp.ToVertex(vertexIndex, Vector3.Zero);
+					pointVertices.Add(v1);
+					vertexIndex++;
+
+					Vertex v2 = tp.ToVertex(vertexIndex, Vector3.UnitX * POINT_OFFSET);
+					pointVertices.Add(v2);
+					vertexIndex++;
+
+					Vertex v3 = tp.ToVertex(vertexIndex, Vector3.UnitZ * POINT_OFFSET);
+					pointVertices.Add(v3);
+					vertexIndex++;
+
+					foreach (Vertex v in pointVertices)
+					{
+						obj.VertexList.Add(v);
+					}
+					
+					obj.FaceList.Add(new Face(pointVertices));
+				}
+			}
+
+			/*Vertex vertex1 = new Vertex();
+			vertex1.Index = 1;
+			vertex1.X = 100;
+			vertex1.Y = 100;
+			vertex1.Z = 100;
+			obj.VertexList.Add(vertex1);
+
+			Vertex vertex2 = new Vertex();
+			vertex2.Index = 2;
+			vertex2.X = -100;
+			vertex2.Y = 100;
+			vertex2.Z = -100;
+			obj.VertexList.Add(vertex2);
+
+			Vertex vertex3 = new Vertex();
+			vertex3.Index = 3;
+			vertex3.X = 100;
+			vertex3.Y = 100;
+			vertex3.Z = -100;
+			obj.VertexList.Add(vertex3);
+
+			Face face = new Face();
+			face.VertexIndexList = new [] {1, 2, 3};
+			face.TextureVertexIndexList = new int[0];
+			obj.FaceList.Add(face);*/
+			
+
+			string fileName = pOutputFileName.Length > 0 ? pOutputFileName : DEFAULT_FILENAME;
+			string chosenFileName = fileName;
+			string extension = ".obj";
+			string path = Path.GetDirectoryName(
+							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+			string fullPath = path + chosenFileName + extension;
+			int fileIndex = 0;
+			while (File.Exists(fullPath))
+			{
+				chosenFileName = fileName + "_" + fileIndex;
+				fullPath = path + chosenFileName + extension;
+				fileIndex++;
+			}
+
+			Console.WriteLine("write to " + fullPath);
+
+			//String myDocumentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			//path = myDocumentPath + "\\try.obj";
+			//Console.WriteLine("write to " + path);
+
+			obj.WriteObjFile(fullPath, new[] { "ExportTreePointsToObj" });
 		}
 	}
 }
