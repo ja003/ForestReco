@@ -56,8 +56,8 @@ namespace ForestReco
 								height -= pArray.minHeight;
 							}
 
-							v.LoadFromStringArray(new[]{"v", pArray.GetXElementString(x),
-								height.ToString(), pArray.GetYElementString(y)});
+							v.LoadFromStringArray(new[]{"v", pArray.GetFieldXCoord(x).ToString(),
+								height.ToString(), pArray.GetFieldYCoord(y).ToString()});
 							obj.VertexList.Add(v);
 							//record the index of vertex associated with this field position
 							el.VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
@@ -114,32 +114,8 @@ namespace ForestReco
 				}
 			}
 
-
-
-
-			string fileName = pOutputFileName.Length > 0 ? pOutputFileName : DEFAULT_FILENAME;
-			string chosenFileName = fileName;
-			string extension = ".obj";
-			string path = Path.GetDirectoryName(
-							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
-			string fullPath = path + chosenFileName + extension;
-			int fileIndex = 0;
-			while (File.Exists(fullPath))
-			{
-				chosenFileName = fileName + "_" + fileIndex;
-				fullPath = path + chosenFileName + extension;
-				fileIndex++;
-			}
-
-			Console.WriteLine("write to " + fullPath);
-
-			//String myDocumentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			//path = myDocumentPath + "\\try.obj";
-			//Console.WriteLine("write to " + path);
-
-			obj.WriteObjFile(fullPath, new[] { "ADAM" });
+			WriteObjFile(pOutputFileName, obj);
 		}
-
 
 		private const float POINT_OFFSET = 0.1f;
 
@@ -147,63 +123,64 @@ namespace ForestReco
 		{
 			Obj obj = new Obj();
 			int vertexIndex = 1;
-			foreach (CPointField t in pArray.Maximas)
+			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
+
+			foreach (CPointField tree in pArray.Maximas)
 			{
-				foreach (SVector3 tp in t.TreePoints)
+				foreach (SVector3 tp in tree.TreePoints)
 				{
+					SVector3 cloneTp = tp.Clone();
+					//cloneTp = new SVector3(0, 0, 0); //test value
+					//move to center (visualisation only)
+					cloneTp.MoveBy(-arrayCenter);
+					//in TreePoints Z = height, in OBJ Y = height
+					cloneTp.FlipYZ();
+					//move Y height so it matches the ground (visualisation only)
+					//TODO: if not moveBy '-2 * cloneTp.Z', output model is Z-mirrored 
+					cloneTp.MoveBy(new SVector3(0, -pArray.minHeight, -2 * cloneTp.Z));
+
 					List<Vertex> pointVertices = new List<Vertex>();
 
-					Vertex v1 = tp.ToVertex(vertexIndex, Vector3.Zero);
+					Vertex v1 = cloneTp.ToVertex(vertexIndex, Vector3.Zero);
 					pointVertices.Add(v1);
 					vertexIndex++;
 
-					Vertex v2 = tp.ToVertex(vertexIndex, Vector3.UnitX * POINT_OFFSET);
+					Vertex v2 = cloneTp.ToVertex(vertexIndex, Vector3.UnitX * POINT_OFFSET);
 					pointVertices.Add(v2);
 					vertexIndex++;
 
-					Vertex v3 = tp.ToVertex(vertexIndex, Vector3.UnitZ * POINT_OFFSET);
+					Vertex v3 = cloneTp.ToVertex(vertexIndex, Vector3.UnitZ * POINT_OFFSET);
 					pointVertices.Add(v3);
+					vertexIndex++;
+
+					Vertex v4 = cloneTp.ToVertex(vertexIndex, Vector3.UnitY * POINT_OFFSET);
+					pointVertices.Add(v4);
 					vertexIndex++;
 
 					foreach (Vertex v in pointVertices)
 					{
 						obj.VertexList.Add(v);
 					}
+
+					//create 4-side representation of point
+					obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
+					obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
+					obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
+					obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
 					
-					obj.FaceList.Add(new Face(pointVertices));
+					//break;
 				}
+				//break;
 			}
 
-			/*Vertex vertex1 = new Vertex();
-			vertex1.Index = 1;
-			vertex1.X = 100;
-			vertex1.Y = 100;
-			vertex1.Z = 100;
-			obj.VertexList.Add(vertex1);
+			WriteObjFile(pOutputFileName, obj);
+		}
 
-			Vertex vertex2 = new Vertex();
-			vertex2.Index = 2;
-			vertex2.X = -100;
-			vertex2.Y = 100;
-			vertex2.Z = -100;
-			obj.VertexList.Add(vertex2);
-
-			Vertex vertex3 = new Vertex();
-			vertex3.Index = 3;
-			vertex3.X = 100;
-			vertex3.Y = 100;
-			vertex3.Z = -100;
-			obj.VertexList.Add(vertex3);
-
-			Face face = new Face();
-			face.VertexIndexList = new [] {1, 2, 3};
-			face.TextureVertexIndexList = new int[0];
-			obj.FaceList.Add(face);*/
-			
-
+		private static void WriteObjFile(string pOutputFileName, Obj pObj)
+		{
 			string fileName = pOutputFileName.Length > 0 ? pOutputFileName : DEFAULT_FILENAME;
 			string chosenFileName = fileName;
-			string extension = ".obj";
+			string extension = ".Obj";
 			string path = Path.GetDirectoryName(
 							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
 			string fullPath = path + chosenFileName + extension;
@@ -218,10 +195,10 @@ namespace ForestReco
 			Console.WriteLine("write to " + fullPath);
 
 			//String myDocumentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			//path = myDocumentPath + "\\try.obj";
+			//path = myDocumentPath + "\\try.pObj";
 			//Console.WriteLine("write to " + path);
 
-			obj.WriteObjFile(fullPath, new[] { "ExportTreePointsToObj" });
+			pObj.WriteObjFile(fullPath, new[] { "ExportTreePointsToObj" });
 		}
 	}
 }

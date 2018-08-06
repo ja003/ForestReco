@@ -371,6 +371,7 @@ namespace ForestReco
 				case EHeight.GroundMax: return GetHeightExtrem(true, EClass.Ground);
 				case EHeight.IndexX: return indexInField.Item1;
 				case EHeight.IndexY: return indexInField.Item2;
+				case EHeight.Maxima: return Tree != null && Tree.Equals(this) ? GetTreeHeight() : null;
 			}
 			return null;
 		}

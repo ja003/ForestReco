@@ -14,8 +14,8 @@ namespace ForestReco
 		private CPointField[,] array;
 		private List<CPointField> fields;
 
-		public SVector3 botLeftCorner; //lower corner
-		public SVector3 topRightCorner; //upper corner
+		public SVector3 botLeftCorner; //lower corner, [X,Y,0]
+		public SVector3 topRightCorner; //upper corner, [X,Y,0]
 		public double minHeight;
 		public double maxHeight;
 
@@ -159,8 +159,8 @@ namespace ForestReco
 			//int yPos = (int)((pPointField.Y - controller.botLeftCorner.Y) / stepSize);
 			return new Tuple<int, int>(xPos, yPos);
 		}
-		
-		private SVector3 GetCenterOffset()
+
+		public SVector3 GetCenterOffset()
 		{
 			return new SVector3(arrayXRange / 2f * stepSize, arrayYRange / 2f * stepSize);
 		}
@@ -245,17 +245,17 @@ namespace ForestReco
 		/// <summary>
 		/// Returns string for x coordinate in array moved by offset
 		/// </summary>
-		public string GetXElementString(int pXindex)
+		public double GetFieldXCoord(int pXindex)
 		{
-			return (pXindex * stepSize - GetCenterOffset().X).ToString();
+			return pXindex * stepSize - GetCenterOffset().X;
 		}
 
 		/// <summary>
 		/// Returns string for y coordinate in array moved by offset
 		/// </summary>
-		public string GetYElementString(int pYindex)
+		public double GetFieldYCoord(int pYindex)
 		{
-			return (pYindex * stepSize - GetCenterOffset().Y).ToString();
+			return pYindex * stepSize - GetCenterOffset().Y;
 		}
 		
 		public override string ToString()

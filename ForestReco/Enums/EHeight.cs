@@ -11,6 +11,7 @@ namespace ForestReco
 		GroundMin,
 		GroundMax,
 		IndexX,
-		IndexY
+		IndexY,
+		Maxima
 	}
 }

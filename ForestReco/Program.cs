@@ -84,8 +84,8 @@ namespace ForestReco
 				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 
-				//CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_comb",
-				//	EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
+				//CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_gr+max_",
+				//	EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Maxima, EHeight.GroundMax });
 			}
 
 			Console.WriteLine("Press any key to exit.");

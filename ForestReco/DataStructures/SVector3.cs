@@ -35,13 +35,23 @@ namespace ForestReco
 		{
 			return new SVector3(a.X * b, a.Y * b, a.Z * b);
 		}
-		
+
+		public static SVector3 operator /(SVector3 a, double b)
+		{
+			return new SVector3(a.X / b, a.Y / b, a.Z / b);
+		}
+
+		public static SVector3 operator -(SVector3 a)
+		{
+			return new SVector3(-a.X, -a.Y, -a.Z);
+		}
+
 		public Vector3 ToVector3()
 		{
 			return new Vector3((float)X, (float)Y, (float)Z);
 		}
 
-		public Vertex ToVertex(int pIndex, Vector3 pOffset )
+		public Vertex ToVertex(int pIndex, Vector3 pOffset)
 		{
 			return new Vertex()
 			{
@@ -50,6 +60,25 @@ namespace ForestReco
 				Y = Y + pOffset.Y,
 				Z = Z + pOffset.Z,
 			};
+		}
+
+		public void FlipYZ()
+		{
+			double tmp = Y;
+			Y = Z;
+			Z = tmp;
+		}
+
+		public SVector3 Clone()
+		{
+			return new SVector3(X, Y, Z);
+		}
+
+		public void MoveBy(SVector3 pOffset)
+		{
+			X += pOffset.X;
+			Y += pOffset.Y;
+			Z += pOffset.Z;
 		}
 	}
 }
