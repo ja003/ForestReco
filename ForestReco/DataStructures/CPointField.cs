@@ -2,251 +2,491 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-// ReSharper disable SpecifyACultureInStringConversionExplicitly
+#pragma warning disable 659
 
 namespace ForestReco
 {
-	/// <summary>
-	/// Field orientation is from topLeft -> botRight, topLeft = [0,0]
-	/// </summary>
 	public class CPointField
 	{
-		private CPointElement[,] field;
-		private List<CPointElement> elements;
+		public CPointField Left;
+		public CPointField Right;
+		public CPointField Top;
+		public CPointField Bot;
+		private List<CPointField> neighbours;
 
-		public SVector3 botLeftCorner; //lower corner
-		public SVector3 topRightCorner; //upper corner
-		public double minHeight;
-		public double maxHeight;
+		private List<SVector3> pointsVege = new List<SVector3>(); //high vegetation (class 5)
+		private List<SVector3> pointsGround = new List<SVector3>(); //ground (class 1)
+		
+		public double? MinVege;
+		public double? MaxVege; //todo: delete and replace with MaxVegePoint
+		public double? SumVege;
+		public SVector3 MaxVegePoint;
 
-		private double stepSize;
-		public int fieldXRange { get; }
-		public int fieldYRange { get; }
-		// ReSharper disable once NotAccessedField.Local
-		private int coordinatesCount;
+		public double? MinGround;
+		public double? MaxGround;
+		public double? SumGround;
 
-		private List<CPointElement> maximas = new List<CPointElement>();
-		private List<CPointElement> minimas = new List<CPointElement>();
 
-		private const float MIN_TREES_DISTANCE = 1; //meter
+		public bool IsLocalMax;
+		public bool IsLocalMin;
+		public int VertexIndex = -1;
+
+		private readonly Tuple<int, int> indexInField;
+
+		public double? TreeHeight;
+		public CPointField Tree; //tree, which this point belongs to.
+		public List<CPointField> TreeFields = new List<CPointField>();
 
 		//--------------------------------------------------------------
 
-		public CPointField(CHeaderInfo pHeader, double pStepSize)
+		public CPointField(Tuple<int, int> pIndexInField)
 		{
-			stepSize = pStepSize;
-			botLeftCorner = pHeader.GetBotLeftCorner();
-			topRightCorner = pHeader.GetTopRightCorner();
-
-			minHeight = pHeader.GetMinHeight();
-			maxHeight = pHeader.GetMaxHeight();
-
-			double w = topRightCorner.X - botLeftCorner.X;
-			double h = topRightCorner.Y - botLeftCorner.Y;
-
-			//TODO: if not +2, GetPositionInField is OOR
-			fieldXRange = (int)(w / pStepSize) + 2;
-			fieldYRange = (int)(h / pStepSize) + 2;
-
-			field = new CPointElement[fieldXRange, fieldYRange];
-			elements = new List<CPointElement>();
-			for (int x = 0; x < fieldXRange; x++)
-			{
-				for (int y = 0; y < fieldYRange; y++)
-				{
-					CPointElement newElement = new CPointElement(new Tuple<int, int>(x, y));
-					field[x, y] = newElement;
-					elements.Add(newElement);
-				}
-			}
-			for (int x = 0; x < fieldXRange; x++)
-			{
-				for (int y = 0; y < fieldYRange; y++)
-				{
-					if (x > 0) { field[x, y].Left = field[x - 1, y]; }
-					if (x < fieldXRange - 1) { field[x, y].Right = field[x + 1, y]; }
-					if (y > 0) { field[x, y].Top = field[x, y - 1]; }
-					if (y < fieldYRange - 1) { field[x, y].Bot = field[x, y + 1]; }
-				}
-			}
+			indexInField = pIndexInField;
 		}
 
 		//TREE
 
-		public void AssignTrees()
+		public void AssignTree(CPointField pTree)
 		{
-			foreach (CPointElement m in maximas)
-			{
-				m.Tree = m;
-				m.TreeElementsCount++;
-			}
-			Console.WriteLine("maximas = " + maximas.Count);
-
-			foreach (CPointElement m in maximas)
-			{
-				m.AssignTreeToNeighbours();
-				//Console.WriteLine(m + " = " + m.TreeElementsCount);
-			}
-
-			//Console.WriteLine("================");
-			//Console.WriteLine("AssignTrees");
-
-			//foreach (CPointElement e in elements)
-			//{
-			//	Console.WriteLine(e);
-			//}
-			//Console.WriteLine("================");
-		}
-
-		public void AssignTreesToAll()
-		{
-			Console.WriteLine("================");
-			Console.WriteLine("AssignTreesToAll");
-
-			foreach (CPointElement e in elements)
-			{
-				if (!e.HasAssignedTree() && e.GetHeight(EHeight.VegeMax) != null)
-				{
-					e.AssignTree(GetClosestTree(e));
-				}
-			}
-
-			Console.WriteLine("================");
-		}
-
-		private CPointElement GetClosestTree(CPointElement pPoint)
-		{
-			CPointElement closestTree = maximas[0];
-			int distanceToClosestTree = Int32.MaxValue;
-			foreach (CPointElement m in maximas)
-			{
-				int distanceToTree = m.GetDistanceTo(pPoint);
-				if (distanceToTree < distanceToClosestTree)
-				{
-					closestTree = m;
-					distanceToClosestTree = distanceToTree;
-				}
-			}
-			return closestTree;
-		}
-
-		///GETTER
-		public CPointElement GetElement(int pX, int pY)
-		{
-			return field[pX, pY];
+			//if(HasAssignedTree()){ return; }
+			//if(GetHeight(EHeight.VegeMax) == null){ return; }
+			Tree = pTree;
+			Tree.TreeFields.Add(this);
 		}
 		
-		private Tuple<int, int> GetPositionInField(SVector3 pPoint)
+		public void AssignTreeToNeighbours()
 		{
-			int xPos = (int)((pPoint.X - botLeftCorner.X) / stepSize);
-			//due to field orientation
-			int yPos = fieldYRange - (int)((pPoint.Y - botLeftCorner.Y) / stepSize) - 1;
-			//int yPos = (int)((pPoint.Y - controller.botLeftCorner.Y) / stepSize);
-			return new Tuple<int, int>(xPos, yPos);
+			if (!HasAllNeighbours()) { return; }
+
+			if (this.Equals(new CPointField(new Tuple<int, int>(13, 23))))
+			{
+				Console.Write("!");
+			}
+
+			foreach (CPointField n in GetNeighbours())
+			{
+				//already belongs to other tree
+				if (!n.HasAssignedTree())
+				{
+					double? height = GetHeight(EHeight.VegeMax);
+					double? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
+
+					if (height != null && neighbourHeight != null)
+					{
+						double heightDiff = (double)height - (double)neighbourHeight;
+						//this point is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
+						const float MAX_HEIGHT_DIFF = 2.5f;
+						if (heightDiff > 0 && heightDiff < MAX_HEIGHT_DIFF)
+						{
+							n.AssignTree(Tree);
+							n.AssignTreeToNeighbours();
+							//Console.WriteLine(TreeIndex + " : " + n);
+						}
+					}
+					else
+					{
+						//Console.WriteLine("XXXXX " + TreeIndex + " : " + n);
+					}
+				}
+			}
 		}
-		
-		private SVector3 GetCenterOffset()
+
+		public void AssignPointsToTree()
 		{
-			return new SVector3(fieldXRange / 2f * stepSize, fieldYRange / 2f * stepSize);
+			foreach (SVector3 vegePoint in pointsVege)
+			{
+				Tree.AssignPointToTree(vegePoint);
+			}
+		}
+
+		private void AssignPointToTree(SVector3 pVegePoint)
+		{
+			if (!Tree.Equals(this))
+			{
+				Console.WriteLine("Error. You are trying to assing point " + pVegePoint + " to field " + this + ", which is not tree.");
+				return;
+			}
+
+		}
+
+		public bool HasAssignedTree()
+		{
+			return Tree != null;
+		}
+
+		private double? GetTreeHeight()
+		{
+			if (TreeHeight == null)
+			{
+				if (HasAssignedTree())
+				{
+					double? heightTree = Tree.MaxVege;
+					if (Tree.Equals(this))
+					{
+						TreeHeight = heightTree;
+					}
+					else
+					{
+						TreeHeight = heightTree - GetDistanceToTree() * 0.5f;
+					}
+				}
+			}
+			return TreeHeight;
+		}
+
+		private int GetDistanceToTree()
+		{
+			if (Tree == null)
+			{
+				Console.Write(this + " Error. Tree not defined.");
+				return -1;
+			}
+			return GetDistanceTo(Tree);
+		}
+
+		//NEIGHBOUR
+		
+		public bool IsAnyNeighbourDefined(EHeight pHeight)
+		{
+			foreach (CPointField n in GetNeighbours())
+			{
+				if (n.IsDefined(pHeight)) { return true; }
+			}
+			return false;
+		}
+
+		private CPointField GetNeighbour(EDirection pNeighbour)
+		{
+			switch (pNeighbour)
+			{
+				case EDirection.Bot: return Bot;
+				case EDirection.Left: return Left;
+				case EDirection.Right: return Right;
+				case EDirection.Top: return Top;
+			}
+			return null;
 		}
 
 		/// <summary>
-		/// Calculates appropriate kernel size base on step size
+		/// All points but those at edge should have assigned neigbours
 		/// </summary>
-		private int GetKernelSize()
+		private bool HasAllNeighbours()
 		{
-			return (int)(MIN_TREES_DISTANCE / stepSize);
+			return Left != null && Right != null && Top != null && Bot != null;
+		}
+
+
+		private List<CPointField> GetNeighbours()
+		{
+			if (neighbours != null) { return this.neighbours;}
+
+			neighbours = new List<CPointField>();
+			var directions = Enum.GetValues(typeof(EDirection));
+			foreach (EDirection d in directions)
+			{
+				CPointField neighour = GetNeighbour(d);
+				if (neighour != null) { neighbours.Add(neighour); }
+			}
+
+			return neighbours;
 		}
 
 		//PUBLIC
 
-		public void AddPointInField(int pClass, SVector3 pPoint)
+		public void AddPoint(int pClass, SVector3 pPoint)
 		{
-			Tuple<int, int> index = GetPositionInField(pPoint);
-			field[index.Item1, index.Item2].AddPoint(pClass, pPoint);
-			//Console.WriteLine(index + " = " + pPoint);
-			coordinatesCount++;
-		}
+			double height = pPoint.Z;
 
-		public void CalculateLocalExtrems()
-		{
-			CalculateLocalExtrems(GetKernelSize());
-		}
-
-		public void FillMissingHeights(EHeight pHeight)
-		{
-			for (int x = 0; x < fieldXRange; x++)
+			if (pClass == 2)
 			{
-				for (int y = 0; y < fieldYRange; y++)
-				{
-					CPointElement el = field[x, y];
-					el.FillMissingHeight(pHeight);
+				pointsGround.Add(pPoint);
+				if (SumGround != null) { SumGround += height; }
+				else { SumGround = height; }
+				if (height > MaxGround || MaxGround == null) { MaxGround = height; }
+				if (height < MinGround || MinGround == null) { MinGround = height; }
+			}
+			else if (pClass == 5)
+			{
+				pointsVege.Add(pPoint);
+				if (SumVege != null) { SumVege += height; }
+				else { SumVege = height; }
+				if (height > MaxVege || MaxVege == null) 
+				{ 
+					MaxVege = height;
+					MaxVegePoint = pPoint;
 				}
+				if (height < MinVege || MinVege == null) { MinVege = height; }
+			}
+		}
+		
+		public bool IsDefined(EHeight pHeight)
+		{
+			bool isDefined = true;
+			switch (pHeight)
+			{
+				case EHeight.GroundMax:
+				case EHeight.GroundMin:
+					isDefined = IsDefined(EClass.Ground);
+					break;
+				case EHeight.VegeAverage:
+				case EHeight.VegeMax:
+				case EHeight.VegeMin:
+					isDefined = IsDefined(EClass.Vege);
+					break;
+				case EHeight.Tree:
+					isDefined = GetTreeHeight() != null;
+					break;
+			}
+			return isDefined;
+		}
+
+		public bool IsDefined(EClass pClass)
+		{
+			switch (pClass)
+			{
+				case EClass.Ground:
+					return pointsGround.Count > 0 || MaxGround != null || MinGround != null;
+				case EClass.Vege:
+					return pointsVege.Count > 0 || MaxVege != null || MinVege != null;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Determines whether this point is local extrem in area defined by given kernel size
+		/// TODO: oddělat parametr pExtrem a vracet EExtrem
+		/// </summary>
+		/// <param name="pExtrem">True = Max, False = Min</param>
+		/// <param name="pKernelSize"></param>
+		public bool CalculateLocalExtrem(bool pExtrem, int pKernelSize)
+		{
+			//if(indexInField == null){ Console.WriteLine("!");}
+			//dont calculate extrem if not all neighbours are defined (at border)
+			if (!HasAllNeighbours()) { return false; }
+
+			if (pExtrem) { IsLocalMax = true; }
+			else { IsLocalMin = true; }
+
+			for (int x = -pKernelSize; x <= pKernelSize; x++)
+			{
+				for (int y = -pKernelSize; y <= pKernelSize; y++)
+				{
+					CPointField otherEl = GetPointWithOffset(x, y);
+
+					if (pExtrem)
+					{
+						if (otherEl != null && otherEl.MaxVege > MaxVege)
+						{
+							IsLocalMax = false;
+							return false;
+						}
+					}
+					else
+					{
+						if (otherEl != null && otherEl.MinVege < MinVege)
+						{
+							IsLocalMin = false;
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
+		
+		public double? GetAverageHeightFromClosestDefined(EHeight pHeight)
+		{
+			if (this.Equals(new CPointField(new Tuple<int, int>(10, 2))))
+			{
+				Console.Write("!");
+			}
+
+			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
+			//
+			CPointField closestFirst = GetClosestDefined(pHeight, EDirection.Left);
+			CPointField closestSecond = GetClosestDefined(pHeight, EDirection.Right);
+			//
+			if (closestFirst == null || closestSecond == null)
+			{
+				closestFirst = GetClosestDefined(pHeight, EDirection.Top);
+				closestSecond = GetClosestDefined(pHeight, EDirection.Bot);
+			}
+
+			if (closestFirst != null && closestSecond != null)
+			{
+				CPointField smaller = closestFirst;
+				CPointField higher = closestSecond;
+				if (closestSecond.GetHeight(pHeight) < closestFirst.GetHeight(pHeight))
+				{
+					higher = closestFirst;
+					smaller = closestSecond;
+				}
+				int totalDistance = smaller.GetDistanceTo(higher);
+				double? heightDiff = higher.GetHeight(pHeight) - smaller.GetHeight(pHeight);
+				if (heightDiff != null)
+				{
+					double? smallerHeight = smaller.GetHeight(pHeight);
+					float distanceToSmaller = GetDistanceTo(smaller);
+					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Returns height of given type.
+		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
+		/// pVisited: dont use these points in DFS
+		/// </summary>
+		public double? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
+			List<CPointField> pVisited = null)
+		{
+			if (!IsDefined(pHeight) && pGetHeightFromNeighbour)
+			{
+				if (pVisited == null) { pVisited = new List<CPointField>(); }
+
+				foreach (CPointField n in GetNeighbours())
+				{
+					if (!pVisited.Contains(n))
+					{
+						pVisited.Add(this);
+						return n.GetHeight(pHeight, true, pVisited);
+					}
+				}
+				return null;
+			}
+			switch (pHeight)
+			{
+				case EHeight.VegeMax: return MaxVege;
+				case EHeight.VegeAverage: return GetHeightAverage(EClass.Vege);
+				case EHeight.Tree: return GetTreeHeight();
+				case EHeight.GroundMin: return GetHeightExtrem(false, EClass.Ground);
+				case EHeight.GroundMax: return GetHeightExtrem(true, EClass.Ground);
+				case EHeight.IndexX: return indexInField.Item1;
+				case EHeight.IndexY: return indexInField.Item2;
+			}
+			return null;
+		}
+		
+		public int GetDistanceTo(CPointField pPointField)
+		{
+			return Math.Abs(indexInField.Item1 - pPointField.indexInField.Item1) +
+			       Math.Abs(indexInField.Item2 - pPointField.indexInField.Item2);
+		}
+		
+		public void FillMissingHeight(EHeight pHeight)
+		{
+			if (IsDefined(pHeight)) { return; }
+			switch (pHeight)
+			{
+				case EHeight.GroundMax:
+					MaxGround = GetAverageHeightFromClosestDefined(pHeight);
+					break;
+				default:
+					Console.WriteLine("FillMissingHeight not defined for " + pHeight);
+					return;
 			}
 		}
 
 		///PRIVATE
-		
-		/// <summary>
-		/// Marks all elements in field with min/max mark
-		/// </summary>
-		private void CalculateLocalExtrems(int pKernelSize)
+
+		private CPointField GetClosestDefined(EHeight pHeight, EDirection pDirection)
 		{
-			if (pKernelSize < 1)
-			{
-				Console.WriteLine("Kernel cant be < 1!");
-				pKernelSize = 1;
-			}
-			for (int x = 0; x < fieldXRange; x++)
-			{
-				for (int y = 0; y < fieldYRange; y++)
-				{
-					CPointElement el = field[x, y];
-					if (el.IsDefined(EClass.Vege))
-					{
-						bool isMaximum = field[x, y].CalculateLocalExtrem(true, pKernelSize);
-						bool isMinimum = field[x, y].CalculateLocalExtrem(false, pKernelSize);
-						if (isMaximum) { this.maximas.Add(el); }
-						if (isMinimum) { this.minimas.Add(el); }
-					}
-				}
-			}
+			if (IsDefined(pHeight)) { return this; }
+			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection);
+		}
 
-			Console.WriteLine("Maximas:" + maximas.Count);
-			Console.WriteLine("Minimas:" + minimas.Count);
-
-			/*foreach (Tuple<int, int> m in maximas)
+		/// <summary>
+		/// Returns extrem of given class.
+		/// pMax: True = maximum, False = minimum
+		/// </summary>
+		private double? GetHeightExtrem(bool pMax, EClass pClass)
+		{
+			switch (pClass)
 			{
-				Console.WriteLine(m);
+				case EClass.Ground: return pMax ? MaxGround : MinGround;
+				case EClass.Vege: return pMax ? MaxVege : MinVege;
 			}
-
-			foreach (Tuple<int, int> m in minimas)
-			{
-				Console.WriteLine(m);
-			}*/
+			return null;
 		}
 		
+		private double? GetHeightAverage(EClass pClass)
+		{
+			if (!IsDefined(pClass)) { return null; }
+			switch (pClass)
+			{
+				case EClass.Ground:
+					return SumGround / pointsGround.Count;
+
+				case EClass.Vege:
+					return SumVege / pointsVege.Count;
+			}
+			return null;
+		}
+
+
+		/// <summary>
+		/// Returnd point with given local position to this point
+		/// </summary>
+		private CPointField GetPointWithOffset(int pIndexOffsetX, int pIndexOffsetY)
+		{
+			CPointField el = this;
+			for (int x = 0; x < Math.Abs(pIndexOffsetX); x++)
+			{
+				el = pIndexOffsetX > 0 ? el.Right : el.Left;
+				if (el == null) { return null; }
+			}
+			for (int y = 0; y < Math.Abs(pIndexOffsetY); y++)
+			{
+				el = pIndexOffsetY > 0 ? el.Top : el.Bot;
+				if (el == null) { return null; }
+			}
+			return el;
+		}
+		
+		
+		//UNUSED
+
+		private bool IsNeighbourLocalMax(EDirection pNeighbour)
+		{
+			return GetNeighbour(pNeighbour) != null && GetNeighbour(pNeighbour).IsLocalMax;
+		}
+
+		private EDirection GetOpositeNeighbour(EDirection pNeighbour)
+		{
+			switch (pNeighbour)
+			{
+				case EDirection.Bot: return EDirection.Top;
+				case EDirection.Top: return EDirection.Bot;
+				case EDirection.Left: return EDirection.Right;
+				case EDirection.Right: return EDirection.Left;
+			}
+			return EDirection.None;
+		}
+
+
 		//OTHER
-		/// <summary>
-		/// Returns string for x coordinate in field moved by offset
-		/// </summary>
-		public string GetXElementString(int pXindex)
-		{
-			return (pXindex * stepSize - GetCenterOffset().X).ToString();
-		}
 
-		/// <summary>
-		/// Returns string for y coordinate in field moved by offset
-		/// </summary>
-		public string GetYElementString(int pYindex)
+		public string ToStringIndex()
 		{
-			return (pYindex * stepSize - GetCenterOffset().Y).ToString();
+			return "[" + indexInField + "].";
 		}
 		
 		public override string ToString()
 		{
-			return "Field " + fieldXRange + " x " + fieldYRange;
+			return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}
 
+		public override bool Equals(object obj)
+		{
+			// Check for null values and compare run-time types.
+			if (obj == null || GetType() != obj.GetType())
+				return false;
+
+			CPointField e = (CPointField)obj;
+			return (indexInField.Item1 == e.indexInField.Item1) && (indexInField.Item2 == e.indexInField.Item2);
+		}
+
+	
 	}
 }

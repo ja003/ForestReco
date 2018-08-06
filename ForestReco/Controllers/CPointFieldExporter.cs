@@ -10,7 +10,7 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "try";
 		
-		public static void ExportToObj(CPointField pField, string pOutputFileName,
+		public static void ExportToObj(CPointArray pArray, string pOutputFileName,
 			EExportStrategy pStrategy, List<EHeight> pHeights)
 		{
 			Obj obj = new Obj();
@@ -20,12 +20,12 @@ namespace ForestReco
 			foreach (EHeight pHeight in pHeights)
 			{
 				//prepare vertices
-				for (int x = 0; x < pField.fieldXRange; x++)
+				for (int x = 0; x < pArray.arrayXRange; x++)
 				{
-					for (int y = 0; y < pField.fieldYRange; y++)
+					for (int y = 0; y < pArray.arrayYRange; y++)
 					{
 						Vertex v = new Vertex();
-						CPointElement el = pField.GetElement(x, y);
+						CPointField el = pArray.GetElement(x, y);
 						double? height = el.GetHeight(pHeight);
 
 						if (pStrategy == EExportStrategy.FillMissingHeight)
@@ -52,11 +52,11 @@ namespace ForestReco
 							//move heights so the lowest point touches the 0
 							//if (pHeight != EHeight.Tree)
 							{
-								height -= pField.minHeight;
+								height -= pArray.minHeight;
 							}
 
-							v.LoadFromStringArray(new[]{"v", pField.GetXElementString(x),
-								height.ToString(), pField.GetYElementString(y)});
+							v.LoadFromStringArray(new[]{"v", pArray.GetXElementString(x),
+								height.ToString(), pArray.GetYElementString(y)});
 							obj.VertexList.Add(v);
 							//record the index of vertex associated with this field position
 							el.VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
@@ -71,21 +71,21 @@ namespace ForestReco
 				//Console.WriteLine("missingCoordCount = " + missingCoordCount);
 
 				//generate faces
-				for (int x = 0; x < pField.fieldXRange - 1; x++)
+				for (int x = 0; x < pArray.arrayXRange - 1; x++)
 				{
-					for (int y = 0; y < pField.fieldYRange - 1; y++)
+					for (int y = 0; y < pArray.arrayYRange - 1; y++)
 					{
 						//create face only if all necessary vertices has been defined. -1 = not defined
 						//| /|	3:[0,1]	2:[1,1]
 						//|/ |  1:[0,0] 4:[1,0]
 						//we create 2 faces: (1,2,3) and (1,2,4) 
-						int ind1 = pField.GetElement(x, y).VertexIndex;
+						int ind1 = pArray.GetElement(x, y).VertexIndex;
 						if (ind1 != -1)
 						{
-							int ind2 = pField.GetElement(x + 1, y + 1).VertexIndex;
+							int ind2 = pArray.GetElement(x + 1, y + 1).VertexIndex;
 							if (ind2 != -1)
 							{
-								int ind3 = pField.GetElement(x, y + 1).VertexIndex;
+								int ind3 = pArray.GetElement(x, y + 1).VertexIndex;
 								if (ind3 != -1)
 								{
 									Face f = new Face();
@@ -96,7 +96,7 @@ namespace ForestReco
 
 									obj.FaceList.Add(f);
 								}
-								int ind4 = pField.GetElement(x + 1, y).VertexIndex;
+								int ind4 = pArray.GetElement(x + 1, y).VertexIndex;
 								if (ind4 != -1)
 								{
 									Face f = new Face();

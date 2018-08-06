@@ -32,9 +32,9 @@ namespace ForestReco
 
 
 			//notebook
-			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			//string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 			//home PC
-			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -47,7 +47,7 @@ namespace ForestReco
 
 			float stepSize = .4f; //in meters
 
-			CPointField combinedField = new CPointField(header, stepSize);
+			CPointArray combinedArray = new CPointArray(header, stepSize);
 
 			bool processCombined = true;
 
@@ -62,7 +62,7 @@ namespace ForestReco
 
 				if (c.Item1 == 2 || c.Item1 == 5 && processCombined) //high vegetation
 				{
-					combinedField.AddPointInField(c.Item1, c.Item2);
+					combinedArray.AddPointInField(c.Item1, c.Item2);
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
@@ -70,16 +70,17 @@ namespace ForestReco
 
 			if (processCombined)
 			{
-				Console.WriteLine("combinedField: " + combinedField);
-				combinedField.FillMissingHeights(EHeight.GroundMax);
-				combinedField.FillMissingHeights(EHeight.GroundMax);
-				combinedField.CalculateLocalExtrems();
-				combinedField.AssignTrees();
-				//combinedField.AssignTreesToAll();
+				Console.WriteLine("combinedArray: " + combinedArray);
+				combinedArray.FillMissingHeights(EHeight.GroundMax);
+				combinedArray.FillMissingHeights(EHeight.GroundMax);
+				combinedArray.CalculateLocalExtrems();
+				combinedArray.AssignTreesToNeighbourFields();
+				combinedArray.AssignPointsToTrees();
+				//combinedArray.AssignTreesToAllFields();
 
-				//combinedField.ExportToObj(saveFileName + "_comb",
+				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
-				CPointFieldExporter.ExportToObj(combinedField, saveFileName + "_comb",
+				CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_comb",
 					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Tree, EHeight.GroundMax });
 			}
 
