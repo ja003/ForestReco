@@ -36,6 +36,7 @@ namespace ForestReco
 		public double? TreeHeight;
 		public CPointField Tree; //tree, which this point belongs to.
 		public List<CPointField> TreeFields = new List<CPointField>();
+		public List<SVector3> TreePoints = new List<SVector3>();
 
 		//--------------------------------------------------------------
 
@@ -91,6 +92,9 @@ namespace ForestReco
 			}
 		}
 
+		/// <summary>
+		/// Try to assign all vege points to its tree
+		/// </summary>
 		public void AssignPointsToTree()
 		{
 			foreach (SVector3 vegePoint in pointsVege)
@@ -106,7 +110,10 @@ namespace ForestReco
 				Console.WriteLine("Error. You are trying to assing point " + pVegePoint + " to field " + this + ", which is not tree.");
 				return;
 			}
-
+			if (CUtils.PointBelongsToTree(pVegePoint, Tree.MaxVegePoint))
+			{
+				Tree.TreePoints.Add(pVegePoint);
+			}
 		}
 
 		public bool HasAssignedTree()

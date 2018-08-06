@@ -1,4 +1,6 @@
-﻿namespace ForestReco
+﻿using System.Numerics;
+
+namespace ForestReco
 {
 	public struct SVector3
 	{
@@ -31,6 +33,11 @@
 		public static SVector3 operator *(SVector3 a, double b)
 		{
 			return new SVector3(a.X * b, a.Y * b, a.Z * b);
+		}
+		
+		public Vector3 ToVector3()
+		{
+			return new Vector3((float)X, (float)Y, (float)Z);
 		}
 	}
 }

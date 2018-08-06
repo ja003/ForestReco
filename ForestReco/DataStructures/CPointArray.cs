@@ -135,15 +135,13 @@ namespace ForestReco
 
 			foreach (CPointField t in maximas)
 			{
-				
+				foreach (CPointField treeField in t.TreeFields)
+				{
+					treeField.AssignPointsToTree();
+				}
+				Console.WriteLine(t + " has " + t.TreePoints.Count + " tree points.");
 			}
 
-			foreach (CPointField e in fields)
-			{
-				if (e.HasAssignedTree())
-				{
-				}
-			}
 		}
 
 		///GETTER
