@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,7 +52,15 @@ namespace ObjParser.Types
 
 		public override string ToString()
 		{
-			return string.Format("v {0} {1} {2}", X, Y, Z);
+			return ToString(new Vector3());
+		}
+
+		/// <summary>
+		/// pOffset is my implementation
+		/// </summary>
+		public string ToString(Vector3 pOffset)
+		{
+			return string.Format("v {0} {1} {2}", X + pOffset.X, Y + pOffset.Y, Z + pOffset.Z);
 		}
 	}
 }

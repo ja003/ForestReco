@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CPointFieldExporter.cs" />
+    <Compile Include="Controllers\CTreeExporter.cs" />
+    <Compile Include="Controllers\CTreeObjManager.cs" />
+    <Compile Include="DataStructures\CTreeObj.cs" />
     <Compile Include="DataStructures\SVector3.cs" />
     <Compile Include="DataStructures\CPointArray.cs" />
     <Compile Include="DataStructures\CPointField.cs" />

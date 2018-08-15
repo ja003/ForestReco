@@ -66,9 +66,17 @@ namespace ObjParser.Types
 			}
 		}
 
+		/// <summary>
+		/// pVertexIndexOffset = my own implementation
+		/// </summary>
+		public override string ToString()
+		{
+			return ToString();
+		}
+
 		// HACKHACK this will write invalid files if there are no texture vertices in
 		// the faces, need to identify that and write an alternate format
-		public override string ToString()
+		public string ToString(int pVertexIndexOffset = 0)
 		{
 			StringBuilder b = new StringBuilder();
 			b.Append("f");
@@ -77,11 +85,13 @@ namespace ObjParser.Types
 			{
 				if (i < TextureVertexIndexList.Length)
 				{
-					b.AppendFormat(" {0}/{1}", VertexIndexList[i], TextureVertexIndexList[i]);
+					b.AppendFormat(" {0}/{1}",
+						VertexIndexList[i] + pVertexIndexOffset,
+						TextureVertexIndexList[i] + pVertexIndexOffset);
 				}
 				else
 				{
-					b.AppendFormat(" {0}", VertexIndexList[i]);
+					b.AppendFormat(" {0}", VertexIndexList[i] + pVertexIndexOffset);
 				}
 			}
 

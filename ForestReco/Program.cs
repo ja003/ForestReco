@@ -32,9 +32,9 @@ namespace ForestReco
 
 
 			//notebook
-			//string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 			//home PC
-			string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -44,6 +44,17 @@ namespace ForestReco
 			//return;
 
 			//prepare data structures 
+
+			CTreeObjManager treeManager = new CTreeObjManager();
+			List<string> treePaths = new List<string>()
+			{
+				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
+				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj"
+			};
+			treeManager.LoadTrees(treePaths);
+			CTreeExporter.ExportTrees(treeManager.Trees, "tree_dummy");
+			Console.ReadKey();
+			return;
 
 			float stepSize = .4f; //in meters
 
@@ -77,15 +88,15 @@ namespace ForestReco
 				combinedArray.AssignTreesToNeighbourFields();
 				combinedArray.AssignPointsToTrees();
 
-				CPointFieldExporter.ExportTreePointsToObj(combinedArray, saveFileName + "_TP_");
+				//CPointFieldExporter.ExportTreePointsToObj(combinedArray, saveFileName + "_TP_");
 
 				//combinedArray.AssignTreesToAllFields();
 
 				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 
-				//CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_gr+max_",
-				//	EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.Maxima, EHeight.GroundMax });
+				CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_gr",
+					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.GroundMax });
 			}
 
 			Console.WriteLine("Press any key to exit.");
