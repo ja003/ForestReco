@@ -26,7 +26,7 @@ namespace ForestReco
 					int thisTreeVertexIndexOffset = vertexIndexOffset;
 					foreach (Vertex v in tree.VertexList)
 					{
-						writer.WriteLine(v.ToString(tree.Position));
+						writer.WriteLine(v.ToString(tree.GetVertexTransform()));
 						vertexIndexOffset++;	
 					}
 

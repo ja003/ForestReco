@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using ForestReco;
 
 namespace ObjParser.Types
 {
@@ -52,15 +53,56 @@ namespace ObjParser.Types
 
 		public override string ToString()
 		{
-			return ToString(new Vector3());
+			return ToString(new SVertexTransform());
 		}
 
 		/// <summary>
 		/// pOffset is my implementation
 		/// </summary>
-		public string ToString(Vector3 pOffset)
+		public string ToString(SVertexTransform pTransform)
 		{
-			return string.Format("v {0} {1} {2}", X + pOffset.X, Y + pOffset.Y, Z + pOffset.Z);
+			SVector3 newPos = GetPosition();
+			if (pTransform.Defined)
+			{
+				//1.scale
+				SVector3 dir = GetPosition() - pTransform.ReferenceVertex;
+				newPos = pTransform.ReferenceVertex + dir * pTransform.Scale;
+				//2.move
+				newPos += pTransform.PositionOffset;
+
+			}
+			return string.Format("v {0} {1} {2}", newPos.X, newPos.Y, newPos.Z);
+		}
+
+		private SVector3 GetPosition()
+		{
+			return new SVector3(X, Y, Z);
+		}
+	}
+
+	public struct SVertexTransform
+	{
+		public bool Defined;
+
+		public SVector3 PositionOffset;
+
+		public SVector3 Scale;
+		public SVector3 ReferenceVertex;
+
+		public SVertexTransform(bool pUndefined = true)
+		{
+			Defined = false;
+			PositionOffset = new SVector3();
+			Scale = new SVector3();
+			ReferenceVertex = new SVector3();
+		}
+
+		public SVertexTransform(SVector3 positionOffset, SVector3 scale, SVector3 pReferenceVertex)
+		{
+			Defined = true;
+			PositionOffset = positionOffset;
+			Scale = scale;
+			ReferenceVertex = pReferenceVertex;
 		}
 	}
 }

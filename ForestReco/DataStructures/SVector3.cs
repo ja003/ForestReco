@@ -23,6 +23,13 @@ namespace ForestReco
 			this.Z = 0;
 		}
 
+		public SVector3(Vector3 pVector3)
+		{
+			X = pVector3.X;
+			Y = pVector3.Y;
+			Z = pVector3.Z;
+		}
+
 		public static SVector3 operator +(SVector3 a, SVector3 b)
 		{
 			return new SVector3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
@@ -34,6 +41,13 @@ namespace ForestReco
 		public static SVector3 operator *(SVector3 a, double b)
 		{
 			return new SVector3(a.X * b, a.Y * b, a.Z * b);
+		}
+		/// <summary>
+		/// "Modified" scalar product
+		/// </summary>
+		public static SVector3 operator *(SVector3 a, SVector3 b)
+		{
+			return new SVector3(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
 		}
 
 		public static SVector3 operator /(SVector3 a, double b)
@@ -79,6 +93,11 @@ namespace ForestReco
 			X += pOffset.X;
 			Y += pOffset.Y;
 			Z += pOffset.Z;
+		}
+
+		public override string ToString()
+		{
+			return X + "," + Y + "," + Z;
 		}
 	}
 }
