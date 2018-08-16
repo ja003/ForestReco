@@ -19,8 +19,11 @@ namespace ForestReco
 				Console.WriteLine("Loaded tree: " + path);
 			}
 			//test
-			Trees[1].Position = new SVector3(Vector3.One * 5);
-			Trees[1].Scale = new SVector3(3,5,1);
+			Trees[0].Rotation = new Vector3(0, 10, 0);
+
+			Trees[1].Position = new Vector3(10, 5, 0);
+			Trees[1].Scale = new Vector3(3, 5, 1);
+			Trees[1].Rotation = new Vector3(10, 0, 0);
 		}
 	}
 }

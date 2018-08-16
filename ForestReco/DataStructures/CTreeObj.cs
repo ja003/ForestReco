@@ -6,15 +6,15 @@ namespace ForestReco
 {
 	public class CTreeObj : Obj
 	{
-		public SVector3 Position;
-		public SVector3 Rotation;
-		public SVector3 Scale = new SVector3(Vector3.One);
+		public Vector3 Position;
+		public Vector3 Rotation;
+		public Vector3 Scale = Vector3.One;
 
 		public SVertexTransform GetVertexTransform()
 		{
-			return new SVertexTransform(Position, Scale,
+			return new SVertexTransform(Position, Scale, Rotation,
 				//bot center point
-				new SVector3((Size.XMin + Size.XMax)/2, Size.YMin, (Size.ZMin + Size.ZMax) / 2));
+				new Vector3((float)(Size.XMin + Size.XMax) / 2, (float)Size.YMin, (float)(Size.ZMin + Size.ZMax) / 2));
 		}
 	}
 }

@@ -61,22 +61,32 @@ namespace ObjParser.Types
 		/// </summary>
 		public string ToString(SVertexTransform pTransform)
 		{
-			SVector3 newPos = GetPosition();
+			Vector3 newPos = GetPosition();
 			if (pTransform.Defined)
 			{
 				//1.scale
-				SVector3 dir = GetPosition() - pTransform.ReferenceVertex;
-				newPos = pTransform.ReferenceVertex + dir * pTransform.Scale;
-				//2.move
-				newPos += pTransform.PositionOffset;
+				newPos = Vector3.Transform(newPos, Matrix4x4.CreateScale(
+					pTransform.Scale.X, pTransform.Scale.Y, pTransform.Scale.Z, pTransform.ReferenceVertex));
+					
+				//2.rotate
+				Vector3 rotate = new Vector3(
+					(float)CUtils.ToRadians(pTransform.Rotation.X),
+					(float)CUtils.ToRadians(pTransform.Rotation.Y),
+					(float)CUtils.ToRadians(pTransform.Rotation.Z));
+				newPos = Vector3.Transform(newPos, Matrix4x4.CreateRotationX(rotate.X, pTransform.ReferenceVertex));
+				newPos = Vector3.Transform(newPos, Matrix4x4.CreateRotationY(rotate.Y, pTransform.ReferenceVertex));
+				newPos = Vector3.Transform(newPos, Matrix4x4.CreateRotationZ(rotate.Z, pTransform.ReferenceVertex));
 
+				//3.translate
+				//newPos = Vector3.Transform(newPos, Matrix4x4.CreateTranslation());...
+				newPos += pTransform.PositionOffset;
 			}
-			return string.Format("v {0} {1} {2}", newPos.X, newPos.Y, newPos.Z);
+			return $"v {newPos.X} {newPos.Y} {newPos.Z}";
 		}
 
-		private SVector3 GetPosition()
+		private Vector3 GetPosition()
 		{
-			return new SVector3(X, Y, Z);
+			return new Vector3((float)X, (float)Y, (float)Z);
 		}
 	}
 
@@ -84,24 +94,27 @@ namespace ObjParser.Types
 	{
 		public bool Defined;
 
-		public SVector3 PositionOffset;
+		public Vector3 PositionOffset;
+		public Vector3 Scale;
+		public Vector3 Rotation;
 
-		public SVector3 Scale;
-		public SVector3 ReferenceVertex;
+		public Vector3 ReferenceVertex;
 
 		public SVertexTransform(bool pUndefined = true)
 		{
 			Defined = false;
-			PositionOffset = new SVector3();
-			Scale = new SVector3();
-			ReferenceVertex = new SVector3();
+			PositionOffset = Vector3.Zero;
+			Scale = Vector3.One;
+			Rotation = Vector3.Zero;
+			ReferenceVertex = Vector3.Zero;
 		}
 
-		public SVertexTransform(SVector3 positionOffset, SVector3 scale, SVector3 pReferenceVertex)
+		public SVertexTransform(Vector3 positionOffset, Vector3 scale, Vector3 pRotation, Vector3 pReferenceVertex)
 		{
 			Defined = true;
 			PositionOffset = positionOffset;
 			Scale = scale;
+			Rotation = pRotation;
 			ReferenceVertex = pReferenceVertex;
 		}
 	}

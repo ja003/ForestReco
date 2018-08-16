@@ -31,5 +31,10 @@ namespace ForestReco
 			if (test < 0.0) angle = -angle;
 			return (float)angle;
 		}
+
+		public static double ToRadians(double val)
+		{
+			return Math.PI / 180 * val;
+		}
 	}
 }
