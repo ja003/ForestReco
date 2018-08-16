@@ -71,6 +71,10 @@ namespace ForestReco
 			//set Z position so the tree touches the ground (Z=height)
 			suitableTree.Position.Z = (groundHeight == null ? suitableTree.Position.Z : (float)groundHeight);
 
+			double? treeHeight = pTree.GetTreeHeight();
+			double heightRation = (double)treeHeight / (suitableTree.Size.YMax - suitableTree.Size.YMin);
+			suitableTree.Scale = new Vector3(1, (float)heightRation, 1);
+
 			counter++;
 			return suitableTree;
 		}

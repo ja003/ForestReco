@@ -121,9 +121,11 @@ namespace ForestReco
 			return Tree != null;
 		}
 
-		private double? GetTreeHeight()
+		public double? GetTreeHeight()
 		{
-			if (TreeHeight == null)
+			return GetHeight(EHeight.VegeMax) - GetHeight(EHeight.GroundMax);
+			//todo: not actually height of the tree
+			/*if (TreeHeight == null)
 			{
 				if (HasAssignedTree())
 				{
@@ -138,7 +140,7 @@ namespace ForestReco
 					}
 				}
 			}
-			return TreeHeight;
+			return TreeHeight;*/
 		}
 
 		private int GetDistanceToTree()
