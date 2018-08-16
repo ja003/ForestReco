@@ -83,7 +83,7 @@ namespace ObjParser.Types
 
 			for (int i = 0; i < VertexIndexList.Count(); i++)
 			{
-				if (i < TextureVertexIndexList.Length)
+				/*if (i < TextureVertexIndexList.Length)
 				{
 					b.AppendFormat(" {0}/{1}",
 						VertexIndexList[i] + pVertexIndexOffset,
@@ -92,7 +92,8 @@ namespace ObjParser.Types
 				else
 				{
 					b.AppendFormat(" {0}", VertexIndexList[i] + pVertexIndexOffset);
-				}
+				}*/
+				b.AppendFormat(" {0}", VertexIndexList[i] + pVertexIndexOffset);
 			}
 
 			return b.ToString();

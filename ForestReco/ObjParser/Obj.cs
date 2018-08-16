@@ -22,6 +22,7 @@ namespace ObjParser
 		public Vector3 Position;
 		public Vector3 Rotation;
 		public Vector3 Scale = Vector3.One;
+		public string Name;
 
 		public SVertexTransform GetVertexTransform()
 		{
@@ -34,11 +35,12 @@ namespace ObjParser
 		/// <summary>
 		/// Constructor. Initializes VertexList, FaceList and TextureList.
 		/// </summary>
-		public Obj()
+		public Obj(string pName)
 		{
 			VertexList = new List<Vertex>();
 			FaceList = new List<Face>();
 			TextureList = new List<TextureVertex>();
+			Name = pName;
 		}
 
 		/// <summary>

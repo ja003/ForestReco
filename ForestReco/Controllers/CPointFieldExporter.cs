@@ -11,10 +11,10 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "try";
 
-		public static Obj ExportToObj(CPointArray pArray, string pOutputFileName,
+		public static Obj ExportToObj(CPointArray pArray, string pArrayName,
 			EExportStrategy pStrategy, List<EHeight> pHeights)
 		{
-			Obj obj = new Obj();
+			Obj obj = new Obj(pArrayName);
 
 			int missingCoordCount = 0;
 
@@ -121,9 +121,9 @@ namespace ForestReco
 
 		private const float POINT_OFFSET = 0.1f;
 
-		public static void ExportTreePointsToObj(CPointArray pArray, string pOutputFileName)
+		public static Obj ExportTreePointsToObj(CPointArray pArray, string pTreePointsName)
 		{
-			ObjParser.Obj obj = new ObjParser.Obj();
+			Obj obj = new Obj(pTreePointsName);
 			int vertexIndex = 1;
 			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 
@@ -174,8 +174,9 @@ namespace ForestReco
 				}
 				//break;
 			}
-
-			WriteObjFile(pOutputFileName, obj);
+			obj.updateSize();
+			return obj;
+			//WriteObjFile(pTreePointsName, obj);
 		}
 
 		private static void WriteObjFile(string pOutputFileName, ObjParser.Obj pObj)

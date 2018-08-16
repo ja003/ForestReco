@@ -140,9 +140,8 @@ namespace ForestReco
 				{
 					treeField.AssignPointsToTree();
 				}
-				Console.WriteLine(t + " has " + t.TreePoints.Count + " tree points.");
+				//Console.WriteLine(t + " has " + t.TreePoints.Count + " tree points.");
 			}
-
 		}
 
 		///GETTER

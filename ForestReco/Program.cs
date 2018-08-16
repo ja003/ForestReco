@@ -26,7 +26,7 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			
+
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
 
@@ -49,8 +49,8 @@ namespace ForestReco
 			List<string> treePaths = new List<string>()
 			{
 				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
-				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
-				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
+				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
+				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
 			};
 			treeManager.LoadTrees(treePaths);
 			//CObjExporter.ExportObjs(treeManager.Trees, "tree_dummy");
@@ -82,6 +82,7 @@ namespace ForestReco
 			List<Obj> objsToExport = new List<Obj>();
 			objsToExport.AddRange(treeManager.Trees);
 
+			//processCombined = false;
 			if (processCombined)
 			{
 				Console.WriteLine("combinedArray: " + combinedArray);
@@ -91,20 +92,19 @@ namespace ForestReco
 				combinedArray.AssignTreesToNeighbourFields();
 				combinedArray.AssignPointsToTrees();
 
-				//CPointFieldExporter.ExportTreePointsToObj(combinedArray, saveFileName + "_TP_");
+				Obj treePoints = CPointFieldExporter.ExportTreePointsToObj(combinedArray, saveFileName + "Tree points");
+				objsToExport.Add(treePoints);
 
 				//combinedArray.AssignTreesToAllFields();
 
 				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 
-				Obj field =  CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_gr",
+				Obj field = CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_ground",
 					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.GroundMax });
 				objsToExport.Add(field);
-
-				CObjExporter.ExportObjs(objsToExport, "field+tree");
-
 			}
+			CObjExporter.ExportObjs(objsToExport, "gr+tp+tree");
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

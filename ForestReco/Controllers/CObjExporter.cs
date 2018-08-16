@@ -10,7 +10,7 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "tree";
 
-		public static void ExportObjs(List<Obj> pTrees, string pFileName)
+		public static void ExportObjs(List<Obj> pObjs, string pFileName)
 		{
 			string filePath = GetFileExportPath(pFileName);
 
@@ -18,19 +18,22 @@ namespace ForestReco
 			using (var writer = new StreamWriter(outStream))
 			{
 				// Write some header data
-				WriteHeader(writer, pTrees);
+				WriteHeader(writer, pObjs);
 
 				int vertexIndexOffset = 0;
-				foreach (Obj tree in pTrees)
+				foreach (Obj obj in pObjs)
 				{
+					writer.WriteLine("o " + obj.Name);
+					//writer.WriteLine("o XX");
+
 					int thisTreeVertexIndexOffset = vertexIndexOffset;
-					foreach (Vertex v in tree.VertexList)
+					foreach (Vertex v in obj.VertexList)
 					{
-						writer.WriteLine(v.ToString(tree.GetVertexTransform()));
+						writer.WriteLine(v.ToString(obj.GetVertexTransform()));
 						vertexIndexOffset++;	
 					}
 
-					foreach (Face f in tree.FaceList)
+					foreach (Face f in obj.FaceList)
 					{
 						writer.WriteLine(f.ToString(thisTreeVertexIndexOffset));
 					}
