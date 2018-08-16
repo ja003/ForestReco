@@ -80,7 +80,7 @@ namespace ForestReco
 			}
 
 			List<Obj> objsToExport = new List<Obj>();
-			objsToExport.AddRange(treeManager.Trees);
+			//objsToExport.AddRange(treeManager.Trees);
 
 			//processCombined = false;
 			if (processCombined)
@@ -95,13 +95,17 @@ namespace ForestReco
 				Obj treePoints = CPointFieldExporter.ExportTreePointsToObj(combinedArray, saveFileName + "Tree points");
 				objsToExport.Add(treePoints);
 
+				//select tree models based on trees in array
+				List<Obj> trees = treeManager.GetTreeObjsFromField(combinedArray);
+				objsToExport.AddRange(trees);
+
 				//combinedArray.AssignTreesToAllFields();
 
 				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 
 				Obj field = CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_ground",
-					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.GroundMax });
+					EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 				objsToExport.Add(field);
 			}
 			CObjExporter.ExportObjs(objsToExport, "gr+tp+tree");

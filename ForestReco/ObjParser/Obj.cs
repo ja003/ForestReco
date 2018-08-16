@@ -194,5 +194,20 @@ namespace ObjParser
 			}
 		}
 
+		public Obj Clone()
+		{
+			Obj clone = new Obj(Name)
+			{
+				VertexList = VertexList,
+				FaceList = FaceList,
+				TextureList = TextureList,
+				Position = Position,
+				Rotation = Rotation,
+				Scale = Scale,
+				Size = Size,
+				Mtl = Mtl
+			};
+			return clone;
+		}
 	}
 }
