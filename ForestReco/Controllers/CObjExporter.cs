@@ -6,11 +6,11 @@ using ObjParser.Types;
 
 namespace ForestReco
 {
-	public static class CTreeExporter
+	public static class CObjExporter
 	{
 		private const string DEFAULT_FILENAME = "tree";
 
-		public static void ExportTrees(List<CTreeObj> pTrees, string pFileName)
+		public static void ExportObjs(List<Obj> pTrees, string pFileName)
 		{
 			string filePath = GetFileExportPath(pFileName);
 
@@ -21,7 +21,7 @@ namespace ForestReco
 				WriteHeader(writer, pTrees);
 
 				int vertexIndexOffset = 0;
-				foreach (CTreeObj tree in pTrees)
+				foreach (Obj tree in pTrees)
 				{
 					int thisTreeVertexIndexOffset = vertexIndexOffset;
 					foreach (Vertex v in tree.VertexList)
@@ -57,7 +57,7 @@ namespace ForestReco
 		}
 
 
-		private static void WriteHeader(StreamWriter pWriter, List<CTreeObj> pTrees)
+		private static void WriteHeader(StreamWriter pWriter, List<Obj> pTrees)
 		{
 			pWriter.WriteLine("# Exporting " + pTrees.Count + " trees.");
 		}

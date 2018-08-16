@@ -53,9 +53,9 @@ namespace ForestReco
 				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
 			};
 			treeManager.LoadTrees(treePaths);
-			CTreeExporter.ExportTrees(treeManager.Trees, "tree_dummy");
-			Console.ReadKey();
-			return;
+			//CObjExporter.ExportObjs(treeManager.Trees, "tree_dummy");
+			//Console.ReadKey();
+			//return;
 
 			float stepSize = .4f; //in meters
 
@@ -79,6 +79,8 @@ namespace ForestReco
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 
+			List<Obj> objsToExport = new List<Obj>();
+			objsToExport.AddRange(treeManager.Trees);
 
 			if (processCombined)
 			{
@@ -96,8 +98,12 @@ namespace ForestReco
 				//combinedArray.ExportToObj(saveFileName + "_comb",
 				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 
-				CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_gr",
+				Obj field =  CPointFieldExporter.ExportToObj(combinedArray, saveFileName + "_gr",
 					EExportStrategy.FillHeightsAroundDefined, new List<EHeight> { EHeight.GroundMax });
+				objsToExport.Add(field);
+
+				CObjExporter.ExportObjs(objsToExport, "field+tree");
+
 			}
 
 			Console.WriteLine("Press any key to exit.");

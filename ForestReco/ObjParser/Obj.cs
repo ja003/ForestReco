@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using ObjParser.Types;
 
 namespace ObjParser
@@ -16,6 +17,19 @@ namespace ObjParser
 
 		public string UseMtl { get; set; }
 		public string Mtl { get; set; }
+
+		//MY EXTENSION
+		public Vector3 Position;
+		public Vector3 Rotation;
+		public Vector3 Scale = Vector3.One;
+
+		public SVertexTransform GetVertexTransform()
+		{
+			return new SVertexTransform(Position, Scale, Rotation,
+				//bot center point
+				new Vector3((float)(Size.XMin + Size.XMax) / 2, (float)Size.YMin, (float)(Size.ZMin + Size.ZMax) / 2));
+		}
+
 
 		/// <summary>
 		/// Constructor. Initializes VertexList, FaceList and TextureList.
@@ -107,7 +121,7 @@ namespace ObjParser
 		/// <summary>
 		/// Sets our global object size with an extent object
 		/// </summary>
-		private void updateSize()
+		public void updateSize()
 		{
 			// If there are no vertices then size should be 0.
 			if (VertexList.Count == 0)

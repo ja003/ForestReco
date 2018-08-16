@@ -7,13 +7,13 @@ namespace ForestReco
 {
 	public class CTreeObjManager
 	{
-		public List<CTreeObj> Trees = new List<CTreeObj>();
+		public List<Obj> Trees = new List<Obj>();
 
 		public void LoadTrees(List<string> pPaths)
 		{
 			foreach (string path in pPaths)
 			{
-				CTreeObj tree = new CTreeObj();
+				Obj tree = new Obj();
 				tree.LoadObj(path);
 				Trees.Add(tree);
 				Console.WriteLine("Loaded tree: " + path);
