@@ -45,14 +45,15 @@ namespace ForestReco
 
 			//prepare data structures 
 
-			CTreeObjManager treeManager = new CTreeObjManager();
+			CTreeObjManager treeObjManager = new CTreeObjManager();
 			List<string> treePaths = new List<string>()
 			{
-				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
-				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
+				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
+				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
+				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1_reduced.obj"
 			};
-			treeManager.LoadTrees(treePaths);
+			treeObjManager.LoadTrees(treePaths);
 			//CObjExporter.ExportObjs(treeManager.Trees, "tree_dummy");
 			//Console.ReadKey();
 			//return;
@@ -61,7 +62,10 @@ namespace ForestReco
 
 			CPointArray combinedArray = new CPointArray(header, stepSize);
 
-			bool processCombined = true;
+			CTreeManager treeManager = new CTreeManager();
+
+
+			bool processCombined = false;
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;
@@ -72,12 +76,25 @@ namespace ForestReco
 				// <class, coordinate>
 				Tuple<int, SVector3> c = CCoordinatesParser.ParseLine(lines[i], header);
 
-				if (c.Item1 == 2 || c.Item1 == 5 && processCombined) //high vegetation
+				//2 = ground
+				//5 = high vegetation
+				if (c.Item1 == 5)
+				{
+					treeManager.AddPoint(c.Item2);
+				}
+
+				if (c.Item1 == 2 || c.Item1 == 5 && processCombined)
 				{
 					combinedArray.AddPointInField(c.Item1, c.Item2);
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
+			List<Obj> treeObjs = treeManager.GetTreeObjsFromField(combinedArray);
+			CObjExporter.ExportObjs(treeObjs, "trees_");
+
+			treeManager.WriteResult();
+			Console.ReadKey();
+			return;
 
 			List<Obj> objsToExport = new List<Obj>();
 			//objsToExport.AddRange(treeManager.Trees);
@@ -96,7 +113,7 @@ namespace ForestReco
 				objsToExport.Add(treePoints);
 
 				//select tree models based on trees in array
-				List<Obj> trees = treeManager.GetTreeObjsFromField(combinedArray);
+				List<Obj> trees = treeObjManager.GetTreeObjsFromField(combinedArray);
 				objsToExport.AddRange(trees);
 
 				//combinedArray.AssignTreesToAllFields();

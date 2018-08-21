@@ -60,8 +60,12 @@ namespace ForestReco
 			return new SVector3(-a.X, -a.Y, -a.Z);
 		}
 
-		public Vector3 ToVector3()
+		public Vector3 ToVector3(bool pSwapYZ = false)
 		{
+			if (pSwapYZ)
+			{
+				return new Vector3((float)X, (float)Z, (float)Y);
+			}
 			return new Vector3((float)X, (float)Y, (float)Z);
 		}
 

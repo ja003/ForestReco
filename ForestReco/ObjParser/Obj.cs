@@ -209,5 +209,10 @@ namespace ObjParser
 			};
 			return clone;
 		}
+
+		public override string ToString()
+		{
+			return "[" + Position + "]" + VertexList.Count;
+		}
 	}
 }

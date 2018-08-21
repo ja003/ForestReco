@@ -11,6 +11,17 @@ namespace ObjParser.Types
 {
 	public class Vertex : IType
 	{
+		public Vertex(){ }
+
+
+		public Vertex(Vector3 pVector3, int pVertexIndex)
+		{
+			X = pVector3.X;
+			Y = pVector3.Y;
+			Z = pVector3.Z;
+			Index = pVertexIndex;
+		}
+
 		public const int MinimumDataLength = 4;
 		public const string Prefix = "v";
 
