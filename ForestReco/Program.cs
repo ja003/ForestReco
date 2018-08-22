@@ -27,6 +27,7 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			fileName = @"debug_tree_01";
+			fileName = @"debug_tree_02";
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";

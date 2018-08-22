@@ -9,9 +9,14 @@ namespace ForestReco
 		public List<Vector3> points = new List<Vector3>();
 		private CTree tree;
 
-		public CBranch(CTree pTree)
+		private int angleFrom;
+		private int angleTo;
+
+		public CBranch(CTree pTree, int pAngleFrom, int pAngleTo)
 		{
 			tree = pTree;
+			angleFrom = pAngleFrom;
+			angleTo = pAngleTo;
 		}
 
 		public void AddPoint(Vector3 pPoint)
@@ -33,7 +38,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return points.Count > 0 ? points.Count + "|" : "";
+			return "br_<" + angleFrom + "," + angleTo + "> " + (points.Count > 0 ? points.Count + "|" : "");
 		}
 	}
 }

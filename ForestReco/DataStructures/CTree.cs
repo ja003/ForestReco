@@ -35,7 +35,7 @@ namespace ForestReco
 			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
 			{
-				branches.Add(new CBranch(this));
+				branches.Add(new CBranch(this, i, i + BRANCH_ANGLE_STEP));
 			}
 
 			mostLeft = pPoint;
@@ -133,7 +133,18 @@ namespace ForestReco
 
 		private CBranch GetBranchFor(Vector3 pPoint)
 		{
-			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak + Vector3.UnitX, peak, pPoint }, Vector3.UnitY);
+			//if (Math.Abs(pPoint.X) > 0.1f)
+			if (pPoint.X > 0)
+			{
+				Console.WriteLine("!");
+			}
+			//float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak + Vector3.UnitX, peak, pPoint }, Vector3.UnitY);
+			Vector2 peak2D = new Vector2(peak.X, peak.Z);
+			Vector2 point2D = new Vector2(pPoint.X, pPoint.Z);
+			Vector2 dir = point2D - peak2D;
+			dir = Vector2.Normalize(dir);
+			double angle = CUtils.GetAngle(Vector2.UnitX, dir);
+			//Console.WriteLine("angle " + peak2D + " - " + point2D + " = " + angle);
 			if (angle < 0)
 			{
 				angle = 360 + angle;
@@ -165,7 +176,7 @@ namespace ForestReco
 
 		public Obj GetObj(string pName, CPointArray pArray, bool pExportBranches)
 		{
-			Console.WriteLine("GetObj " + pName);
+			//Console.WriteLine("GetObj " + pName);
 
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
@@ -174,7 +185,7 @@ namespace ForestReco
 
 			foreach (Vector3 p in points)
 			{
-				Console.WriteLine(p);
+				//Console.WriteLine(p);
 
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
@@ -245,7 +256,7 @@ namespace ForestReco
 						pointVertices.Add(v4);
 						vertexIndex++;
 
-						Console.WriteLine("branch part " + p + " - " + nextP);
+						//Console.WriteLine("branch part " + p + " - " + nextP);
 
 						foreach (Vertex v in pointVertices)
 						{

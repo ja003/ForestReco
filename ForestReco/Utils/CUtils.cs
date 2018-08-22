@@ -34,6 +34,13 @@ namespace ForestReco
 			return (float)angle;
 		}*/
 
+		public static double GetAngle(Vector2 a, Vector2 b)
+		{
+			a = Vector2.Normalize(a);
+			b = Vector2.Normalize(b);
+			return ToDegree(Math.Atan2(b.Y - a.Y, b.X - a.X));
+		}
+
 		public static float AngleBetweenThreePoints(List<Vector3> points, Vector3 up)
 		{
 			return AngleBetweenThreePoints(points);

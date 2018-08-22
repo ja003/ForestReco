@@ -14,10 +14,10 @@ namespace ForestReco
 
 		public void AddPoint(SVector3 pPoint)
 		{
-			Console.WriteLine("\nAddPoint " + pPoint);
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
-			//foreach (CTree t in trees)
+			Console.WriteLine("\nAddPoint " + point);
+			
 			CTree selectedTree = null;
 			List<CTree> possibleTrees = GetPossibleTreesFor(point);
 			
