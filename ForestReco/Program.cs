@@ -25,14 +25,16 @@ namespace ForestReco
 			string fileName = @"BK_1000AGL_classified";
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
-			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			fileName = @"debug_tree_01";
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
 
 
 			//notebook
-			string[] lines = File.ReadAllLines(@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
+			string podkladyPath = CPlatformManager.GetPodkladyPath(EPlatform.Notebook);
+			string[] lines = File.ReadAllLines(podkladyPath + @"\data-small\TXT\" + fileName + @".txt");
 			//home PC
 			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
@@ -51,7 +53,7 @@ namespace ForestReco
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
-				@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1_reduced.obj"
+				podkladyPath + @"\tree_models\m1_reduced.obj"
 			};
 			treeObjManager.LoadTrees(treePaths);
 			//CObjExporter.ExportObjs(treeManager.Trees, "tree_dummy");

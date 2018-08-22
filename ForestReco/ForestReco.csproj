@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CPlatformManager.cs" />
     <Compile Include="Controllers\CPointFieldExporter.cs" />
     <Compile Include="Controllers\CObjExporter.cs" />
     <Compile Include="Controllers\CTreeManager.cs" />

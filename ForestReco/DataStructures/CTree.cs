@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Security.Principal;
 using ObjParser;
@@ -25,10 +26,13 @@ namespace ForestReco
 		private Vector3 mostRight;
 		private Vector3 mostBot;
 
-		public CTree(Vector3 pPoint)
+		public int treeIndex;
+
+		public CTree(Vector3 pPoint, int pTreeIndex)
 		{
 			peak = pPoint;
 			points.Add(pPoint);
+			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
 			{
 				branches.Add(new CBranch(this));
@@ -42,7 +46,15 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
+			Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
+				pSubTree.ToString(false, false, true, false));
 			//todo: make effective
+			if (pSubTree.Equals(this))
+			{
+				Console.WriteLine("Error. cant merge with itself.");
+				return;
+			}
+
 			foreach (Vector3 p in pSubTree.points)
 			{
 				AddPoint(p);
@@ -67,7 +79,12 @@ namespace ForestReco
 
 		private void SetNewPeak(Vector3 pPoint)
 		{
+			Console.WriteLine("SetNewPeak " + pPoint);
+			Vector3 oldPeak = peak;
+			//first set new peak then move old one to appropriate branch
 			peak = pPoint;
+			AddPoint(pPoint, false);
+			GetBranchFor(oldPeak).AddPoint(oldPeak);
 		}
 
 		private bool IsNewPeak(Vector3 pPoint)
@@ -75,10 +92,15 @@ namespace ForestReco
 			if (pPoint.Y < peak.Y) { return false; }
 			float angle = CUtils.AngleBetweenThreePoints(
 				new List<Vector3> { pPoint - Vector3.UnitY, pPoint, peak }, Vector3.UnitY);
-			return angle < CTreeManager.MAX_BRANCH_ANGLE;
+			return Math.Abs(angle) < CTreeManager.MAX_BRANCH_ANGLE;
 		}
 
-		private void AddPoint(Vector3 pPoint)
+		/// <summary>
+		/// Adds point and updates tree extents.
+		/// 'pAddToBranch' adds this point to its appropriate branch. Should be false
+		/// for example when this point is peak
+		/// </summary>
+		private void AddPoint(Vector3 pPoint, bool pAddToBranch = true)
 		{
 			points.Add(pPoint);
 			if (pPoint.Y > peak.Y) { peak = pPoint; }
@@ -87,7 +109,7 @@ namespace ForestReco
 			if (pPoint.X > mostRight.X) { mostRight = pPoint; }
 			if (pPoint.Z < mostBot.Z) { mostBot = pPoint; }
 
-			GetBranchFor(pPoint).AddPoint(pPoint);
+			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
 		}
 
 
@@ -111,18 +133,40 @@ namespace ForestReco
 
 		private CBranch GetBranchFor(Vector3 pPoint)
 		{
-			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak + Vector3.UnitY, peak, pPoint }, Vector3.UnitY);
+			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak + Vector3.UnitX, peak, pPoint }, Vector3.UnitY);
+			if (angle < 0)
+			{
+				angle = 360 + angle;
+			}
 			return branches[(int)(angle / BRANCH_ANGLE_STEP)];
 		}
 
-		public override string ToString()
+
+		private int GetBranchesCount()
 		{
-			return "[" + points.Count + "]" + " | top = " + peak.Y;
+			int count = 0;
+			foreach (CBranch b in branches)
+			{
+				if (b.points.Count > 0) { count++; }
+			}
+			return count;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null || GetType() != obj.GetType())
+				return false;
+
+			CTree t = (CTree)obj;
+			return treeIndex == t.treeIndex;
 		}
 
 		private const float POINT_OFFSET = 0.1f;
-		public Obj GetObj(string pName, CPointArray pArray)
+
+		public Obj GetObj(string pName, CPointArray pArray, bool pExportBranches)
 		{
+			Console.WriteLine("GetObj " + pName);
+
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
 			int vertexIndex = 1;
@@ -130,6 +174,8 @@ namespace ForestReco
 
 			foreach (Vector3 p in points)
 			{
+				Console.WriteLine(p);
+
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
 				clonePoint += new Vector3(0, -(float)pArray.minHeight, -2 * clonePoint.Z);
@@ -140,7 +186,7 @@ namespace ForestReco
 				pointVertices.Add(v1);
 				vertexIndex++;
 
-				
+
 				Vertex v2 = new Vertex(clonePoint + Vector3.UnitX * POINT_OFFSET, vertexIndex);
 				pointVertices.Add(v2);
 				vertexIndex++;
@@ -166,8 +212,80 @@ namespace ForestReco
 
 				//break;
 			}
+
+			if (pExportBranches)
+			{
+				foreach (CBranch b in branches)
+				{
+					for (int i = 0; i < b.points.Count; i++)
+					{
+						List<Vertex> pointVertices = new List<Vertex>();
+
+						//for first point in branch use peak as a first point
+						Vector3 p = i == 0 ? peak : b.points[i - 1];
+						p -= arrayCenter.ToVector3(true);
+						p += new Vector3(0, -(float)pArray.minHeight, -2 * p.Z);
+
+						Vertex v1 = new Vertex(p, vertexIndex);
+						pointVertices.Add(v1);
+						vertexIndex++;
+						Vertex v2 = new Vertex(p + Vector3.UnitX * POINT_OFFSET, vertexIndex);
+						pointVertices.Add(v2);
+						vertexIndex++;
+
+						//for first point set first point to connect to peak
+						Vector3 nextP = i == 0 ? b.points[0] : b.points[i];
+						nextP -= arrayCenter.ToVector3(true);
+						nextP += new Vector3(0, -(float)pArray.minHeight, -2 * nextP.Z);
+
+						Vertex v3 = new Vertex(nextP, vertexIndex);
+						pointVertices.Add(v3);
+						vertexIndex++;
+						Vertex v4 = new Vertex(nextP + Vector3.UnitX * POINT_OFFSET, vertexIndex);
+						pointVertices.Add(v4);
+						vertexIndex++;
+
+						Console.WriteLine("branch part " + p + " - " + nextP);
+
+						foreach (Vertex v in pointVertices)
+						{
+							obj.VertexList.Add(v);
+						}
+
+						//create 4-side representation of point
+						obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
+						obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
+						obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
+						obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
+
+					}
+				}
+			}
+
 			obj.updateSize();
 			return obj;
+		}
+
+
+		public override string ToString()
+		{
+			return ToString(true, true, true, true);
+		}
+
+		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches)
+		{
+			string indexS = pIndex ? treeIndex.ToString() : "";
+			string pointsS = pPoints ? (" [" + points.Count + "]") : "";
+			string peakS = pPeak ? ". peak = " + peak : "";
+			string branchesS = pBranches ? " | branches = " + GetBranchesCount() + "_|" : "";
+			if (pBranches)
+			{
+				foreach (CBranch b in branches)
+				{
+					branchesS += b;
+				}
+			}
+			return indexS + pointsS + peakS + branchesS;
 		}
 	}
 }

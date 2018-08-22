@@ -14,16 +14,21 @@ namespace ForestReco
 
 		public void AddPoint(SVector3 pPoint)
 		{
+			Console.WriteLine("\nAddPoint " + pPoint);
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
 			//foreach (CTree t in trees)
 			CTree selectedTree = null;
 			List<CTree> possibleTrees = GetPossibleTreesFor(point);
+			
 			foreach (CTree t in possibleTrees)
 			{
+				Console.WriteLine("try add to : " + t.ToString(false, false, true, false));
+				Vector3 peak = t.peak;
 				if (t.TryAddPoint(point))
 				{
 					selectedTree = t;
+					Console.WriteLine(point + " added to tree with peak: " + peak);
 					break;
 				}
 			}
@@ -31,7 +36,7 @@ namespace ForestReco
 			{
 				foreach (CTree t in possibleTrees)
 				{
-					if (selectedTree != t)
+					if (!Equals(selectedTree, t))
 					{
 						selectedTree = TryMergeTrees(selectedTree, t);
 					}
@@ -39,13 +44,13 @@ namespace ForestReco
 			}
 			else
 			{
-				trees.Add(new CTree(point));
+				trees.Add(new CTree(point, trees.Count));
 			}
 		}
 
 		private CTree TryMergeTrees(CTree pTree1, CTree pTree2)
 		{
-			CTree higherTree = pTree1.peak.Y > pTree2.peak.Y ? pTree1 : pTree2;
+			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
 
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
@@ -66,7 +71,10 @@ namespace ForestReco
 			foreach (CTree t in trees)
 			{
 				//it must be close to peak of some tree
-				if (Vector3.Distance(pPoint, t.peak) < MAX_TREE_EXTENT / 2)
+				//if (Vector3.Distance(pPoint, t.peak) < MAX_TREE_EXTENT / 2)
+				Vector2 point2D = new Vector2(pPoint.X, pPoint.Z);
+				Vector2 peak2D = new Vector2(t.peak.X, t.peak.Z);
+				if (Vector2.Distance(point2D, peak2D) < MAX_TREE_EXTENT / 2)
 				{
 					possibleTrees.Add(t);
 				}
@@ -79,6 +87,11 @@ namespace ForestReco
 			foreach (CTree t in trees)
 			{
 				Console.WriteLine(trees.IndexOf(t) + ": " + t);
+				if (trees.IndexOf(t) > 100)
+				{
+					Console.WriteLine("too much...");
+					return;
+				}
 			}
 		}
 
@@ -88,7 +101,7 @@ namespace ForestReco
 			//foreach (CPointField t in pArray.Maximas)
 			foreach (CTree t in trees)
 			{
-				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), pArray);
+				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), pArray, true);
 				//move obj so it is at 0,0,0
 				//SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 				//treeObj.Position -= arrayCenter.ToVector3(true);
