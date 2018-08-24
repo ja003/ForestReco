@@ -21,17 +21,17 @@ namespace ForestReco
 
 		public void AddPoint(Vector3 pPoint)
 		{
-			Console.Write("AddPoint " + pPoint + " to " + this);
+			if (CTreeManager.DEBUG) Console.Write("AddPoint " + pPoint.ToString("#+0.0#;-0.0") + " to " + this);
 			for (int i = 0; i < points.Count; i++)
 			{
 				if (pPoint.Y > points[i].Y)
 				{
 					points.Insert(i, pPoint);
-					Console.WriteLine(" at " + i);
+					if (CTreeManager.DEBUG) Console.WriteLine(" at " + i);
 					return;
 				}
 			}
-			Console.WriteLine("--");
+			if (CTreeManager.DEBUG) Console.WriteLine("--");
 
 			points.Add(pPoint);
 		}

@@ -12,23 +12,25 @@ namespace ForestReco
 		public static float MAX_TREE_EXTENT = 3;
 		public static float MAX_BRANCH_ANGLE = 45;
 
+		public static bool DEBUG = false;
+
 		public void AddPoint(SVector3 pPoint)
 		{
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
-			Console.WriteLine("\nAddPoint " + point);
+			if (DEBUG) Console.WriteLine("\nAddPoint " + point);
 
 			CTree selectedTree = null;
 			List<CTree> possibleTrees = GetPossibleTreesFor(point);
 
 			foreach (CTree t in possibleTrees)
 			{
-				Console.WriteLine("try add to : " + t.ToString(false, false, true, false));
+				if (DEBUG) Console.WriteLine("try add to : " + t.ToString(false, false, true, false));
 				Vector3 peak = t.peak;
 				if (t.TryAddPoint(point))
 				{
 					selectedTree = t;
-					Console.WriteLine(point + " added to tree with peak: " + peak);
+					if (DEBUG) Console.WriteLine(point + " added to tree with peak: " + peak);
 					break;
 				}
 			}

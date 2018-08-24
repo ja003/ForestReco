@@ -25,10 +25,8 @@ namespace ForestReco
 			string fileName = @"BK_1000AGL_classified";
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
-			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			fileName = @"debug_tree_01";
-			fileName = @"debug_tree_02";
-			fileName = @"debug_tree_03";
+			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			//fileName = @"debug_tree_03";
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
@@ -57,7 +55,9 @@ namespace ForestReco
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
 				podkladyPath + @"\tree_models\m1_reduced.obj"
 			};
-			treeObjManager.LoadTrees(treePaths);
+			//todo: uncomment to load tree obj from db
+			//treeObjManager.LoadTrees(treePaths);
+
 			//CObjExporter.ExportObjs(treeManager.Trees, "tree_dummy");
 			//Console.ReadKey();
 			//return;
@@ -69,7 +69,7 @@ namespace ForestReco
 			CTreeManager treeManager = new CTreeManager();
 
 
-			bool processCombined = false;
+			bool processCombined = true;
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;
@@ -91,15 +91,14 @@ namespace ForestReco
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 			List<Obj> treeObjs = treeManager.GetTreeObjsFromField(combinedArray);
-			CObjExporter.ExportObjs(treeObjs, "trees_");
-
+			//CObjExporter.ExportObjs(treeObjs, "trees_");
 			Console.WriteLine("\n===============\n");
-
 			treeManager.WriteResult();
-			Console.ReadKey();
-			return;
+			//Console.ReadKey();
+			//return;
 
 			List<Obj> objsToExport = new List<Obj>();
+			objsToExport.AddRange(treeObjs);
 			//objsToExport.AddRange(treeManager.Trees);
 
 			//processCombined = false;
@@ -116,8 +115,9 @@ namespace ForestReco
 				objsToExport.Add(treePoints);
 
 				//select tree models based on trees in array
-				List<Obj> trees = treeObjManager.GetTreeObjsFromField(combinedArray);
-				objsToExport.AddRange(trees);
+				//todo: uncomment to add tree models from loaded db
+				//List<Obj> trees = treeObjManager.GetTreeObjsFromField(combinedArray);
+				//objsToExport.AddRange(trees);
 
 				//combinedArray.AssignTreesToAllFields();
 

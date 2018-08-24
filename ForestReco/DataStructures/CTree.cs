@@ -48,7 +48,7 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
-			Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
+			if (CTreeManager.DEBUG) Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
 				pSubTree.ToString(false, false, true, false));
 			//todo: make effective
 			if (pSubTree.Equals(this))
@@ -81,7 +81,7 @@ namespace ForestReco
 
 		private void SetNewPeak(Vector3 pPoint)
 		{
-			Console.WriteLine("SetNewPeak " + pPoint);
+			if (CTreeManager.DEBUG) Console.WriteLine("SetNewPeak " + pPoint);
 			Vector3 oldPeak = peak;
 			//first set new peak then move old one to appropriate branch
 			peak = pPoint;
@@ -147,7 +147,7 @@ namespace ForestReco
 
 		private bool DoesntBelongToTree(Vector3 pPoint, Vector3 pFromPoint, float pDistance)
 		{
-			Console.WriteLine("point " + pPoint + " is too far from " + pFromPoint + 
+			if (CTreeManager.DEBUG) Console.WriteLine("point " + pPoint + " is too far from " + pFromPoint + 
 				". dist = " + pDistance);
 			return false;
 		}
@@ -162,7 +162,7 @@ namespace ForestReco
 			Vector2 dir = point2D - peak2D;
 			dir = Vector2.Normalize(dir);
 			double angle = CUtils.GetAngle(Vector2.UnitX, dir);
-			//Console.WriteLine("angle " + peak2D + " - " + point2D + " = " + angle);
+			//if (CTreeManager.DEBUG) Console.WriteLine("angle " + peak2D + " - " + point2D + " = " + angle);
 			if (angle < 0)
 			{
 				angle = 360 + angle;
@@ -194,7 +194,7 @@ namespace ForestReco
 
 		public Obj GetObj(string pName, CPointArray pArray, bool pExportBranches)
 		{
-			//Console.WriteLine("GetObj " + pName);
+			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
@@ -203,8 +203,6 @@ namespace ForestReco
 
 			foreach (Vector3 p in points)
 			{
-				//Console.WriteLine(p);
-
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
 				clonePoint += new Vector3(0, -(float)pArray.minHeight, -2 * clonePoint.Z);
