@@ -46,6 +46,16 @@ namespace ForestReco
 			return AngleBetweenThreePoints(points);
 		}
 
+		public static float GetAngleToTree(CTree pTree, Vector3 pPoint)
+		{
+			List<Vector3> points = new List<Vector3>
+			{
+				pTree.peak-Vector3.UnitY,
+				pTree.peak,
+				pPoint
+			};
+			return AngleBetweenThreePoints(points);
+		}
 
 		//https://stackoverflow.com/questions/19729831/angle-between-3-points-in-3d-space
 		public static float AngleBetweenThreePoints(List<Vector3> points, bool pToDegree = true)
@@ -83,6 +93,11 @@ namespace ForestReco
 		private static double ToDegree(double angle)
 		{
 			return angle * (180.0 / Math.PI);
+		}
+
+		public static float Get2DDistance(Vector3 a, Vector3 b)
+		{
+			return Vector2.Distance(new Vector2(a.X, a.Z), new Vector2(b.X, b.Z));
 		}
 	}
 }

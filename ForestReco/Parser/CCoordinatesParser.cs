@@ -10,6 +10,11 @@ namespace ForestReco
 		public static Tuple<int, SVector3> ParseLine(string pLine, CHeaderInfo pHeader)
 		{
 			string[] split = pLine.Split(null);
+			if (split.Length < 4)
+			{
+				Console.WriteLine(pLine + " not valid");
+				return null;
+			}
 			double x = double.Parse(split[0]);
 			double y = double.Parse(split[1]);
 			double z = double.Parse(split[2]);

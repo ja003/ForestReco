@@ -54,10 +54,6 @@ namespace ForestReco
 		private int counter;
 		private Obj GetSuitableTreeObj(CPointField pTree)
 		{
-			if (counter == 55)
-			{
-				Console.WriteLine("!");
-			}
 			//todo:implement selection
 			Random r = new Random();
 			Obj suitableTree = Trees[r.Next(0, Trees.Count)].Clone();

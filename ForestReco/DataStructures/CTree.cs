@@ -16,7 +16,9 @@ namespace ForestReco
 		public List<Vector3> points = new List<Vector3>();
 		private List<CBranch> branches = new List<CBranch>();
 
-		private const int BRANCH_ANGLE_STEP = 36 * 2;
+		private const int BRANCH_ANGLE_STEP = 45;
+
+		public Vector3 possibleNewPoint;
 
 		//private const float MAX_TREE_EXTENT = 3;
 		//private const float MAX_ANGLE = 45;
@@ -116,14 +118,26 @@ namespace ForestReco
 		private bool BelongsToTree(Vector3 pPoint)
 		{
 			//is close
-			float distToLeft = Vector3.Distance(pPoint, mostLeft);
-			if (distToLeft > CTreeManager.MAX_TREE_EXTENT) { return false; }
-			float distToTop = Vector3.Distance(pPoint, mostTop);
-			if (distToTop > CTreeManager.MAX_TREE_EXTENT) { return false; }
-			float distToRight = Vector3.Distance(pPoint, mostRight);
-			if (distToRight > CTreeManager.MAX_TREE_EXTENT) { return false; }
-			float distToBot = Vector3.Distance(pPoint, mostBot);
-			if (distToBot > CTreeManager.MAX_TREE_EXTENT) { return false; }
+			float distToLeft = CUtils.Get2DDistance(pPoint, mostLeft);
+			if (distToLeft > CTreeManager.MAX_TREE_EXTENT)
+			{
+				return DoesntBelongToTree(pPoint, mostLeft, distToLeft);
+			}
+			float distToTop = CUtils.Get2DDistance(pPoint, mostTop);
+			if (distToTop > CTreeManager.MAX_TREE_EXTENT)
+			{
+				return DoesntBelongToTree(pPoint, mostTop, distToTop);
+			}
+			float distToRight = CUtils.Get2DDistance(pPoint, mostRight);
+			if (distToRight > CTreeManager.MAX_TREE_EXTENT)
+			{
+				return DoesntBelongToTree(pPoint, mostRight, distToRight);
+			}
+			float distToBot = CUtils.Get2DDistance(pPoint, mostBot);
+			if (distToBot > CTreeManager.MAX_TREE_EXTENT)
+			{
+				return DoesntBelongToTree(pPoint, mostBot, distToBot);
+			}
 
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak - Vector3.UnitY, peak, pPoint }, Vector3.UnitY);
 			if (angle > CTreeManager.MAX_BRANCH_ANGLE) { return false; }
@@ -131,13 +145,17 @@ namespace ForestReco
 			return true;
 		}
 
+		private bool DoesntBelongToTree(Vector3 pPoint, Vector3 pFromPoint, float pDistance)
+		{
+			Console.WriteLine("point " + pPoint + " is too far from " + pFromPoint + 
+				". dist = " + pDistance);
+			return false;
+		}
+
 		private CBranch GetBranchFor(Vector3 pPoint)
 		{
 			//if (Math.Abs(pPoint.X) > 0.1f)
-			if (pPoint.X > 0)
-			{
-				Console.WriteLine("!");
-			}
+
 			//float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak + Vector3.UnitX, peak, pPoint }, Vector3.UnitY);
 			Vector2 peak2D = new Vector2(peak.X, peak.Z);
 			Vector2 point2D = new Vector2(pPoint.X, pPoint.Z);
@@ -243,18 +261,24 @@ namespace ForestReco
 						Vertex v2 = new Vertex(p + Vector3.UnitX * POINT_OFFSET, vertexIndex);
 						pointVertices.Add(v2);
 						vertexIndex++;
+						Vertex v3 = new Vertex(p + Vector3.UnitZ * POINT_OFFSET, vertexIndex);
+						pointVertices.Add(v3);
+						vertexIndex++;
 
 						//for first point set first point to connect to peak
 						Vector3 nextP = i == 0 ? b.points[0] : b.points[i];
 						nextP -= arrayCenter.ToVector3(true);
 						nextP += new Vector3(0, -(float)pArray.minHeight, -2 * nextP.Z);
 
-						Vertex v3 = new Vertex(nextP, vertexIndex);
-						pointVertices.Add(v3);
-						vertexIndex++;
-						Vertex v4 = new Vertex(nextP + Vector3.UnitX * POINT_OFFSET, vertexIndex);
+						Vertex v4 = new Vertex(nextP, vertexIndex);
 						pointVertices.Add(v4);
 						vertexIndex++;
+						/*Vertex v5 = new Vertex(nextP + Vector3.UnitX * POINT_OFFSET, vertexIndex);
+						pointVertices.Add(v5);
+						vertexIndex++;
+						Vertex v6 = new Vertex(p + Vector3.UnitZ * POINT_OFFSET, vertexIndex);
+						pointVertices.Add(v6);
+						vertexIndex++;*/
 
 						//Console.WriteLine("branch part " + p + " - " + nextP);
 
@@ -264,10 +288,13 @@ namespace ForestReco
 						}
 
 						//create 4-side representation of point
-						obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
 						obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
-						obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
 						obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
+						obj.FaceList.Add(new Face(new List<Vertex> { v3, v1, v4 }));
+
+						//obj.FaceList.Add(new Face(new List<Vertex> { v4, v5, v3 }));
+						//obj.FaceList.Add(new Face(new List<Vertex> { v5, v6, v3 }));
+						//obj.FaceList.Add(new Face(new List<Vertex> { v6, v4, v3 }));
 
 					}
 				}

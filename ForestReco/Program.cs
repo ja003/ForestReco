@@ -28,16 +28,17 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			fileName = @"debug_tree_01";
 			fileName = @"debug_tree_02";
+			fileName = @"debug_tree_03";
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
 
 
-			//notebook
-			string podkladyPath = CPlatformManager.GetPodkladyPath(EPlatform.Notebook);
+			//EPlatform platform = EPlatform.Notebook;
+			EPlatform platform = EPlatform.HomePC;
+
+			string podkladyPath = CPlatformManager.GetPodkladyPath(platform);
 			string[] lines = File.ReadAllLines(podkladyPath + @"\data-small\TXT\" + fileName + @".txt");
-			//home PC
-			//string[] lines = File.ReadAllLines(@"C:\Users\Admin\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\data-small\TXT\" + fileName + @".txt");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -78,22 +79,21 @@ namespace ForestReco
 			{
 				// <class, coordinate>
 				Tuple<int, SVector3> c = CCoordinatesParser.ParseLine(lines[i], header);
+				if (c == null) { continue; }
 
 				//2 = ground
 				//5 = high vegetation
-				if (c.Item1 == 5)
-				{
-					treeManager.AddPoint(c.Item2);
-				}
+				if (c.Item1 == 5) { treeManager.AddPoint(c.Item2); }
 
 				if (c.Item1 == 2 || c.Item1 == 5 && processCombined)
-				{
-					combinedArray.AddPointInField(c.Item1, c.Item2);
-				}
+					{ combinedArray.AddPointInField(c.Item1, c.Item2); }
+
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 			List<Obj> treeObjs = treeManager.GetTreeObjsFromField(combinedArray);
 			CObjExporter.ExportObjs(treeObjs, "trees_");
+
+			Console.WriteLine("\n===============\n");
 
 			treeManager.WriteResult();
 			Console.ReadKey();

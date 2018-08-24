@@ -38,7 +38,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return "br_<" + angleFrom + "," + angleTo + "> " + (points.Count > 0 ? points.Count + "|" : "");
+			return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + "|";
 		}
 	}
 }

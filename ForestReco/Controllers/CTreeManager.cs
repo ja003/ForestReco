@@ -17,10 +17,10 @@ namespace ForestReco
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
 			Console.WriteLine("\nAddPoint " + point);
-			
+
 			CTree selectedTree = null;
 			List<CTree> possibleTrees = GetPossibleTreesFor(point);
-			
+
 			foreach (CTree t in possibleTrees)
 			{
 				Console.WriteLine("try add to : " + t.ToString(false, false, true, false));
@@ -71,14 +71,15 @@ namespace ForestReco
 			foreach (CTree t in trees)
 			{
 				//it must be close to peak of some tree
-				//if (Vector3.Distance(pPoint, t.peak) < MAX_TREE_EXTENT / 2)
-				Vector2 point2D = new Vector2(pPoint.X, pPoint.Z);
-				Vector2 peak2D = new Vector2(t.peak.X, t.peak.Z);
-				if (Vector2.Distance(point2D, peak2D) < MAX_TREE_EXTENT / 2)
+				if (CUtils.Get2DDistance(pPoint, t.peak) < MAX_TREE_EXTENT / 2)
 				{
 					possibleTrees.Add(t);
+					t.possibleNewPoint = pPoint;
 				}
 			}
+			//sort trees by angle of given point to tree
+			possibleTrees.Sort((x, y) => CUtils.GetAngleToTree(x, x.possibleNewPoint).CompareTo(
+				CUtils.GetAngleToTree(y, y.possibleNewPoint)));
 			return possibleTrees;
 		}
 

@@ -58,12 +58,7 @@ namespace ForestReco
 		public void AssignTreeToNeighbours()
 		{
 			if (!HasAllNeighbours()) { return; }
-
-			if (this.Equals(new CPointField(new Tuple<int, int>(13, 23))))
-			{
-				Console.Write("!");
-			}
-
+			
 			foreach (CPointField n in GetNeighbours())
 			{
 				//already belongs to other tree
@@ -269,7 +264,6 @@ namespace ForestReco
 		/// <param name="pKernelSize"></param>
 		public bool CalculateLocalExtrem(bool pExtrem, int pKernelSize)
 		{
-			//if(indexInField == null){ Console.WriteLine("!");}
 			//dont calculate extrem if not all neighbours are defined (at border)
 			if (!HasAllNeighbours()) { return false; }
 
@@ -305,11 +299,6 @@ namespace ForestReco
 		
 		public double? GetAverageHeightFromClosestDefined(EHeight pHeight)
 		{
-			if (this.Equals(new CPointField(new Tuple<int, int>(10, 2))))
-			{
-				Console.Write("!");
-			}
-
 			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
 			//
 			CPointField closestFirst = GetClosestDefined(pHeight, EDirection.Left);
