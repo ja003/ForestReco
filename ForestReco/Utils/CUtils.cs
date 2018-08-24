@@ -50,7 +50,7 @@ namespace ForestReco
 		{
 			List<Vector3> points = new List<Vector3>
 			{
-				pTree.peak-Vector3.UnitY,
+				pTree.peak-Vector3.UnitY * 100,
 				pTree.peak,
 				pPoint
 			};

@@ -25,8 +25,9 @@ namespace ForestReco
 			string fileName = @"BK_1000AGL_classified";
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
-			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = @"debug_tree_03";
+			fileName = "R2-F-1-j_fix";
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
@@ -69,11 +70,11 @@ namespace ForestReco
 			CTreeManager treeManager = new CTreeManager();
 
 
-			bool processCombined = true;
+			bool processCombined = false;
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;
-			//linesToRead = 10000;
+			linesToRead = 30;
 
 			for (int i = 19; i < linesToRead; i++)
 			{
@@ -83,7 +84,8 @@ namespace ForestReco
 
 				//2 = ground
 				//5 = high vegetation
-				if (c.Item1 == 5) { treeManager.AddPoint(c.Item2); }
+				bool pForceTreePoint = true;
+				if (c.Item1 == 5 || pForceTreePoint) { treeManager.AddPoint(c.Item2); }
 
 				if (c.Item1 == 2 || c.Item1 == 5 && processCombined)
 					{ combinedArray.AddPointInField(c.Item1, c.Item2); }

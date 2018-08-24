@@ -12,7 +12,7 @@ namespace ForestReco
 		public static float MAX_TREE_EXTENT = 3;
 		public static float MAX_BRANCH_ANGLE = 45;
 
-		public static bool DEBUG = false;
+		public static bool DEBUG = true;
 
 		public void AddPoint(SVector3 pPoint)
 		{
