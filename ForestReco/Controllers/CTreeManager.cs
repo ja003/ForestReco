@@ -11,6 +11,7 @@ namespace ForestReco
 		private List<CTree> trees = new List<CTree>();
 		public static float MAX_TREE_EXTENT = 3;
 		public static float MAX_BRANCH_ANGLE = 45;
+		private int treeIndex;
 
 		public static bool DEBUG = true;
 
@@ -57,7 +58,8 @@ namespace ForestReco
 			}
 			else
 			{
-				trees.Add(new CTree(point, trees.Count));
+				trees.Add(new CTree(point, treeIndex));
+				treeIndex++;
 			}
 		}
 

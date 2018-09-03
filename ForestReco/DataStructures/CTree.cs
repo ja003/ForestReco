@@ -13,7 +13,7 @@ namespace ForestReco
 	public class CTree
 	{
 		public CTreePoint peak;
-		public List<CTreePoint> points = new List<CTreePoint>();
+		//public List<CTreePoint> points = new List<CTreePoint>();
 		private List<CBranch> branches = new List<CBranch>();
 
 		private const int BRANCH_ANGLE_STEP = 45;
@@ -33,7 +33,8 @@ namespace ForestReco
 		public CTree(Vector3 pPoint, int pTreeIndex)
 		{
 			peak = new CTreePoint(pPoint);
-			points.Add(peak);
+			//points.Add(peak);
+			if (CTreeManager.DEBUG) Console.WriteLine("new tree "+pTreeIndex);
 
 			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
@@ -57,16 +58,34 @@ namespace ForestReco
 				Console.WriteLine("Error. cant merge with itself.");
 				return;
 			}
-
-			foreach (CTreePoint p in pSubTree.points)
+			
+			foreach (CTreePoint p in pSubTree.GetAllPoints())
 			{
 				AddPoint(p);
 			}
+			//foreach (CTreePoint p in pSubTree.points)
+			//{
+			//	AddPoint(p);
+			//}
+		}
+
+		public List<CTreePoint> GetAllPoints()
+		{
+			List<CTreePoint> allPoints = new List<CTreePoint>();
+			allPoints.Add(peak);
+			foreach (CBranch b in branches)
+			{
+				foreach (CTreePoint p in b.points)
+				{
+					allPoints.Add(p);
+				}
+			}
+			return allPoints;
 		}
 
 		public void ForceAddPoint(Vector3 pPoint)
 		{
-			points.Add(new CTreePoint(pPoint));
+			//points.Add(new CTreePoint(pPoint));
 		}
 
 		public bool TryAddPoint(CTreePoint pPoint)
@@ -112,7 +131,7 @@ namespace ForestReco
 		/// </summary>
 		private void AddPoint(CTreePoint pPoint, bool pAddToBranch = true)
 		{
-			points.Add(pPoint);
+			//points.Add(pPoint);
 			if (peak.Includes(pPoint)) { peak.AddPoint(pPoint); }
 			else if (pPoint.Y > peak.Y)
 			{
@@ -207,7 +226,7 @@ namespace ForestReco
 			return treeIndex == t.treeIndex;
 		}
 
-		private const float POINT_OFFSET = 0.1f;
+		private const float POINT_OFFSET = 0.05f;
 
 		public Obj GetObj(string pName, CPointArray pArray, bool pExportBranches)
 		{
@@ -218,7 +237,7 @@ namespace ForestReco
 			int vertexIndex = 1;
 			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 
-			foreach (CTreePoint p in points)
+			foreach (CTreePoint p in GetAllPoints())
 			{
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
@@ -328,7 +347,7 @@ namespace ForestReco
 		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches)
 		{
 			string indexS = pIndex ? treeIndex.ToString() : "";
-			string pointsS = pPoints ? (" [" + points.Count + "]") : "";
+			string pointsS = pPoints ? (" [" + GetAllPoints().Count + "]") : "";
 			string peakS = pPeak ? "| peak = " + peak : "";
 			string branchesS = pBranches ? " | branches = " + GetBranchesCount() + "_|" : "";
 			if (pBranches)
