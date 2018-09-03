@@ -6,7 +6,7 @@ namespace ForestReco
 {
 	public class CBranch
 	{
-		public List<Vector3> points = new List<Vector3>();
+		public List<CTreePoint> points = new List<CTreePoint>();
 		private CTree tree;
 
 		private int angleFrom;
@@ -19,12 +19,19 @@ namespace ForestReco
 			angleTo = pAngleTo;
 		}
 
-		public void AddPoint(Vector3 pPoint)
+		public void AddPoint(CTreePoint pPoint)
 		{
-			if (CTreeManager.DEBUG) Console.Write("AddPoint " + pPoint.ToString("#+0.0#;-0.0") + " to " + this);
+			if (CTreeManager.DEBUG) 
+				Console.Write("AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
+
 			for (int i = 0; i < points.Count; i++)
 			{
-				if (pPoint.Y > points[i].Y)
+				CTreePoint pointOnBranch = points[i];
+				if (pointOnBranch.Includes(pPoint))
+				{
+					pointOnBranch.AddPoint(pPoint);
+				}
+				else if (pPoint.Y > pointOnBranch.Y)
 				{
 					points.Insert(i, pPoint);
 					if (CTreeManager.DEBUG) Console.WriteLine(" at " + i);

@@ -50,8 +50,8 @@ namespace ForestReco
 		{
 			List<Vector3> points = new List<Vector3>
 			{
-				pTree.peak-Vector3.UnitY * 100,
-				pTree.peak,
+				pTree.peak.Center - Vector3.UnitY * 100,
+				pTree.peak.Center,
 				pPoint
 			};
 			return AngleBetweenThreePoints(points);

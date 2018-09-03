@@ -14,23 +14,34 @@ namespace ForestReco
 
 		public static bool DEBUG = true;
 
+		private bool simpleExport = false;
+
+		private int pointCounter;
 		public void AddPoint(SVector3 pPoint)
 		{
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
-			if (DEBUG) Console.WriteLine("\nAddPoint " + point);
+			CTreePoint treePoint = new CTreePoint(point);
 
+			if (simpleExport)
+			{
+				if (trees.Count == 0) { trees.Add(new CTree(point, 0)); }
+				trees[0].ForceAddPoint(point);
+				return;
+			}
+
+			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + point);
+			pointCounter++;
 			CTree selectedTree = null;
 			List<CTree> possibleTrees = GetPossibleTreesFor(point);
 
 			foreach (CTree t in possibleTrees)
 			{
 				if (DEBUG) Console.WriteLine("try add to : " + t.ToString(false, false, true, false));
-				Vector3 peak = t.peak;
-				if (t.TryAddPoint(point))
+				CTreePoint peak = t.peak;
+				if (t.TryAddPoint(treePoint))
 				{
 					selectedTree = t;
-					if (DEBUG) Console.WriteLine(point + " added to tree with peak: " + peak);
 					break;
 				}
 			}
@@ -57,7 +68,7 @@ namespace ForestReco
 
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
 			{
-				higherTree.peak - Vector3.UnitY, higherTree.peak, lowerTree.peak
+				higherTree.peak.Center - Vector3.UnitY, higherTree.peak.Center, lowerTree.peak.Center
 			}, Vector3.UnitY);
 			if (angle < MAX_BRANCH_ANGLE)
 			{
@@ -73,15 +84,19 @@ namespace ForestReco
 			foreach (CTree t in trees)
 			{
 				//it must be close to peak of some tree
-				if (CUtils.Get2DDistance(pPoint, t.peak) < MAX_TREE_EXTENT / 2)
+				if (CUtils.Get2DDistance(pPoint, t.peak.Center) < MAX_TREE_EXTENT / 2)
 				{
 					possibleTrees.Add(t);
 					t.possibleNewPoint = pPoint;
 				}
 			}
 			//sort trees by angle of given point to tree
-			possibleTrees.Sort((x, y) => CUtils.GetAngleToTree(x, x.possibleNewPoint).CompareTo(
-				CUtils.GetAngleToTree(y, y.possibleNewPoint)));
+			//possibleTrees.Sort((x, y) => CUtils.GetAngleToTree(x, x.possibleNewPoint).CompareTo(
+			//	CUtils.GetAngleToTree(y, y.possibleNewPoint)));
+
+			//sort trees by 2D distance of given point to them
+			possibleTrees.Sort((x, y) => CUtils.Get2DDistance(x.peak.Center, pPoint).CompareTo(
+				CUtils.Get2DDistance(y.peak.Center, pPoint)));
 			return possibleTrees;
 		}
 
