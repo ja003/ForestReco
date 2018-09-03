@@ -25,9 +25,9 @@ namespace ForestReco
 			string fileName = @"BK_1000AGL_classified";
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
-			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = @"debug_tree_03";
-			fileName = "R2-F-1-j_fix";
+			//fileName = "R2-F-1-j_fix";
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
@@ -74,7 +74,7 @@ namespace ForestReco
 
 			//store coordinates to corresponding data strucures based on their class
 			int linesToRead = lines.Length;
-			linesToRead = 30;
+			//linesToRead = 300;
 
 			for (int i = 19; i < linesToRead; i++)
 			{
@@ -130,7 +130,7 @@ namespace ForestReco
 					EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 				objsToExport.Add(field);
 			}
-			CObjExporter.ExportObjs(objsToExport, "gr+tp+tree");
+			CObjExporter.ExportObjs(objsToExport, "debug_tree");
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

@@ -13,7 +13,7 @@ namespace ForestReco
 		public static float MAX_BRANCH_ANGLE = 45;
 		private int treeIndex;
 
-		public static bool DEBUG = true;
+		public static bool DEBUG = false;
 
 		private bool simpleExport = false;
 
