@@ -25,8 +25,8 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			//fileName = @"debug_tree_03";
-			fileName = "R2-F-1-j_fix";
+			fileName = "debug_tree_03";
+			//fileName = "R2-F-1-j_fix";
 
 
 			string saveFileName = "BKAGL_59_72_97";
@@ -77,7 +77,7 @@ namespace ForestReco
 			//store coordinates to corresponding data strucures based on their class
 			const int startLine = 19;
 			int linesToRead = lines.Length;
-			//linesToRead = startLine + 10;
+			//linesToRead = startLine + 1000;
 
 			List<Tuple<int, SVector3>> parsedLines = new List<Tuple<int, SVector3>>();
 
@@ -105,7 +105,7 @@ namespace ForestReco
 				{ combinedArray.AddPointInField(pl.Item1, pl.Item2); }
 
 				//if (parsedLines.IndexOf(pl) % 10 == 0) { Console.ReadKey(); }
-				//Console.ReadKey();
+				Console.ReadKey();
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 

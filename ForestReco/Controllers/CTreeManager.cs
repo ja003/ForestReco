@@ -13,7 +13,7 @@ namespace ForestReco
 		public static float MAX_BRANCH_ANGLE = 45;
 		private int treeIndex;
 
-		public static bool DEBUG = false;
+		public static bool DEBUG = true;
 
 		private bool simpleExport = false;
 
@@ -39,7 +39,7 @@ namespace ForestReco
 			foreach (CTree t in possibleTrees)
 			{
 				if (DEBUG) Console.WriteLine("- try add to : " + t.ToString(false, false, true, false));
-				CTreePoint peak = t.peak;
+				//CTreePoint peak = t.peak;
 				if (t.TryAddPoint(treePoint))
 				{
 					selectedTree = t;

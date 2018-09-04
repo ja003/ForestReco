@@ -39,6 +39,7 @@ namespace ForestReco
 					}
 				}
 			}
+			Console.WriteLine("Exported to " + filePath);
 		}
 
 		private static string GetFileExportPath(string pFileName)

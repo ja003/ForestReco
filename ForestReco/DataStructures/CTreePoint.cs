@@ -4,33 +4,35 @@ using System.Numerics;
 
 namespace ForestReco
 {
-	public class CTreePoint
+	public class CTreePoint : CBoundingBoxObject
 	{
 		public List<Vector3> Points = new List<Vector3>();
 
-		public Vector3 Center;
+		//public Vector3 Center;
 		public float X => Center.X;
 		public float Y => Center.Y;
 		public float Z => Center.Z;
 
+
+		//private Vector3 botLeft => minBB;
+		//private Vector3 botLeft => minBB;
+
+
+		public Vector3 maxHeight;
+
 		private const float POINT_EXTENT = 0.1f;
 
-		public CTreePoint(Vector3 pPoint)
+		public CTreePoint(Vector3 pPoint) : base(pPoint)
 		{
-			Points.Add(pPoint);
-			Center = pPoint;
+			AddPoint(pPoint);
 		}
-
-		public CTreePoint(CTreePoint pPoint)
-		{
-			Points = pPoint.Points;
-			Center = pPoint.Center;
-		}
-
+		
 		public void AddPoint(Vector3 pPoint)
 		{
 			Points.Add(pPoint);
-			Center = (Center + pPoint) / 2;
+			OnAddPoint(pPoint);
+
+			if (pPoint.Y > maxHeight.Y) { maxHeight = pPoint; }
 		}
 
 		public void AddPoint(CTreePoint pPoint)
@@ -43,15 +45,34 @@ namespace ForestReco
 				Console.WriteLine("1000!");
 			}
 
-			Points.AddRange(pPoint.Points);
-			Center = (Center + pPoint.Center) / 2;
+			foreach (Vector3 p in pPoint.Points)
+			{
+				AddPoint(p);
+			}
+			//Points.AddRange(pPoint.Points);
+			//Center = (Center + pPoint.Center) / 2;
 			if (CTreeManager.DEBUG)
 				Console.WriteLine("---- new center = " + Center);
 		}
 
-		public bool Includes(CTreePoint pPoint)
+
+		public Vector3 GetClosestPointTo(Vector3 pPoint)
 		{
-			return Includes(pPoint.Center);
+			Vector3 closestPoint = Points[0];
+			//todo: maybe better to return point on bounding box?
+			foreach (Vector3 p in Points)
+			{
+				if (Vector3.Distance(p, pPoint) < Vector3.Distance(closestPoint, pPoint))
+				{
+					closestPoint = p;
+				}
+			}
+			return closestPoint;
+		}
+
+		public virtual bool Includes(CTreePoint pPoint)
+		{
+			return Contains(pPoint.Center) || Includes(pPoint.Center);
 		}
 
 		private bool Includes(Vector3 pPoint)

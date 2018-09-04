@@ -10,7 +10,7 @@ namespace ForestReco
 		public static Tuple<int, SVector3> ParseLine(string pLine, CHeaderInfo pHeader)
 		{
 			string[] split = pLine.Split(null);
-			if (split.Length < 4)
+			if (split.Length < 4 || (split.Length > 0 && split[0].Contains("#")))
 			{
 				Console.WriteLine(pLine + " not valid");
 				return null;

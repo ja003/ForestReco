@@ -10,9 +10,9 @@ namespace ForestReco
 	/// <summary>
 	/// Y = height
 	/// </summary>
-	public class CTree
+	public class CTree : CBoundingBoxObject
 	{
-		public CTreePoint peak;
+		public CPeak peak;
 		//public List<CTreePoint> points = new List<CTreePoint>();
 		private List<CBranch> branches = new List<CBranch>();
 
@@ -23,16 +23,16 @@ namespace ForestReco
 		//private const float MAX_TREE_EXTENT = 3;
 		//private const float MAX_ANGLE = 45;
 
-		private Vector3 mostLeft;
-		private Vector3 mostTop;
-		private Vector3 mostRight;
-		private Vector3 mostBot;
+		//private Vector3 mostLeft;
+		//private Vector3 mostTop;
+		//private Vector3 mostRight;
+		//private Vector3 mostBot;
 
 		public int treeIndex;
 
-		public CTree(Vector3 pPoint, int pTreeIndex)
+		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
 		{
-			peak = new CTreePoint(pPoint);
+			peak = new CPeak(pPoint);
 			//points.Add(peak);
 			if (CTreeManager.DEBUG) Console.WriteLine("new tree "+pTreeIndex);
 
@@ -42,10 +42,7 @@ namespace ForestReco
 				branches.Add(new CBranch(this, i, i + BRANCH_ANGLE_STEP));
 			}
 
-			mostLeft = pPoint;
-			mostTop = pPoint;
-			mostRight = pPoint;
-			mostBot = pPoint;
+			OnAddPoint(pPoint);
 		}
 
 		public void MergeWith(CTree pSubTree)
@@ -90,7 +87,7 @@ namespace ForestReco
 
 		public bool TryAddPoint(CTreePoint pPoint)
 		{
-			if (IsNewPeak(pPoint))
+			 if (IsNewPeak(pPoint))
 			{
 				SetNewPeak(pPoint);
 				return true;
@@ -131,22 +128,18 @@ namespace ForestReco
 		/// </summary>
 		private void AddPoint(CTreePoint pPoint, bool pAddToBranch = true)
 		{
-			//points.Add(pPoint);
 			if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
 				pAddToBranch = false;
 			}
-			else if (pPoint.Y > peak.Y)
+			/*else if (pPoint.Y > peak.Y)
 			{
 				peak = pPoint;
 				if (CTreeManager.DEBUG) Console.WriteLine("-- peak changed to = " + pPoint);
-			}
+			}*/
 
-			if (pPoint.X < mostLeft.X) { mostLeft = pPoint.Center; }
-			if (pPoint.Z > mostTop.Z) { mostTop = pPoint.Center; }
-			if (pPoint.X > mostRight.X) { mostRight = pPoint.Center; }
-			if (pPoint.Z < mostBot.Z) { mostBot = pPoint.Center; }
+			OnAddPoint(pPoint.Center);
 
 			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
 		}
@@ -154,8 +147,22 @@ namespace ForestReco
 
 		private bool BelongsToTree(CTreePoint pPoint)
 		{
-			//is close
-			float distToLeft = CUtils.Get2DDistance(pPoint.Center, mostLeft);
+			//todo: not sure
+			/*if (Contains(pPoint.Center))
+			{
+				return true;
+			}*/
+
+			//maybe it would be better to meassure distance to centre of whole tree?
+			//float dist2D = CUtils.Get2DDistance(Center, pPoint.Center);
+			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint.Center);
+			if (dist2D > CTreeManager.MAX_TREE_EXTENT/2)
+			{
+				if (CTreeManager.DEBUG) Console.WriteLine("- dist to hight " + dist2D);
+				return false;
+			}
+
+			/*float distToLeft = CUtils.Get2DDistance(pPoint.Center, mostLeft);
 			if (distToLeft > CTreeManager.MAX_TREE_EXTENT)
 			{
 				return DoesntBelongToTree(pPoint.Center, mostLeft, distToLeft);
@@ -174,13 +181,18 @@ namespace ForestReco
 			if (distToBot > CTreeManager.MAX_TREE_EXTENT)
 			{
 				return DoesntBelongToTree(pPoint.Center, mostBot, distToBot);
-			}
+			}*/
 
+			Vector3 suitablePoint = peak.GetClosestPointTo(pPoint.Center);
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
 			{
-				peak.Center - Vector3.UnitY, peak.Center, pPoint.Center
+				suitablePoint - Vector3.UnitY, suitablePoint, pPoint.Center
 			}, Vector3.UnitY);
-			if (angle > CTreeManager.MAX_BRANCH_ANGLE) { return false; }
+			if (angle > CTreeManager.MAX_BRANCH_ANGLE)
+			{
+				if (CTreeManager.DEBUG) Console.WriteLine("- angle to hight " + angle);
+				return false; 
+			}
 
 			return true;
 		}
@@ -194,9 +206,10 @@ namespace ForestReco
 
 		private CBranch GetBranchFor(CTreePoint pPoint)
 		{
-			//if (Math.Abs(pPoint.X) > 0.1f)
-
-			//float angle = CUtils.AngleBetweenThreePoints(new List<Vector3> { peak + Vector3.UnitX, peak, pPoint }, Vector3.UnitY);
+			if (peak.maxHeight.Y < pPoint.Y)
+			{
+				Console.WriteLine("Error. " + pPoint + " is higher than peak " + peak);
+			}
 			Vector2 peak2D = new Vector2(peak.X, peak.Z);
 			Vector2 point2D = new Vector2(pPoint.X, pPoint.Z);
 			Vector2 dir = point2D - peak2D;
