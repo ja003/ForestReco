@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace ForestReco
 {
-	public static class CCoordinatesParser
+	public static class CLazTxtParser
 	{
 		public static Tuple<int, SVector3> ParseLine(string pLine, CHeaderInfo pHeader)
 		{

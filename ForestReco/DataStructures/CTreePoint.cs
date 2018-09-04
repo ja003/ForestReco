@@ -36,11 +36,17 @@ namespace ForestReco
 		public void AddPoint(CTreePoint pPoint)
 		{
 			if (CTreeManager.DEBUG)
-				Console.WriteLine("- add tp " + pPoint + " to " + this);
+				Console.WriteLine("---- add tp " + pPoint + " to " + this);
+
+			if (pPoint.Points.Count > 1000)
+			{
+				Console.WriteLine("1000!");
+			}
+
 			Points.AddRange(pPoint.Points);
 			Center = (Center + pPoint.Center) / 2;
 			if (CTreeManager.DEBUG)
-				Console.WriteLine("- new center = " + Center);
+				Console.WriteLine("---- new center = " + Center);
 		}
 
 		public bool Includes(CTreePoint pPoint)
@@ -55,7 +61,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return Center + " [" + Points.Count+"]";
+			return Center + " [" + Points.Count + "]";
 		}
 
 		public CTreePoint Clone()

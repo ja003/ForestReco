@@ -19,25 +19,27 @@ namespace ForestReco
 	{
 		static void Main()
 		{
-			CultureInfo ci = new CultureInfo("en");
-			Thread.CurrentThread.CurrentCulture = ci;
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
 			string fileName = @"BK_1000AGL_classified";
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
-			fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
+			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = @"debug_tree_03";
-			//fileName = "R2-F-1-j_fix";
+			fileName = "R2-F-1-j_fix";
+
 
 			string saveFileName = "BKAGL_59_72_97";
 			//string saveFileName = "BK_1000AGL_";
 
 
-			//EPlatform platform = EPlatform.Notebook;
-			EPlatform platform = EPlatform.HomePC;
+			EPlatform platform = EPlatform.Notebook;
+			//EPlatform platform = EPlatform.HomePC;
 
 			string podkladyPath = CPlatformManager.GetPodkladyPath(platform);
-			string[] lines = File.ReadAllLines(podkladyPath + @"\data-small\TXT\" + fileName + @".txt");
+			string fullFilePath = podkladyPath + @"\data-small\TXT\" + fileName + @".txt";
+			string[] lines = File.ReadAllLines(fullFilePath);
+			Console.WriteLine("load: " + fullFilePath + "\n");
 
 			CHeaderInfo header = new CHeaderInfo(lines[15], lines[16], lines[17], lines[18]);
 			Console.WriteLine(header);
@@ -73,25 +75,40 @@ namespace ForestReco
 			bool processCombined = false;
 
 			//store coordinates to corresponding data strucures based on their class
+			const int startLine = 19;
 			int linesToRead = lines.Length;
-			//linesToRead = 300;
+			//linesToRead = startLine + 10;
 
-			for (int i = 19; i < linesToRead; i++)
+			List<Tuple<int, SVector3>> parsedLines = new List<Tuple<int, SVector3>>();
+
+			for (int i = startLine; i < linesToRead; i++)
 			{
 				// <class, coordinate>
-				Tuple<int, SVector3> c = CCoordinatesParser.ParseLine(lines[i], header);
+				Tuple<int, SVector3> c = CLazTxtParser.ParseLine(lines[i], header);
 				if (c == null) { continue; }
+				parsedLines.Add(c);
+			}
+			Console.WriteLine("parsedLines: " + parsedLines.Count);
+			parsedLines.Sort((y, x) => x.Item2.Z.CompareTo(y.Item2.Z)); //sort descending by height
+			Console.WriteLine("\n=======sorted========\n");
+			//Console.ReadKey();
+			//return;
 
+			foreach (Tuple<int, SVector3> pl in parsedLines)
+			{
 				//2 = ground
 				//5 = high vegetation
 				bool pForceTreePoint = true;
-				if (c.Item1 == 5 || pForceTreePoint) { treeManager.AddPoint(c.Item2); }
+				if (pl.Item1 == 5 || pForceTreePoint) { treeManager.AddPoint(pl.Item2); }
 
-				if (c.Item1 == 2 || c.Item1 == 5 && processCombined)
-					{ combinedArray.AddPointInField(c.Item1, c.Item2); }
+				if (processCombined && (pl.Item1 == 2 || pl.Item1 == 5))
+				{ combinedArray.AddPointInField(pl.Item1, pl.Item2); }
 
+				//if (parsedLines.IndexOf(pl) % 10 == 0) { Console.ReadKey(); }
+				//Console.ReadKey();
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
+
 			List<Obj> treeObjs = treeManager.GetTreeObjsFromField(combinedArray);
 			//CObjExporter.ExportObjs(treeObjs, "trees_");
 			Console.WriteLine("\n===============\n");

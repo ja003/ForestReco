@@ -38,7 +38,7 @@ namespace ForestReco
 
 			foreach (CTree t in possibleTrees)
 			{
-				if (DEBUG) Console.WriteLine("try add to : " + t.ToString(false, false, true, false));
+				if (DEBUG) Console.WriteLine("- try add to : " + t.ToString(false, false, true, false));
 				CTreePoint peak = t.peak;
 				if (t.TryAddPoint(treePoint))
 				{

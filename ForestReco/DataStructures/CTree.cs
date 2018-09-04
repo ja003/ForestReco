@@ -106,7 +106,7 @@ namespace ForestReco
 
 		private void SetNewPeak(CTreePoint pPoint)
 		{
-			if (CTreeManager.DEBUG) Console.WriteLine("SetNewPeak " + pPoint);
+			if (CTreeManager.DEBUG) Console.WriteLine("-- SetNewPeak " + pPoint);
 			CTreePoint oldPeak = peak.Clone();
 			//first set new peak then move old one to appropriate branch
 			//but only if new peak is not merged old one
@@ -132,11 +132,15 @@ namespace ForestReco
 		private void AddPoint(CTreePoint pPoint, bool pAddToBranch = true)
 		{
 			//points.Add(pPoint);
-			if (peak.Includes(pPoint)) { peak.AddPoint(pPoint); }
+			if (peak.Includes(pPoint))
+			{
+				peak.AddPoint(pPoint);
+				pAddToBranch = false;
+			}
 			else if (pPoint.Y > peak.Y)
 			{
 				peak = pPoint;
-				if (CTreeManager.DEBUG) Console.WriteLine("new peak = " + pPoint);
+				if (CTreeManager.DEBUG) Console.WriteLine("-- peak changed to = " + pPoint);
 			}
 
 			if (pPoint.X < mostLeft.X) { mostLeft = pPoint.Center; }

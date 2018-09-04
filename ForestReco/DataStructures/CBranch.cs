@@ -22,7 +22,7 @@ namespace ForestReco
 		public void AddPoint(CTreePoint pPoint)
 		{
 			if (CTreeManager.DEBUG) 
-				Console.Write("AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
+				Console.Write("--- AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
 
 			for (int i = 0; i < points.Count; i++)
 			{
