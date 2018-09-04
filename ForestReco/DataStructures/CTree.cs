@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Numerics;
 using System.Security.Principal;
 using ObjParser;
@@ -34,7 +35,7 @@ namespace ForestReco
 		{
 			peak = new CPeak(pPoint);
 			//points.Add(peak);
-			if (CTreeManager.DEBUG) Console.WriteLine("new tree "+pTreeIndex);
+			if (CTreeManager.DEBUG) Console.WriteLine("new tree " + pTreeIndex);
 
 			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
@@ -55,7 +56,7 @@ namespace ForestReco
 				Console.WriteLine("Error. cant merge with itself.");
 				return;
 			}
-			
+
 			foreach (CTreePoint p in pSubTree.GetAllPoints())
 			{
 				AddPoint(p);
@@ -87,7 +88,7 @@ namespace ForestReco
 
 		public bool TryAddPoint(CTreePoint pPoint)
 		{
-			 if (IsNewPeak(pPoint))
+			if (IsNewPeak(pPoint))
 			{
 				SetNewPeak(pPoint);
 				return true;
@@ -156,7 +157,7 @@ namespace ForestReco
 			//maybe it would be better to meassure distance to centre of whole tree?
 			//float dist2D = CUtils.Get2DDistance(Center, pPoint.Center);
 			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint.Center);
-			if (dist2D > CTreeManager.MAX_TREE_EXTENT/2)
+			if (dist2D > CTreeManager.MAX_TREE_EXTENT / 2)
 			{
 				if (CTreeManager.DEBUG) Console.WriteLine("- dist to hight " + dist2D);
 				return false;
@@ -188,13 +189,32 @@ namespace ForestReco
 			{
 				suitablePoint - Vector3.UnitY, suitablePoint, pPoint.Center
 			}, Vector3.UnitY);
-			if (angle > CTreeManager.MAX_BRANCH_ANGLE)
+			//if (angle > CTreeManager.MAX_BRANCH_ANGLE)
+			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint.Center);
+			if (angle > maxBranchAngle)
 			{
-				if (CTreeManager.DEBUG) Console.WriteLine("- angle to hight " + angle);
-				return false; 
+				if (CTreeManager.DEBUG) Console.WriteLine("- angle to hight " + angle + "°/"+ maxBranchAngle+ "°. dist = " + 
+					Vector3.Distance(suitablePoint, pPoint.Center));
+				return false;
 			}
 
 			return true;
+		}
+
+		private float GetMaxBranchAngle(Vector3 pPeakPoint, Vector3 pNewPoint)
+		{
+			float distance = Vector3.Distance(pPeakPoint, pNewPoint);
+			const float DIST_STEP = 0.1f;
+			if (distance < 1)
+			{
+				return 100 - 5 * distance / DIST_STEP;
+			}
+			//if (distance < 1 * DIST_STEP) { return 90; }
+			//if (distance < 2 * DIST_STEP) { return 80; }
+			//if (distance < 3 * DIST_STEP) { return 70; }
+			//if (distance < 4 * DIST_STEP) { return 60; }
+			//if (distance < 5 * DIST_STEP) { return 50; }
+			return CTreeManager.MAX_BRANCH_ANGLE;
 		}
 
 		private bool DoesntBelongToTree(Vector3 pPoint, Vector3 pFromPoint, float pDistance)
@@ -254,7 +274,15 @@ namespace ForestReco
 			int vertexIndex = 1;
 			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 
-			foreach (CTreePoint p in GetAllPoints())
+			List<CTreePoint> allTreePoints = GetAllPoints();
+
+			//display all peak points
+			foreach (Vector3 peakPoint in peak.Points)
+			{
+				allTreePoints.Add(new CTreePoint(peakPoint));
+			}
+
+			foreach (CTreePoint p in allTreePoints)
 			{
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
