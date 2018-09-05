@@ -26,7 +26,8 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = "debug_tree_03";
-			fileName = "R2-F-1-j_fix";
+			//fileName = "R2-F-1-j_fix";
+			fileName = "debug_tree_04";
 
 
 			string saveFileName = "BKAGL_59_72_97";
@@ -77,32 +78,40 @@ namespace ForestReco
 			//store coordinates to corresponding data strucures based on their class
 			const int startLine = 19;
 			int linesToRead = lines.Length;
-			linesToRead = startLine + 10;
+			//linesToRead = startLine + 500;
 
 			List<Tuple<int, SVector3>> parsedLines = new List<Tuple<int, SVector3>>();
 
-			for (int i = startLine; i < linesToRead; i++)
+			for (int i = startLine; i < Math.Min(lines.Length, linesToRead); i++)
 			{
 				// <class, coordinate>
 				Tuple<int, SVector3> c = CLazTxtParser.ParseLine(lines[i], header);
 				if (c == null) { continue; }
 				parsedLines.Add(c);
 			}
+			//todo: DEBUG
+			parsedLines = CDebug.GetTreeStraight();
+
 			Console.WriteLine("parsedLines: " + parsedLines.Count);
-			parsedLines.Sort((y, x) => x.Item2.Z.CompareTo(y.Item2.Z)); //sort descending by height
+			//parsedLines.Sort((y, x) => x.Item2.Z.CompareTo(y.Item2.Z)); //sort descending by height
 			Console.WriteLine("\n=======sorted========\n");
 			//Console.ReadKey();
 			//return;
 
-			foreach (Tuple<int, SVector3> pl in parsedLines)
+			int pointsToAddCount = parsedLines.Count;
+			pointsToAddCount = 500;
+
+
+			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{
+				Tuple<int, SVector3> parsedLine = parsedLines[i];
 				//2 = ground
 				//5 = high vegetation
 				bool pForceTreePoint = true;
-				if (pl.Item1 == 5 || pForceTreePoint) { treeManager.AddPoint(pl.Item2); }
+				if (parsedLine.Item1 == 5 || pForceTreePoint) { treeManager.AddPoint(parsedLine.Item2); }
 
-				if (processCombined && (pl.Item1 == 2 || pl.Item1 == 5))
-				{ combinedArray.AddPointInField(pl.Item1, pl.Item2); }
+				if (processCombined && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
+				{ combinedArray.AddPointInField(parsedLine.Item1, parsedLine.Item2); }
 
 				//if (parsedLines.IndexOf(pl) % 10 == 0) { Console.ReadKey(); }
 				//Console.ReadKey();

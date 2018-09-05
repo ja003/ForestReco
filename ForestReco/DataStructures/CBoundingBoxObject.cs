@@ -20,8 +20,11 @@ namespace ForestReco
 		public void OnAddPoint(Vector3 pPoint)
 		{
 			if (pPoint.X < minBB.X) { minBB.X = pPoint.X; }
+			if (pPoint.Y < minBB.Y) { minBB.Y = pPoint.Y; }
 			if (pPoint.Z < minBB.Z) { minBB.Z = pPoint.Z; }
+
 			if (pPoint.X > maxBB.X) { maxBB.X = pPoint.X; }
+			if (pPoint.Y > maxBB.Y) { maxBB.Y = pPoint.Y; }
 			if (pPoint.Z > maxBB.Z) { maxBB.Z = pPoint.Z; }
 		}
 

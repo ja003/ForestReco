@@ -52,7 +52,7 @@ namespace ForestReco
 			//Points.AddRange(pPoint.Points);
 			//Center = (Center + pPoint.Center) / 2;
 			if (CTreeManager.DEBUG)
-				Console.WriteLine("---- new center = " + Center);
+				Console.WriteLine("---- new center = " + Center.ToString("#+0.00#;-0.00"));
 		}
 
 
@@ -89,6 +89,10 @@ namespace ForestReco
 		{
 			CTreePoint cloneTreePoint = new CTreePoint(Center);
 			cloneTreePoint.Points = Points;
+			foreach (Vector3 p in Points)
+			{
+				OnAddPoint(p);
+			}
 			return cloneTreePoint;
 		}
 	}

@@ -22,5 +22,16 @@ namespace ForestReco
 			return distance2D < 0.5f && yDiff < 0.2f;
 		}
 
+		public new CPeak Clone()
+		{
+			CPeak clonePeak = new CPeak(Center);
+			clonePeak.Points = Points;
+			foreach (Vector3 p in Points)
+			{
+				OnAddPoint(p);
+			}
+			return clonePeak;
+		}
+
 	}
 }

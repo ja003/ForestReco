@@ -24,18 +24,22 @@ namespace ForestReco
 			if (CTreeManager.DEBUG) 
 				Console.Write("--- AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
 
-			for (int i = 0; i < points.Count; i++)
+			if (points.Count != 0)
 			{
-				CTreePoint pointOnBranch = points[i];
-				if (pointOnBranch.Includes(pPoint))
+				for (int i = 0; i < points.Count; i++)
 				{
-					pointOnBranch.AddPoint(pPoint);
-				}
-				else if (pPoint.Y > pointOnBranch.Y)
-				{
-					points.Insert(i, pPoint);
-					if (CTreeManager.DEBUG) Console.WriteLine(" at " + i);
-					return;
+					CTreePoint pointOnBranch = points[i];
+					if (pointOnBranch.Includes(pPoint))
+					{
+						pointOnBranch.AddPoint(pPoint);
+					}
+					else if (pPoint.Y > pointOnBranch.Y)
+					{
+						points.Insert(i, pPoint);
+						if (CTreeManager.DEBUG)
+							Console.WriteLine(" at " + i);
+						return;
+					}
 				}
 			}
 			if (CTreeManager.DEBUG) Console.WriteLine("--");
