@@ -8,7 +8,7 @@ namespace ForestReco
 		public static List<Tuple<int, SVector3>> GetTreeStraight()
 		{
 			List<Tuple<int, SVector3>> points = new List<Tuple<int, SVector3>>();
-			for (int i = 0; i < 200; i++)
+			for (int i = 0; i < 10; i++)
 			{
 				const float POINT_STEP = 0.05f;
 				points.Add(new Tuple<int, SVector3>(5, new SVector3(0,0,i*POINT_STEP)));

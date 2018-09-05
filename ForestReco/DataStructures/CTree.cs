@@ -151,15 +151,8 @@ namespace ForestReco
 				pAddToBranch = false;
 			}
 
-			/*else if (pPoint.Y > peak.Y)
-			{
-				peak = pPoint;
-				if (CTreeManager.DEBUG) Console.WriteLine("-- peak changed to = " + pPoint);
-			}*/
-
-			OnAddPoint(pPoint.Center);
-
 			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
+			OnAddPoint(pPoint.Center);
 		}
 
 		private bool BelongsToTree(CTreePoint pPoint)
@@ -266,6 +259,13 @@ namespace ForestReco
 			return branches[(int)(angle / BRANCH_ANGLE_STEP)];
 		}
 
+		public int GetPointCount()
+		{
+			int count = 0;
+			count += peak.Points.Count;
+			count += GetBranchesPointCount();
+			return count;
+		}
 
 		private int GetBranchesCount()
 		{
@@ -273,6 +273,16 @@ namespace ForestReco
 			foreach (CBranch b in branches)
 			{
 				if (b.points.Count > 0) { count++; }
+			}
+			return count;
+		}
+
+		private int GetBranchesPointCount()
+		{
+			int count = 0;
+			foreach (CBranch b in branches)
+			{
+				count += b.GetPointCount();
 			}
 			return count;
 		}
@@ -421,7 +431,7 @@ namespace ForestReco
 			string indexS = pIndex ? treeIndex.ToString() : "";
 			string pointsS = pPoints ? (" [" + GetAllPoints().Count + "]") : "";
 			string peakS = pPeak ? "| peak = " + peak : "";
-			string branchesS = pBranches ? " | branches = " + GetBranchesCount() + "_|" : "";
+			string branchesS = pBranches ? " | branches = " + GetBranchesCount() + "[" + GetBranchesPointCount() + "]" + "_|" : "";
 			if (pBranches)
 			{
 				foreach (CBranch b in branches)

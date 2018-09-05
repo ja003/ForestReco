@@ -18,8 +18,14 @@ namespace ForestReco
 		private bool simpleExport = false;
 
 		private int pointCounter;
-		public void AddPoint(SVector3 pPoint)
+		public void AddPoint(SVector3 pPoint, int pPointIndex)
 		{
+			if (pPointIndex == 246)
+			{
+				Console.WriteLine("§");
+				DEBUG = true;
+			}
+
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
 			CTreePoint treePoint = new CTreePoint(point);
@@ -60,6 +66,11 @@ namespace ForestReco
 			{
 				trees.Add(new CTree(point, treeIndex));
 				treeIndex++;
+			}
+
+			if (trees.Count == 1 && pPointIndex != trees[0].GetPointCount() - 1)
+			{
+				Console.WriteLine(pPointIndex + "Error. Incorrect point count. " + pPoint);
 			}
 		}
 

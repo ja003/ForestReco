@@ -22,7 +22,7 @@ namespace ForestReco
 		public void AddPoint(CTreePoint pPoint)
 		{
 			if (CTreeManager.DEBUG) 
-				Console.Write("--- AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
+				Console.WriteLine("--- AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
 
 			if (points.Count != 0)
 			{
@@ -42,14 +42,27 @@ namespace ForestReco
 					}
 				}
 			}
+			else
+			{
+				points.Add(pPoint);
+			}
 			if (CTreeManager.DEBUG) Console.WriteLine("--");
+		}
 
-			points.Add(pPoint);
+		public int GetPointCount()
+		{
+			int count = 0;
+			foreach (CTreePoint p in points)
+			{
+				count += p.Points.Count;
+			}
+			return count;
 		}
 
 		public override string ToString()
 		{
-			return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + "|";
+			return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";
 		}
+
 	}
 }
