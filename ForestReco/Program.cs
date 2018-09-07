@@ -34,8 +34,8 @@ namespace ForestReco
 			//string saveFileName = "BK_1000AGL_";
 
 
-			EPlatform platform = EPlatform.Notebook;
-			//EPlatform platform = EPlatform.HomePC;
+			//EPlatform platform = EPlatform.Notebook;
+			EPlatform platform = EPlatform.HomePC;
 
 			string podkladyPath = CPlatformManager.GetPodkladyPath(platform);
 			string fullFilePath = podkladyPath + @"\data-small\TXT\" + fileName + @".txt";
@@ -105,8 +105,7 @@ namespace ForestReco
 			//return;
 
 			int pointsToAddCount = parsedLines.Count;
-			pointsToAddCount = 247;
-
+			//pointsToAddCount = 1000;
 
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{

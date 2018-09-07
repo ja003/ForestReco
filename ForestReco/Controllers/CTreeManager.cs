@@ -20,12 +20,6 @@ namespace ForestReco
 		private int pointCounter;
 		public void AddPoint(SVector3 pPoint, int pPointIndex)
 		{
-			if (pPointIndex == 246)
-			{
-				Console.WriteLine("§");
-				DEBUG = true;
-			}
-
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
 			CTreePoint treePoint = new CTreePoint(point);
