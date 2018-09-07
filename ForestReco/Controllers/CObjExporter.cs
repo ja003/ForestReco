@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using ObjParser;
 using ObjParser.Types;
 
@@ -9,6 +10,60 @@ namespace ForestReco
 	public static class CObjExporter
 	{
 		private const string DEFAULT_FILENAME = "tree";
+
+		public static void ExportPoints(List<Vector3> pPoints, string pFileName, CPointArray pArray)
+		{
+			Obj obj = new Obj(pFileName);
+			//obj.Position = peak;
+			int vertexIndex = 1;
+			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
+			
+
+			foreach (Vector3 p in pPoints)
+			{
+				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
+				clonePoint -= arrayCenter.ToVector3(true);
+				clonePoint += new Vector3(0, -(float)pArray.minHeight, -2 * clonePoint.Z);
+
+				List<Vertex> pointVertices = new List<Vertex>();
+
+				Vertex v1 = new Vertex(clonePoint, vertexIndex);
+				pointVertices.Add(v1);
+				vertexIndex++;
+
+
+				Vertex v2 = new Vertex(clonePoint + Vector3.UnitX * CTree.POINT_OFFSET, vertexIndex);
+				pointVertices.Add(v2);
+				vertexIndex++;
+
+				Vertex v3 = new Vertex(clonePoint + Vector3.UnitZ * CTree.POINT_OFFSET, vertexIndex);
+				pointVertices.Add(v3);
+				vertexIndex++;
+
+				Vertex v4 = new Vertex(clonePoint + Vector3.UnitY * CTree.POINT_OFFSET, vertexIndex);
+				pointVertices.Add(v4);
+				vertexIndex++;
+
+				foreach (Vertex v in pointVertices)
+				{
+					obj.VertexList.Add(v);
+				}
+
+				//create 4-side representation of point
+				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
+				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
+				obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
+				obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
+			}
+			obj.updateSize();
+
+			ExportObj(obj, pFileName);
+		}
+
+		public static void ExportObj(Obj pObj, string pFileName)
+		{
+			ExportObjs(new List<Obj> {pObj}, pFileName);
+		}
 
 		public static void ExportObjs(List<Obj> pObjs, string pFileName)
 		{

@@ -108,6 +108,7 @@ namespace ForestReco
 			int pointsToAddCount = parsedLines.Count;
 			//pointsToAddCount = 50;
 
+			List<Vector3> allPoints = new List<Vector3>();
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{
 				Tuple<int, SVector3> parsedLine = parsedLines[i];
@@ -124,6 +125,7 @@ namespace ForestReco
 					//Console.ReadKey();
 				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
+				allPoints.Add(parsedLine.Item2.ToVector3(true));
 			}
 
 			List<Obj> treeObjs = treeManager.GetTreeObjsFromField(combinedArray);
@@ -164,7 +166,13 @@ namespace ForestReco
 					EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 				objsToExport.Add(field);
 			}
+
 			CObjExporter.ExportObjs(objsToExport, saveFileName);
+			bool exportBasic = true;
+			if (exportBasic)
+			{
+				CObjExporter.ExportPoints(allPoints, saveFileName+"_basec", combinedArray);
+			}
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

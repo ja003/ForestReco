@@ -273,7 +273,7 @@ namespace ForestReco
 			return treeIndex == t.treeIndex;
 		}
 
-		private const float POINT_OFFSET = 0.05f;
+		public const float POINT_OFFSET = 0.05f;
 
 		public Obj GetObj(string pName, CPointArray pArray, bool pExportBranches)
 		{
