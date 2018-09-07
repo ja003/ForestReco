@@ -155,15 +155,20 @@ namespace ForestReco
 			OnAddPoint(pPoint.Center);
 		}
 
-		public bool BelongsToTree(CTreePoint pPoint)
+		public bool BelongsToTree(CTreePoint pPoint, bool pDebug = true)
 		{
+			if (IsNewPeak(pPoint))
+			{
+				return true;
+			}
+
 			const float MAX_DIST_TO_TREE_BB = 0.1f;
 			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint.Center);
 			float distToBB = Get2DDistanceFromBBTo(pPoint.Center);
 			//it must be close to peak of some tree or to its BB
 			if (dist2D > CTreeManager.MAX_TREE_EXTENT / 2 && distToBB > MAX_DIST_TO_TREE_BB)
 			{
-				if (CTreeManager.DEBUG) Console.WriteLine("- dist too high " + dist2D + "|"+distToBB);
+				if (CTreeManager.DEBUG && pDebug) Console.WriteLine("- dist too high " + dist2D + "|" + distToBB);
 				return false;
 			}
 
@@ -175,7 +180,7 @@ namespace ForestReco
 			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint.Center);
 			if (angle > maxBranchAngle)
 			{
-				if (CTreeManager.DEBUG) Console.WriteLine("- angle too high " + angle + "°/" + maxBranchAngle + "°. dist = " +
+				if (CTreeManager.DEBUG && pDebug) Console.WriteLine("- angle too high " + angle + "°/" + maxBranchAngle + "°. dist = " +
 					Vector3.Distance(suitablePoint, pPoint.Center));
 				return false;
 			}

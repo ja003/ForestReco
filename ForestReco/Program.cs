@@ -106,7 +106,7 @@ namespace ForestReco
 			//return;
 
 			int pointsToAddCount = parsedLines.Count;
-			pointsToAddCount = 110;
+			//pointsToAddCount = 500;
 
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{

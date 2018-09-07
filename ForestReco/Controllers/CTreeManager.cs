@@ -10,11 +10,11 @@ namespace ForestReco
 	{
 		private List<CTree> trees = new List<CTree>();
 		public const float MAX_TREE_EXTENT = 3;
-		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2 + 1;
+		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
 		public static float MAX_BRANCH_ANGLE = 45;
 		private int treeIndex;
 
-		public static bool DEBUG = true;
+		public static bool DEBUG = false;
 
 		private bool simpleExport = false;
 
@@ -36,7 +36,7 @@ namespace ForestReco
 			pointCounter++;
 			CTree selectedTree = null;
 
-			if (Vector3.Distance(point, new Vector3(678.44f, 136.34f, 1159.85f)) < 0.01f)
+			if (Vector3.Distance(point, new Vector3(677.37f, 134.18f, 1161.97f)) < 0.01f)
 			{
 				Console.WriteLine("¨¨");
 			}
@@ -53,7 +53,7 @@ namespace ForestReco
 					break;
 				}
 			}
-			if (selectedTree != null)
+			/*if (selectedTree != null)
 			{
 				foreach (CTree t in possibleTrees)
 				{
@@ -63,7 +63,8 @@ namespace ForestReco
 					}
 				}
 			}
-			else
+			else*/
+			if (selectedTree == null)
 			{
 				trees.Add(new CTree(point, treeIndex));
 				treeIndex++;
@@ -110,7 +111,7 @@ namespace ForestReco
 					//or to its BB
 				    t.Get2DDistanceFromBBTo(pPoint) < MAX_DIST_TO_TREE_BB)*/
 
-				if (t.BelongsToTree(new CTreePoint(pPoint)))
+				if (t.BelongsToTree(new CTreePoint(pPoint), false))
 				{
 					possibleTrees.Add(t);
 					t.possibleNewPoint = pPoint;
