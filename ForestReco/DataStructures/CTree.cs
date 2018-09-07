@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Numerics;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Principal;
 using ObjParser;
 using ObjParser.Types;
@@ -191,17 +192,15 @@ namespace ForestReco
 		public static float GetMaxBranchAngle(Vector3 pPeakPoint, Vector3 pNewPoint)
 		{
 			float distance = Vector3.Distance(pPeakPoint, pNewPoint);
-			const float DIST_STEP = 0.1f;
-			if (distance < 1)
-			{
-				return 100 - 5 * distance / DIST_STEP;
-			}
+			const float DIST_STEP = 0.15f;
+			float maxAngle = 100 - 5 * distance / DIST_STEP;
+
 			//if (distance < 1 * DIST_STEP) { return 90; }
 			//if (distance < 2 * DIST_STEP) { return 80; }
 			//if (distance < 3 * DIST_STEP) { return 70; }
 			//if (distance < 4 * DIST_STEP) { return 60; }
 			//if (distance < 5 * DIST_STEP) { return 50; }
-			return CTreeManager.MAX_BRANCH_ANGLE;
+			return Math.Max(CTreeManager.MAX_BRANCH_ANGLE, maxAngle);
 		}
 
 		private bool DoesntBelongToTree(Vector3 pPoint, Vector3 pFromPoint, float pDistance)

@@ -36,7 +36,7 @@ namespace ForestReco
 			pointCounter++;
 			CTree selectedTree = null;
 
-			if (Vector3.Distance(point, new Vector3(677.37f, 134.18f, 1161.97f)) < 0.01f)
+			if (Vector3.Distance(point, new Vector3(677.99f, 136.17f, 1160.24f)) < 0.01f)
 			{
 				Console.WriteLine("¨¨");
 			}
@@ -53,7 +53,7 @@ namespace ForestReco
 					break;
 				}
 			}
-			/*if (selectedTree != null)
+			if (selectedTree != null)
 			{
 				foreach (CTree t in possibleTrees)
 				{
@@ -63,8 +63,7 @@ namespace ForestReco
 					}
 				}
 			}
-			else*/
-			if (selectedTree == null)
+			else// if (selectedTree == null)
 			{
 				trees.Add(new CTree(point, treeIndex));
 				treeIndex++;
