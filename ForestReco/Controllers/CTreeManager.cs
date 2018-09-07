@@ -9,11 +9,12 @@ namespace ForestReco
 	public class CTreeManager
 	{
 		private List<CTree> trees = new List<CTree>();
-		public static float MAX_TREE_EXTENT = 3;
+		public const float MAX_TREE_EXTENT = 3;
+		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2 + 1;
 		public static float MAX_BRANCH_ANGLE = 45;
 		private int treeIndex;
 
-		public static bool DEBUG = false;
+		public static bool DEBUG = true;
 
 		private bool simpleExport = false;
 
@@ -34,7 +35,13 @@ namespace ForestReco
 			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + point);
 			pointCounter++;
 			CTree selectedTree = null;
+
+			if (Vector3.Distance(point, new Vector3(678.44f, 136.34f, 1159.85f)) < 0.01f)
+			{
+				Console.WriteLine("¨¨");
+			}
 			List<CTree> possibleTrees = GetPossibleTreesFor(point);
+
 
 			foreach (CTree t in possibleTrees)
 			{
@@ -73,11 +80,18 @@ namespace ForestReco
 			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
 
+			Vector3 lowerTreePeak = lowerTree.peak.Center;
+			Vector3 higherTreePeak = higherTree.peak.GetClosestPointTo(lowerTreePeak);
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
 			{
-				higherTree.peak.Center - Vector3.UnitY, higherTree.peak.Center, lowerTree.peak.Center
+				higherTreePeak - Vector3.UnitY, higherTree.peak.Center, lowerTreePeak
 			}, Vector3.UnitY);
-			if (angle < MAX_BRANCH_ANGLE)
+
+			float maxBranchAngle = CTree.GetMaxBranchAngle(higherTreePeak, lowerTreePeak);
+			float distBetweenPeaks = CUtils.Get2DDistance(pTree1.peak.Center, pTree2.peak.Center);
+
+			//tree peaks must be close to each other and lower peak must be in appropriate angle with higher peak
+			if (distBetweenPeaks < MAX_TREE_EXTENT / 2 && angle < maxBranchAngle)
 			{
 				higherTree.MergeWith(lowerTree);
 				trees.Remove(lowerTree);
@@ -90,8 +104,13 @@ namespace ForestReco
 			List<CTree> possibleTrees = new List<CTree>();
 			foreach (CTree t in trees)
 			{
+				//const float MAX_DIST_TO_TREE_BB = 0.1f;
 				//it must be close to peak of some tree
-				if (CUtils.Get2DDistance(pPoint, t.peak.Center) < MAX_TREE_EXTENT / 2)
+				/*if (CUtils.Get2DDistance(pPoint, t.peak.Center) < MAX_TREE_EXTENT / 2 ||
+					//or to its BB
+				    t.Get2DDistanceFromBBTo(pPoint) < MAX_DIST_TO_TREE_BB)*/
+
+				if (t.BelongsToTree(new CTreePoint(pPoint)))
 				{
 					possibleTrees.Add(t);
 					t.possibleNewPoint = pPoint;
@@ -111,7 +130,7 @@ namespace ForestReco
 		{
 			foreach (CTree t in trees)
 			{
-				Console.WriteLine(trees.IndexOf(t) + ": " + t);
+				Console.WriteLine(trees.IndexOf(t).ToString("00") + ": " + t);
 				if (trees.IndexOf(t) > 100)
 				{
 					Console.WriteLine("too much...");

@@ -82,7 +82,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return Center + " [" + Points.Count + "]";
+			return Center.ToString("0.00") + " [" + Points.Count + "]";
 		}
 
 		public CTreePoint Clone()

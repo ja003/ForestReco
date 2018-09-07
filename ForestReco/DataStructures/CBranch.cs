@@ -57,7 +57,9 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";
+			//return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";
+			return "br_<" + angleTo/CTree.BRANCH_ANGLE_STEP + "> " + 
+				points.Count.ToString("00") + " [" + GetPointCount().ToString("000") + "] |";
 		}
 
 	}

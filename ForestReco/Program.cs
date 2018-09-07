@@ -26,11 +26,12 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = "debug_tree_03";
-			fileName = "R2-F-1-j_fix";
-			//fileName = "debug_tree_04";
+			//fileName = "R2-F-1-j_fix";
+			fileName = "BK_1000AGL_59_72_97_x90_y62";
 
 
-			string saveFileName = "BKAGL_59_72_97";
+			//string saveFileName = "BKAGL_59_72_97";
+			string saveFileName = "BKAGL_59_72_97_x90_y62";
 			//string saveFileName = "BK_1000AGL_";
 
 
@@ -105,7 +106,7 @@ namespace ForestReco
 			//return;
 
 			int pointsToAddCount = parsedLines.Count;
-			//pointsToAddCount = 1000;
+			pointsToAddCount = 110;
 
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{
@@ -118,8 +119,10 @@ namespace ForestReco
 				if (processCombined && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{ combinedArray.AddPointInField(parsedLine.Item1, parsedLine.Item2); }
 
-				//if (parsedLines.IndexOf(pl) % 10 == 0) { Console.ReadKey(); }
-				//Console.ReadKey();
+				if (i > 100)
+				{
+					//Console.ReadKey();
+				}
 				//if(i%10000 == 0) {Console.WriteLine(c);}
 			}
 
@@ -161,7 +164,7 @@ namespace ForestReco
 					EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 				objsToExport.Add(field);
 			}
-			CObjExporter.ExportObjs(objsToExport, "debug_tree");
+			CObjExporter.ExportObjs(objsToExport, saveFileName);
 
 			Console.WriteLine("Press any key to exit.");
 			Console.ReadKey();

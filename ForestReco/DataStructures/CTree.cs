@@ -18,7 +18,7 @@ namespace ForestReco
 		private List<CBranch> branches = new List<CBranch>();
 		//private CBranch stem;
 
-		private const int BRANCH_ANGLE_STEP = 45;
+		public static int BRANCH_ANGLE_STEP = 45;
 		private const float MAX_STEM_POINT_DISTANCE = 0.1f;
 
 		public Vector3 possibleNewPoint;
@@ -155,54 +155,27 @@ namespace ForestReco
 			OnAddPoint(pPoint.Center);
 		}
 
-		private bool BelongsToTree(CTreePoint pPoint)
+		public bool BelongsToTree(CTreePoint pPoint)
 		{
-			//todo: not sure
-			/*if (Contains(pPoint.Center))
-			{
-				return true;
-			}*/
-
-			//maybe it would be better to meassure distance to centre of whole tree?
-			//float dist2D = CUtils.Get2DDistance(Center, pPoint.Center);
+			const float MAX_DIST_TO_TREE_BB = 0.1f;
 			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint.Center);
-			if (dist2D > CTreeManager.MAX_TREE_EXTENT / 2)
+			float distToBB = Get2DDistanceFromBBTo(pPoint.Center);
+			//it must be close to peak of some tree or to its BB
+			if (dist2D > CTreeManager.MAX_TREE_EXTENT / 2 && distToBB > MAX_DIST_TO_TREE_BB)
 			{
-				if (CTreeManager.DEBUG) Console.WriteLine("- dist to hight " + dist2D);
+				if (CTreeManager.DEBUG) Console.WriteLine("- dist too high " + dist2D + "|"+distToBB);
 				return false;
 			}
-
-			/*float distToLeft = CUtils.Get2DDistance(pPoint.Center, mostLeft);
-			if (distToLeft > CTreeManager.MAX_TREE_EXTENT)
-			{
-				return DoesntBelongToTree(pPoint.Center, mostLeft, distToLeft);
-			}
-			float distToTop = CUtils.Get2DDistance(pPoint.Center, mostTop);
-			if (distToTop > CTreeManager.MAX_TREE_EXTENT)
-			{
-				return DoesntBelongToTree(pPoint.Center, mostTop, distToTop);
-			}
-			float distToRight = CUtils.Get2DDistance(pPoint.Center, mostRight);
-			if (distToRight > CTreeManager.MAX_TREE_EXTENT)
-			{
-				return DoesntBelongToTree(pPoint.Center, mostRight, distToRight);
-			}
-			float distToBot = CUtils.Get2DDistance(pPoint.Center, mostBot);
-			if (distToBot > CTreeManager.MAX_TREE_EXTENT)
-			{
-				return DoesntBelongToTree(pPoint.Center, mostBot, distToBot);
-			}*/
 
 			Vector3 suitablePoint = peak.GetClosestPointTo(pPoint.Center);
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
 			{
 				suitablePoint - Vector3.UnitY, suitablePoint, pPoint.Center
 			}, Vector3.UnitY);
-			//if (angle > CTreeManager.MAX_BRANCH_ANGLE)
 			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint.Center);
 			if (angle > maxBranchAngle)
 			{
-				if (CTreeManager.DEBUG) Console.WriteLine("- angle to hight " + angle + "°/" + maxBranchAngle + "°. dist = " +
+				if (CTreeManager.DEBUG) Console.WriteLine("- angle too high " + angle + "°/" + maxBranchAngle + "°. dist = " +
 					Vector3.Distance(suitablePoint, pPoint.Center));
 				return false;
 			}
@@ -210,7 +183,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private float GetMaxBranchAngle(Vector3 pPeakPoint, Vector3 pNewPoint)
+		public static float GetMaxBranchAngle(Vector3 pPeakPoint, Vector3 pNewPoint)
 		{
 			float distance = Vector3.Distance(pPeakPoint, pNewPoint);
 			const float DIST_STEP = 0.1f;
@@ -428,10 +401,11 @@ namespace ForestReco
 
 		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches)
 		{
-			string indexS = pIndex ? treeIndex.ToString() : "";
-			string pointsS = pPoints ? (" [" + GetAllPoints().Count + "]") : "";
-			string peakS = pPeak ? "| peak = " + peak : "";
-			string branchesS = pBranches ? " | branches = " + GetBranchesCount() + "[" + GetBranchesPointCount() + "]" + "_|" : "";
+			string indexS = pIndex ? treeIndex.ToString("000") : "";
+			string pointsS = pPoints ? (" [" + GetAllPoints().Count.ToString("000") + "]") : "";
+			string peakS = pPeak ? "||peak = " + peak : "";
+			string branchesS = pBranches ? "||BR=" + GetBranchesCount() +
+				"[" + GetBranchesPointCount().ToString("000") + "]" + "_|" : "";
 			if (pBranches)
 			{
 				foreach (CBranch b in branches)
@@ -442,5 +416,6 @@ namespace ForestReco
 			}
 			return indexS + pointsS + peakS + branchesS;
 		}
+
 	}
 }
