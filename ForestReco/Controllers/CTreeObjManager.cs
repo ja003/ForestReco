@@ -6,11 +6,25 @@ using ObjParser;
 
 namespace ForestReco
 {
-	public class CTreeObjManager
+	public static class CTreeObjManager
 	{
-		public List<Obj> Trees = new List<Obj>();
+		public static List<Obj> Trees = new List<Obj>();
 
-		public void LoadTrees(List<string> pPaths)
+		public static void Init()
+		{
+			string podkladyPath = CPlatformManager.GetPodkladyPath(CProgramLoader.platform);
+			List<string> treePaths = new List<string>()
+			{
+				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
+				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
+				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
+				podkladyPath + @"\tree_models\m1_reduced.obj"
+			};
+			//todo: uncomment to load tree obj from db
+			//treeObjManager.LoadTrees(treePaths);
+		}
+
+		public static void LoadTrees(List<string> pPaths)
 		{
 			foreach (string path in pPaths)
 			{
@@ -30,29 +44,32 @@ namespace ForestReco
 			//Trees[1].Rotation = new Vector3(10, 0, 0);
 		}
 
-		public List<Obj> GetTreeObjsFromField(CPointArray pArray)
+		//todo: not used anymore. replace with CTreeManager
+		public static List<Obj> GetTreeObjsFromField(CPointArray pArray)
 		{
 			List<Obj> trees = new List<Obj>();
+			SVector3 arrayCenter = (CProjectData.header.GetBotLeftCorner()+ CProjectData.header.GetTopRightCorner()) / 2;
+			float minHeight = (float)CProjectData.header.GetMinHeight();
+
 			foreach (CPointField t in pArray.Maximas)
 			{
 				Obj suitableTree = GetSuitableTreeObj(t.Tree);
 				//move obj so it is at 0,0,0
-				SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 				suitableTree.Position -= arrayCenter.ToVector3();
 				//swap Y-Z (Y=height in .OBJ)
 				float tmp = suitableTree.Position.Y;
 				suitableTree.Position.Y = suitableTree.Position.Z;
 				suitableTree.Position.Z = tmp;
 				//move Y position so the tree touches the ground
-				suitableTree.Position -= new Vector3(0, (float)pArray.minHeight, 2 * suitableTree.Position.Z);
+				suitableTree.Position -= new Vector3(0, minHeight, 2 * suitableTree.Position.Z);
 
 				trees.Add(suitableTree);
 			}
 			return trees;
 		}
 
-		private int counter;
-		private Obj GetSuitableTreeObj(CPointField pTree)
+		private static int counter;
+		private static Obj GetSuitableTreeObj(CPointField pTree)
 		{
 			//todo:implement selection
 			Random r = new Random();

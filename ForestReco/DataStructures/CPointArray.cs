@@ -13,12 +13,7 @@ namespace ForestReco
 	{
 		private CPointField[,] array;
 		private List<CPointField> fields;
-
-		public SVector3 botLeftCorner; //lower corner, [X,Y,0]
-		public SVector3 topRightCorner; //upper corner, [X,Y,0]
-		public double minHeight;
-		public double maxHeight;
-
+		
 		private double stepSize;
 		public int arrayXRange { get; }
 		public int arrayYRange { get; }
@@ -31,16 +26,17 @@ namespace ForestReco
 
 		private const float MIN_TREES_DISTANCE = 1; //meter
 
+		SVector3 botLeftCorner;
+		SVector3 topRightCorner;
+
 		//--------------------------------------------------------------
 
-		public CPointArray(CHeaderInfo pHeader, double pStepSize)
+		public CPointArray(double pStepSize)
 		{
 			stepSize = pStepSize;
-			botLeftCorner = pHeader.GetBotLeftCorner();
-			topRightCorner = pHeader.GetTopRightCorner();
 
-			minHeight = pHeader.GetMinHeight();
-			maxHeight = pHeader.GetMaxHeight();
+			botLeftCorner = CProjectData.header.GetBotLeftCorner(); 
+			topRightCorner = CProjectData.header.GetTopRightCorner();
 
 			double w = topRightCorner.X - botLeftCorner.X;
 			double h = topRightCorner.Y - botLeftCorner.Y;

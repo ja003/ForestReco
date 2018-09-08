@@ -14,8 +14,13 @@ namespace ForestReco
 		//public float Width;
 		//public float Height;
 
-		public CHeaderInfo(string pScaleFactorLine, string pOffsetLine, string pMinLine, string pMaxLine)
+		public CHeaderInfo(string[] lines)
 		{
+			string pScaleFactorLine = GetLine(lines, EHeaderAttribute.Scale);
+			string pOffsetLine = GetLine(lines, EHeaderAttribute.Offset);
+			string pMinLine = GetLine(lines, EHeaderAttribute.Min);
+			string pMaxLine = GetLine(lines, EHeaderAttribute.Max);
+
 			ScaleFactor = ParseLineVector3(pScaleFactorLine);
 			Offset = ParseLineVector3(pOffsetLine);
 			//Offset.Z = 0; //given Z offset will not be used
@@ -23,6 +28,27 @@ namespace ForestReco
 			Max = ParseLineVector3(pMaxLine) - Offset;
 			//we set Z offset so the lowest point will have height 0 (better visualization)
 			//Offset.Z = ParseLineVector3(pMinLine).Z;
+			Console.WriteLine(CProjectData.header);
+		}
+
+		private string GetLine(string[] lines, EHeaderAttribute pAttribute)
+		{
+			switch(pAttribute)
+			{
+				case EHeaderAttribute.Scale: return lines[15];
+				case EHeaderAttribute.Offset: return lines[16];
+				case EHeaderAttribute.Min: return lines[17];
+				case EHeaderAttribute.Max: return lines[18];
+			}
+			return "";
+		}
+
+		public enum EHeaderAttribute
+		{
+			Scale,
+			Offset,
+			Min,
+			Max
 		}
 
 		public SVector3 GetBotLeftCorner() { return new SVector3(Min.X, Min.Y); }

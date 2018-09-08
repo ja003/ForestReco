@@ -282,7 +282,8 @@ namespace ForestReco
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
 			int vertexIndex = 1;
-			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
+			SVector3 arrayCenter = (CProjectData.header.GetBotLeftCorner()+ CProjectData.header.GetTopRightCorner()) / 2;
+			float minHeight = (float)CProjectData.header.GetMinHeight();
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
 
@@ -298,7 +299,7 @@ namespace ForestReco
 			{
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
-				clonePoint += new Vector3(0, -(float)pArray.minHeight, -2 * clonePoint.Z);
+				clonePoint += new Vector3(0, -minHeight, -2 * clonePoint.Z);
 
 				List<Vertex> pointVertices = new List<Vertex>();
 
@@ -346,7 +347,7 @@ namespace ForestReco
 						//for first point in branch use peak as a first point
 						Vector3 p = i == 0 ? peak.Center : b.points[i - 1].Center;
 						p -= arrayCenter.ToVector3(true);
-						p += new Vector3(0, -(float)pArray.minHeight, -2 * p.Z);
+						p += new Vector3(0, -minHeight, -2 * p.Z);
 
 						Vertex v1 = new Vertex(p, vertexIndex);
 						pointVertices.Add(v1);
@@ -361,7 +362,7 @@ namespace ForestReco
 						//for first point set first point to connect to peak
 						Vector3 nextP = i == 0 ? b.points[0].Center : b.points[i].Center;
 						nextP -= arrayCenter.ToVector3(true);
-						nextP += new Vector3(0, -(float)pArray.minHeight, -2 * nextP.Z);
+						nextP += new Vector3(0, -minHeight, -2 * nextP.Z);
 
 						Vertex v4 = new Vertex(nextP, vertexIndex);
 						pointVertices.Add(v4);

@@ -6,20 +6,20 @@ using ObjParser;
 
 namespace ForestReco
 {
-	public class CTreeManager
+	public static class CTreeManager
 	{
-		private List<CTree> trees = new List<CTree>();
+		private static List<CTree> trees = new List<CTree>();
 		public const float MAX_TREE_EXTENT = 3;
 		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
 		public static float MAX_BRANCH_ANGLE = 45;
-		private int treeIndex;
+		private static int treeIndex;
 
 		public static bool DEBUG = false;
 
-		private bool simpleExport = false;
+		private static bool simpleExport = false;
 
-		private int pointCounter;
-		public void AddPoint(SVector3 pPoint, int pPointIndex)
+		private static int pointCounter;
+		public static void AddPoint(SVector3 pPoint, int pPointIndex)
 		{
 			//convert to format Y = height
 			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
@@ -75,7 +75,7 @@ namespace ForestReco
 			}
 		}
 
-		private CTree TryMergeTrees(CTree pTree1, CTree pTree2)
+		private static CTree TryMergeTrees(CTree pTree1, CTree pTree2)
 		{
 			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
@@ -99,7 +99,7 @@ namespace ForestReco
 			return higherTree;
 		}
 
-		private List<CTree> GetPossibleTreesFor(Vector3 pPoint)
+		private static List<CTree> GetPossibleTreesFor(Vector3 pPoint)
 		{
 			List<CTree> possibleTrees = new List<CTree>();
 			foreach (CTree t in trees)
@@ -126,7 +126,7 @@ namespace ForestReco
 			return possibleTrees;
 		}
 
-		public void WriteResult()
+		public static void WriteResult()
 		{
 			foreach (CTree t in trees)
 			{
@@ -139,7 +139,8 @@ namespace ForestReco
 			}
 		}
 
-		public List<Obj> GetTreeObjsFromField(CPointArray pArray)
+		//TODO: not used anymore from array
+		public static List<Obj> GetTreeObjsFromField(CPointArray pArray)
 		{
 			List<Obj> treesObjs = new List<Obj>();
 			//foreach (CPointField t in pArray.Maximas)

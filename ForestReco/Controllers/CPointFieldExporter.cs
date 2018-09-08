@@ -11,10 +11,11 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "try";
 
-		public static Obj ExportToObj(CPointArray pArray, string pArrayName,
-			EExportStrategy pStrategy, List<EHeight> pHeights)
+		public static Obj ExportToObj(string pArrayName, EExportStrategy pStrategy, List<EHeight> pHeights)
 		{
+			CPointArray pArray = CProjectData.combinedArray;
 			Obj obj = new Obj(pArrayName);
+			float minHeight = (float)CProjectData.header.GetMinHeight();
 
 			int missingCoordCount = 0;
 
@@ -53,7 +54,7 @@ namespace ForestReco
 							//move heights so the lowest point touches the 0
 							//if (pHeight != EHeight.Tree)
 							{
-								height -= pArray.minHeight;
+								height -= minHeight;
 							}
 
 							v.LoadFromStringArray(new[]{"v", pArray.GetFieldXCoord(x).ToString(),
@@ -125,7 +126,9 @@ namespace ForestReco
 		{
 			Obj obj = new Obj(pTreePointsName);
 			int vertexIndex = 1;
-			SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
+			SVector3 arrayCenter = (CProjectData.header.GetBotLeftCorner() + CProjectData.header.GetTopRightCorner()) / 2;
+
+			float minHeight = (float)CProjectData.header.GetMinHeight();
 
 			foreach (CPointField tree in pArray.Maximas)
 			{
@@ -139,7 +142,7 @@ namespace ForestReco
 					cloneTp.FlipYZ();
 					//move Y height so it matches the ground (visualisation only)
 					//TODO: if not moveBy '-2 * cloneTp.Z', output model is Z-mirrored 
-					cloneTp.MoveBy(new SVector3(0, -pArray.minHeight, -2 * cloneTp.Z));
+					cloneTp.MoveBy(new SVector3(0, -minHeight, -2 * cloneTp.Z));
 
 					List<Vertex> pointVertices = new List<Vertex>();
 
@@ -169,7 +172,7 @@ namespace ForestReco
 					obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
 					obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
 					obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
-					
+
 					//break;
 				}
 				//break;
