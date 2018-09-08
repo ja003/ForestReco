@@ -21,10 +21,6 @@ namespace ForestReco
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 			
-			//string saveFileName = "BKAGL_59_72_97";
-			CProjectData.saveFileName = "BKAGL_59_72_97_x90_y62";
-			//string saveFileName = "BK_1000AGL_";
-
 			//EPlatform platform = EPlatform.Notebook;
 			//EPlatform platform = EPlatform.HomePC;
 			CProgramLoader.platform = EPlatform.Tiarra;

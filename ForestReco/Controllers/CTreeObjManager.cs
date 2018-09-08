@@ -48,8 +48,8 @@ namespace ForestReco
 		public static List<Obj> GetTreeObjsFromField(CPointArray pArray)
 		{
 			List<Obj> trees = new List<Obj>();
-			SVector3 arrayCenter = (CProjectData.header.GetBotLeftCorner()+ CProjectData.header.GetTopRightCorner()) / 2;
-			float minHeight = (float)CProjectData.header.GetMinHeight();
+			SVector3 arrayCenter = CProjectData.header.Center;
+			float minHeight = CProjectData.header.MinHeight;
 
 			foreach (CPointField t in pArray.Maximas)
 			{

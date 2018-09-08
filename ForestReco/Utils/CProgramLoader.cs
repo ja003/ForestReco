@@ -23,6 +23,10 @@ namespace ForestReco
 			//fileName = "R2-F-1-j_fix";
 			fileName = "BK_1000AGL_59_72_97_x90_y62";
 
+			//string saveFileName = "BKAGL_59_72_97";
+			CProjectData.saveFileName = "BKAGL_59_72_97_x90_y62";
+			//string saveFileName = "BK_1000AGL_";
+
 
 			string podkladyPath = CPlatformManager.GetPodkladyPath(platform);
 			string fullFilePath = podkladyPath + @"\data-small\TXT\" + fileName + @".txt";

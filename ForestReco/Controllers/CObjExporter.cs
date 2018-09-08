@@ -16,14 +16,13 @@ namespace ForestReco
 			Obj obj = new Obj(pFileName);
 			//obj.Position = peak;
 			int vertexIndex = 1;
-			SVector3 arrayCenter = (CProjectData.header.GetBotLeftCorner() + CProjectData.header.GetTopRightCorner()) / 2;
-			
+			SVector3 arrayCenter = CProjectData.header.Center;			
 
 			foreach (Vector3 p in pPoints)
 			{
 				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
 				clonePoint -= arrayCenter.ToVector3(true);
-				clonePoint += new Vector3(0, -(float)CProjectData.header.GetMinHeight(), -2 * clonePoint.Z);
+				clonePoint += new Vector3(0, -CProjectData.header.MinHeight, -2 * clonePoint.Z);
 
 				List<Vertex> pointVertices = new List<Vertex>();
 

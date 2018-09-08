@@ -282,8 +282,8 @@ namespace ForestReco
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
 			int vertexIndex = 1;
-			SVector3 arrayCenter = (CProjectData.header.GetBotLeftCorner()+ CProjectData.header.GetTopRightCorner()) / 2;
-			float minHeight = (float)CProjectData.header.GetMinHeight();
+			SVector3 arrayCenter = CProjectData.header.Center;
+			float minHeight = CProjectData.header.MinHeight;
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
 

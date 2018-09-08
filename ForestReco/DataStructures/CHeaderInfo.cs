@@ -51,15 +51,16 @@ namespace ForestReco
 			Max
 		}
 
-		public SVector3 GetBotLeftCorner() { return new SVector3(Min.X, Min.Y); }
+		public SVector3 BotLeftCorner => new SVector3(Min.X, Min.Y); 
+		public SVector3 TopRightCorner => new SVector3(Max.X, Max.Y); 
+		public SVector3 Center => (BotLeftCorner + TopRightCorner) / 2;
 
-		public SVector3 GetTopRightCorner() { return new SVector3(Max.X, Max.Y); }
+		//public SVector3 GetTopLeftCorner() { return new SVector3(Min.X, Max.Y); }
 
-		public SVector3 GetTopLeftCorner() { return new SVector3(Min.X, Max.Y); }
+		public float MinHeight => (float)Min.Z; 
+		//public double GetMinHeight() { return Min.Z; }
 
-		public double GetMinHeight() { return Min.Z; }
-
-		public double GetMaxHeight() { return Max.Z; }
+		//public double GetMaxHeight() { return Max.Z; }
 
 		private SVector3 ParseLineVector3(string pLine)
 		{
