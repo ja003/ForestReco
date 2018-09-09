@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace ForestReco
@@ -9,6 +10,16 @@ namespace ForestReco
 		//bounding box corners
 		protected Vector3 minBB;
 		protected Vector3 maxBB;
+
+		public Vector3 b000 => minBB;
+		public Vector3 b100 => new Vector3(maxBB.X, minBB.Y, minBB.Z);
+		public Vector3 b010 => new Vector3(minBB.X, maxBB.Y, minBB.Z);
+		public Vector3 b001 => new Vector3(minBB.X, minBB.Y, maxBB.Z);
+		public Vector3 b110 => new Vector3(maxBB.X, maxBB.Y, minBB.Z);
+		public Vector3 b101 => new Vector3(maxBB.X, minBB.Y, maxBB.Z);
+		public Vector3 b011 => new Vector3(minBB.X, maxBB.Y, maxBB.Z);
+		public Vector3 b111 => new Vector3(maxBB.X, maxBB.Y, maxBB.Z);
+
 
 		public Vector3 Center => new Vector3((minBB.X + maxBB.X) / 2, (minBB.Y + maxBB.Y) / 2, (minBB.Z + maxBB.Z) / 2);
 
@@ -51,6 +62,20 @@ namespace ForestReco
 			float zDist = Math.Abs(pPoint.Z - Center.Z) - Extent.Z / 2;
 			zDist = Math.Max(0, zDist);
 			return xDist + zDist;
+		}
+
+		public List<Vector3> GetBBPoints()
+		{
+			List<Vector3> bbPoints = new List<Vector3>();
+			bbPoints.Add(b000);
+			bbPoints.Add(b100);
+			bbPoints.Add(b010);
+			bbPoints.Add(b001);
+			bbPoints.Add(b110);
+			bbPoints.Add(b101);
+			bbPoints.Add(b101);
+			bbPoints.Add(b111);
+			return bbPoints;
 		}
 
 		public bool IsPointInside(Vector3 pPoint)

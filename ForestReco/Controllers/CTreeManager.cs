@@ -146,7 +146,7 @@ namespace ForestReco
 			//foreach (CPointField t in pArray.Maximas)
 			foreach (CTree t in trees)
 			{
-				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), true);
+				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), true, false);
 				//move obj so it is at 0,0,0
 				//Vector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 				//treeObj.Position -= arrayCenter.ToVector3(true);

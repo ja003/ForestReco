@@ -36,6 +36,7 @@ namespace ForestReco
 			return lines;
 		}
 
+		public static bool useDebugData = false;
 
 		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines)
 		{
@@ -48,10 +49,9 @@ namespace ForestReco
 			//linesToRead = startLine + 500;
 
 			List<Tuple<int, Vector3>> parsedLines = new List<Tuple<int, Vector3>>();
-			bool useDebugData = false;
 			if (useDebugData)
 			{
-				parsedLines = CDebug.GetTreeStraight();
+				parsedLines = CDebug.GetTreeStraight2();
 			}
 			else
 			{
@@ -73,6 +73,7 @@ namespace ForestReco
 
 		internal static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
 		{
+			Console.WriteLine("ProcessParsedLines " + parsedLines.Count);
 			bool processArray = false;
 			CPointArray array = CProjectData.array;
 
@@ -92,7 +93,8 @@ namespace ForestReco
 				{
 					CTreeManager.AddPoint(point, i);
 				}
-				array.AddPointInField(parsedLine.Item1, point);
+				if(!useDebugData)
+					array.AddPointInField(parsedLine.Item1, point);
 
 				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{
@@ -103,15 +105,18 @@ namespace ForestReco
 			}
 			Obj treesObj = new Obj("trees_");
 
+			Console.WriteLine("Add trees to export " + CTreeManager.Trees.Count);
 			foreach (CTree t in CTreeManager.Trees)
 			{
-				Obj tObj = t.GetObj("tree_" + CTreeManager.Trees.IndexOf(t), true);
+				Obj tObj = t.GetObj("tree_" + CTreeManager.Trees.IndexOf(t), true, true);
 				CProjectData.objsToExport.Add(tObj);
 			}
 
 			bool addTreeObjModels = true;
-			if (addTreeObjModels)
+			if (addTreeObjModels && !useDebugData)
 			{
+				Console.WriteLine("Add tree obj models");
+
 				int counter = 0;
 				while (!array.IsAllDefined(EHeight.GroundMax))
 				{
@@ -124,11 +129,16 @@ namespace ForestReco
 					}
 				}
 				List<Obj> trees = CTreeObjManager.GetTreeObjs();
-				CProjectData.objsToExport.AddRange(trees);
+				//CProjectData.objsToExport.AddRange(trees);
 			}
 
-			CProjectData.objsToExport.Add(
-				CPointFieldExporter.ExportToObj("arr", EExportStrategy.FillMissingHeight, new List<EHeight> { EHeight.GroundMax }));
+			bool exportArray = true;
+			if (exportArray && !useDebugData)
+			{
+				Console.WriteLine("Export array");
+				CProjectData.objsToExport.Add(
+					CPointFieldExporter.ExportToObj("arr", EExportStrategy.FillMissingHeight, new List<EHeight> { EHeight.GroundMax }));
+			}
 
 			bool exportBasic = true;
 			if (exportBasic)
@@ -140,7 +150,7 @@ namespace ForestReco
 
 			if (processArray)
 			{
-				Console.WriteLine("combinedArray: " + array);
+				Console.WriteLine("Process array: " + array);
 				array.FillMissingHeights(EHeight.GroundMax);
 				array.FillMissingHeights(EHeight.GroundMax);
 				array.CalculateLocalExtrems();

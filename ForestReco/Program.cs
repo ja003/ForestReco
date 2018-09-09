@@ -40,6 +40,7 @@ namespace ForestReco
 			Console.WriteLine("\n===============\n");
 			CTreeManager.WriteResult();			
 
+			Console.WriteLine("ExportObjsToExport");
 			CObjExporter.ExportObjsToExport();
 
 			Console.WriteLine("Press any key to exit.");

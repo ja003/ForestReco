@@ -136,8 +136,8 @@ namespace ForestReco
 
 			//align position to tree
 			pSuitableTree.Position = pTree.peak.maxHeight;
-			float? groundHeight = CProjectData.array.
-				GetElementContainingPoint(pSuitableTree.Position).GetHeight(EHeight.GroundMax, true);
+			float? groundHeight = CProjectData.array.GetElementContainingPoint(pSuitableTree.Position).
+				GetHeight(EHeight.GroundMax, true);
 			pSuitableTree.Position.Y = (groundHeight == null ? pSuitableTree.Position.Y : (float)groundHeight);
 
 			float treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;

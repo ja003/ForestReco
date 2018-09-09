@@ -274,7 +274,7 @@ namespace ForestReco
 		}
 
 
-		public Obj GetObj(string pName, bool pExportBranches)
+		public Obj GetObj(string pName, bool pExportBranches, bool pExportBB)
 		{
 			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
@@ -300,12 +300,16 @@ namespace ForestReco
 				vectorPoints.Add(new Vector3(p.X, p.Y, p.Z));
 			}
 			CObjExporter.AddPointsToObj(ref obj, vectorPoints);
+			if (pExportBB)
+			{
+				CObjExporter.AddBBToObj(ref obj, allTreePoints);
+			}
 
 			if (pExportBranches)
 			{
 				foreach (CBranch b in branches)
 				{
-					CObjExporter.AddBranchToObj(ref obj, b);					
+					CObjExporter.AddBranchToObj(ref obj, b);
 				}
 			}
 
