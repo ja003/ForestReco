@@ -19,7 +19,7 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			//fileName = "debug_tree_03";
+			fileName = "debug_tree_03";
 			//fileName = "R2-F-1-j_fix";
 			fileName = "BK_1000AGL_59_72_97_x90_y62";
 
@@ -41,7 +41,6 @@ namespace ForestReco
 		{
 			float stepSize = .4f; //in meters
 			CProjectData.combinedArray = new CPointArray(stepSize);
-
 
 			//store coordinates to corresponding data strucures based on their class
 			const int startLine = 19;
@@ -74,7 +73,7 @@ namespace ForestReco
 
 		internal static void ProcessParsedLines(List<Tuple<int, SVector3>> parsedLines)
 		{
-			bool processCombined = false;
+			bool processField = false;
 			CPointArray combinedArray = CProjectData.combinedArray;
 
 			int pointsToAddCount = parsedLines.Count;
@@ -84,20 +83,35 @@ namespace ForestReco
 				//2 = ground
 				//5 = high vegetation
 				bool pForceTreePoint = true;
-				if (parsedLine.Item1 == 5 || pForceTreePoint) { CTreeManager.AddPoint(parsedLine.Item2, i); }
-
-				if (processCombined && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
-				{ combinedArray.AddPointInField(parsedLine.Item1, parsedLine.Item2); }
-
-				if (i > 100)
+				if (parsedLine.Item1 == 5 || pForceTreePoint)
 				{
-					//Console.ReadKey();
+					CTreeManager.AddPoint(parsedLine.Item2, i);
 				}
-				//if(i%10000 == 0) {Console.WriteLine(c);}
+
+				if (processField && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
+				{
+					combinedArray.AddPointInField(parsedLine.Item1, parsedLine.Item2);
+				}
+
 				CProjectData.allPoints.Add(parsedLine.Item2.ToVector3(true));
 			}
+			Obj treesObj = new Obj("trees_");
 
-			if (processCombined)
+			foreach (CTree t in CTreeManager.Trees)
+			{
+				Obj tObj = t.GetObj("tree_" + CTreeManager.Trees.IndexOf(t), true);
+				CProjectData.objsToExport.Add(tObj);
+			}
+
+			bool exportBasic = true;
+			if (exportBasic)
+			{
+				Obj justPoints = new Obj("points");
+				CObjExporter.AddPointsToObj(ref justPoints, CProjectData.allPoints);
+				CProjectData.objsToExport.Add(justPoints);
+			}
+
+			if (processField)
 			{
 				Console.WriteLine("combinedArray: " + combinedArray);
 				combinedArray.FillMissingHeights(EHeight.GroundMax);

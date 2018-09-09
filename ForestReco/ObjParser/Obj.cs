@@ -214,5 +214,10 @@ namespace ObjParser
 		{
 			return "[" + Position + "]" + VertexList.Count;
 		}
+
+		public int GetNextVertexIndex()
+		{
+			return VertexList.Count + 1;
+		}
 	}
 }

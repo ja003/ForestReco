@@ -9,6 +9,8 @@ namespace ForestReco
 	public static class CTreeManager
 	{
 		private static List<CTree> trees = new List<CTree>();
+		public static List<CTree> Trees => trees;
+
 		public const float MAX_TREE_EXTENT = 3;
 		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
 		public static float MAX_BRANCH_ANGLE = 45;
@@ -140,13 +142,13 @@ namespace ForestReco
 		}
 
 		//TODO: not used anymore from array
-		public static List<Obj> GetTreeObjsFromField(CPointArray pArray)
+		public static List<Obj> GetTreeObjsFromField()
 		{
 			List<Obj> treesObjs = new List<Obj>();
 			//foreach (CPointField t in pArray.Maximas)
 			foreach (CTree t in trees)
 			{
-				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), pArray, true);
+				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), true);
 				//move obj so it is at 0,0,0
 				//SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 				//treeObj.Position -= arrayCenter.ToVector3(true);

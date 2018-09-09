@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using ObjParser;
+using ObjParser.Types;
 
 namespace ForestReco
 {
 	public class CBranch
 	{
 		public List<CTreePoint> points = new List<CTreePoint>();
-		private CTree tree;
+		public CTree tree{ private set; get; }
 
 		private int angleFrom;
 		private int angleTo;
@@ -62,5 +64,6 @@ namespace ForestReco
 				points.Count.ToString("00") + " [" + GetPointCount().ToString("000") + "] |";
 		}
 
+		
 	}
 }

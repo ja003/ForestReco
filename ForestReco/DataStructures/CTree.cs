@@ -273,15 +273,14 @@ namespace ForestReco
 			return treeIndex == t.treeIndex;
 		}
 
-		public const float POINT_OFFSET = 0.05f;
 
-		public Obj GetObj(string pName, CPointArray pArray, bool pExportBranches)
+		public Obj GetObj(string pName, bool pExportBranches)
 		{
 			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
-			int vertexIndex = 1;
+			//int vertexIndex = 1;
 			SVector3 arrayCenter = CProjectData.header.Center;
 			float minHeight = CProjectData.header.MinHeight;
 
@@ -295,102 +294,18 @@ namespace ForestReco
 			//display highest peak point
 			allTreePoints.Add(new CTreePoint(peak.maxHeight));
 
+			List<Vector3> vectorPoints = new List<Vector3>();
 			foreach (CTreePoint p in allTreePoints)
 			{
-				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
-				clonePoint -= arrayCenter.ToVector3(true);
-				clonePoint += new Vector3(0, -minHeight, -2 * clonePoint.Z);
-
-				List<Vertex> pointVertices = new List<Vertex>();
-
-				Vertex v1 = new Vertex(clonePoint, vertexIndex);
-				pointVertices.Add(v1);
-				vertexIndex++;
-
-
-				Vertex v2 = new Vertex(clonePoint + Vector3.UnitX * POINT_OFFSET, vertexIndex);
-				pointVertices.Add(v2);
-				vertexIndex++;
-
-				Vertex v3 = new Vertex(clonePoint + Vector3.UnitZ * POINT_OFFSET, vertexIndex);
-				pointVertices.Add(v3);
-				vertexIndex++;
-
-				Vertex v4 = new Vertex(clonePoint + Vector3.UnitY * POINT_OFFSET, vertexIndex);
-				pointVertices.Add(v4);
-				vertexIndex++;
-
-				foreach (Vertex v in pointVertices)
-				{
-					obj.VertexList.Add(v);
-				}
-
-				//create 4-side representation of point
-				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
-				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
-				obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
-				obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
-
-				//break;
+				vectorPoints.Add(new Vector3(p.X, p.Y, p.Z));
 			}
+			CObjExporter.AddPointsToObj(ref obj, vectorPoints);
 
 			if (pExportBranches)
 			{
-				//export also stem
-				//branches.Add(stem);
 				foreach (CBranch b in branches)
 				{
-					for (int i = 0; i < b.points.Count; i++)
-					{
-						List<Vertex> pointVertices = new List<Vertex>();
-
-						//for first point in branch use peak as a first point
-						Vector3 p = i == 0 ? peak.Center : b.points[i - 1].Center;
-						p -= arrayCenter.ToVector3(true);
-						p += new Vector3(0, -minHeight, -2 * p.Z);
-
-						Vertex v1 = new Vertex(p, vertexIndex);
-						pointVertices.Add(v1);
-						vertexIndex++;
-						Vertex v2 = new Vertex(p + Vector3.UnitX * POINT_OFFSET, vertexIndex);
-						pointVertices.Add(v2);
-						vertexIndex++;
-						Vertex v3 = new Vertex(p + Vector3.UnitZ * POINT_OFFSET, vertexIndex);
-						pointVertices.Add(v3);
-						vertexIndex++;
-
-						//for first point set first point to connect to peak
-						Vector3 nextP = i == 0 ? b.points[0].Center : b.points[i].Center;
-						nextP -= arrayCenter.ToVector3(true);
-						nextP += new Vector3(0, -minHeight, -2 * nextP.Z);
-
-						Vertex v4 = new Vertex(nextP, vertexIndex);
-						pointVertices.Add(v4);
-						vertexIndex++;
-						/*Vertex v5 = new Vertex(nextP + Vector3.UnitX * POINT_OFFSET, vertexIndex);
-						pointVertices.Add(v5);
-						vertexIndex++;
-						Vertex v6 = new Vertex(p + Vector3.UnitZ * POINT_OFFSET, vertexIndex);
-						pointVertices.Add(v6);
-						vertexIndex++;*/
-
-						//Console.WriteLine("branch part " + p + " - " + nextP);
-
-						foreach (Vertex v in pointVertices)
-						{
-							obj.VertexList.Add(v);
-						}
-
-						//create 4-side representation of point
-						obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
-						obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
-						obj.FaceList.Add(new Face(new List<Vertex> { v3, v1, v4 }));
-
-						//obj.FaceList.Add(new Face(new List<Vertex> { v4, v5, v3 }));
-						//obj.FaceList.Add(new Face(new List<Vertex> { v5, v6, v3 }));
-						//obj.FaceList.Add(new Face(new List<Vertex> { v6, v4, v3 }));
-
-					}
+					CObjExporter.AddBranchToObj(ref obj, b);					
 				}
 			}
 

@@ -35,8 +35,8 @@ namespace ForestReco
 		{
 			stepSize = pStepSize;
 
-			botLeftCorner = CProjectData.header.GetBotLeftCorner(); 
-			topRightCorner = CProjectData.header.GetTopRightCorner();
+			botLeftCorner = CProjectData.header.BotLeftCorner;
+			topRightCorner = CProjectData.header.TopRightCorner;
 
 			double w = topRightCorner.X - botLeftCorner.X;
 			double h = topRightCorner.Y - botLeftCorner.Y;
