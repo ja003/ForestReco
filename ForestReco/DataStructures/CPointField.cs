@@ -16,7 +16,7 @@ namespace ForestReco
 
 		private List<SVector3> pointsVege = new List<SVector3>(); //high vegetation (class 5)
 		private List<SVector3> pointsGround = new List<SVector3>(); //ground (class 1)
-		
+
 		public double? MinVege;
 		public double? MaxVege; //todo: delete and replace with MaxVegePoint
 		public double? SumVege;
@@ -54,11 +54,11 @@ namespace ForestReco
 			Tree = pTree;
 			Tree.TreeFields.Add(this);
 		}
-		
+
 		public void AssignTreeToNeighbours()
 		{
 			if (!HasAllNeighbours()) { return; }
-			
+
 			foreach (CPointField n in GetNeighbours())
 			{
 				//already belongs to other tree
@@ -149,7 +149,7 @@ namespace ForestReco
 		}
 
 		//NEIGHBOUR
-		
+
 		public bool IsAnyNeighbourDefined(EHeight pHeight)
 		{
 			foreach (CPointField n in GetNeighbours())
@@ -182,7 +182,7 @@ namespace ForestReco
 
 		private List<CPointField> GetNeighbours()
 		{
-			if (neighbours != null) { return this.neighbours;}
+			if (neighbours != null) { return this.neighbours; }
 
 			neighbours = new List<CPointField>();
 			var directions = Enum.GetValues(typeof(EDirection));
@@ -214,15 +214,15 @@ namespace ForestReco
 				pointsVege.Add(pPoint);
 				if (SumVege != null) { SumVege += height; }
 				else { SumVege = height; }
-				if (height > MaxVege || MaxVege == null) 
-				{ 
+				if (height > MaxVege || MaxVege == null)
+				{
 					MaxVege = height;
 					MaxVegePoint = pPoint;
 				}
 				if (height < MinVege || MinVege == null) { MinVege = height; }
 			}
 		}
-		
+
 		public bool IsDefined(EHeight pHeight)
 		{
 			bool isDefined = true;
@@ -296,19 +296,30 @@ namespace ForestReco
 			}
 			return true;
 		}
-		
-		public double? GetAverageHeightFromClosestDefined(EHeight pHeight)
+
+		public double? GetAverageHeightFromClosestDefined(EHeight pHeight, int pMaxSteps)
 		{
 			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
 			//
-			CPointField closestFirst = GetClosestDefined(pHeight, EDirection.Left);
-			CPointField closestSecond = GetClosestDefined(pHeight, EDirection.Right);
-			//
-			if (closestFirst == null || closestSecond == null)
+			CPointField closestFirst = null;
+			CPointField closestSecond = null;
+			CPointField closestLeft = GetClosestDefined(pHeight, EDirection.Left, pMaxSteps);
+			CPointField closestRight = GetClosestDefined(pHeight, EDirection.Right, pMaxSteps);
+			CPointField closestTop = GetClosestDefined(pHeight, EDirection.Top, pMaxSteps);
+			CPointField closestBot = GetClosestDefined(pHeight, EDirection.Bot, pMaxSteps);
+
+			closestFirst = closestLeft;
+			closestSecond = closestRight;
+			if ((closestFirst == null || closestSecond == null) && closestTop != null && closestBot != null)
 			{
-				closestFirst = GetClosestDefined(pHeight, EDirection.Top);
-				closestSecond = GetClosestDefined(pHeight, EDirection.Bot);
+				closestFirst = closestTop;
+				closestSecond = closestBot;
 			}
+
+			if (closestFirst == null) { closestFirst = closestTop; }
+			if (closestSecond == null) { closestSecond = closestTop; }
+			if (closestFirst == null) { closestFirst = closestBot; }
+			if (closestSecond == null) { closestSecond = closestBot; }
 
 			if (closestFirst != null && closestSecond != null)
 			{
@@ -325,8 +336,16 @@ namespace ForestReco
 				{
 					double? smallerHeight = smaller.GetHeight(pHeight);
 					float distanceToSmaller = GetDistanceTo(smaller);
+					if (totalDistance == 0) { return smallerHeight; }
 					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
 				}
+			}
+			else if (!HasAllNeighbours())
+			{
+				if (closestLeft != null) { return closestLeft.GetHeight(pHeight); }
+				if (closestTop != null) { return closestTop.GetHeight(pHeight); }
+				if (closestRight != null) { return closestRight.GetHeight(pHeight); }
+				if (closestBot != null) { return closestBot.GetHeight(pHeight); }
 			}
 			return null;
 		}
@@ -366,20 +385,20 @@ namespace ForestReco
 			}
 			return null;
 		}
-		
+
 		public int GetDistanceTo(CPointField pPointField)
 		{
 			return Math.Abs(indexInField.Item1 - pPointField.indexInField.Item1) +
-			       Math.Abs(indexInField.Item2 - pPointField.indexInField.Item2);
+				   Math.Abs(indexInField.Item2 - pPointField.indexInField.Item2);
 		}
-		
+
 		public void FillMissingHeight(EHeight pHeight)
 		{
 			if (IsDefined(pHeight)) { return; }
 			switch (pHeight)
 			{
 				case EHeight.GroundMax:
-					MaxGround = GetAverageHeightFromClosestDefined(pHeight);
+					MaxGround = GetAverageHeightFromClosestDefined(pHeight, 3);
 					break;
 				default:
 					Console.WriteLine("FillMissingHeight not defined for " + pHeight);
@@ -389,10 +408,11 @@ namespace ForestReco
 
 		///PRIVATE
 
-		private CPointField GetClosestDefined(EHeight pHeight, EDirection pDirection)
+		private CPointField GetClosestDefined(EHeight pHeight, EDirection pDirection, int pMaxSteps)
 		{
 			if (IsDefined(pHeight)) { return this; }
-			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection);
+			if (pMaxSteps == 0) { return null; }
+			return GetNeighbour(pDirection)?.GetClosestDefined(pHeight, pDirection, pMaxSteps - 1);
 		}
 
 		/// <summary>
@@ -408,7 +428,7 @@ namespace ForestReco
 			}
 			return null;
 		}
-		
+
 		private double? GetHeightAverage(EClass pClass)
 		{
 			if (!IsDefined(pClass)) { return null; }
@@ -442,8 +462,8 @@ namespace ForestReco
 			}
 			return el;
 		}
-		
-		
+
+
 		//UNUSED
 
 		private bool IsNeighbourLocalMax(EDirection pNeighbour)
@@ -470,10 +490,11 @@ namespace ForestReco
 		{
 			return "[" + indexInField + "].";
 		}
-		
+
 		public override string ToString()
 		{
-			return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
+			return ToStringIndex() + " Ground = " + GetHeight(EHeight.GroundMax) ?? "null";
+			//return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}
 
 		public override bool Equals(object obj)
@@ -486,6 +507,6 @@ namespace ForestReco
 			return (indexInField.Item1 == e.indexInField.Item1) && (indexInField.Item2 == e.indexInField.Item2);
 		}
 
-	
+
 	}
 }

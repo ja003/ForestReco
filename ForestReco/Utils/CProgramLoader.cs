@@ -40,7 +40,7 @@ namespace ForestReco
 		internal static List<Tuple<int, SVector3>> LoadParsedLines(string[] lines)
 		{
 			float stepSize = .4f; //in meters
-			CProjectData.combinedArray = new CPointArray(stepSize);
+			CProjectData.array = new CPointArray(stepSize);
 
 			//store coordinates to corresponding data strucures based on their class
 			const int startLine = 19;
@@ -74,7 +74,7 @@ namespace ForestReco
 		internal static void ProcessParsedLines(List<Tuple<int, SVector3>> parsedLines)
 		{
 			bool processArray = false;
-			CPointArray array = CProjectData.combinedArray;
+			CPointArray array = CProjectData.array;
 
 			int pointsToAddCount = parsedLines.Count;
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
@@ -107,11 +107,23 @@ namespace ForestReco
 			bool addTreeObjModels = true;
 			if (addTreeObjModels)
 			{
-				array.FillMissingHeights(EHeight.GroundMax);
-				array.FillMissingHeights(EHeight.GroundMax);
+				int counter = 0;
+				while (!array.IsAllDefined(EHeight.GroundMax))
+				{
+					Console.WriteLine("FillMissingHeights " + counter);
+					array.FillMissingHeights(EHeight.GroundMax);
+					counter++;
+					if(counter > 10){
+						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
+						break;
+					}
+				}
 				List<Obj> trees = CTreeObjManager.GetTreeObjs();
 				CProjectData.objsToExport.AddRange(trees);
 			}
+
+			CProjectData.objsToExport.Add(
+				CPointFieldExporter.ExportToObj("arr", EExportStrategy.FillMissingHeight, new List<EHeight> { EHeight.GroundMax }));
 
 			bool exportBasic = true;
 			if (exportBasic)

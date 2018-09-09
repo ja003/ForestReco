@@ -13,7 +13,7 @@ namespace ForestReco
 	{
 		private CPointField[,] array;
 		private List<CPointField> fields;
-		
+
 		private double stepSize;
 		public int arrayXRange { get; }
 		public int arrayYRange { get; }
@@ -191,18 +191,26 @@ namespace ForestReco
 
 		public void FillMissingHeights(EHeight pHeight)
 		{
-			for (int x = 0; x < arrayXRange; x++)
+			foreach (CPointField el in fields)
 			{
-				for (int y = 0; y < arrayYRange; y++)
+				if (!el.IsDefined(pHeight))
 				{
-					CPointField el = array[x, y];
 					el.FillMissingHeight(pHeight);
 				}
 			}
 		}
 
+		public bool IsAllDefined(EHeight pHeight)
+		{
+			foreach (CPointField f in fields)
+			{
+				if (!f.IsDefined(pHeight)) { return false; }
+			}
+			return true;
+		}
+
 		///PRIVATE
-		
+
 		/// <summary>
 		/// Marks all fields in array with min/max mark
 		/// </summary>
@@ -241,7 +249,7 @@ namespace ForestReco
 				Console.WriteLine(m);
 			}*/
 		}
-		
+
 		//OTHER
 		/// <summary>
 		/// Returns string for x coordinate in array moved by offset
@@ -258,12 +266,12 @@ namespace ForestReco
 		{
 			return pYindex * stepSize - GetCenterOffset().Y;
 		}
-		
+
 		public override string ToString()
 		{
 			return "Field " + arrayXRange + " x " + arrayYRange;
 		}
 
-		
+
 	}
 }

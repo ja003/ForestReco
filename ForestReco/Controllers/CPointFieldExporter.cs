@@ -13,7 +13,7 @@ namespace ForestReco
 
 		public static Obj ExportToObj(string pArrayName, EExportStrategy pStrategy, List<EHeight> pHeights)
 		{
-			CPointArray pArray = CProjectData.combinedArray;
+			CPointArray pArray = CProjectData.array;
 			Obj obj = new Obj(pArrayName);
 			float minHeight = CProjectData.header.MinHeight;
 
@@ -35,7 +35,7 @@ namespace ForestReco
 							if (height == null)
 							{
 								//height = el.GetHeight(EHeight.GroundMax, true);
-								height = el.GetAverageHeightFromClosestDefined(EHeight.GroundMax);
+								height = el.GetAverageHeightFromClosestDefined(EHeight.GroundMax, 3);
 							}
 						}
 						else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)

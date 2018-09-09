@@ -17,7 +17,7 @@ namespace ForestReco
 
 		//during one session is always processed one array file
 		public static List<Vector3> allPoints = new List<Vector3>();
-		public static CPointArray combinedArray;
+		public static CPointArray array;
 		public static CHeaderInfo header;
 
 		public static List<Obj> objsToExport = new List<Obj>();

@@ -143,7 +143,7 @@ namespace ForestReco
 			SVector3 sVector3Point = new SVector3(pSuitableTree.Position);
 
 			sVector3Point.FlipYZ();
-			double? groundHeight = CProjectData.combinedArray.
+			double? groundHeight = CProjectData.array.
 				GetElementContainingPoint(sVector3Point).GetHeight(EHeight.GroundMax, true);
 			pSuitableTree.Position.Y = (groundHeight == null ? pSuitableTree.Position.Y : (float)groundHeight);
 
