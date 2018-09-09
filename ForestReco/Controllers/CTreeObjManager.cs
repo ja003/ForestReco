@@ -21,7 +21,7 @@ namespace ForestReco
 				podkladyPath + @"\tree_models\m1_reduced.obj"
 			};
 			//todo: uncomment to load tree obj from db
-			//treeObjManager.LoadTrees(treePaths);
+			LoadTrees(treePaths);
 		}
 
 		public static void LoadTrees(List<string> pPaths)
@@ -90,6 +90,73 @@ namespace ForestReco
 
 			counter++;
 			return suitableTree;
+		}
+
+		private static Obj GetSuitableTreeObj(CTree pTree)
+		{
+			//todo:implement selection
+			Random r = new Random();
+			Obj suitableTree = Trees[r.Next(0, Trees.Count)].Clone();
+			suitableTree.Name += "_" + counter;
+			//align position to tree
+			/*suitableTree.Position = pTree.peak.maxHeight;
+			SVector3 sVector3Point = new SVector3(suitableTree.Position);
+			
+			sVector3Point.FlipYZ();
+			double? groundHeight = CProjectData.combinedArray.
+				GetElementContainingPoint(sVector3Point).GetHeight(EHeight.GroundMax, true);
+			suitableTree.Position.Y = (groundHeight == null ? suitableTree.Position.Y : (float)groundHeight);
+
+			double treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
+			double heightRatio = treeHeight / (suitableTree.Size.YMax - suitableTree.Size.YMin);
+			suitableTree.Scale = new Vector3(1, (float)heightRatio, 1);*/
+
+			counter++;
+			return suitableTree;
+		}
+
+		internal static List<Obj> GetTreeObjs()
+		{
+			List<Obj> trees = new List<Obj>();
+
+			foreach (CTree t in CTreeManager.Trees)
+			{
+				Obj suitableTree = GetSuitableTreeObj(t);
+
+				SetTreeObjTransform(ref suitableTree, t);				
+
+				trees.Add(suitableTree);
+			}
+			return trees;
+		}
+
+		/// <summary>
+		/// Sets position, scale and (todo) rotation of tree obj to match given pTree 
+		/// </summary>
+		private static void SetTreeObjTransform(ref Obj pSuitableTree, CTree pTree){
+		
+			SVector3 arrayCenter = CProjectData.header.Center;
+			float minHeight = CProjectData.header.MinHeight;
+
+			//align position to tree
+			pSuitableTree.Position = pTree.peak.maxHeight;
+			SVector3 sVector3Point = new SVector3(pSuitableTree.Position);
+
+			sVector3Point.FlipYZ();
+			double? groundHeight = CProjectData.combinedArray.
+				GetElementContainingPoint(sVector3Point).GetHeight(EHeight.GroundMax, true);
+			pSuitableTree.Position.Y = (groundHeight == null ? pSuitableTree.Position.Y : (float)groundHeight);
+
+			double treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
+			double heightRatio = treeHeight / (pSuitableTree.Size.YMax - pSuitableTree.Size.YMin);
+			pSuitableTree.Scale = new Vector3(1, (float)heightRatio, 1);
+
+
+			//move obj so it is at 0,0,0
+			pSuitableTree.Position -= arrayCenter.ToVector3(true);
+			pSuitableTree.Position -= new Vector3(0, minHeight, 2 * pSuitableTree.Position.Z);
+
+			Console.WriteLine(counter + "[" + pSuitableTree.Position + "]. treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
 		}
 	}
 }

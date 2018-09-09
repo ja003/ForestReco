@@ -16,15 +16,15 @@ namespace ForestReco
 		internal static string[] GetFileLines()
 		{
 			string fileName = @"BK_1000AGL_classified";
-			//fileName = @"BK_1000AGL_cl_split_s_mezerou";
+			fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			fileName = "debug_tree_03";
+			//fileName = "debug_tree_03";
 			//fileName = "R2-F-1-j_fix";
 			fileName = "BK_1000AGL_59_72_97_x90_y62";
 
 			//string saveFileName = "BKAGL_59_72_97";
-			CProjectData.saveFileName = "BKAGL_59_72_97_x90_y62";
+			CProjectData.saveFileName = "BKAGL_59_72_97_x90_y62_treeObjs";
 			//string saveFileName = "BK_1000AGL_";
 
 
@@ -73,8 +73,8 @@ namespace ForestReco
 
 		internal static void ProcessParsedLines(List<Tuple<int, SVector3>> parsedLines)
 		{
-			bool processField = false;
-			CPointArray combinedArray = CProjectData.combinedArray;
+			bool processArray = false;
+			CPointArray array = CProjectData.combinedArray;
 
 			int pointsToAddCount = parsedLines.Count;
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
@@ -87,11 +87,12 @@ namespace ForestReco
 				{
 					CTreeManager.AddPoint(parsedLine.Item2, i);
 				}
+				array.AddPointInField(parsedLine.Item1, parsedLine.Item2);
 
-				if (processField && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
+				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{
-					combinedArray.AddPointInField(parsedLine.Item1, parsedLine.Item2);
-				}
+					array.AddPointInField(parsedLine.Item1, parsedLine.Item2);
+				}*/
 
 				CProjectData.allPoints.Add(parsedLine.Item2.ToVector3(true));
 			}
@@ -103,6 +104,15 @@ namespace ForestReco
 				CProjectData.objsToExport.Add(tObj);
 			}
 
+			bool addTreeObjModels = true;
+			if (addTreeObjModels)
+			{
+				array.FillMissingHeights(EHeight.GroundMax);
+				array.FillMissingHeights(EHeight.GroundMax);
+				List<Obj> trees = CTreeObjManager.GetTreeObjs();
+				CProjectData.objsToExport.AddRange(trees);
+			}
+
 			bool exportBasic = true;
 			if (exportBasic)
 			{
@@ -111,16 +121,16 @@ namespace ForestReco
 				CProjectData.objsToExport.Add(justPoints);
 			}
 
-			if (processField)
+			if (processArray)
 			{
-				Console.WriteLine("combinedArray: " + combinedArray);
-				combinedArray.FillMissingHeights(EHeight.GroundMax);
-				combinedArray.FillMissingHeights(EHeight.GroundMax);
-				combinedArray.CalculateLocalExtrems();
-				combinedArray.AssignTreesToNeighbourFields();
-				combinedArray.AssignPointsToTrees();
+				Console.WriteLine("combinedArray: " + array);
+				array.FillMissingHeights(EHeight.GroundMax);
+				array.FillMissingHeights(EHeight.GroundMax);
+				array.CalculateLocalExtrems();
+				array.AssignTreesToNeighbourFields();
+				array.AssignPointsToTrees();
 
-				Obj treePoints = CPointFieldExporter.ExportTreePointsToObj(combinedArray, CProjectData.saveFileName + "Tree points");
+				Obj treePoints = CPointFieldExporter.ExportTreePointsToObj(array, CProjectData.saveFileName + "Tree points");
 				CProjectData.objsToExport.Add(treePoints);
 
 				//select tree models based on trees in array

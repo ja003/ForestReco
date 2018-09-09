@@ -141,11 +141,17 @@ namespace ForestReco
 		}
 
 		///GETTER
-		public CPointField GetElement(int pX, int pY)
+		public CPointField GetElement(int pXindex, int pYindex)
 		{
-			return array[pX, pY];
+			return array[pXindex, pYindex];
 		}
-		
+
+		public CPointField GetElementContainingPoint(SVector3 pPoint)
+		{
+			Tuple<int, int> index = GetPositionInField(pPoint);
+			return array[index.Item1, index.Item2];
+		}
+
 		private Tuple<int, int> GetPositionInField(SVector3 pPoint)
 		{
 			int xPos = (int)((pPoint.X - botLeftCorner.X) / stepSize);
