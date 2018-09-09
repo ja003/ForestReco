@@ -21,28 +21,26 @@ namespace ForestReco
 		private static bool simpleExport = false;
 
 		private static int pointCounter;
-		public static void AddPoint(SVector3 pPoint, int pPointIndex)
+		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
-			//convert to format Y = height
-			Vector3 point = new Vector3((float)pPoint.X, (float)pPoint.Z, (float)pPoint.Y);
-			CTreePoint treePoint = new CTreePoint(point);
+			CTreePoint treePoint = new CTreePoint(pPoint);
 
 			if (simpleExport)
 			{
-				if (trees.Count == 0) { trees.Add(new CTree(point, 0)); }
-				trees[0].ForceAddPoint(point);
+				if (trees.Count == 0) { trees.Add(new CTree(pPoint, 0)); }
+				trees[0].ForceAddPoint(pPoint);
 				return;
 			}
 
-			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + point);
+			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint);
 			pointCounter++;
 			CTree selectedTree = null;
 
-			if (Vector3.Distance(point, new Vector3(677.99f, 136.17f, 1160.24f)) < 0.01f)
+			if (Vector3.Distance(pPoint, new Vector3(677.99f, 136.17f, 1160.24f)) < 0.01f)
 			{
 				Console.WriteLine("¨¨");
 			}
-			List<CTree> possibleTrees = GetPossibleTreesFor(point);
+			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint);
 
 
 			foreach (CTree t in possibleTrees)
@@ -67,7 +65,7 @@ namespace ForestReco
 			}
 			else// if (selectedTree == null)
 			{
-				trees.Add(new CTree(point, treeIndex));
+				trees.Add(new CTree(pPoint, treeIndex));
 				treeIndex++;
 			}
 
@@ -150,7 +148,7 @@ namespace ForestReco
 			{
 				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), true);
 				//move obj so it is at 0,0,0
-				//SVector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
+				//Vector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
 				//treeObj.Position -= arrayCenter.ToVector3(true);
 				//move Y position so the tree touches the ground
 				//treeObj.Position -= new Vector3(0, (float)pArray.minHeight, 2 * treeObj.Position.Z);

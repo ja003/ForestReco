@@ -14,17 +14,17 @@ namespace ForestReco
 		public CPointField Bot;
 		private List<CPointField> neighbours;
 
-		private List<SVector3> pointsVege = new List<SVector3>(); //high vegetation (class 5)
-		private List<SVector3> pointsGround = new List<SVector3>(); //ground (class 1)
+		private List<Vector3> pointsVege = new List<Vector3>(); //high vegetation (class 5)
+		private List<Vector3> pointsGround = new List<Vector3>(); //ground (class 1)
 
-		public double? MinVege;
-		public double? MaxVege; //todo: delete and replace with MaxVegePoint
-		public double? SumVege;
-		public SVector3 MaxVegePoint;
+		public float? MinVege;
+		public float? MaxVege; //todo: delete and replace with MaxVegePoint
+		public float? SumVege;
+		public Vector3 MaxVegePoint;
 
-		public double? MinGround;
-		public double? MaxGround;
-		public double? SumGround;
+		public float? MinGround;
+		public float? MaxGround;
+		public float? SumGround;
 
 
 		public bool IsLocalMax;
@@ -33,10 +33,10 @@ namespace ForestReco
 
 		private readonly Tuple<int, int> indexInField;
 
-		public double? TreeHeight;
+		public float? TreeHeight;
 		public CPointField Tree; //tree, which this point belongs to.
 		public List<CPointField> TreeFields = new List<CPointField>();
-		public List<SVector3> TreePoints = new List<SVector3>();
+		public List<Vector3> TreePoints = new List<Vector3>();
 
 		//--------------------------------------------------------------
 
@@ -64,12 +64,12 @@ namespace ForestReco
 				//already belongs to other tree
 				if (!n.HasAssignedTree())
 				{
-					double? height = GetHeight(EHeight.VegeMax);
-					double? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
+					float? height = GetHeight(EHeight.VegeMax);
+					float? neighbourHeight = n.GetHeight(EHeight.VegeMax) ?? n.GetHeight(EHeight.GroundMax);
 
 					if (height != null && neighbourHeight != null)
 					{
-						double heightDiff = (double)height - (double)neighbourHeight;
+						float heightDiff = (float)height - (float)neighbourHeight;
 						//this point is higher (if lower => tree1-tree2) and difference is not big (big => tree-ground)
 						const float MAX_HEIGHT_DIFF = 2.5f;
 						if (heightDiff > 0 && heightDiff < MAX_HEIGHT_DIFF)
@@ -92,13 +92,13 @@ namespace ForestReco
 		/// </summary>
 		public void AssignPointsToTree()
 		{
-			foreach (SVector3 vegePoint in pointsVege)
+			foreach (Vector3 vegePoint in pointsVege)
 			{
 				Tree.AssignPointToTree(vegePoint);
 			}
 		}
 
-		private void AssignPointToTree(SVector3 pVegePoint)
+		private void AssignPointToTree(Vector3 pVegePoint)
 		{
 			if (!Tree.Equals(this))
 			{
@@ -116,7 +116,7 @@ namespace ForestReco
 			return Tree != null;
 		}
 
-		public double? GetTreeHeight()
+		public float? GetTreeHeight()
 		{
 			return GetHeight(EHeight.VegeMax) - GetHeight(EHeight.GroundMax);
 			//todo: not actually height of the tree
@@ -124,7 +124,7 @@ namespace ForestReco
 			{
 				if (HasAssignedTree())
 				{
-					double? heightTree = Tree.MaxVege;
+					float? heightTree = Tree.MaxVege;
 					if (Tree.Equals(this))
 					{
 						TreeHeight = heightTree;
@@ -197,9 +197,9 @@ namespace ForestReco
 
 		//PUBLIC
 
-		public void AddPoint(int pClass, SVector3 pPoint)
+		public void AddPoint(int pClass, Vector3 pPoint)
 		{
-			double height = pPoint.Z;
+			float height = pPoint.Y;
 
 			if (pClass == 2)
 			{
@@ -297,7 +297,7 @@ namespace ForestReco
 			return true;
 		}
 
-		public double? GetAverageHeightFromClosestDefined(EHeight pHeight, int pMaxSteps)
+		public float? GetAverageHeightFromClosestDefined(EHeight pHeight, int pMaxSteps)
 		{
 			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
 			//
@@ -331,10 +331,10 @@ namespace ForestReco
 					smaller = closestSecond;
 				}
 				int totalDistance = smaller.GetDistanceTo(higher);
-				double? heightDiff = higher.GetHeight(pHeight) - smaller.GetHeight(pHeight);
+				float? heightDiff = higher.GetHeight(pHeight) - smaller.GetHeight(pHeight);
 				if (heightDiff != null)
 				{
-					double? smallerHeight = smaller.GetHeight(pHeight);
+					float? smallerHeight = smaller.GetHeight(pHeight);
 					float distanceToSmaller = GetDistanceTo(smaller);
 					if (totalDistance == 0) { return smallerHeight; }
 					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
@@ -355,7 +355,7 @@ namespace ForestReco
 		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
 		/// pVisited: dont use these points in DFS
 		/// </summary>
-		public double? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
+		public float? GetHeight(EHeight pHeight, bool pGetHeightFromNeighbour = false,
 			List<CPointField> pVisited = null)
 		{
 			if (!IsDefined(pHeight) && pGetHeightFromNeighbour)
@@ -419,7 +419,7 @@ namespace ForestReco
 		/// Returns extrem of given class.
 		/// pMax: True = maximum, False = minimum
 		/// </summary>
-		private double? GetHeightExtrem(bool pMax, EClass pClass)
+		private float? GetHeightExtrem(bool pMax, EClass pClass)
 		{
 			switch (pClass)
 			{
@@ -429,7 +429,7 @@ namespace ForestReco
 			return null;
 		}
 
-		private double? GetHeightAverage(EClass pClass)
+		private float? GetHeightAverage(EClass pClass)
 		{
 			if (!IsDefined(pClass)) { return null; }
 			switch (pClass)

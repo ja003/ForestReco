@@ -6,19 +6,19 @@ namespace ForestReco
 	public static class CLineParser
 	{
 
-		public static SVector3 ParseVector3(string pXstring, string pYstring, string pZstring)
+		public static Vector3 ParseVector3(string pXstring, string pYstring, string pZstring)
 		{
-			double x = double.Parse(pXstring);
-			double y = double.Parse(pYstring);
-			double z = double.Parse(pZstring);
-			return new SVector3(x, y, z);
+			float x = float.Parse(pXstring);
+			float y = float.Parse(pYstring);
+			float z = float.Parse(pZstring);
+			return new Vector3(x, y, z);
 		}
 
-		public static Tuple<int, SVector3> ParseCoordinates(string pLine)
+		public static Tuple<int, Vector3> ParseCoordinates(string pLine)
 		{
 			string[] split = pLine.Split(null);
 			int cathegory = int.Parse(split[3]);
-			return new Tuple<int, SVector3>(cathegory, ParseVector3(split[0], split[1], split[2]));
+			return new Tuple<int, Vector3>(cathegory, ParseVector3(split[0], split[1], split[2]));
 		}
 	}
 }

@@ -54,7 +54,6 @@
     <Compile Include="DataStructures\CPeak.cs" />
     <Compile Include="DataStructures\CTree.cs" />
     <Compile Include="DataStructures\CTreePoint.cs" />
-    <Compile Include="DataStructures\SVector3.cs" />
     <Compile Include="DataStructures\CPointArray.cs" />
     <Compile Include="DataStructures\CPointField.cs" />
     <Compile Include="Enums\EClass.cs" />

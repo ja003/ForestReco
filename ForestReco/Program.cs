@@ -30,7 +30,7 @@ namespace ForestReco
 
 			CTreeObjManager.Init();
 
-			List<Tuple<int, SVector3>> parsedLines = CProgramLoader.LoadParsedLines(lines);
+			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
 			//todo: replace load from array 

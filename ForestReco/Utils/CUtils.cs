@@ -6,10 +6,10 @@ namespace ForestReco
 {
 	public static class CUtils
 	{
-		public static bool PointBelongsToTree(SVector3 pPoint, SVector3 pTreetop)
+		public static bool PointBelongsToTree(Vector3 pPoint, Vector3 pTreetop)
 		{
-			Vector3 botPoint = new Vector3((float)pTreetop.X, (float)pPoint.Y, (float)pTreetop.Z);
-			List<Vector3> botTreetopPoint = new List<Vector3> { botPoint, pTreetop.ToVector3(), pPoint.ToVector3() };
+			Vector3 botPoint = new Vector3(pTreetop.X, pPoint.Y, pTreetop.Z);
+			List<Vector3> botTreetopPoint = new List<Vector3> { botPoint, pTreetop, pPoint };
 			float angleBetweenPointAndTreetop = AngleBetweenThreePoints(botTreetopPoint, Vector3.UnitY);
 			return angleBetweenPointAndTreetop < 45;
 		}
@@ -34,11 +34,11 @@ namespace ForestReco
 			return (float)angle;
 		}*/
 
-		public static double GetAngle(Vector2 a, Vector2 b)
+		public static float GetAngle(Vector2 a, Vector2 b)
 		{
 			a = Vector2.Normalize(a);
 			b = Vector2.Normalize(b);
-			return ToDegree(Math.Atan2(b.Y - a.Y, b.X - a.X));
+			return ToDegree((float)Math.Atan2(b.Y - a.Y, b.X - a.X));
 		}
 
 		public static float AngleBetweenThreePoints(List<Vector3> points, Vector3 up)
@@ -85,14 +85,14 @@ namespace ForestReco
 			return angle;
 		}
 
-		public static double ToRadians(double val)
+		public static float ToRadians(float val)
 		{
-			return Math.PI / 180 * val;
+			return (float)Math.PI / 180 * val;
 		}
 
-		private static double ToDegree(double angle)
+		private static float ToDegree(float angle)
 		{
-			return angle * (180.0 / Math.PI);
+			return (float)(angle * (180.0 / Math.PI));
 		}
 
 		public static float Get2DDistance(Vector3 a, Vector3 b)

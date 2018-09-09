@@ -6,13 +6,15 @@ namespace ForestReco
 {
 	public class CHeaderInfo
 	{
-		public SVector3 ScaleFactor;
-		public SVector3 Offset;
-		public SVector3 Min;
-		public SVector3 Max;
-
-		//public float Width;
-		//public float Height;
+		public Vector3 ScaleFactor;
+		public Vector3 Offset;
+		public Vector3 Min;
+		public Vector3 Max;
+		
+		public Vector3 BotLeftCorner => new Vector3(Min.X, 0, Min.Z);
+		public Vector3 TopRightCorner => new Vector3(Max.X, 0, Max.Z);
+		public Vector3 Center => (BotLeftCorner + TopRightCorner) / 2;
+		public float MinHeight => Min.Y;
 
 		public CHeaderInfo(string[] lines)
 		{
@@ -26,6 +28,13 @@ namespace ForestReco
 			//Offset.Z = 0; //given Z offset will not be used
 			Min = ParseLineVector3(pMinLine) - Offset;
 			Max = ParseLineVector3(pMaxLine) - Offset;
+			//transfer to format Y = height
+			float tmpY = Min.Y;
+			Min.Y = Min.Z;
+			Min.Z = tmpY;
+			tmpY = Max.Y;
+			Max.Y = Max.Z;
+			Max.Z = tmpY;
 			//we set Z offset so the lowest point will have height 0 (better visualization)
 			//Offset.Z = ParseLineVector3(pMinLine).Z;
 			Console.WriteLine(CProjectData.header);
@@ -51,18 +60,8 @@ namespace ForestReco
 			Max
 		}
 
-		public SVector3 BotLeftCorner => new SVector3(Min.X, Min.Y); 
-		public SVector3 TopRightCorner => new SVector3(Max.X, Max.Y); 
-		public SVector3 Center => (BotLeftCorner + TopRightCorner) / 2;
 
-		//public SVector3 GetTopLeftCorner() { return new SVector3(Min.X, Max.Y); }
-
-		public float MinHeight => (float)Min.Z; 
-		//public double GetMinHeight() { return Min.Z; }
-
-		//public double GetMaxHeight() { return Max.Z; }
-
-		private SVector3 ParseLineVector3(string pLine)
+		private Vector3 ParseLineVector3(string pLine)
 		{
 			string[] split = pLine.Split(null);
 			int length = split.Length;

@@ -48,18 +48,14 @@ namespace ForestReco
 		public static List<Obj> GetTreeObjsFromField(CPointArray pArray)
 		{
 			List<Obj> trees = new List<Obj>();
-			SVector3 arrayCenter = CProjectData.header.Center;
+			Vector3 arrayCenter = CProjectData.header.Center;
 			float minHeight = CProjectData.header.MinHeight;
 
 			foreach (CPointField t in pArray.Maximas)
 			{
 				Obj suitableTree = GetSuitableTreeObj(t.Tree);
 				//move obj so it is at 0,0,0
-				suitableTree.Position -= arrayCenter.ToVector3();
-				//swap Y-Z (Y=height in .OBJ)
-				float tmp = suitableTree.Position.Y;
-				suitableTree.Position.Y = suitableTree.Position.Z;
-				suitableTree.Position.Z = tmp;
+				suitableTree.Position -= arrayCenter;
 				//move Y position so the tree touches the ground
 				suitableTree.Position -= new Vector3(0, minHeight, 2 * suitableTree.Position.Z);
 
@@ -76,16 +72,16 @@ namespace ForestReco
 			Obj suitableTree = Trees[r.Next(0, Trees.Count)].Clone();
 			suitableTree.Name += "_" + counter;
 			//align position to tree
-			suitableTree.Position = pTree.MaxVegePoint.ToVector3();
-			double? groundHeight = pTree.GetHeight(EHeight.GroundMax, true);
+			suitableTree.Position = pTree.MaxVegePoint;
+			float? groundHeight = pTree.GetHeight(EHeight.GroundMax, true);
 			//Console.WriteLine("\nTree " + pTree);
 			//Console.WriteLine(suitableTree.Position);
 			//Console.WriteLine(groundHeight);
 			//set Z position so the tree touches the ground (Z=height)
-			suitableTree.Position.Z = (groundHeight == null ? suitableTree.Position.Z : (float)groundHeight);
+			suitableTree.Position.Y = (groundHeight == null ? suitableTree.Position.Y : (float)groundHeight);
 
-			double? treeHeight = pTree.GetTreeHeight();
-			double heightRation = (double)treeHeight / (suitableTree.Size.YMax - suitableTree.Size.YMin);
+			float? treeHeight = pTree.GetTreeHeight();
+			float heightRation = (float)treeHeight / (suitableTree.Size.YMax - suitableTree.Size.YMin);
 			suitableTree.Scale = new Vector3(1, (float)heightRation, 1);
 
 			counter++;
@@ -100,15 +96,15 @@ namespace ForestReco
 			suitableTree.Name += "_" + counter;
 			//align position to tree
 			/*suitableTree.Position = pTree.peak.maxHeight;
-			SVector3 sVector3Point = new SVector3(suitableTree.Position);
+			Vector3 Vector3Point = new Vector3(suitableTree.Position);
 			
-			sVector3Point.FlipYZ();
-			double? groundHeight = CProjectData.combinedArray.
-				GetElementContainingPoint(sVector3Point).GetHeight(EHeight.GroundMax, true);
+			Vector3Point.FlipYZ();
+			float? groundHeight = CProjectData.combinedArray.
+				GetElementContainingPoint(Vector3Point).GetHeight(EHeight.GroundMax, true);
 			suitableTree.Position.Y = (groundHeight == null ? suitableTree.Position.Y : (float)groundHeight);
 
-			double treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
-			double heightRatio = treeHeight / (suitableTree.Size.YMax - suitableTree.Size.YMin);
+			float treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
+			float heightRatio = treeHeight / (suitableTree.Size.YMax - suitableTree.Size.YMin);
 			suitableTree.Scale = new Vector3(1, (float)heightRatio, 1);*/
 
 			counter++;
@@ -135,25 +131,22 @@ namespace ForestReco
 		/// </summary>
 		private static void SetTreeObjTransform(ref Obj pSuitableTree, CTree pTree){
 		
-			SVector3 arrayCenter = CProjectData.header.Center;
+			Vector3 arrayCenter = CProjectData.header.Center;
 			float minHeight = CProjectData.header.MinHeight;
 
 			//align position to tree
 			pSuitableTree.Position = pTree.peak.maxHeight;
-			SVector3 sVector3Point = new SVector3(pSuitableTree.Position);
-
-			sVector3Point.FlipYZ();
-			double? groundHeight = CProjectData.array.
-				GetElementContainingPoint(sVector3Point).GetHeight(EHeight.GroundMax, true);
+			float? groundHeight = CProjectData.array.
+				GetElementContainingPoint(pSuitableTree.Position).GetHeight(EHeight.GroundMax, true);
 			pSuitableTree.Position.Y = (groundHeight == null ? pSuitableTree.Position.Y : (float)groundHeight);
 
-			double treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
-			double heightRatio = treeHeight / (pSuitableTree.Size.YMax - pSuitableTree.Size.YMin);
+			float treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
+			float heightRatio = treeHeight / (pSuitableTree.Size.YMax - pSuitableTree.Size.YMin);
 			pSuitableTree.Scale = new Vector3(1, (float)heightRatio, 1);
 
 
 			//move obj so it is at 0,0,0
-			pSuitableTree.Position -= arrayCenter.ToVector3(true);
+			pSuitableTree.Position -= arrayCenter;
 			pSuitableTree.Position -= new Vector3(0, minHeight, 2 * pSuitableTree.Position.Z);
 
 			Console.WriteLine(counter + "[" + pSuitableTree.Position + "]. treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);

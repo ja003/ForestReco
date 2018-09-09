@@ -37,7 +37,7 @@ namespace ForestReco
 		}
 
 
-		internal static List<Tuple<int, SVector3>> LoadParsedLines(string[] lines)
+		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines)
 		{
 			float stepSize = .4f; //in meters
 			CProjectData.array = new CPointArray(stepSize);
@@ -47,7 +47,7 @@ namespace ForestReco
 			int linesToRead = lines.Length;
 			//linesToRead = startLine + 500;
 
-			List<Tuple<int, SVector3>> parsedLines = new List<Tuple<int, SVector3>>();
+			List<Tuple<int, Vector3>> parsedLines = new List<Tuple<int, Vector3>>();
 			bool useDebugData = false;
 			if (useDebugData)
 			{
@@ -58,7 +58,7 @@ namespace ForestReco
 				for (int i = startLine; i < Math.Min(lines.Length, linesToRead); i++)
 				{
 					// <class, coordinate>
-					Tuple<int, SVector3> c = CLazTxtParser.ParseLine(lines[i], CProjectData.header);
+					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i], CProjectData.header);
 					if (c == null) { continue; }
 					parsedLines.Add(c);
 				}
@@ -71,7 +71,7 @@ namespace ForestReco
 			return parsedLines;
 		}
 
-		internal static void ProcessParsedLines(List<Tuple<int, SVector3>> parsedLines)
+		internal static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
 		{
 			bool processArray = false;
 			CPointArray array = CProjectData.array;
@@ -79,22 +79,27 @@ namespace ForestReco
 			int pointsToAddCount = parsedLines.Count;
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{
-				Tuple<int, SVector3> parsedLine = parsedLines[i];
+				Tuple<int, Vector3> parsedLine = parsedLines[i];
+				Vector3 point = parsedLine.Item2;
+				float tmpY = point.Y;
+				point.Y = point.Z;
+				point.Z = tmpY;
+
 				//2 = ground
 				//5 = high vegetation
 				bool pForceTreePoint = true;
 				if (parsedLine.Item1 == 5 || pForceTreePoint)
 				{
-					CTreeManager.AddPoint(parsedLine.Item2, i);
+					CTreeManager.AddPoint(point, i);
 				}
-				array.AddPointInField(parsedLine.Item1, parsedLine.Item2);
+				array.AddPointInField(parsedLine.Item1, point);
 
 				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{
 					array.AddPointInField(parsedLine.Item1, parsedLine.Item2);
 				}*/
 
-				CProjectData.allPoints.Add(parsedLine.Item2.ToVector3(true));
+				CProjectData.allPoints.Add(point);
 			}
 			Obj treesObj = new Obj("trees_");
 

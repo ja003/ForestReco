@@ -12,7 +12,7 @@ namespace ForestReco
 		private const string DEFAULT_FILENAME = "tree";
 		public const float POINT_OFFSET = 0.05f;
 
-		private static SVector3 arrayCenter => CProjectData.header.Center;
+		private static Vector3 arrayCenter => CProjectData.header.Center;
 		private static float minHeight => CProjectData.header.MinHeight;
 
 		public static void ExportPoints(List<Vector3> pPoints, string pFileName)
@@ -26,9 +26,9 @@ namespace ForestReco
 		{
 			foreach (Vector3 p in pPoints)
 			{
-				Vector3 clonePoint = new Vector3(p.X, p.Y, p.Z);
-				clonePoint -= arrayCenter.ToVector3(true);
-				clonePoint += new Vector3(0, -CProjectData.header.MinHeight, -2 * clonePoint.Z);
+				Vector3 clonePoint = p;
+				clonePoint -= arrayCenter;
+				clonePoint -= new Vector3(0, CProjectData.header.MinHeight, 2 * clonePoint.Z);
 
 				Vertex v1 = new Vertex(clonePoint, obj.GetNextVertexIndex());
 				obj.VertexList.Add(v1);
@@ -57,7 +57,7 @@ namespace ForestReco
 			{
 				//for first point in branch use peak as a first point
 				Vector3 p = i == 0 ? pBranch.tree.peak.Center : pBranch.points[i - 1].Center;
-				p -= arrayCenter.ToVector3(true);
+				p -= arrayCenter;
 				p += new Vector3(0, -minHeight, -2 * p.Z);
 
 				Vertex v1 = new Vertex(p, obj.GetNextVertexIndex());
@@ -69,7 +69,7 @@ namespace ForestReco
 
 				//for first point set first point to connect to peak
 				Vector3 nextP = i == 0 ? pBranch.points[0].Center : pBranch.points[i].Center;
-				nextP -= arrayCenter.ToVector3(true);
+				nextP -= arrayCenter;
 				nextP += new Vector3(0, -minHeight, -2 * nextP.Z);
 
 				Vertex v4 = new Vertex(nextP, obj.GetNextVertexIndex());

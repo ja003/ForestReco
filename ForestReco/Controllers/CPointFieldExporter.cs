@@ -28,7 +28,7 @@ namespace ForestReco
 					{
 						Vertex v = new Vertex();
 						CPointField el = pArray.GetElement(x, y);
-						double? height = el.GetHeight(pHeight);
+						float? height = el.GetHeight(pHeight);
 
 						if (pStrategy == EExportStrategy.FillMissingHeight)
 						{
@@ -58,7 +58,7 @@ namespace ForestReco
 							}
 
 							v.LoadFromStringArray(new[]{"v", pArray.GetFieldXCoord(x).ToString(),
-								height.ToString(), pArray.GetFieldYCoord(y).ToString()});
+								height.ToString(), pArray.GetFieldZCoord(y).ToString()});
 							obj.VertexList.Add(v);
 							//record the index of vertex associated with this field position
 							el.VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
@@ -126,39 +126,35 @@ namespace ForestReco
 		{
 			Obj obj = new Obj(pTreePointsName);
 			int vertexIndex = 1;
-			SVector3 arrayCenter = CProjectData.header.Center;
+			Vector3 arrayCenter = CProjectData.header.Center;
 
 			float minHeight = CProjectData.header.MinHeight;
 
 			foreach (CPointField tree in pArray.Maximas)
 			{
-				foreach (SVector3 tp in tree.TreePoints)
+				foreach (Vector3 tp in tree.TreePoints)
 				{
-					SVector3 cloneTp = tp.Clone();
-					//cloneTp = new SVector3(0, 0, 0); //test value
+					Vector3 cloneTp = tp;
 					//move to center (visualisation only)
-					cloneTp.MoveBy(-arrayCenter);
-					//in TreePoints Z = height, in OBJ Y = height
-					cloneTp.FlipYZ();
-					//move Y height so it matches the ground (visualisation only)
+					cloneTp-=arrayCenter;
 					//TODO: if not moveBy '-2 * cloneTp.Z', output model is Z-mirrored 
-					cloneTp.MoveBy(new SVector3(0, -minHeight, -2 * cloneTp.Z));
+					cloneTp -= new Vector3(0, minHeight, 2 * cloneTp.Z);
 
 					List<Vertex> pointVertices = new List<Vertex>();
 
-					Vertex v1 = cloneTp.ToVertex(vertexIndex, Vector3.Zero);
+					Vertex v1 = new Vertex(cloneTp, vertexIndex);
 					pointVertices.Add(v1);
 					vertexIndex++;
 
-					Vertex v2 = cloneTp.ToVertex(vertexIndex, Vector3.UnitX * POINT_OFFSET);
+					Vertex v2 = new Vertex(cloneTp + Vector3.UnitX * POINT_OFFSET, vertexIndex);
 					pointVertices.Add(v2);
 					vertexIndex++;
 
-					Vertex v3 = cloneTp.ToVertex(vertexIndex, Vector3.UnitZ * POINT_OFFSET);
+					Vertex v3 = new Vertex(cloneTp + Vector3.UnitZ * POINT_OFFSET, vertexIndex);
 					pointVertices.Add(v3);
 					vertexIndex++;
 
-					Vertex v4 = cloneTp.ToVertex(vertexIndex, Vector3.UnitY * POINT_OFFSET);
+					Vertex v4 = new Vertex(cloneTp + Vector3.UnitY * POINT_OFFSET, vertexIndex);
 					pointVertices.Add(v4);
 					vertexIndex++;
 

@@ -14,7 +14,7 @@ namespace ForestReco
 		private CPointField[,] array;
 		private List<CPointField> fields;
 
-		private double stepSize;
+		private float stepSize;
 		public int arrayXRange { get; }
 		public int arrayYRange { get; }
 		// ReSharper disable once NotAccessedField.Local
@@ -26,20 +26,20 @@ namespace ForestReco
 
 		private const float MIN_TREES_DISTANCE = 1; //meter
 
-		SVector3 botLeftCorner;
-		SVector3 topRightCorner;
+		Vector3 botLeftCorner;
+		Vector3 topRightCorner;
 
 		//--------------------------------------------------------------
 
-		public CPointArray(double pStepSize)
+		public CPointArray(float pStepSize)
 		{
 			stepSize = pStepSize;
 
 			botLeftCorner = CProjectData.header.BotLeftCorner;
 			topRightCorner = CProjectData.header.TopRightCorner;
 
-			double w = topRightCorner.X - botLeftCorner.X;
-			double h = topRightCorner.Y - botLeftCorner.Y;
+			float w = topRightCorner.X - botLeftCorner.X;
+			float h = topRightCorner.Z - botLeftCorner.Z;
 
 			//TODO: if not +2, GetPositionInField is OOR
 			arrayXRange = (int)(w / pStepSize) + 2;
@@ -146,24 +146,23 @@ namespace ForestReco
 			return array[pXindex, pYindex];
 		}
 
-		public CPointField GetElementContainingPoint(SVector3 pPoint)
+		public CPointField GetElementContainingPoint(Vector3 pPoint)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
 			return array[index.Item1, index.Item2];
 		}
 
-		private Tuple<int, int> GetPositionInField(SVector3 pPoint)
+		private Tuple<int, int> GetPositionInField(Vector3 pPoint)
 		{
 			int xPos = (int)((pPoint.X - botLeftCorner.X) / stepSize);
 			//due to array orientation
-			int yPos = arrayYRange - (int)((pPoint.Y - botLeftCorner.Y) / stepSize) - 1;
-			//int yPos = (int)((pPointField.Y - controller.botLeftCorner.Y) / stepSize);
+			int yPos = arrayYRange - (int)((pPoint.Z - botLeftCorner.Z) / stepSize) - 1;
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
-		public SVector3 GetCenterOffset()
+		public Vector3 GetCenterOffset()
 		{
-			return new SVector3(arrayXRange / 2f * stepSize, arrayYRange / 2f * stepSize);
+			return new Vector3(arrayXRange / 2f * stepSize, 0, arrayYRange / 2f * stepSize);
 		}
 
 		/// <summary>
@@ -176,7 +175,7 @@ namespace ForestReco
 
 		//PUBLIC
 
-		public void AddPointInField(int pClass, SVector3 pPoint)
+		public void AddPointInField(int pClass, Vector3 pPoint)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
 			array[index.Item1, index.Item2].AddPoint(pClass, pPoint);
@@ -254,7 +253,7 @@ namespace ForestReco
 		/// <summary>
 		/// Returns string for x coordinate in array moved by offset
 		/// </summary>
-		public double GetFieldXCoord(int pXindex)
+		public float GetFieldXCoord(int pXindex)
 		{
 			return pXindex * stepSize - GetCenterOffset().X;
 		}
@@ -262,9 +261,9 @@ namespace ForestReco
 		/// <summary>
 		/// Returns string for y coordinate in array moved by offset
 		/// </summary>
-		public double GetFieldYCoord(int pYindex)
+		public float GetFieldZCoord(int pYindex)
 		{
-			return pYindex * stepSize - GetCenterOffset().Y;
+			return pYindex * stepSize - GetCenterOffset().Z;
 		}
 
 		public override string ToString()

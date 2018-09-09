@@ -13,9 +13,9 @@ namespace ObjParser.Types
         public const int MinimumDataLength = 3;
         public const string Prefix = "vt";
 
-        public double X { get; set; }
+        public float X { get; set; }
 
-        public double Y { get; set; }
+        public float Y { get; set; }
 
 		public int Index { get; set; }
 
@@ -29,13 +29,13 @@ namespace ObjParser.Types
 
             bool success;
 
-            double x, y;
+            float x, y;
 
-            success = double.TryParse(data[1], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
-            if (!success) throw new ArgumentException("Could not parse X parameter as double");
+            success = float.TryParse(data[1], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
+            if (!success) throw new ArgumentException("Could not parse X parameter as float");
 
-            success = double.TryParse(data[2], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
-            if (!success) throw new ArgumentException("Could not parse Y parameter as double");
+            success = float.TryParse(data[2], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
+            if (!success) throw new ArgumentException("Could not parse Y parameter as float");
             X = x;
             Y = y;
         }

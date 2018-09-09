@@ -227,7 +227,7 @@ namespace ForestReco
 			}
 
 			dir = Vector2.Normalize(dir);
-			double angle = CUtils.GetAngle(Vector2.UnitX, dir);
+			float angle = CUtils.GetAngle(Vector2.UnitX, dir);
 			//if (CTreeManager.DEBUG) Console.WriteLine("angle " + peak2D + " - " + point2D + " = " + angle);
 			if (angle < 0)
 			{
@@ -281,7 +281,7 @@ namespace ForestReco
 			Obj obj = new Obj(pName);
 			//obj.Position = peak;
 			//int vertexIndex = 1;
-			SVector3 arrayCenter = CProjectData.header.Center;
+			Vector3 arrayCenter = CProjectData.header.Center;
 			float minHeight = CProjectData.header.MinHeight;
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
