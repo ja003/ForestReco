@@ -47,8 +47,6 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
-			Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
-				pSubTree.ToString(false, false, true, false));
 			if (CTreeManager.DEBUG) Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
 				pSubTree.ToString(false, false, true, false));
 			//todo: make effective

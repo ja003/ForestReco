@@ -20,8 +20,8 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = "debug_tree_03";
-			//fileName = "R2-F-1-j_fix";
-			fileName = "BK_1000AGL_59_72_97_x90_y62";
+			fileName = "R2-F-1-j_fix";
+			//fileName = "BK_1000AGL_59_72_97_x90_y62";
 
 			CProjectData.saveFileName = fileName;
 			//string saveFileName = "BK_1000AGL_";
@@ -107,8 +107,10 @@ namespace ForestReco
 				TimeSpan duration = DateTime.Now - lineStartTime;
 				if(duration.Milliseconds > 1){ Console.WriteLine(i + ": " + duration);}
 			}
-
 			Console.WriteLine("All points added | duration = " + (DateTime.Now - processStartTime));
+
+			CTreeManager.TryMergeAllTrees();
+
 
 			Console.WriteLine("\nAdd trees to export " + CTreeManager.Trees.Count + " | " + DateTime.Now);
 			foreach (CTree t in CTreeManager.Trees)

@@ -160,5 +160,32 @@ namespace ForestReco
 
 			return treesObjs;
 		}
+
+		public static void TryMergeAllTrees()
+		{
+			for (int i = trees.Count - 1; i >= 0; i--)
+			{
+				if (i >= trees.Count)
+				{
+					Console.WriteLine("Tree was deleted");
+					continue;
+				}
+				CTree tree = trees[i];
+				List<CTree> possibleTrees = GetPossibleTreesFor(tree.peak.Center);
+
+				foreach (CTree t in possibleTrees)
+				{
+					if (!Equals(tree, t))
+					{
+						tree = TryMergeTrees(tree, t);
+						//they were merged
+						if (tree.treeIndex == t.treeIndex)
+						{
+							Console.WriteLine("Merge");
+						}
+					}
+				}
+			}
+		}
 	}
 }
