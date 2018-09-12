@@ -23,15 +23,7 @@ namespace ForestReco
 		private const float MAX_STEM_POINT_DISTANCE = 0.1f;
 
 		public Vector3 possibleNewPoint;
-
-		//private const float MAX_TREE_EXTENT = 3;
-		//private const float MAX_ANGLE = 45;
-
-		//private Vector3 mostLeft;
-		//private Vector3 mostTop;
-		//private Vector3 mostRight;
-		//private Vector3 mostBot;
-
+		
 		public int treeIndex;
 
 		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
@@ -55,6 +47,8 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
+			Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
+				pSubTree.ToString(false, false, true, false));
 			if (CTreeManager.DEBUG) Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
 				pSubTree.ToString(false, false, true, false));
 			//todo: make effective
@@ -313,7 +307,6 @@ namespace ForestReco
 				}
 			}
 
-			obj.updateSize();
 			return obj;
 		}
 

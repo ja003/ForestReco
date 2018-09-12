@@ -23,8 +23,7 @@ namespace ForestReco
 			//fileName = "R2-F-1-j_fix";
 			fileName = "BK_1000AGL_59_72_97_x90_y62";
 
-			//string saveFileName = "BKAGL_59_72_97";
-			CProjectData.saveFileName = "BKAGL_59_72_97_x90_y62_treeObjs";
+			CProjectData.saveFileName = fileName;
 			//string saveFileName = "BK_1000AGL_";
 
 
@@ -38,10 +37,10 @@ namespace ForestReco
 
 		public static bool useDebugData = false;
 
-		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines)
+		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray)
 		{
 			float stepSize = .4f; //in meters
-			CProjectData.array = new CPointArray(stepSize);
+			if (pArray) { CProjectData.array = new CPointArray(stepSize); }
 
 			//store coordinates to corresponding data strucures based on their class
 			const int startLine = 19;
@@ -58,7 +57,7 @@ namespace ForestReco
 				for (int i = startLine; i < Math.Min(lines.Length, linesToRead); i++)
 				{
 					// <class, coordinate>
-					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i], CProjectData.header);
+					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i]);
 					if (c == null) { continue; }
 					parsedLines.Add(c);
 				}
@@ -73,13 +72,16 @@ namespace ForestReco
 
 		internal static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
 		{
-			Console.WriteLine("ProcessParsedLines " + parsedLines.Count);
+			DateTime processStartTime = DateTime.Now;
+			Console.WriteLine("ProcessParsedLines " + parsedLines.Count + ". Start = " + processStartTime);
 			bool processArray = false;
 			CPointArray array = CProjectData.array;
 
 			int pointsToAddCount = parsedLines.Count;
 			for (int i = 0; i < Math.Min(parsedLines.Count, pointsToAddCount); i++)
 			{
+				DateTime lineStartTime = DateTime.Now;
+
 				Tuple<int, Vector3> parsedLine = parsedLines[i];
 				Vector3 point = parsedLine.Item2;
 				float tmpY = point.Y;
@@ -93,8 +95,7 @@ namespace ForestReco
 				{
 					CTreeManager.AddPoint(point, i);
 				}
-				if(!useDebugData)
-					array.AddPointInField(parsedLine.Item1, point);
+				if (!useDebugData) { array?.AddPointInField(parsedLine.Item1, point); }
 
 				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{
@@ -102,28 +103,33 @@ namespace ForestReco
 				}*/
 
 				CProjectData.allPoints.Add(point);
-			}
-			Obj treesObj = new Obj("trees_");
 
-			Console.WriteLine("Add trees to export " + CTreeManager.Trees.Count);
+				TimeSpan duration = DateTime.Now - lineStartTime;
+				if(duration.Milliseconds > 1){ Console.WriteLine(i + ": " + duration);}
+			}
+
+			Console.WriteLine("All points added | duration = " + (DateTime.Now - processStartTime));
+
+			Console.WriteLine("\nAdd trees to export " + CTreeManager.Trees.Count + " | " + DateTime.Now);
 			foreach (CTree t in CTreeManager.Trees)
 			{
-				Obj tObj = t.GetObj("tree_" + CTreeManager.Trees.IndexOf(t), true, true);
+				Obj tObj = t.GetObj("tree_" + CTreeManager.Trees.IndexOf(t), true, false);
 				CProjectData.objsToExport.Add(tObj);
 			}
 
 			bool addTreeObjModels = true;
 			if (addTreeObjModels && !useDebugData)
 			{
-				Console.WriteLine("Add tree obj models");
+				Console.WriteLine("Add tree obj models " + " | " + DateTime.Now);
 
 				int counter = 0;
-				while (!array.IsAllDefined(EHeight.GroundMax))
+				while (array != null && !array.IsAllDefined(EHeight.GroundMax))
 				{
 					Console.WriteLine("FillMissingHeights " + counter);
-					array.FillMissingHeights(EHeight.GroundMax);
+					array?.FillMissingHeights(EHeight.GroundMax);
 					counter++;
-					if(counter > 10){
+					if (counter > 10)
+					{
 						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
 						break;
 					}
@@ -133,9 +139,9 @@ namespace ForestReco
 			}
 
 			bool exportArray = true;
-			if (exportArray && !useDebugData)
+			if (exportArray && !useDebugData && CProjectData.array != null)
 			{
-				Console.WriteLine("Export array");
+				Console.WriteLine("Export array" + " | " + DateTime.Now);
 				CProjectData.objsToExport.Add(
 					CPointFieldExporter.ExportToObj("arr", EExportStrategy.FillMissingHeight, new List<EHeight> { EHeight.GroundMax }));
 			}

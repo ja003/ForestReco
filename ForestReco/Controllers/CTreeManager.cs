@@ -55,13 +55,13 @@ namespace ForestReco
 			}
 			if (selectedTree != null)
 			{
-				foreach (CTree t in possibleTrees)
+				/*foreach (CTree t in possibleTrees)
 				{
 					if (!Equals(selectedTree, t))
 					{
 						selectedTree = TryMergeTrees(selectedTree, t);
 					}
-				}
+				}*/
 			}
 			else// if (selectedTree == null)
 			{

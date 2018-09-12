@@ -78,7 +78,7 @@ namespace ForestReco
 			return bbPoints;
 		}
 
-		public bool IsPointInside(Vector3 pPoint)
+		/*public bool IsPointInside(Vector3 pPoint)
 		{
 			return IsPointInsideX(pPoint) && IsPointInsideY(pPoint) && IsPointInsideZ(pPoint);
 		}
@@ -99,6 +99,6 @@ namespace ForestReco
 		private static bool IsPointInside1D(float pPoint, float pCenter, float pExtent)
 		{
 			return Math.Abs(pPoint - pCenter) < pExtent / 2;
-		}
+		}*/
 	}
 }

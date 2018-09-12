@@ -35,6 +35,15 @@ namespace ForestReco
 			tmpY = Max.Y;
 			Max.Y = Max.Z;
 			Max.Z = tmpY;
+
+			if (Min == Vector3.Zero && Max == Vector3.Zero)
+			{
+				Console.WriteLine("Invalid header. Creating default header.");
+				Min = -100 * Vector3.One;
+				Max = 100 * Vector3.One;
+				Offset = Vector3.Zero;
+			}
+
 			//we set Z offset so the lowest point will have height 0 (better visualization)
 			//Offset.Z = ParseLineVector3(pMinLine).Z;
 			Console.WriteLine(CProjectData.header);
@@ -66,7 +75,7 @@ namespace ForestReco
 			string[] split = pLine.Split(null);
 			int length = split.Length;
 			//									X					Y					Z
-			return CLineParser.ParseVector3(split[length - 3], split[length - 2], split[length - 1]);
+			return CLazTxtParser.ParseHeaderVector3(split[length - 3], split[length - 2], split[length - 1]);
 		}
 
 		public override string ToString()

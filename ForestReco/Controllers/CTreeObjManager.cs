@@ -136,9 +136,10 @@ namespace ForestReco
 
 			//align position to tree
 			pSuitableTree.Position = pTree.peak.maxHeight;
-			float? groundHeight = CProjectData.array.GetElementContainingPoint(pSuitableTree.Position).
+			float? groundHeight = CProjectData.array?.GetElementContainingPoint(pSuitableTree.Position).
 				GetHeight(EHeight.GroundMax, true);
-			pSuitableTree.Position.Y = (groundHeight == null ? pSuitableTree.Position.Y : (float)groundHeight);
+			groundHeight = groundHeight ?? pSuitableTree.Position.Y;
+			pSuitableTree.Position.Y = (float)groundHeight;
 
 			float treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
 			float heightRatio = treeHeight / (pSuitableTree.Size.YMax - pSuitableTree.Size.YMin);
@@ -149,7 +150,7 @@ namespace ForestReco
 			pSuitableTree.Position -= arrayCenter;
 			pSuitableTree.Position -= new Vector3(0, minHeight, 2 * pSuitableTree.Position.Z);
 
-			Console.WriteLine(counter + "[" + pSuitableTree.Position + "]. treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
+			//Console.WriteLine(counter + "[" + pSuitableTree.Position + "]. treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
 		}
 	}
 }

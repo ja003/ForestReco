@@ -9,7 +9,9 @@ namespace ObjParser
 {
 	public class Obj
 	{
-		public List<Vertex> VertexList;
+		private List<Vertex> vertexList;
+		public List<Vertex> VertexList => vertexList;
+
 		public List<Face> FaceList;
 		public List<TextureVertex> TextureList;
 
@@ -37,7 +39,7 @@ namespace ObjParser
 		/// </summary>
 		public Obj(string pName)
 		{
-			VertexList = new List<Vertex>();
+			vertexList = new List<Vertex>();
 			FaceList = new List<Face>();
 			TextureList = new List<TextureVertex>();
 			Name = pName;
@@ -91,7 +93,7 @@ namespace ObjParser
 					writer.WriteLine("mtllib " + Mtl);
 				}
 
-				VertexList.ForEach(v => writer.WriteLine(v));
+				vertexList.ForEach(v => writer.WriteLine(v));
 				TextureList.ForEach(tv => writer.WriteLine(tv));
 				string lastUseMtl = "";
 				foreach (Face face in FaceList)
@@ -120,13 +122,43 @@ namespace ObjParser
 			}
 		}
 
+		public void AddVertex(Vertex pVertex)
+		{
+			vertexList.Add(pVertex);
+			UpdateSize(pVertex);
+		}
+
+		public void UpdateSize(Vertex pVertex)
+		{
+			if (Size == null)
+			{
+				Size = new Extent
+				{
+					XMax = pVertex.X,
+					XMin = pVertex.X,
+					YMax = pVertex.Y,
+					YMin = pVertex.Y,
+					ZMax = pVertex.Z,
+					ZMin = pVertex.Z
+				};
+				return;
+			}
+
+			if (pVertex.X > Size.XMax) { Size.XMax = pVertex.X; }
+			if (pVertex.X < Size.XMin) { Size.XMin = pVertex.X; }
+			if (pVertex.Y > Size.YMax) { Size.YMax = pVertex.Y; }
+			if (pVertex.Y < Size.YMin) { Size.YMin = pVertex.Y; }
+			if (pVertex.Z > Size.ZMax) { Size.ZMax = pVertex.Z; }
+			if (pVertex.Z < Size.ZMin) { Size.ZMin = pVertex.Z; }
+		}
+		
 		/// <summary>
 		/// Sets our global object size with an extent object
 		/// </summary>
-		public void updateSize()
+		private void updateSize()
 		{
 			// If there are no vertices then size should be 0.
-			if (VertexList.Count == 0)
+			if (vertexList.Count == 0)
 			{
 				Size = new Extent
 				{
@@ -144,12 +176,12 @@ namespace ObjParser
 
 			Size = new Extent
 			{
-				XMax = VertexList.Max(v => v.X),
-				XMin = VertexList.Min(v => v.X),
-				YMax = VertexList.Max(v => v.Y),
-				YMin = VertexList.Min(v => v.Y),
-				ZMax = VertexList.Max(v => v.Z),
-				ZMin = VertexList.Min(v => v.Z)
+				XMax = vertexList.Max(v => v.X),
+				XMin = vertexList.Min(v => v.X),
+				YMax = vertexList.Max(v => v.Y),
+				YMin = vertexList.Min(v => v.Y),
+				ZMax = vertexList.Max(v => v.Z),
+				ZMin = vertexList.Min(v => v.Z)
 			};
 		}
 
@@ -174,8 +206,8 @@ namespace ObjParser
 					case "v":
 						Vertex v = new Vertex();
 						v.LoadFromStringArray(parts);
-						VertexList.Add(v);
-						v.Index = VertexList.Count();
+						vertexList.Add(v);
+						v.Index = vertexList.Count();
 						break;
 					case "f":
 						Face f = new Face();
@@ -198,7 +230,7 @@ namespace ObjParser
 		{
 			Obj clone = new Obj(Name)
 			{
-				VertexList = VertexList,
+				vertexList = vertexList,
 				FaceList = FaceList,
 				TextureList = TextureList,
 				Position = Position,
@@ -212,12 +244,12 @@ namespace ObjParser
 
 		public override string ToString()
 		{
-			return "[" + Position + "]" + VertexList.Count;
+			return "[" + Position + "]" + vertexList.Count;
 		}
 
 		public int GetNextVertexIndex()
 		{
-			return VertexList.Count + 1;
+			return vertexList.Count + 1;
 		}
 	}
 }

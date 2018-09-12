@@ -59,7 +59,7 @@ namespace ForestReco
 
 							v.LoadFromStringArray(new[]{"v", pArray.GetFieldXCoord(x).ToString(),
 								height.ToString(), pArray.GetFieldZCoord(y).ToString()});
-							obj.VertexList.Add(v);
+							obj.AddVertex(v);
 							//record the index of vertex associated with this field position
 							el.VertexIndex = obj.VertexList.Count; //first index = 1 (not 0)!
 						}
@@ -114,7 +114,6 @@ namespace ForestReco
 					}
 				}
 			}
-			obj.updateSize();
 
 			return obj;
 			//WriteObjFile(pOutputFileName, obj);
@@ -160,7 +159,7 @@ namespace ForestReco
 
 					foreach (Vertex v in pointVertices)
 					{
-						obj.VertexList.Add(v);
+						obj.AddVertex(v);
 					}
 
 					//create 4-side representation of point
@@ -173,7 +172,6 @@ namespace ForestReco
 				}
 				//break;
 			}
-			obj.updateSize();
 			return obj;
 			//WriteObjFile(pTreePointsName, obj);
 		}

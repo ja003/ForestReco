@@ -30,16 +30,16 @@ namespace ForestReco
 				MoveToCenter(ref clonePoint);
 
 				Vertex v1 = new Vertex(clonePoint, obj.GetNextVertexIndex());
-				obj.VertexList.Add(v1);
+				obj.AddVertex(v1);
 
 				Vertex v2 = new Vertex(clonePoint + Vector3.UnitX * POINT_OFFSET, obj.GetNextVertexIndex());
-				obj.VertexList.Add(v2);
+				obj.AddVertex(v2);
 
 				Vertex v3 = new Vertex(clonePoint + Vector3.UnitZ * POINT_OFFSET, obj.GetNextVertexIndex());
-				obj.VertexList.Add(v3);
+				obj.AddVertex(v3);
 
 				Vertex v4 = new Vertex(clonePoint + Vector3.UnitY * POINT_OFFSET, obj.GetNextVertexIndex());
-				obj.VertexList.Add(v4);
+				obj.AddVertex(v4);
 
 				//create 4-side representation of point
 				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
@@ -47,7 +47,6 @@ namespace ForestReco
 				obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
 				obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
 			}
-			obj.updateSize();
 		}
 
 		public static void AddBBToObj(ref Obj obj, List<CTreePoint> pTreePoints)
@@ -82,16 +81,16 @@ namespace ForestReco
 			MoveToCenter(ref pFrom);
 
 			Vertex v1 = new Vertex(pFrom, obj.GetNextVertexIndex());
-			obj.VertexList.Add(v1);
+			obj.AddVertex(v1);
 			Vertex v2 = new Vertex(pFrom + Vector3.UnitX * POINT_OFFSET, obj.GetNextVertexIndex());
-			obj.VertexList.Add(v2);
+			obj.AddVertex(v2);
 			Vertex v3 = new Vertex(pFrom + Vector3.UnitZ * POINT_OFFSET, obj.GetNextVertexIndex());
-			obj.VertexList.Add(v3);
+			obj.AddVertex(v3);
 
 			MoveToCenter(ref pTo);
 
 			Vertex v4 = new Vertex(pTo, obj.GetNextVertexIndex());
-			obj.VertexList.Add(v4);
+			obj.AddVertex(v4);
 			/*Vertex v5 = new Vertex(nextP + Vector3.UnitX * POINT_OFFSET, vertexIndex);
 			pointVertices.Add(v5);
 			vertexIndex++;
@@ -109,8 +108,6 @@ namespace ForestReco
 			//obj.FaceList.Add(new Face(new List<Vertex> { v4, v5, v3 }));
 			//obj.FaceList.Add(new Face(new List<Vertex> { v5, v6, v3 }));
 			//obj.FaceList.Add(new Face(new List<Vertex> { v6, v4, v3 }));
-
-			obj.updateSize();
 		}
 
 		public static void AddBranchToObj(ref Obj obj, CBranch pBranch)

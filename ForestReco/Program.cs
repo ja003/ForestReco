@@ -20,17 +20,17 @@ namespace ForestReco
 		static void Main()
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
-			
-			//EPlatform platform = EPlatform.Notebook;
-			//EPlatform platform = EPlatform.HomePC;
-			CProgramLoader.platform = EPlatform.Tiarra;
+
+			CProgramLoader.platform = EPlatform.Notebook;
+			//CProgramLoader.platform = EPlatform.HomePC;
+			//CProgramLoader.platform = EPlatform.Tiarra;
 
 			string[] lines = CProgramLoader.GetFileLines();
 			CProjectData.header = new CHeaderInfo(lines);
 
 			CTreeObjManager.Init();
 
-			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines);
+			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
 			//todo: replace load from array 
@@ -40,10 +40,10 @@ namespace ForestReco
 			Console.WriteLine("\n===============\n");
 			CTreeManager.WriteResult();			
 
-			Console.WriteLine("ExportObjsToExport");
+			Console.WriteLine("ExportObjsToExport" + " | " + DateTime.Now);
 			CObjExporter.ExportObjsToExport();
 
-			Console.WriteLine("Press any key to exit.");
+			Console.WriteLine("Press any key to exit." + " | " + DateTime.Now);
 			Console.ReadKey();
 		}
 	}
