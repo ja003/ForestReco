@@ -35,7 +35,7 @@ namespace ForestReco
 			if (pPoint.Y > maxHeight.Y) { maxHeight = pPoint; }
 		}
 
-		public void AddPoint(CTreePoint pPoint)
+		/*public void AddPoint(CTreePoint pPoint)
 		{
 			if (CTreeManager.DEBUG)
 				Console.WriteLine("---- add tp " + pPoint + " to " + this);
@@ -53,7 +53,7 @@ namespace ForestReco
 			//Center = (Center + pPoint.Center) / 2;
 			if (CTreeManager.DEBUG)
 				Console.WriteLine("---- new center = " + Center.ToString("#+0.00#;-0.00"));
-		}
+		}*/
 
 
 		public Vector3 GetClosestPointTo(Vector3 pPoint)
@@ -70,16 +70,11 @@ namespace ForestReco
 			return closestPoint;
 		}
 
-		public virtual bool Includes(CTreePoint pPoint)
+		public virtual bool Includes(Vector3 pPoint)
 		{
-			return Contains(pPoint.Center) || Includes(pPoint.Center);
+			return Vector3.Distance(Center, pPoint) < POINT_EXTENT || Contains(pPoint);
 		}
-
-		private bool Includes(Vector3 pPoint)
-		{
-			return Vector3.Distance(Center, pPoint) < POINT_EXTENT;
-		}
-
+		
 		public override string ToString()
 		{
 			return Center.ToString("0.00") + " [" + Points.Count + "]";

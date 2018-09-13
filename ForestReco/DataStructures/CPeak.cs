@@ -10,9 +10,9 @@ namespace ForestReco
 		public CPeak(Vector3 pPoint) : base(pPoint){ }
 		
 
-		public override bool Includes(CTreePoint pPoint)
+		public override bool Includes(Vector3 pPoint)
 		{
-			return base.Includes(pPoint) || IsPartOfPeak(pPoint.Center);
+			return base.Includes(pPoint) || IsPartOfPeak(pPoint);
 		}
 
 		private bool IsPartOfPeak(Vector3 pPointCenter)

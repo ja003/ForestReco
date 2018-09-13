@@ -44,12 +44,11 @@ namespace ForestReco
 
 		protected bool Contains(Vector3 pPoint)
 		{
-			return pPoint.X > minBB.X && pPoint.X < maxBB.X &&
-					 pPoint.Y > minBB.Y && pPoint.Y < maxBB.Y &&
-					 pPoint.Z > minBB.Z && pPoint.Z < maxBB.Z;
+			return
+				pPoint.X > minBB.X && pPoint.X < maxBB.X &&
+				pPoint.Y > minBB.Y && pPoint.Y < maxBB.Y &&
+				pPoint.Z > minBB.Z && pPoint.Z < maxBB.Z;
 		}
-
-
 
 		/// <summary>
 		/// Returns Manhattan distance from center to point minus BB extents.

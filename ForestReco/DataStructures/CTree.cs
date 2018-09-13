@@ -26,6 +26,8 @@ namespace ForestReco
 
 		public int treeIndex;
 
+		public List<Vector3> Points = new List<Vector3>();
+
 		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
 		{
 			peak = new CPeak(pPoint);
@@ -42,7 +44,7 @@ namespace ForestReco
 			//add stem as the last branch
 			branches.Add(new CBranch(this, 0, 0));
 
-			OnAddPoint(pPoint);
+			AddPoint(pPoint);
 		}
 
 		public void MergeWith(CTree pSubTree)
@@ -56,14 +58,11 @@ namespace ForestReco
 				return;
 			}
 
-			foreach (CTreePoint p in pSubTree.GetAllPoints())
-			{
-				AddPoint(p);
-			}
-			//foreach (CTreePoint p in pSubTree.points)
-			//{
-			//	AddPoint(p);
-			//}
+			//todo: check if first point of pSubTree is lower than last point of this tree
+			Points.AddRange(pSubTree.Points);
+			//update extents
+			OnAddPoint(pSubTree.minBB);
+			OnAddPoint(pSubTree.maxBB);
 		}
 
 		public List<CTreePoint> GetAllPoints()
@@ -85,14 +84,9 @@ namespace ForestReco
 			//points.Add(new CTreePoint(pPoint));
 		}
 
-		public bool TryAddPoint(CTreePoint pPoint)
-		{
-			if (IsNewPeak(pPoint))
-			{
-				SetNewPeak(pPoint);
-				return true;
-			}
 
+		public bool TryAddPoint(Vector3 pPoint)
+		{
 			if (BelongsToTree(pPoint))
 			{
 				AddPoint(pPoint);
@@ -101,7 +95,25 @@ namespace ForestReco
 			return false;
 		}
 
-		private void SetNewPeak(CTreePoint pPoint)
+		/// <summary>
+		/// Assignes all points to branches/peak
+		/// </summary>
+		public void Process()
+		{
+			foreach (Vector3 point in Points)
+			{
+				if (peak.Includes(point))
+				{
+					peak.AddPoint(point);
+				}
+				else
+				{
+					GetBranchFor(point).AddPoint(point);
+				}
+			}
+		}
+
+		/*private void SetNewPeak(CTreePoint pPoint)
 		{
 			if (CTreeManager.DEBUG) Console.WriteLine("-- SetNewPeak " + pPoint);
 			CPeak oldPeak = peak.Clone();
@@ -120,35 +132,55 @@ namespace ForestReco
 				//stem = new CBranch(this, 0, 0);
 				GetBranchFor(oldPeak).AddPoint(oldPeak);
 			}
-		}
+		}*/
 
-		private bool IsNewPeak(CTreePoint pPoint)
+		private bool IsNewPeak(Vector3 pPoint)
 		{
 			if (peak.Includes(pPoint)) { return true; }
 			if (pPoint.Y < peak.Y) { return false; }
 			float angle = CUtils.AngleBetweenThreePoints(
-				new List<Vector3> { pPoint.Center - Vector3.UnitY, pPoint.Center, peak.Center }, Vector3.UnitY);
+				new List<Vector3> { pPoint - Vector3.UnitY, pPoint, peak.Center }, Vector3.UnitY);
 			return Math.Abs(angle) < CTreeManager.MAX_BRANCH_ANGLE;
 		}
 
+		private void AddPoint(Vector3 pPoint)
+		{
+			Points.Add(pPoint);
+			OnAddPoint(pPoint);
+
+			//todo: rozdělit body na Points a na peak. teď jsou v peaku duplicitně a při mergi se nesmažou
+			if (peak.Includes(pPoint))
+			{
+				peak.AddPoint(pPoint);
+			}
+
+			/*if (peak.Includes(pPoint))
+			{
+				peak.AddPoint(pPoint);
+			}
+
+			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
+			OnAddPoint(pPoint);*/
+		}
+		
 		/// <summary>
 		/// Adds point and updates tree extents.
 		/// 'pAddToBranch' adds this point to its appropriate branch. Should be false
 		/// for example when this point is peak
 		/// </summary>
-		private void AddPoint(CTreePoint pPoint, bool pAddToBranch = true)
-		{
-			if (peak.Includes(pPoint))
-			{
-				peak.AddPoint(pPoint);
-				pAddToBranch = false;
-			}
+		//private void AddPoint(CTreePoint pPoint, bool pAddToBranch = true)
+		//{
+		//	if (peak.Includes(pPoint))
+		//	{
+		//		peak.AddPoint(pPoint);
+		//		pAddToBranch = false;
+		//	}
 
-			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
-			OnAddPoint(pPoint.Center);
-		}
+		//	if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
+		//	OnAddPoint(pPoint.Center);
+		//}
 
-		public bool BelongsToTree(CTreePoint pPoint, bool pDebug = true)
+		public bool BelongsToTree(Vector3 pPoint, bool pDebug = true)
 		{
 			if (IsNewPeak(pPoint))
 			{
@@ -156,8 +188,9 @@ namespace ForestReco
 			}
 
 			const float MAX_DIST_TO_TREE_BB = 0.1f;
-			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint.Center);
-			float distToBB = Get2DDistanceFromBBTo(pPoint.Center);
+			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint);
+			float distToBB = Get2DDistanceFromBBTo(pPoint);
+			bool contains = Contains(pPoint);
 			//it must be close to peak of some tree or to its BB
 			if (dist2D > CTreeManager.MAX_TREE_EXTENT / 2 && distToBB > MAX_DIST_TO_TREE_BB)
 			{
@@ -165,16 +198,16 @@ namespace ForestReco
 				return false;
 			}
 
-			Vector3 suitablePoint = peak.GetClosestPointTo(pPoint.Center);
+			Vector3 suitablePoint = peak.GetClosestPointTo(pPoint);
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
 			{
-				suitablePoint - Vector3.UnitY, suitablePoint, pPoint.Center
+				suitablePoint - Vector3.UnitY, suitablePoint, pPoint
 			}, Vector3.UnitY);
-			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint.Center);
+			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint);
 			if (angle > maxBranchAngle)
 			{
 				if (CTreeManager.DEBUG && pDebug) Console.WriteLine("- angle too high " + angle + "°/" + maxBranchAngle + "°. dist = " +
-					Vector3.Distance(suitablePoint, pPoint.Center));
+					Vector3.Distance(suitablePoint, pPoint));
 				return false;
 			}
 
@@ -187,11 +220,6 @@ namespace ForestReco
 			const float DIST_STEP = 0.15f;
 			float maxAngle = 100 - 5 * distance / DIST_STEP;
 
-			//if (distance < 1 * DIST_STEP) { return 90; }
-			//if (distance < 2 * DIST_STEP) { return 80; }
-			//if (distance < 3 * DIST_STEP) { return 70; }
-			//if (distance < 4 * DIST_STEP) { return 60; }
-			//if (distance < 5 * DIST_STEP) { return 50; }
 			return Math.Max(CTreeManager.MAX_BRANCH_ANGLE, maxAngle);
 		}
 
@@ -201,9 +229,8 @@ namespace ForestReco
 				". dist = " + pDistance);
 			return false;
 		}
-
-
-		private CBranch GetBranchFor(CTreePoint pPoint)
+		
+		private CBranch GetBranchFor(Vector3 pPoint)
 		{
 			if (peak.maxHeight.Y < pPoint.Y)
 			{
@@ -228,13 +255,13 @@ namespace ForestReco
 			return branches[(int)(angle / BRANCH_ANGLE_STEP)];
 		}
 
-		public int GetPointCount()
+		/*public int GetPointCount()
 		{
 			int count = 0;
 			count += peak.Points.Count;
 			count += GetBranchesPointCount();
 			return count;
-		}
+		}*/
 
 		private int GetBranchesCount()
 		{
@@ -271,10 +298,6 @@ namespace ForestReco
 			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
 			Obj obj = new Obj(pName);
-			if (CProjectData.header == null)
-			{
-				obj.Offset = -new Vector3(Center.X, minBB.Y, -Center.Z); //Z-coor is mirrored
-			}
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
 
@@ -286,12 +309,14 @@ namespace ForestReco
 			//display highest peak point
 			allTreePoints.Add(new CTreePoint(peak.maxHeight));
 
+			//add centers of all tree points
 			List<Vector3> vectorPoints = new List<Vector3>();
 			foreach (CTreePoint p in allTreePoints)
 			{
-				vectorPoints.Add(new Vector3(p.X, p.Y, p.Z));
+				vectorPoints.Add(p.Center);
 			}
 			CObjExporter.AddPointsToObj(ref obj, vectorPoints);
+
 			if (pExportBB)
 			{
 				CObjExporter.AddBBToObj(ref obj, allTreePoints);
@@ -331,6 +356,5 @@ namespace ForestReco
 			}
 			return indexS + pointsS + peakS + branchesS;
 		}
-
 	}
 }

@@ -9,7 +9,7 @@ namespace ForestReco
 	public class CBranch
 	{
 		public List<CTreePoint> points = new List<CTreePoint>();
-		public CTree tree{ private set; get; }
+		public CTree tree { get; }
 
 		private int angleFrom;
 		private int angleTo;
@@ -21,10 +21,10 @@ namespace ForestReco
 			angleTo = pAngleTo;
 		}
 
-		public void AddPoint(CTreePoint pPoint)
+		public void AddPoint(Vector3 pPoint)
 		{
 			if (CTreeManager.DEBUG)
-				Console.WriteLine("--- AddPoint " + pPoint.Center.ToString("#+0.00#;-0.00") + " to " + this);
+				Console.WriteLine("--- AddPoint " + pPoint.ToString("#+0.00#;-0.00") + " to " + this);
 
 			for (int i = 0; i < points.Count; i++)
 			{
@@ -37,13 +37,15 @@ namespace ForestReco
 				}
 				if (pPoint.Y > pointOnBranch.Y)
 				{
-					points.Insert(i, pPoint);
-					if (CTreeManager.DEBUG) Console.WriteLine("---- inserted at " + i);
+					CTreePoint newPointOnBranch = new CTreePoint(pPoint);
+					points.Insert(i, newPointOnBranch);
+					if (CTreeManager.DEBUG) { Console.WriteLine("---- inserted at " + i); }
 					return;
 				}
 			}
-			if (CTreeManager.DEBUG) Console.WriteLine("---- new point");
-			points.Add(pPoint);
+			CTreePoint newPoint = new CTreePoint(pPoint);
+			points.Add(newPoint);
+			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
 
 		}
 
@@ -60,10 +62,10 @@ namespace ForestReco
 		public override string ToString()
 		{
 			//return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";
-			return "br_<" + angleTo/CTree.BRANCH_ANGLE_STEP + "> " + 
+			return "br_<" + angleTo / CTree.BRANCH_ANGLE_STEP + "> " +
 				points.Count.ToString("00") + " [" + GetPointCount().ToString("000") + "] |";
 		}
 
-		
+
 	}
 }

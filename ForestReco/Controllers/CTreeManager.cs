@@ -23,7 +23,7 @@ namespace ForestReco
 		private static int pointCounter;
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
-			CTreePoint treePoint = new CTreePoint(pPoint);
+			//CTreePoint treePoint = new CTreePoint(pPoint);
 
 			if (simpleExport)
 			{
@@ -47,7 +47,7 @@ namespace ForestReco
 			{
 				if (DEBUG) Console.WriteLine("- try add to : " + t.ToString(false, false, true, false));
 				//CTreePoint peak = t.peak;
-				if (t.TryAddPoint(treePoint))
+				if (t.TryAddPoint(pPoint))
 				{
 					selectedTree = t;
 					break;
@@ -69,7 +69,7 @@ namespace ForestReco
 				treeIndex++;
 			}
 
-			if (trees.Count == 1 && pPointIndex != trees[0].GetPointCount() - 1)
+			if (trees.Count == 1 && pPointIndex != trees[0].Points.Count - 1)
 			{
 				Console.WriteLine(pPointIndex + "Error. Incorrect point count. " + pPoint);
 			}
@@ -110,7 +110,7 @@ namespace ForestReco
 					//or to its BB
 				    t.Get2DDistanceFromBBTo(pPoint) < MAX_DIST_TO_TREE_BB)*/
 
-				if (t.BelongsToTree(new CTreePoint(pPoint), false))
+				if (t.BelongsToTree(pPoint, false))
 				{
 					possibleTrees.Add(t);
 					t.possibleNewPoint = pPoint;
@@ -125,7 +125,7 @@ namespace ForestReco
 				CUtils.Get2DDistance(y.peak.Center, pPoint)));
 			return possibleTrees;
 		}
-
+		
 		public static void WriteResult()
 		{
 			foreach (CTree t in trees)
@@ -163,6 +163,8 @@ namespace ForestReco
 
 		public static void TryMergeAllTrees()
 		{
+			DateTime mergeStartTime = DateTime.Now;
+			Console.WriteLine("TryMergeAllTrees. Start = " + mergeStartTime);
 			for (int i = trees.Count - 1; i >= 0; i--)
 			{
 				if (i >= trees.Count)
@@ -186,6 +188,18 @@ namespace ForestReco
 					}
 				}
 			}
+			Console.WriteLine("Trees merged | duration = " + (DateTime.Now - mergeStartTime));
+		}
+
+		public static void ProcessAllTrees()
+		{
+			DateTime processTreesStartTime = DateTime.Now;
+			Console.WriteLine("ProcessAllTrees. Start = " + processTreesStartTime); foreach (CTree t in trees)
+			{
+				t.Process();
+			}
+			Console.WriteLine("Trees processed | duration = " + (DateTime.Now - processTreesStartTime));
 		}
 	}
+
 }
