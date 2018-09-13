@@ -12,8 +12,8 @@ namespace ForestReco
 		private const string DEFAULT_FILENAME = "tree";
 		public const float POINT_OFFSET = 0.05f;
 
-		private static Vector3 arrayCenter => CProjectData.header.Center;
-		private static float minHeight => CProjectData.header.MinHeight;
+		private static Vector3 arrayCenter => CProjectData.GetArrayCenter();
+		//private static float minHeight => CProjectData.GetMinHeight();
 
 		public static void ExportPoints(List<Vector3> pPoints, string pFileName)
 		{
@@ -187,7 +187,7 @@ namespace ForestReco
 		{
 			if (CProgramLoader.useDebugData) { return; }
 			pPoint -= arrayCenter;
-			pPoint -= new Vector3(0, CProjectData.header.MinHeight, 2 * pPoint.Z);
+			pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 2 * pPoint.Z);
 		}
 
 		private static void WriteHeader(StreamWriter pWriter, List<Obj> pTrees)

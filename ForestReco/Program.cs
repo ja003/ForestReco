@@ -26,11 +26,19 @@ namespace ForestReco
 			//CProgramLoader.platform = EPlatform.Tiarra;
 
 			string[] lines = CProgramLoader.GetFileLines();
-			CProjectData.header = new CHeaderInfo(lines);
+
+			if (CHeaderInfo.HasHeader(lines[0]))
+			{
+				CProjectData.header = new CHeaderInfo(lines);
+			}
+			else
+			{
+				Console.WriteLine("No header is defined");
+			}
 
 			CTreeObjManager.Init();
 
-			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false);
+			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
 			//todo: replace load from array 

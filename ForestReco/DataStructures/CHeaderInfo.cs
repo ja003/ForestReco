@@ -82,5 +82,15 @@ namespace ForestReco
 		{
 			return "ScaleFactor: " + ScaleFactor + "\nOffset: " + Offset + "\nMin: " + Min + "\nMax: " + Max;
 		}
+
+		/// <summary>
+		/// First line of file with header should look like:
+		/// % file signature:            'LASF'
+		/// </summary>
+		public static bool HasHeader(string pFirstLine)
+		{
+			string[] split = pFirstLine.Split(null);
+			return split[0] == "%";
+		}
 	}
 }

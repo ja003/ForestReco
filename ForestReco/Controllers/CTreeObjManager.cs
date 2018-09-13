@@ -48,8 +48,8 @@ namespace ForestReco
 		public static List<Obj> GetTreeObjsFromField(CPointArray pArray)
 		{
 			List<Obj> trees = new List<Obj>();
-			Vector3 arrayCenter = CProjectData.header.Center;
-			float minHeight = CProjectData.header.MinHeight;
+			Vector3 arrayCenter = CProjectData.GetArrayCenter();
+			float minHeight = CProjectData.GetMinHeight();
 
 			foreach (CPointField t in pArray.Maximas)
 			{
@@ -131,8 +131,8 @@ namespace ForestReco
 		/// </summary>
 		private static void SetTreeObjTransform(ref Obj pSuitableTree, CTree pTree){
 		
-			Vector3 arrayCenter = CProjectData.header.Center;
-			float minHeight = CProjectData.header.MinHeight;
+			Vector3 arrayCenter = CProjectData.GetArrayCenter();
+			float minHeight = CProjectData.GetMinHeight();
 
 			//align position to tree
 			pSuitableTree.Position = pTree.peak.maxHeight;

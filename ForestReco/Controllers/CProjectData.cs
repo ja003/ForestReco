@@ -22,5 +22,19 @@ namespace ForestReco
 
 		public static List<Obj> objsToExport = new List<Obj>();
 
+		public static Vector3 GetOffset()
+		{
+			return header?.Offset ?? Vector3.Zero;
+		}
+
+		public static Vector3 GetArrayCenter()
+		{
+			return header?.Center ?? Vector3.Zero;
+		}
+
+		public static float GetMinHeight()
+		{
+			return header?.MinHeight ?? 0;
+		}
 	}
 }

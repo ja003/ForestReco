@@ -15,7 +15,7 @@ namespace ForestReco
 		{
 			CPointArray pArray = CProjectData.array;
 			Obj obj = new Obj(pArrayName);
-			float minHeight = CProjectData.header.MinHeight;
+			float minHeight = CProjectData.GetMinHeight();
 
 			int missingCoordCount = 0;
 
@@ -125,9 +125,9 @@ namespace ForestReco
 		{
 			Obj obj = new Obj(pTreePointsName);
 			int vertexIndex = 1;
-			Vector3 arrayCenter = CProjectData.header.Center;
+			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 
-			float minHeight = CProjectData.header.MinHeight;
+			float minHeight = CProjectData.GetMinHeight();
 
 			foreach (CPointField tree in pArray.Maximas)
 			{

@@ -23,7 +23,7 @@ namespace ForestReco
 		private const float MAX_STEM_POINT_DISTANCE = 0.1f;
 
 		public Vector3 possibleNewPoint;
-		
+
 		public int treeIndex;
 
 		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
@@ -271,10 +271,10 @@ namespace ForestReco
 			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
 			Obj obj = new Obj(pName);
-			//obj.Position = peak;
-			//int vertexIndex = 1;
-			Vector3 arrayCenter = CProjectData.header.Center;
-			float minHeight = CProjectData.header.MinHeight;
+			if (CProjectData.header == null)
+			{
+				obj.Offset = -new Vector3(Center.X, minBB.Y, -Center.Z); //Z-coor is mirrored
+			}
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
 

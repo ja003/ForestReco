@@ -19,9 +19,10 @@ namespace ForestReco
 			fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			//fileName = "debug_tree_03";
+			fileName = "debug_tree_04";
+			fileName = "debug_tree_05";
 			fileName = "R2-F-1-j_fix";
-			//fileName = "BK_1000AGL_59_72_97_x90_y62";
+			fileName = "BK_1000AGL_59_72_97_x90_y62";
 
 			CProjectData.saveFileName = fileName;
 			//string saveFileName = "BK_1000AGL_";
@@ -43,7 +44,7 @@ namespace ForestReco
 			if (pArray) { CProjectData.array = new CPointArray(stepSize); }
 
 			//store coordinates to corresponding data strucures based on their class
-			const int startLine = 19;
+			int startLine = CProjectData.header != null ? 19 : 0;
 			int linesToRead = lines.Length;
 			//linesToRead = startLine + 500;
 
@@ -137,7 +138,7 @@ namespace ForestReco
 					}
 				}
 				List<Obj> trees = CTreeObjManager.GetTreeObjs();
-				//CProjectData.objsToExport.AddRange(trees);
+				CProjectData.objsToExport.AddRange(trees);
 			}
 
 			bool exportArray = true;

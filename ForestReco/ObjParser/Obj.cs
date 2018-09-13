@@ -26,11 +26,13 @@ namespace ObjParser
 		public Vector3 Scale = Vector3.One;
 		public string Name;
 
+		public Vector3 Offset = Vector3.Zero;
+
 		public SVertexTransform GetVertexTransform()
 		{
-			return new SVertexTransform(Position, Scale, Rotation,
+			return new SVertexTransform(Position + Offset, Scale, Rotation,
 				//bot center point
-				new Vector3((float)(Size.XMin + Size.XMax) / 2, (float)Size.YMin, (float)(Size.ZMin + Size.ZMax) / 2));
+				new Vector3((Size.XMin + Size.XMax) / 2, Size.YMin, (Size.ZMin + Size.ZMax) / 2));
 		}
 
 
