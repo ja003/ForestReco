@@ -19,7 +19,7 @@ namespace ForestReco
 			fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			fileName = "debug_tree_04";
+			//fileName = "debug_tree_04";
 			//fileName = "debug_tree_05";
 			fileName = "R2-F-1-j_fix";
 			//fileName = "BK_1000AGL_59_72_97_x90_y62";

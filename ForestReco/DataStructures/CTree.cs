@@ -58,8 +58,9 @@ namespace ForestReco
 				return;
 			}
 
-			//todo: check if first point of pSubTree is lower than last point of this tree
 			Points.AddRange(pSubTree.Points);
+			//sort in descending order
+			Points.Sort((b, a) => a.Y.CompareTo(b.Y));
 			//update extents
 			OnAddPoint(pSubTree.minBB);
 			OnAddPoint(pSubTree.maxBB);
@@ -83,7 +84,6 @@ namespace ForestReco
 		{
 			//points.Add(new CTreePoint(pPoint));
 		}
-
 
 		public bool TryAddPoint(Vector3 pPoint)
 		{
@@ -113,27 +113,6 @@ namespace ForestReco
 			}
 		}
 
-		/*private void SetNewPeak(CTreePoint pPoint)
-		{
-			if (CTreeManager.DEBUG) Console.WriteLine("-- SetNewPeak " + pPoint);
-			CPeak oldPeak = peak.Clone();
-			//first set new peak then move old one to appropriate branch
-			//but only if new peak is not merged old one
-			bool isPointMergedWithPeak = peak.Includes(pPoint);
-			AddPoint(pPoint, false); //this defines new peak
-
-			if (!isPointMergedWithPeak)
-			{
-				peak = new CPeak(pPoint.Points[0]);
-				for (int i = 1; i < pPoint.Points.Count; i++)
-				{
-					peak.AddPoint(pPoint.Points[i]);
-				}
-				//stem = new CBranch(this, 0, 0);
-				GetBranchFor(oldPeak).AddPoint(oldPeak);
-			}
-		}*/
-
 		private bool IsNewPeak(Vector3 pPoint)
 		{
 			if (peak.Includes(pPoint)) { return true; }
@@ -145,14 +124,13 @@ namespace ForestReco
 
 		private void AddPoint(Vector3 pPoint)
 		{
-			Points.Add(pPoint);
-			OnAddPoint(pPoint);
-
 			//todo: rozdělit body na Points a na peak. teď jsou v peaku duplicitně a při mergi se nesmažou
 			if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
 			}
+			Points.Add(pPoint);
+			OnAddPoint(pPoint);
 
 			/*if (peak.Includes(pPoint))
 			{
@@ -162,23 +140,6 @@ namespace ForestReco
 			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
 			OnAddPoint(pPoint);*/
 		}
-		
-		/// <summary>
-		/// Adds point and updates tree extents.
-		/// 'pAddToBranch' adds this point to its appropriate branch. Should be false
-		/// for example when this point is peak
-		/// </summary>
-		//private void AddPoint(CTreePoint pPoint, bool pAddToBranch = true)
-		//{
-		//	if (peak.Includes(pPoint))
-		//	{
-		//		peak.AddPoint(pPoint);
-		//		pAddToBranch = false;
-		//	}
-
-		//	if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
-		//	OnAddPoint(pPoint.Center);
-		//}
 
 		public bool BelongsToTree(Vector3 pPoint, bool pDebug = true)
 		{
@@ -229,7 +190,7 @@ namespace ForestReco
 				". dist = " + pDistance);
 			return false;
 		}
-		
+
 		private CBranch GetBranchFor(Vector3 pPoint)
 		{
 			if (peak.maxHeight.Y < pPoint.Y)
@@ -356,5 +317,6 @@ namespace ForestReco
 			}
 			return indexS + pointsS + peakS + branchesS;
 		}
+
 	}
 }
