@@ -38,7 +38,8 @@ namespace ForestReco
 		{
 			a = Vector2.Normalize(a);
 			b = Vector2.Normalize(b);
-			return ToDegree((float)Math.Atan2(b.Y - a.Y, b.X - a.X));
+			double atan2 = Math.Atan2(b.Y, b.X) - Math.Atan2(a.Y, a.X);
+			return ToDegree((float)atan2);
 		}
 
 		public static float AngleBetweenThreePoints(List<Vector3> points, Vector3 up)

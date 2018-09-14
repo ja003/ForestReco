@@ -12,6 +12,7 @@ namespace ForestReco
 	public static class CProgramLoader
 	{
 		public static EPlatform platform;
+		public static bool useDebugData = false;
 
 		internal static string[] GetFileLines()
 		{
@@ -20,7 +21,7 @@ namespace ForestReco
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
 			//fileName = "debug_tree_04";
-			//fileName = "debug_tree_05";
+			fileName = "debug_tree_05";
 			fileName = "R2-F-1-j_fix";
 			//fileName = "BK_1000AGL_59_72_97_x90_y62";
 
@@ -36,7 +37,6 @@ namespace ForestReco
 			return lines;
 		}
 
-		public static bool useDebugData = false;
 
 		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray)
 		{
@@ -51,7 +51,7 @@ namespace ForestReco
 			List<Tuple<int, Vector3>> parsedLines = new List<Tuple<int, Vector3>>();
 			if (useDebugData)
 			{
-				parsedLines = CDebug.GetTreeStraight2();
+				parsedLines = CDebug.GetStandartTree();
 			}
 			else
 			{

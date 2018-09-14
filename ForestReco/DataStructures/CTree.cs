@@ -213,7 +213,9 @@ namespace ForestReco
 			{
 				angle = 360 + angle;
 			}
-			return branches[(int)(angle / BRANCH_ANGLE_STEP)];
+			int branchIndex = (int)(angle / BRANCH_ANGLE_STEP);
+			//Console.WriteLine(pPoint + " goes to branch " + branchIndex + ". angle = " + angle);
+			return branches[branchIndex];
 		}
 
 		/*public int GetPointCount()
