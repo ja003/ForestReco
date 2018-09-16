@@ -171,7 +171,7 @@ namespace ForestReco
 			string chosenFileName = fileName;
 			string extension = ".Obj";
 			string path = Path.GetDirectoryName(
-							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\trees\\";
+							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
 			string fullPath = path + chosenFileName + extension;
 			int fileIndex = 0;
 			while (File.Exists(fullPath))

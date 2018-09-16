@@ -6,6 +6,10 @@
 		Left,
 		Right,
 		Top,
-		Bot
+		Bot,
+		LeftTop,
+		RightTop,
+		RightBot,
+		LeftBot
 	}
 }

@@ -167,6 +167,12 @@ namespace ForestReco
 				case EDirection.Left: return Left;
 				case EDirection.Right: return Right;
 				case EDirection.Top: return Top;
+
+				case EDirection.LeftTop: return Left?.Top;
+				case EDirection.RightTop: return Right?.Top;
+				case EDirection.RightBot: return Right?.Bot;
+				case EDirection.LeftBot: return Left?.Bot;
+
 			}
 			return null;
 		}
@@ -297,16 +303,45 @@ namespace ForestReco
 			return true;
 		}
 
-		public float? GetAverageHeightFromClosestDefined(EHeight pHeight, int pMaxSteps)
+
+		public float? GetAverageHeightFromNeighbourhood(EHeight pHeight, int pKernelSize)
+		{
+			int defined = 0;
+			float heightSum = 0;
+			for (int x = -pKernelSize; x < pKernelSize; x++)
+			{
+				for (int y = -pKernelSize; y < pKernelSize; y++)
+				{
+					int xIndex = indexInField.Item1 + x;
+					int yIndex = indexInField.Item2 + y;
+					CPointField el = CProjectData.array.GetElement(xIndex, yIndex);
+					if (el != null && el.IsDefined(pHeight))
+					{
+						defined++;
+						// ReSharper disable once PossibleInvalidOperationException
+						//is checked
+						heightSum += (float)el.GetHeight(pHeight);
+					}
+				}
+			}
+			if (defined == 0) { return null; }
+			return heightSum / defined;
+		}
+
+		/// <summary>
+		/// Finds closest defined fields in direction based on pDiagonal parameter.
+		/// Returns average of 2 found heights considering their distance from this field.
+		/// </summary>
+		public float? GetAverageHeightFromClosestDefined(EHeight pHeight, int pMaxSteps, bool pDiagonal)
 		{
 			if (IsDefined(pHeight)) { return GetHeight(pHeight); }
 			//
 			CPointField closestFirst = null;
 			CPointField closestSecond = null;
-			CPointField closestLeft = GetClosestDefined(pHeight, EDirection.Left, pMaxSteps);
-			CPointField closestRight = GetClosestDefined(pHeight, EDirection.Right, pMaxSteps);
-			CPointField closestTop = GetClosestDefined(pHeight, EDirection.Top, pMaxSteps);
-			CPointField closestBot = GetClosestDefined(pHeight, EDirection.Bot, pMaxSteps);
+			CPointField closestLeft = GetClosestDefined(pHeight, pDiagonal ? EDirection.LeftTop : EDirection.Left, pMaxSteps);
+			CPointField closestRight = GetClosestDefined(pHeight, pDiagonal ? EDirection.RightBot : EDirection.Right, pMaxSteps);
+			CPointField closestTop = GetClosestDefined(pHeight, pDiagonal ? EDirection.RightTop : EDirection.Top, pMaxSteps);
+			CPointField closestBot = GetClosestDefined(pHeight, pDiagonal ? EDirection.LeftBot : EDirection.Bot, pMaxSteps);
 
 			closestFirst = closestLeft;
 			closestSecond = closestRight;
@@ -342,13 +377,18 @@ namespace ForestReco
 					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
 				}
 			}
-			//else if (!HasAllNeighbours())
+			else if (!HasAllNeighbours())
 			{
 				if (closestLeft != null) { return closestLeft.GetHeight(pHeight); }
 				if (closestTop != null) { return closestTop.GetHeight(pHeight); }
 				if (closestRight != null) { return closestRight.GetHeight(pHeight); }
 				if (closestBot != null) { return closestBot.GetHeight(pHeight); }
 			}
+			if (!pDiagonal)
+			{
+				return GetAverageHeightFromClosestDefined(pHeight, pMaxSteps, true);
+			}
+
 			return null;
 		}
 
@@ -394,22 +434,42 @@ namespace ForestReco
 				   Math.Abs(indexInField.Item2 - pPointField.indexInField.Item2);
 		}
 
-		public void FillMissingHeight(EHeight pHeight)
+		private float? MaxGroundFilled;
+
+		public void ApplyFillMissingHeight()
 		{
-			if (indexInField.Item1 == 10 && indexInField.Item2 == 10)
-			{
-				Console.WriteLine("!");
-			}
+			if (IsDefined(EClass.Ground)) { return; }
+			MaxGround = MaxGroundFilled;
+		}
+
+		public void FillMissingHeight(EHeight pHeight, EFillMethod pMethod)
+		{
 			if (IsDefined(pHeight)) { return; }
 			switch (pHeight)
 			{
 				case EHeight.GroundMax:
-					MaxGround = GetAverageHeightFromClosestDefined(pHeight, 3);
+					int maxSteps = 1;
+					switch (pMethod)
+					{
+						case EFillMethod.ClosestDefined:
+							//todo: maybe maxSteps should be infinite
+							MaxGroundFilled = GetAverageHeightFromClosestDefined(pHeight, 10*maxSteps, false);
+							break;
+						case EFillMethod.FromNeighbourhood:
+							MaxGroundFilled = GetAverageHeightFromNeighbourhood(pHeight, maxSteps);
+							break;
+					}
 					break;
 				default:
 					Console.WriteLine("FillMissingHeight not defined for " + pHeight);
 					return;
 			}
+		}
+
+		public enum EFillMethod
+		{
+			ClosestDefined,
+			FromNeighbourhood
 		}
 
 		///PRIVATE

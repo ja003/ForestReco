@@ -143,7 +143,13 @@ namespace ForestReco
 		///GETTER
 		public CPointField GetElement(int pXindex, int pYindex)
 		{
+			if (!IsWithinBounds(pXindex, pYindex)) { return null; }
 			return array[pXindex, pYindex];
+		}
+
+		private bool IsWithinBounds(int pXindex, int pYindex)
+		{
+			return pXindex >= 0 && pXindex < arrayXRange && pYindex >= 0 && pYindex < arrayYRange;
 		}
 
 		public CPointField GetElementContainingPoint(Vector3 pPoint)
@@ -194,15 +200,33 @@ namespace ForestReco
 			CalculateLocalExtrems(GetKernelSize());
 		}
 
-		public void FillMissingHeights(EHeight pHeight)
+		private void ApplyFillMissingHeights()
 		{
-			foreach (CPointField el in fields)
+			foreach (CPointField f in fields)
 			{
-				if (!el.IsDefined(pHeight))
+				f.ApplyFillMissingHeight();
+			}
+		}
+
+		public void FillMissingHeights()
+		{
+			FillMissingHeights(CPointField.EFillMethod.ClosestDefined);
+			FillMissingHeights(CPointField.EFillMethod.FromNeighbourhood);
+			FillMissingHeights(CPointField.EFillMethod.ClosestDefined);
+		}
+
+		private void FillMissingHeights(CPointField.EFillMethod pMethod)
+		{
+			List<CPointField> fieldsRandom = fields;
+			//fieldsRandom.Shuffle();
+			foreach (CPointField el in fieldsRandom)
+			{
+				if (!el.IsDefined(EClass.Ground))
 				{
-					el.FillMissingHeight(pHeight);
+					el.FillMissingHeight(EHeight.GroundMax, pMethod);
 				}
 			}
+			ApplyFillMissingHeights();
 		}
 
 		public bool IsAllDefined(EHeight pHeight)

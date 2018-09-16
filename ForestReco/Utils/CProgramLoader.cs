@@ -12,19 +12,20 @@ namespace ForestReco
 	public static class CProgramLoader
 	{
 		public static EPlatform platform;
-		public static bool useDebugData = true;
+		public static bool useDebugData = false;
+
+		private static string fileName = 
+		//@"BK_1000AGL_classified";
+		//@"BK_1000AGL_cl_split_s_mezerou";
+		//fileName = @"BK_1000AGL_classified_0007559_0182972";
+		@"BK_1000AGL_classified_0007559_0182972_0037797";
+		//fileName = "debug_tree_04";
+		//fileName = "debug_tree_05";
+		//fileName = "R2-F-1-j_fix";
+		//"BK_1000AGL_59_72_97_x90_y62";
 
 		internal static string[] GetFileLines()
 		{
-			string fileName = @"BK_1000AGL_classified";
-			fileName = @"BK_1000AGL_cl_split_s_mezerou";
-			//fileName = @"BK_1000AGL_classified_0007559_0182972";
-			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			fileName = "debug_tree_04";
-			//fileName = "debug_tree_05";
-			//fileName = "R2-F-1-j_fix";
-			//fileName = "BK_1000AGL_59_72_97_x90_y62";
-
 			CProjectData.saveFileName = fileName;
 			//string saveFileName = "BK_1000AGL_";
 
@@ -100,7 +101,7 @@ namespace ForestReco
 				while (CProjectData.array != null && !CProjectData.array.IsAllDefined(EHeight.GroundMax))
 				{
 					Console.WriteLine("FillMissingHeights " + counter);
-					CProjectData.array?.FillMissingHeights(EHeight.GroundMax);
+					CProjectData.array?.FillMissingHeights();
 					counter++;
 					if (counter > 10)
 					{
@@ -121,9 +122,9 @@ namespace ForestReco
 				while (CProjectData.array != null && !CProjectData.array.IsAllDefined(EHeight.GroundMax))
 				{
 					Console.WriteLine("FillMissingHeights " + counter);
-					CProjectData.array?.FillMissingHeights(EHeight.GroundMax);
+					CProjectData.array?.FillMissingHeights();
 					counter++;
-					if (counter > 3)
+					if (counter > 2)
 					{
 						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
 						break;
@@ -131,7 +132,7 @@ namespace ForestReco
 				}
 
 				CProjectData.objsToExport.Add(
-					CPointFieldExporter.ExportToObj("arr", EExportStrategy.FillMissingHeight, new List<EHeight> { EHeight.GroundMax }));
+					CPointFieldExporter.ExportToObj("arr", EExportStrategy.None, new List<EHeight> { EHeight.GroundMax }));
 			}
 
 			bool exportAllPoints = true;
@@ -147,8 +148,8 @@ namespace ForestReco
 			{
 				CPointArray array = CProjectData.array;
 				Console.WriteLine("Process array: " + array);
-				array.FillMissingHeights(EHeight.GroundMax);
-				array.FillMissingHeights(EHeight.GroundMax);
+				array.FillMissingHeights();
+				array.FillMissingHeights();
 				array.CalculateLocalExtrems();
 				array.AssignTreesToNeighbourFields();
 				array.AssignPointsToTrees();

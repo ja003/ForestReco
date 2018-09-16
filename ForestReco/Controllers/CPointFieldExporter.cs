@@ -35,7 +35,7 @@ namespace ForestReco
 							if (height == null)
 							{
 								//height = el.GetHeight(EHeight.GroundMax, true);
-								height = el.GetAverageHeightFromClosestDefined(EHeight.GroundMax, 3);
+								height = el.GetAverageHeightFromClosestDefined(EHeight.GroundMax, 3, false);
 							}
 						}
 						else if (pStrategy == EExportStrategy.FillHeightsAroundDefined)
