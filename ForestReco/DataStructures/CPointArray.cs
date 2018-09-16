@@ -183,6 +183,12 @@ namespace ForestReco
 			coordinatesCount++;
 		}
 
+
+		public void SetGroundHeight(float pHeight, int pXindex, int pYindex)
+		{
+			array[pXindex, pYindex].MaxGround = pHeight;
+		}
+
 		public void CalculateLocalExtrems()
 		{
 			CalculateLocalExtrems(GetKernelSize());
@@ -270,7 +276,6 @@ namespace ForestReco
 		{
 			return "Field " + arrayXRange + " x " + arrayYRange;
 		}
-
 
 	}
 }

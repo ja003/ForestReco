@@ -12,7 +12,7 @@ namespace ForestReco
 	public static class CProgramLoader
 	{
 		public static EPlatform platform;
-		public static bool useDebugData = false;
+		public static bool useDebugData = true;
 
 		internal static string[] GetFileLines()
 		{
@@ -20,9 +20,9 @@ namespace ForestReco
 			fileName = @"BK_1000AGL_cl_split_s_mezerou";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972";
 			//fileName = @"BK_1000AGL_classified_0007559_0182972_0037797";
-			//fileName = "debug_tree_04";
-			fileName = "debug_tree_05";
-			fileName = "R2-F-1-j_fix";
+			fileName = "debug_tree_04";
+			//fileName = "debug_tree_05";
+			//fileName = "R2-F-1-j_fix";
 			//fileName = "BK_1000AGL_59_72_97_x90_y62";
 
 			CProjectData.saveFileName = fileName;
@@ -52,6 +52,7 @@ namespace ForestReco
 			if (useDebugData)
 			{
 				parsedLines = CDebug.GetStandartTree();
+				CDebug.DefineArray();
 			}
 			else
 			{
@@ -80,8 +81,7 @@ namespace ForestReco
 			CTreeManager.TryMergeAllTrees();
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
-
-
+			
 			CTreeManager.ProcessAllTrees();
 			
 			Console.WriteLine("\nAdd trees to export " + CTreeManager.Trees.Count + " | " + DateTime.Now);
@@ -113,9 +113,23 @@ namespace ForestReco
 			}
 
 			bool exportArray = true;
-			if (exportArray && !useDebugData && CProjectData.array != null)
+			if (exportArray && CProjectData.array != null)
 			{
 				Console.WriteLine("Export array" + " | " + DateTime.Now);
+
+				int counter = 0;
+				while (CProjectData.array != null && !CProjectData.array.IsAllDefined(EHeight.GroundMax))
+				{
+					Console.WriteLine("FillMissingHeights " + counter);
+					CProjectData.array?.FillMissingHeights(EHeight.GroundMax);
+					counter++;
+					if (counter > 3)
+					{
+						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
+						break;
+					}
+				}
+
 				CProjectData.objsToExport.Add(
 					CPointFieldExporter.ExportToObj("arr", EExportStrategy.FillMissingHeight, new List<EHeight> { EHeight.GroundMax }));
 			}
@@ -173,10 +187,11 @@ namespace ForestReco
 				point.Y = point.Z;
 				point.Z = tmpY;
 
+				//1 = unclassified
 				//2 = ground
 				//5 = high vegetation
 				bool pForceTreePoint = true;
-				if (parsedLine.Item1 == 5 || pForceTreePoint)
+				if (parsedLine.Item1 == 5 || (pForceTreePoint && parsedLine.Item1 != 2 && parsedLine.Item1 != 1))
 				{
 					CTreeManager.AddPoint(point, i);
 				}

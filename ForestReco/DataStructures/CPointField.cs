@@ -316,10 +316,10 @@ namespace ForestReco
 				closestSecond = closestBot;
 			}
 
-			if (closestFirst == null) { closestFirst = closestTop; }
-			if (closestSecond == null) { closestSecond = closestTop; }
-			if (closestFirst == null) { closestFirst = closestBot; }
-			if (closestSecond == null) { closestSecond = closestBot; }
+			//if (closestFirst == null) { closestFirst = closestTop; }
+			//if (closestSecond == null) { closestSecond = closestTop; }
+			//if (closestFirst == null) { closestFirst = closestBot; }
+			//if (closestSecond == null) { closestSecond = closestBot; }
 
 			if (closestFirst != null && closestSecond != null)
 			{
@@ -336,11 +336,13 @@ namespace ForestReco
 				{
 					float? smallerHeight = smaller.GetHeight(pHeight);
 					float distanceToSmaller = GetDistanceTo(smaller);
-					if (totalDistance == 0) { return smallerHeight; }
+
+					//if (totalDistance == 0) { return smallerHeight; }
+
 					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
 				}
 			}
-			else if (!HasAllNeighbours())
+			//else if (!HasAllNeighbours())
 			{
 				if (closestLeft != null) { return closestLeft.GetHeight(pHeight); }
 				if (closestTop != null) { return closestTop.GetHeight(pHeight); }
@@ -394,6 +396,10 @@ namespace ForestReco
 
 		public void FillMissingHeight(EHeight pHeight)
 		{
+			if (indexInField.Item1 == 10 && indexInField.Item2 == 10)
+			{
+				Console.WriteLine("!");
+			}
 			if (IsDefined(pHeight)) { return; }
 			switch (pHeight)
 			{

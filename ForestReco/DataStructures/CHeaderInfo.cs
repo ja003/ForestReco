@@ -10,7 +10,7 @@ namespace ForestReco
 		public Vector3 Offset;
 		public Vector3 Min;
 		public Vector3 Max;
-		
+
 		public Vector3 BotLeftCorner => new Vector3(Min.X, 0, Min.Z);
 		public Vector3 TopRightCorner => new Vector3(Max.X, 0, Max.Z);
 		public Vector3 Center => (BotLeftCorner + TopRightCorner) / 2;
@@ -39,8 +39,9 @@ namespace ForestReco
 			if (Min == Vector3.Zero && Max == Vector3.Zero)
 			{
 				Console.WriteLine("Invalid header. Creating default header.");
-				Min = -100 * Vector3.One;
-				Max = 100 * Vector3.One;
+				const int defaultArraySize = 10;
+				Min = new Vector3(-defaultArraySize, 0, -defaultArraySize);
+				Max = new Vector3(defaultArraySize, 0, defaultArraySize);
 				Offset = Vector3.Zero;
 			}
 
@@ -51,7 +52,7 @@ namespace ForestReco
 
 		private string GetLine(string[] lines, EHeaderAttribute pAttribute)
 		{
-			switch(pAttribute)
+			switch (pAttribute)
 			{
 				case EHeaderAttribute.Scale: return lines[15];
 				case EHeaderAttribute.Offset: return lines[16];
@@ -74,7 +75,7 @@ namespace ForestReco
 		{
 			string[] split = pLine.Split(null);
 			int length = split.Length;
-			//									X					Y					Z
+			//											X					Y					Z
 			return CLazTxtParser.ParseHeaderVector3(split[length - 3], split[length - 2], split[length - 1]);
 		}
 

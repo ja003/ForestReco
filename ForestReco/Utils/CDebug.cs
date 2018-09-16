@@ -51,5 +51,32 @@ namespace ForestReco
 
 			return pointTuples;
 		}
+
+		public static void DefineArray()
+		{
+			CProjectData.header = new CHeaderInfo(new[]
+			{
+				"","","","","","","","","","","","","","","",
+				"0 0 0", "0 0 0" , "0 0 0" , "0 0 0"
+			});
+			CProjectData.array = new CPointArray(1);
+
+			CProjectData.array.SetGroundHeight(0, 0,0);
+			CProjectData.array.SetGroundHeight(0, CProjectData.array.arrayXRange - 1, 0);
+
+			CProjectData.array.SetGroundHeight(2, CProjectData.array.arrayXRange / 2, CProjectData.array.arrayYRange / 2);
+
+			CProjectData.array.SetGroundHeight(5, CProjectData.array.arrayXRange - 1, CProjectData.array.arrayYRange - 1);
+			CProjectData.array.SetGroundHeight(5, 0, CProjectData.array.arrayYRange - 1);
+
+			/*
+			for (int x = 0; x < CProjectData.array.arrayXRange; x++)
+			{
+				for (int y = 0; y < CProjectData.array.arrayXRange; y++)
+				{
+					CProjectData.array.SetGroundHeight(0, x, y);
+				}
+			}*/
+		}
 	}
 }
