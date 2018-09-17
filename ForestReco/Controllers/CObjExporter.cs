@@ -112,12 +112,12 @@ namespace ForestReco
 
 		public static void AddBranchToObj(ref Obj obj, CBranch pBranch)
 		{
-			for (int i = 0; i < pBranch.points.Count; i++)
+			for (int i = 0; i < pBranch.TreePoints.Count; i++)
 			{
 				//for first point in branch use peak as a first point
-				Vector3 p = i == 0 ? pBranch.tree.peak.Center : pBranch.points[i - 1].Center;
+				Vector3 p = i == 0 ? pBranch.tree.peak.Center : pBranch.TreePoints[i - 1].Center;
 				//for first point set first point to connect to peak
-				Vector3 nextP = i == 0 ? pBranch.points[0].Center : pBranch.points[i].Center;
+				Vector3 nextP = i == 0 ? pBranch.TreePoints[0].Center : pBranch.TreePoints[i].Center;
 
 				AddLineToObj(ref obj, p, nextP);
 			}

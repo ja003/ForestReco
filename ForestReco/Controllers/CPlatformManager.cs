@@ -2,9 +2,11 @@
 {
 	public static class CPlatformManager
 	{
-		public static string GetPodkladyPath(EPlatform pPlatform)
+		public static EPlatform platform;
+
+		public static string GetPodkladyPath()
 		{
-			switch (pPlatform)
+			switch (platform)
 			{
 				case EPlatform.HomePC: return "C:\\Users\\Admin\\OneDrive - MUNI\\ŠKOLA [old]\\SDIPR\\podklady";
 				case EPlatform.Notebook: return "D:\\ja004\\OneDrive - MUNI\\ŠKOLA [old]\\SDIPR\\podklady";

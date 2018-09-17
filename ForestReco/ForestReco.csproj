@@ -48,11 +48,12 @@
     <Compile Include="Controllers\CObjExporter.cs" />
     <Compile Include="Controllers\CProjectData.cs" />
     <Compile Include="Controllers\CTreeManager.cs" />
-    <Compile Include="Controllers\CTreeObjManager.cs" />
+    <Compile Include="Controllers\CRefTreeManager.cs" />
     <Compile Include="DataStructures\CBoundingBoxObject.cs" />
     <Compile Include="DataStructures\CBranch.cs" />
     <Compile Include="DataStructures\CPeak.cs" />
     <Compile Include="DataStructures\CTree.cs" />
+    <Compile Include="DataStructures\CRefTree.cs" />
     <Compile Include="DataStructures\CTreePoint.cs" />
     <Compile Include="DataStructures\CPointArray.cs" />
     <Compile Include="DataStructures\CPointField.cs" />

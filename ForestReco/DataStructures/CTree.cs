@@ -16,7 +16,8 @@ namespace ForestReco
 	{
 		public CPeak peak;
 		//public List<CTreePoint> points = new List<CTreePoint>();
-		private List<CBranch> branches = new List<CBranch>();
+		protected List<CBranch> branches = new List<CBranch>();
+		public List<CBranch> Branches => branches;
 		//private CBranch stem;
 
 		public static int BRANCH_ANGLE_STEP = 45;
@@ -28,13 +29,18 @@ namespace ForestReco
 
 		public List<Vector3> Points = new List<Vector3>();
 
+		public CTree(){ }
+
 		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
 		{
-			peak = new CPeak(pPoint);
-			//stem = new CBranch(this, 0, 0);
+			Init(pPoint, pTreeIndex);
+		}
 
-			//points.Add(peak);
-			if (CTreeManager.DEBUG) Console.WriteLine("new tree " + pTreeIndex);
+		protected void Init(Vector3 pPoint, int pTreeIndex)
+		{
+			peak = new CPeak(pPoint);
+
+			if (CTreeManager.DEBUG) {Console.WriteLine("new tree " + pTreeIndex);}
 
 			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
@@ -45,6 +51,23 @@ namespace ForestReco
 			branches.Add(new CBranch(this, 0, 0));
 
 			AddPoint(pPoint);
+		}
+
+		/// <summary>
+		/// Returns a branch with biggest number of tree points
+		/// </summary>
+		/// <returns></returns>
+		public CBranch GetMostDefinedBranch()
+		{
+			CBranch mostDefinedBranch = branches[0];
+			foreach (CBranch b in branches)
+			{
+				if (b.TreePoints.Count > mostDefinedBranch.TreePoints.Count)
+				{
+					mostDefinedBranch = b;
+				}
+			}
+			return mostDefinedBranch;
 		}
 
 		public void MergeWith(CTree pSubTree)
@@ -66,13 +89,18 @@ namespace ForestReco
 			OnAddPoint(pSubTree.maxBB);
 		}
 
+		protected Vector3 GetOffsetTo(CTree pOtherTree)
+		{
+			return pOtherTree.peak.Center - peak.Center;
+		}
+
 		public List<CTreePoint> GetAllPoints()
 		{
 			List<CTreePoint> allPoints = new List<CTreePoint>();
 			allPoints.Add(peak);
 			foreach (CBranch b in branches)
 			{
-				foreach (CTreePoint p in b.points)
+				foreach (CTreePoint p in b.TreePoints)
 				{
 					allPoints.Add(p);
 				}
@@ -85,9 +113,9 @@ namespace ForestReco
 			//points.Add(new CTreePoint(pPoint));
 		}
 
-		public bool TryAddPoint(Vector3 pPoint)
+		public bool TryAddPoint(Vector3 pPoint, bool pForce)
 		{
-			if (BelongsToTree(pPoint))
+			if (pForce || BelongsToTree(pPoint))
 			{
 				AddPoint(pPoint);
 				return true;
@@ -131,14 +159,6 @@ namespace ForestReco
 			}
 			Points.Add(pPoint);
 			OnAddPoint(pPoint);
-
-			/*if (peak.Includes(pPoint))
-			{
-				peak.AddPoint(pPoint);
-			}
-
-			if (pAddToBranch) { GetBranchFor(pPoint).AddPoint(pPoint); }
-			OnAddPoint(pPoint);*/
 		}
 
 		public bool BelongsToTree(Vector3 pPoint, bool pDebug = true)
@@ -231,7 +251,7 @@ namespace ForestReco
 			int count = 0;
 			foreach (CBranch b in branches)
 			{
-				if (b.points.Count > 0) { count++; }
+				if (b.TreePoints.Count > 0) { count++; }
 			}
 			return count;
 		}

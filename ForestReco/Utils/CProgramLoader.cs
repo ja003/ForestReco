@@ -11,15 +11,15 @@ namespace ForestReco
 {
 	public static class CProgramLoader
 	{
-		public static EPlatform platform;
 		public static bool useDebugData = false;
 
 		private static string fileName = 
 		//@"BK_1000AGL_classified";
 		//@"BK_1000AGL_cl_split_s_mezerou";
 		//fileName = @"BK_1000AGL_classified_0007559_0182972";
-		@"BK_1000AGL_classified_0007559_0182972_0037797";
+		//@"BK_1000AGL_classified_0007559_0182972_0037797";
 		//fileName = "debug_tree_04";
+		fileName = "debug_tree_06";
 		//fileName = "debug_tree_05";
 		//fileName = "R2-F-1-j_fix";
 		//"BK_1000AGL_59_72_97_x90_y62";
@@ -30,7 +30,7 @@ namespace ForestReco
 			//string saveFileName = "BK_1000AGL_";
 
 
-			string podkladyPath = CPlatformManager.GetPodkladyPath(platform);
+			string podkladyPath = CPlatformManager.GetPodkladyPath();
 			string fullFilePath = podkladyPath + @"\data-small\TXT\" + fileName + @".txt";
 			string[] lines = File.ReadAllLines(fullFilePath);
 			Console.WriteLine("load: " + fullFilePath + "\n");
@@ -39,7 +39,7 @@ namespace ForestReco
 		}
 
 
-		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray)
+		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
 			float stepSize = .4f; //in meters
 			if (pArray) { CProjectData.array = new CPointArray(stepSize); }
@@ -60,14 +60,14 @@ namespace ForestReco
 				for (int i = startLine; i < Math.Min(lines.Length, linesToRead); i++)
 				{
 					// <class, coordinate>
-					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i]);
+					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i], pUseHeader);
 					if (c == null) { continue; }
 					parsedLines.Add(c);
 				}
 			}
 
 			Console.WriteLine("parsedLines: " + parsedLines.Count);
-			parsedLines.Sort((y, x) => x.Item2.Z.CompareTo(y.Item2.Z)); //sort descending by height
+			parsedLines.Sort((y, x) => x.Item2.Y.CompareTo(y.Item2.Y)); //sort descending by height
 			Console.WriteLine("\n=======sorted========\n");
 			//Console.ReadKey();
 			return parsedLines;
@@ -92,12 +92,12 @@ namespace ForestReco
 				CProjectData.objsToExport.Add(tObj);
 			}
 
-			bool addTreeObjModels = false;
+			bool addTreeObjModels = true;
 			if (addTreeObjModels && !useDebugData)
 			{
 				Console.WriteLine("Add tree obj models " + " | " + DateTime.Now);
 
-				int counter = 0;
+				/*int counter = 0;
 				while (CProjectData.array != null && !CProjectData.array.IsAllDefined(EHeight.GroundMax))
 				{
 					Console.WriteLine("FillMissingHeights " + counter);
@@ -108,8 +108,8 @@ namespace ForestReco
 						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
 						break;
 					}
-				}
-				List<Obj> trees = CTreeObjManager.GetTreeObjs();
+				}*/
+				List<Obj> trees = CRefTreeManager.GetTreeObjs();
 				CProjectData.objsToExport.AddRange(trees);
 			}
 
@@ -184,9 +184,9 @@ namespace ForestReco
 
 				Tuple<int, Vector3> parsedLine = pParsedLines[i];
 				Vector3 point = parsedLine.Item2;
-				float tmpY = point.Y;
+				/*float tmpY = point.Y;
 				point.Y = point.Z;
-				point.Z = tmpY;
+				point.Z = tmpY;*/
 
 				//1 = unclassified
 				//2 = ground

@@ -25,6 +25,8 @@ namespace ForestReco
 
 		public Vector3 Extent => 2 * new Vector3(maxBB.X - Center.X, maxBB.Y - Center.Y, maxBB.Z - Center.Z);
 
+		public CBoundingBoxObject(){ }
+
 		public CBoundingBoxObject(Vector3 pPoint)
 		{
 			minBB = pPoint;

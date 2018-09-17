@@ -21,7 +21,7 @@ namespace ForestReco
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			CProgramLoader.platform = EPlatform.Notebook;
+			CPlatformManager.platform = EPlatform.Notebook;
 			//CProgramLoader.platform = EPlatform.HomePC;
 			//CProgramLoader.platform = EPlatform.Tiarra;
 
@@ -36,9 +36,9 @@ namespace ForestReco
 				Console.WriteLine("No header is defined");
 			}
 
-			CTreeObjManager.Init();
+			CRefTreeManager.Init();
 
-			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null);
+			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
 			//todo: replace load from array 

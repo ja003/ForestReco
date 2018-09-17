@@ -47,7 +47,7 @@ namespace ForestReco
 			{
 				if (DEBUG) Console.WriteLine("- try add to : " + t.ToString(false, false, true, false));
 				//CTreePoint peak = t.peak;
-				if (t.TryAddPoint(pPoint))
+				if (t.TryAddPoint(pPoint, false))
 				{
 					selectedTree = t;
 					break;
