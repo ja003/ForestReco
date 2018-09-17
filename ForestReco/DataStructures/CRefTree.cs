@@ -36,25 +36,8 @@ namespace ForestReco
 
 		public float GetSimilarityWith(CTree pOtherTree)
 		{
-
 			Vector3 offsetToOtherTree = GetOffsetTo(pOtherTree);
-
-			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
-
-			//todo: try rotate other tree to find bestMatch and include this rotation in similarity calculation
-			CBranch bestMatchBranch = GetBestMatchBranch(mostDefinedBranch, offsetToOtherTree);
-
-			int indexOfMostDefined = pOtherTree.Branches.IndexOf(mostDefinedBranch);
-			int indexOfBestMatch = Branches.IndexOf(bestMatchBranch);
-			int indexOffset = indexOfBestMatch - indexOfMostDefined;
-
-			Console.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
-			Console.WriteLine("bestMatchBranch = " + bestMatchBranch);
-
-			Console.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
-			Console.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
-			Console.WriteLine("indexOffset = " + indexOffset);
-
+			int indexOffset = GetIndexOffsetBetweenBestMatchBranches(pOtherTree);
 
 			float similarity = 0;
 			int definedSimilarityCount = 0;
@@ -89,6 +72,33 @@ namespace ForestReco
 			Console.WriteLine("similarity = " + similarity + ". defined = " + definedSimilarityCount + "\n--------");
 
 			return similarity;
+		}
+
+		public int GetOffsetAngleTo(CTree pOtherTree)
+		{
+			return GetIndexOffsetBetweenBestMatchBranches(pOtherTree) * BRANCH_ANGLE_STEP;
+		}
+
+		private int GetIndexOffsetBetweenBestMatchBranches(CTree pOtherTree)
+		{
+			Vector3 offsetToOtherTree = GetOffsetTo(pOtherTree);
+
+			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
+
+			//todo: try rotate other tree to find bestMatch and include this rotation in similarity calculation
+			CBranch bestMatchBranch = GetBestMatchBranch(mostDefinedBranch, offsetToOtherTree);
+
+			int indexOfMostDefined = pOtherTree.Branches.IndexOf(mostDefinedBranch);
+			int indexOfBestMatch = Branches.IndexOf(bestMatchBranch);
+			int indexOffset = indexOfBestMatch - indexOfMostDefined;
+
+			Console.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
+			Console.WriteLine("bestMatchBranch = " + bestMatchBranch);
+
+			Console.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
+			Console.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
+			Console.WriteLine("indexOffset = " + indexOffset);
+			return indexOffset;
 		}
 
 		/// <summary>

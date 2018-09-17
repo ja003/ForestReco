@@ -44,67 +44,76 @@ namespace ForestReco
 		}
 
 		private static int counter;
-		
-		private static Obj GetSuitableTreeObj(CTree pTree)
+
+		private static CRefTree GetMostSuitableRefTree(CTree pTree)
 		{
-			CRefTree bestTree = Trees[0];
+			CRefTree mostSuitableTree = Trees[0];
 			float bestSimilarity = 0;
 
 			foreach (CRefTree refTree in Trees)
 			{
 				if (refTree.GetSimilarityWith(pTree) > bestSimilarity)
 				{
-					bestTree = refTree;
+					mostSuitableTree = refTree;
 				}
 			}
 
-			Obj suitableTree = bestTree.Obj.Clone();
-			suitableTree.Name += "_" + counter;
-
-			counter++;
-			return suitableTree;
+			//Obj suitableTree = bestTree.Obj.Clone();
+			//suitableTree.Name += "_" + counter;
+			//counter++;
+			return mostSuitableTree;
 		}
 
 		internal static List<Obj> GetTreeObjs()
 		{
-			List<Obj> trees = new List<Obj>();
+			List<Obj> treeObjs = new List<Obj>();
 
 			foreach (CTree t in CTreeManager.Trees)
 			{
-				Obj suitableTree = GetSuitableTreeObj(t);
+				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
 
-				SetTreeObjTransform(ref suitableTree, t);				
+				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
 
-				trees.Add(suitableTree);
+				Obj suitableTree = mostSuitableRefTree.Obj.Clone();
+				suitableTree.Name += "_" + counter;
+				counter++;
+
+				treeObjs.Add(suitableTree);
 			}
-			return trees;
+			return treeObjs;
 		}
 
 		/// <summary>
-		/// Sets position, scale and (todo) rotation of tree obj to match given pTree 
+		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
 		/// </summary>
-		private static void SetTreeObjTransform(ref Obj pSuitableTree, CTree pTree){
-		
+		private static void SetRefTreeObjTransform(ref CRefTree pRefTree, CTree pTargetTree)
+		{
+
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
 
 			//align position to tree
-			pSuitableTree.Position = pTree.peak.maxHeight;
-			float? groundHeight = CProjectData.array?.GetElementContainingPoint(pSuitableTree.Position).
+			pRefTree.Obj.Position = pTargetTree.peak.maxHeight;
+			float? groundHeight = CProjectData.array?.GetElementContainingPoint(pRefTree.Obj.Position).
 				GetHeight(EHeight.GroundMax, true);
-			groundHeight = groundHeight ?? pSuitableTree.Position.Y;
-			pSuitableTree.Position.Y = (float)groundHeight;
+			groundHeight = groundHeight ?? pRefTree.Obj.Position.Y;
+			pRefTree.Obj.Position.Y = (float)groundHeight;
 
-			float treeHeight = pTree.peak.maxHeight.Y - (float)groundHeight;
-			float heightRatio = treeHeight / (pSuitableTree.Size.YMax - pSuitableTree.Size.YMin);
-			pSuitableTree.Scale = new Vector3(1, (float)heightRatio, 1);
+			float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
+			float heightRatio = treeHeight / (pRefTree.Obj.Size.YMax - pRefTree.Obj.Size.YMin);
+			pRefTree.Obj.Scale = new Vector3(1, (float)heightRatio, 1);
 
 
 			//move obj so it is at 0,0,0
-			pSuitableTree.Position -= arrayCenter;
-			pSuitableTree.Position -= new Vector3(0, minHeight, 2 * pSuitableTree.Position.Z);
+			pRefTree.Obj.Position -= arrayCenter;
+			pRefTree.Obj.Position -= new Vector3(0, minHeight, 2 * pRefTree.Obj.Position.Z);
 
-			//Console.WriteLine(counter + "[" + pSuitableTree.Position + "]. treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
+			pRefTree.Obj.Rotation = new Vector3(0, -pRefTree.GetOffsetAngleTo(pTargetTree), 0);
+
+			Console.WriteLine(counter +
+				"[" + pRefTree.Obj.Position + "], " +
+				"[" + pRefTree.Obj.Rotation + "]" +
+				". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
 		}
 	}
 }
