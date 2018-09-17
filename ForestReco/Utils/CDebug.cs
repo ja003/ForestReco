@@ -52,8 +52,10 @@ namespace ForestReco
 			return pointTuples;
 		}
 
-		public static void DefineArray()
+		public static void DefineArray(bool pZeroHeights)
 		{
+			Console.WriteLine("Define debug array");
+
 			CProjectData.header = new CHeaderInfo(new[]
 			{
 				"","","","","","","","","","","","","","","",
@@ -61,22 +63,27 @@ namespace ForestReco
 			});
 			CProjectData.array = new CPointArray(1);
 
-			CProjectData.array.SetGroundHeight(0, 0,0);
-			CProjectData.array.SetGroundHeight(0, CProjectData.array.arrayXRange - 1, 0);
-
-			CProjectData.array.SetGroundHeight(2, CProjectData.array.arrayXRange / 2, CProjectData.array.arrayYRange / 2);
-
-			CProjectData.array.SetGroundHeight(5, CProjectData.array.arrayXRange - 1, CProjectData.array.arrayYRange - 1);
-			CProjectData.array.SetGroundHeight(5, 0, CProjectData.array.arrayYRange - 1);
-
-			/*
-			for (int x = 0; x < CProjectData.array.arrayXRange; x++)
+			if (pZeroHeights)
 			{
-				for (int y = 0; y < CProjectData.array.arrayXRange; y++)
+				for (int x = 0; x < CProjectData.array.arrayXRange; x++)
 				{
-					CProjectData.array.SetGroundHeight(0, x, y);
+					for (int y = 0; y < CProjectData.array.arrayXRange; y++)
+					{
+						CProjectData.array.SetGroundHeight(0, x, y);
+					}
 				}
-			}*/
+			}
+			else
+			{
+				CProjectData.array.SetGroundHeight(0, 0, 0);
+				CProjectData.array.SetGroundHeight(0, CProjectData.array.arrayXRange - 1, 0);
+
+				CProjectData.array.SetGroundHeight(2, CProjectData.array.arrayXRange / 2, CProjectData.array.arrayYRange / 2);
+
+				CProjectData.array.SetGroundHeight(5, CProjectData.array.arrayXRange - 1, CProjectData.array.arrayYRange - 1);
+				CProjectData.array.SetGroundHeight(5, 0, CProjectData.array.arrayYRange - 1);
+			}
+
 		}
 	}
 }

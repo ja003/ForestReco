@@ -18,7 +18,7 @@ namespace ForestReco
 		//public List<CTreePoint> points = new List<CTreePoint>();
 		protected List<CBranch> branches = new List<CBranch>();
 		public List<CBranch> Branches => branches;
-		//private CBranch stem;
+		public CBranch stem { get; private set; }
 
 		public static int BRANCH_ANGLE_STEP = 45;
 		private const float MAX_STEM_POINT_DISTANCE = 0.1f;
@@ -47,8 +47,8 @@ namespace ForestReco
 			{
 				branches.Add(new CBranch(this, i, i + BRANCH_ANGLE_STEP));
 			}
-			//add stem as the last branch
-			branches.Add(new CBranch(this, 0, 0));
+
+			stem = new CBranch(this, 0, 0);
 
 			AddPoint(pPoint);
 		}
@@ -223,7 +223,8 @@ namespace ForestReco
 			if (dir.Length() < MAX_STEM_POINT_DISTANCE)
 			{
 				if (CTreeManager.DEBUG) Console.WriteLine("- branch = stem");
-				return branches[branches.Count - 1]; //stem
+				//return branches[branches.Count - 1]; //stem
+				return stem; //stem
 			}
 
 			dir = Vector2.Normalize(dir);
@@ -315,7 +316,17 @@ namespace ForestReco
 
 			return obj;
 		}
-
+		
+		public void Rotate(int pYangle)
+		{
+			for (int i = 0; i < Points.Count; i++)
+			{
+				float angleRadians = CUtils.ToRadians(pYangle);
+				Vector3 point = Points[i];
+				Vector3 rotatedPoint = Vector3.Transform(point, Matrix4x4.CreateRotationY(angleRadians, peak.Center));
+				Points[i] = rotatedPoint;
+			}
+		}
 
 		public override string ToString()
 		{

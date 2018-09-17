@@ -53,7 +53,7 @@ namespace ForestReco
 			if (useDebugData)
 			{
 				parsedLines = CDebug.GetStandartTree();
-				CDebug.DefineArray();
+				CDebug.DefineArray(true);
 			}
 			else
 			{
@@ -109,6 +109,11 @@ namespace ForestReco
 						break;
 					}
 				}*/
+				if (CProjectData.array == null)
+				{
+					CDebug.DefineArray(true);
+				}
+
 				List<Obj> trees = CRefTreeManager.GetTreeObjs();
 				CProjectData.objsToExport.AddRange(trees);
 			}

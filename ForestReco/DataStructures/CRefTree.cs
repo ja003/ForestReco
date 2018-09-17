@@ -36,6 +36,7 @@ namespace ForestReco
 
 		public float GetSimilarityWith(CTree pOtherTree)
 		{
+
 			Vector3 offsetToOtherTree = GetOffsetTo(pOtherTree);
 
 			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
@@ -47,16 +48,29 @@ namespace ForestReco
 			int indexOfBestMatch = Branches.IndexOf(bestMatchBranch);
 			int indexOffset = indexOfBestMatch - indexOfMostDefined;
 
+			Console.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
+			Console.WriteLine("bestMatchBranch = " + bestMatchBranch);
+
+			Console.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
+			Console.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
+			Console.WriteLine("indexOffset = " + indexOffset);
+
 
 			float similarity = 0;
 			int definedSimilarityCount = 0;
 
+			//todo: compare stems
 			foreach (CBranch otherBranch in pOtherTree.Branches)
 			{
 				int indexOfOtherBranch = pOtherTree.Branches.IndexOf(otherBranch);
-				int offsetBranchIndex = (indexOfOtherBranch + indexOffset) % branches.Count;
-				float similarityWithOtherBranch = branches[offsetBranchIndex].
-					GetSimilarityWith(otherBranch, offsetToOtherTree);
+				//int offsetBranchIndex = (indexOfOtherBranch + indexOffset) % branches.Count;
+				int offsetBranchIndex = indexOfOtherBranch + indexOffset;
+				if (offsetBranchIndex < 0)
+				{
+					offsetBranchIndex = branches.Count + offsetBranchIndex;
+				}
+				CBranch refBranch = branches[offsetBranchIndex];
+				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch, offsetToOtherTree);
 				if (similarityWithOtherBranch >= 0)
 				{
 					similarity += similarityWithOtherBranch;
@@ -93,6 +107,7 @@ namespace ForestReco
 					bestMatchBranch = b;
 				}
 			}
+			Console.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
 			return bestMatchBranch;
 		}
 
