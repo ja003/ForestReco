@@ -18,7 +18,7 @@ namespace ForestReco
 		private bool IsPartOfPeak(Vector3 pPointCenter)
 		{
 			float distance2D = CUtils.Get2DDistance(Center, pPointCenter);
-			float yDiff = Math.Abs(Math.Abs(Center.Y) - Math.Abs(pPointCenter.Y));
+			float yDiff = Math.Abs(Center.Y - pPointCenter.Y);
 			return distance2D < CTreeManager.MIN_PEAKS_DISTANCE && yDiff < 0.25f;
 		}
 

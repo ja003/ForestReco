@@ -29,7 +29,7 @@ namespace ForestReco
 
 		public List<Vector3> Points = new List<Vector3>();
 
-		public CTree(){ }
+		public CTree() { }
 
 		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
 		{
@@ -38,9 +38,9 @@ namespace ForestReco
 
 		protected void Init(Vector3 pPoint, int pTreeIndex)
 		{
-			peak = new CPeak(pPoint);
+			//peak = new CPeak(pPoint);
 
-			if (CTreeManager.DEBUG) {Console.WriteLine("new tree " + pTreeIndex);}
+			if (CTreeManager.DEBUG) { Console.WriteLine("new tree " + pTreeIndex); }
 
 			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
@@ -82,6 +82,7 @@ namespace ForestReco
 			}
 
 			Points.AddRange(pSubTree.Points);
+			Points.AddRange(pSubTree.peak.Points);
 			//sort in descending order
 			Points.Sort((b, a) => a.Y.CompareTo(b.Y));
 			//update extents
@@ -89,9 +90,32 @@ namespace ForestReco
 			OnAddPoint(pSubTree.maxBB);
 		}
 
-		protected Vector3 GetOffsetTo(CTree pOtherTree)
+		/// <summary>
+		/// We use only 2D offset. 
+		/// Height difference between tree and reference tree is handled by scale ratio
+		/// </summary>
+		protected Vector3 Get2DOffsetTo(CTree pOtherTree)
 		{
-			return pOtherTree.peak.Center - peak.Center;
+			Vector3 offset = pOtherTree.peak.Center - peak.Center;
+			offset.Y = 0;
+			return offset;
+		}
+
+		public float GetTreeHeight()
+		{
+			float treeHeight = peak.Center.Y - GetGroundHeight();
+			return treeHeight;
+		}
+
+		/// <summary>
+		/// Returns height of ground under peak of this tree
+		/// </summary>
+		public virtual float GetGroundHeight()
+		{
+			float? groundHeight = CProjectData.array?.GetElementContainingPoint(peak.Center).
+				GetHeight(EHeight.GroundMax, true);
+			groundHeight = groundHeight ?? peak.Center.Y;
+			return (float)groundHeight;
 		}
 
 		public List<CTreePoint> GetAllPoints()
@@ -153,10 +177,19 @@ namespace ForestReco
 		private void AddPoint(Vector3 pPoint)
 		{
 			//todo: rozdělit body na Points a na peak. teď jsou v peaku duplicitně a při mergi se nesmažou
-			if (peak.Includes(pPoint))
+			/*if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
+			}*/
+
+			if (peak == null)
+			{
+				peak = new CPeak(pPoint);
 			}
+			/*else
+			{
+				Points.Add(pPoint);
+			}*/
 			Points.Add(pPoint);
 			OnAddPoint(pPoint);
 		}
@@ -276,6 +309,10 @@ namespace ForestReco
 			return treeIndex == t.treeIndex;
 		}
 
+		public Vector3 GetGroundPosition()
+		{
+			return peak.Center - GetTreeHeight() * Vector3.UnitY;
+		}
 
 		public Obj GetObj(string pName, bool pExportBranches, bool pExportBB)
 		{
@@ -316,7 +353,9 @@ namespace ForestReco
 
 			return obj;
 		}
-		
+
+		//DEBUG TRANSLATIONS - NOT CORRECT ON ALL TREES
+
 		public void Rotate(int pYangle)
 		{
 			for (int i = 0; i < Points.Count; i++)
@@ -326,6 +365,49 @@ namespace ForestReco
 				Vector3 rotatedPoint = Vector3.Transform(point, Matrix4x4.CreateRotationY(angleRadians, peak.Center));
 				Points[i] = rotatedPoint;
 			}
+			ResetBounds(Points);
+			if (peak.Points.Count > 1)
+			{
+				Console.WriteLine("Cant Rotate after process!");
+			}
+		}
+
+		public void Scale(int pScale)
+		{
+			//scale with center point = ground point
+			//if center point = peak, resulting points might be set under ground level
+			Vector3 groundPosition = GetGroundPosition();
+			for (int i = 0; i < Points.Count; i++)
+			{
+				Vector3 point = Points[i];
+				Vector3 scaledPoint = Vector3.Transform(point, Matrix4x4.CreateScale(
+					pScale, pScale, pScale, groundPosition));
+				Points[i] = scaledPoint;
+			}
+			ResetBounds(Points);
+			if (peak.Points.Count > 1)
+			{
+				Console.WriteLine("Cant Scale after process!");
+			}
+			peak = new CPeak(Points[0]);
+		}
+
+		public void Move(Vector3 pOffset)
+		{
+			for (int i = 0; i < Points.Count; i++)
+			{
+				Vector3 point = Points[i];
+				Vector3 movedPoint = point + pOffset;
+				Points[i] = movedPoint;
+			}
+			ResetBounds(Points);
+			if (peak.Points.Count > 1)
+			{
+				Console.WriteLine("Cant move after process!");
+			}
+
+			peak.Points[0] += pOffset;
+			peak.ResetBounds(peak.Points[0]);
 		}
 
 		public override string ToString()

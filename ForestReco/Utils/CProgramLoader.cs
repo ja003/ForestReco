@@ -19,10 +19,10 @@ namespace ForestReco
 		//fileName = @"BK_1000AGL_classified_0007559_0182972";
 		//@"BK_1000AGL_classified_0007559_0182972_0037797";
 		//fileName = "debug_tree_04";
-		fileName = "debug_tree_06";
+		//"debug_tree_06";
 		//fileName = "debug_tree_05";
 		//fileName = "R2-F-1-j_fix";
-		//"BK_1000AGL_59_72_97_x90_y62";
+		"BK_1000AGL_59_72_97_x90_y62";
 
 		internal static string[] GetFileLines()
 		{
@@ -45,7 +45,8 @@ namespace ForestReco
 			if (pArray) { CProjectData.array = new CPointArray(stepSize); }
 
 			//store coordinates to corresponding data strucures based on their class
-			int startLine = CProjectData.header != null ? 19 : 0;
+			const int DEFAULT_START_LINE = 19;
+			int startLine = pUseHeader && CProjectData.header != null ? DEFAULT_START_LINE : 0;
 			int linesToRead = lines.Length;
 			//linesToRead = startLine + 500;
 
@@ -76,7 +77,12 @@ namespace ForestReco
 		internal static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
 		{
 			AddPointsFromLines(parsedLines);
-			
+
+			if (CProjectData.array == null)
+			{
+				CDebug.DefineArray(true);
+			}
+
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
 
 			CTreeManager.TryMergeAllTrees();
@@ -109,10 +115,7 @@ namespace ForestReco
 						break;
 					}
 				}*/
-				if (CProjectData.array == null)
-				{
-					CDebug.DefineArray(true);
-				}
+				
 
 				List<Obj> trees = CRefTreeManager.GetTreeObjs();
 				CProjectData.objsToExport.AddRange(trees);

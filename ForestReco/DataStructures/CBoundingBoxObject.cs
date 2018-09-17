@@ -33,6 +33,22 @@ namespace ForestReco
 			maxBB = pPoint;
 		}
 
+		public void ResetBounds(Vector3 pPoint)
+		{
+			minBB = pPoint;
+			maxBB = pPoint;
+		}
+
+		public void ResetBounds(List<Vector3> pPoints)
+		{
+			minBB = pPoints[0];
+			maxBB = pPoints[0];
+			foreach (Vector3 p in pPoints)
+			{
+				OnAddPoint(p);
+			}
+		}
+
 		public void OnAddPoint(Vector3 pPoint)
 		{
 			if (pPoint.X < minBB.X) { minBB.X = pPoint.X; }

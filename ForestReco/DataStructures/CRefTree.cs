@@ -34,9 +34,14 @@ namespace ForestReco
 			Obj.LoadObj(GetRefTreePath(pFileName) + ".obj");
 		}
 
+		/// <summary>
+		/// Calculates similarity between this reference tree and given tree
+		/// Returns [0,1]. 1 = best match
+		/// </summary>
 		public float GetSimilarityWith(CTree pOtherTree)
 		{
-			Vector3 offsetToOtherTree = GetOffsetTo(pOtherTree);
+			Vector3 offsetToOtherTree = Get2DOffsetTo(pOtherTree);
+			float scaleRatio = GetScaleRatioTo(pOtherTree);
 			int indexOffset = GetIndexOffsetBetweenBestMatchBranches(pOtherTree);
 
 			float similarity = 0;
@@ -53,7 +58,7 @@ namespace ForestReco
 					offsetBranchIndex = branches.Count + offsetBranchIndex;
 				}
 				CBranch refBranch = branches[offsetBranchIndex];
-				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch, offsetToOtherTree);
+				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch, offsetToOtherTree, scaleRatio);
 				if (similarityWithOtherBranch >= 0)
 				{
 					similarity += similarityWithOtherBranch;
@@ -74,43 +79,75 @@ namespace ForestReco
 			return similarity;
 		}
 
+		/// <summary>
+		/// Returns ratio of tree heights
+		/// </summary>
+		protected float GetScaleRatioTo(CTree pOtherTree)
+		{
+			float otherTreeHeight = pOtherTree.GetTreeHeight();
+			float refTreeHeight = GetTreeHeight();
+
+			float heightRatio = refTreeHeight / otherTreeHeight;
+			return heightRatio;
+		}
+
+		/// <summary>
+		/// In reference tree the tree is defined in great detail from peak to the ground.
+		/// </summary>
+		public override float GetGroundHeight()
+		{
+			return minBB.Y;
+		}
+
+		/// <summary>
+		/// Returns offset angle between best defined branch of pOtherTree and best matching branch 
+		/// from this tree
+		/// </summary>
 		public int GetOffsetAngleTo(CTree pOtherTree)
 		{
 			return GetIndexOffsetBetweenBestMatchBranches(pOtherTree) * BRANCH_ANGLE_STEP;
 		}
 
+		/// <summary>
+		/// First finds most defined branch of pOtherTree.
+		/// Then finds the branch on this reference tree which best matches found most defined branch.
+		/// Returns index offset between these branches.
+		/// </summary>
 		private int GetIndexOffsetBetweenBestMatchBranches(CTree pOtherTree)
 		{
-			Vector3 offsetToOtherTree = GetOffsetTo(pOtherTree);
+			Vector3 offsetToOtherTree = Get2DOffsetTo(pOtherTree);
+			float scaleRatio = GetScaleRatioTo(pOtherTree);
+
+			Console.WriteLine("offsetToOtherTree = " + offsetToOtherTree);
+			Console.WriteLine("scaleRatio = " + scaleRatio);
 
 			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
 
 			//todo: try rotate other tree to find bestMatch and include this rotation in similarity calculation
-			CBranch bestMatchBranch = GetBestMatchBranch(mostDefinedBranch, offsetToOtherTree);
+			CBranch bestMatchBranch = GetBestMatchBranch(mostDefinedBranch, offsetToOtherTree, scaleRatio);
 
 			int indexOfMostDefined = pOtherTree.Branches.IndexOf(mostDefinedBranch);
 			int indexOfBestMatch = Branches.IndexOf(bestMatchBranch);
 			int indexOffset = indexOfBestMatch - indexOfMostDefined;
 
-			Console.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
-			Console.WriteLine("bestMatchBranch = " + bestMatchBranch);
-
-			Console.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
-			Console.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
-			Console.WriteLine("indexOffset = " + indexOffset);
+			//Console.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
+			//Console.WriteLine("bestMatchBranch = " + bestMatchBranch);
+			//Console.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
+			//Console.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
+			//Console.WriteLine("indexOffset = " + indexOffset);
 			return indexOffset;
 		}
 
 		/// <summary>
 		/// Returns branch with the highest similarity with other branch
 		/// </summary>
-		private CBranch GetBestMatchBranch(CBranch pOtherBranch, Vector3 pOffset)
+		private CBranch GetBestMatchBranch(CBranch pOtherBranch, Vector3 pOffset, float pScale)
 		{
 			float bestSimilarity = 0;
 			CBranch bestMatchBranch = branches[0];
 			foreach (CBranch b in branches)
 			{
-				float similarity = b.GetSimilarityWith(pOtherBranch, pOffset);
+				float similarity = b.GetSimilarityWith(pOtherBranch, pOffset, pScale);
 				if (similarity > bestSimilarity)
 				{
 					bestSimilarity = similarity;
@@ -120,6 +157,8 @@ namespace ForestReco
 			Console.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
 			return bestMatchBranch;
 		}
+
+		//INIT PROCESSING
 
 		private static string GetRefTreePath(string pFileName)
 		{

@@ -196,10 +196,11 @@ namespace ForestReco
 			DateTime processTreesStartTime = DateTime.Now;
 			Console.WriteLine("ProcessAllTrees. Start = " + processTreesStartTime); foreach (CTree t in trees)
 			{
-				bool testRotate = true;
-				if (testRotate)
+				bool testTranslate = false;
+				if (testTranslate)
 				{
-					t.Rotate(-45);
+					//t.Rotate(-45);
+					t.Scale(2);
 				}
 				t.Process();
 			}

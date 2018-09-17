@@ -88,20 +88,24 @@ namespace ForestReco
 		/// </summary>
 		private static void SetRefTreeObjTransform(ref CRefTree pRefTree, CTree pTargetTree)
 		{
-
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
 
 			//align position to tree
 			pRefTree.Obj.Position = pTargetTree.peak.maxHeight;
-			float? groundHeight = CProjectData.array?.GetElementContainingPoint(pRefTree.Obj.Position).
+
+			/*float? groundHeight = CProjectData.array?.GetElementContainingPoint(pRefTree.Obj.Position).
 				GetHeight(EHeight.GroundMax, true);
 			groundHeight = groundHeight ?? pRefTree.Obj.Position.Y;
-			pRefTree.Obj.Position.Y = (float)groundHeight;
+			pRefTree.Obj.Position.Y = (float)groundHeight;*/
 
-			float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
+			pRefTree.Obj.Position.Y = pTargetTree.GetGroundHeight();
+			
+			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
+			float treeHeight = pTargetTree.GetTreeHeight();
 			float heightRatio = treeHeight / (pRefTree.Obj.Size.YMax - pRefTree.Obj.Size.YMin);
-			pRefTree.Obj.Scale = new Vector3(1, (float)heightRatio, 1);
+			//todo: scale X and Z based on pTargetTree extents
+			pRefTree.Obj.Scale = heightRatio * Vector3.One;
 
 
 			//move obj so it is at 0,0,0
