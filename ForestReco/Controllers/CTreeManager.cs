@@ -17,20 +17,11 @@ namespace ForestReco
 		private static int treeIndex;
 
 		public static bool DEBUG = false;
-
-		private static bool simpleExport = false;
-
 		private static int pointCounter;
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
-			if (simpleExport)
-			{
-				if (trees.Count == 0) { trees.Add(new CTree(pPoint, 0)); }
-				trees[0].ForceAddPoint(pPoint);
-				return;
-			}
 
 			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint);
 			pointCounter++;
