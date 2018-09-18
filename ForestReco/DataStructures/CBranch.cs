@@ -23,6 +23,31 @@ namespace ForestReco
 			angleFrom = pAngleFrom;
 			angleTo = pAngleTo;
 		}
+		
+		public List<string> Serialize()
+		{
+			List<string> lines = new List<string>();
+
+			foreach (CTreePoint tp in treePoints)
+			{
+				lines.Add(tp.Serialize());
+			}
+
+			return lines;
+		}
+
+		/// <summary>
+		/// Use this only in deserialization
+		/// </summary>
+		/// <param name="pTreepointsOnBranch"></param>
+		public void SetTreePoints(List<CTreePoint> pTreepointsOnBranch)
+		{
+			foreach (CTreePoint tp in pTreepointsOnBranch)
+			{
+				treePoints.Add(tp);
+				//todo: check if added ordered
+			}
+		}
 
 		public void AddPoint(Vector3 pPoint)
 		{

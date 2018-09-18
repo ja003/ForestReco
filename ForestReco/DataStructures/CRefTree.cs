@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using ObjParser;
 
@@ -14,12 +15,14 @@ namespace ForestReco
 	{
 		public Obj Obj;
 
+		public CRefTree() { }
+
 		public CRefTree(string pFileName, int pTreeIndex)
 		{
 			treeIndex = pTreeIndex;
 			string[] lines = GetFileLines(pFileName);
+			LoadObj(pFileName);
 
-			//todo: porovnávání stromů ještě není implementováno, takže toto je nanic
 			bool processLines = true;
 			if (processLines)
 			{
@@ -30,10 +33,125 @@ namespace ForestReco
 				Process();
 				Console.WriteLine("Processed | duration = " + (DateTime.Now - processStartTime));
 			}
+		}
+
+		private void LoadObj(string pFileName)
+		{
 			Obj = new Obj(pFileName);
 			Obj.LoadObj(GetRefTreePath(pFileName) + ".obj");
 		}
+
+		public CRefTree(string pFileName, string[] pSerializedLines)
+		{
+			DeserialiseMode currentMode = DeserialiseMode.None;
+
+			branches = new List<CBranch>();
+			List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
+			stem = new CBranch(this, 0, 0);
+
+			foreach (string line in pSerializedLines)
+			{
+				switch (line)
+				{
+					case "treeIndex":
+						currentMode = DeserialiseMode.TreeIndex;
+						continue;
+					case "peak":
+						currentMode = DeserialiseMode.Peak;
+						continue;
+					case "branches":
+						currentMode = DeserialiseMode.Branches;
+						continue;
+					case "stem":
+						currentMode = DeserialiseMode.Stem;
+						branches.Last().SetTreePoints(_treepointsOnBranch);
+						_treepointsOnBranch = new List<CTreePoint>();
+						continue;
+				}
+
+				switch (currentMode)
+				{
+					case DeserialiseMode.TreeIndex:
+						treeIndex = int.Parse(line);
+						break;
+					case DeserialiseMode.Peak:
+						peak = CPeak.Deserialize(line);
+						break;
+					case DeserialiseMode.Branches:
+						if (line.Contains("branch "))
+						{
+							int branchIndex = branches.Count - 1;
+							if (branchIndex > 0)
+							{
+								branches.Last().SetTreePoints(_treepointsOnBranch);
+							}
+
+							branches.Add(new CBranch(
+								this,
+								branchIndex * BRANCH_ANGLE_STEP,
+								branchIndex * BRANCH_ANGLE_STEP + BRANCH_ANGLE_STEP));
+							_treepointsOnBranch = new List<CTreePoint>();
+						}
+						else
+						{
+							_treepointsOnBranch.Add(CTreePoint.Deserialize(line));
+						}
+						break;
+					case DeserialiseMode.Stem:
+						_treepointsOnBranch.Add(CTreePoint.Deserialize(line));
+						break;
+				}
+			}
+			stem.SetTreePoints(_treepointsOnBranch);
+			LoadObj(pFileName);
+		}
 		
+		private enum DeserialiseMode
+		{
+			None,
+			TreeIndex,
+			Peak,
+			Branches,
+			Stem
+		}
+
+		public static CRefTree Deserialize(string pFileName)
+		{
+			string filePath = GetRefTreePath(pFileName + ".reftree");
+			Console.WriteLine("Deserialize. filePath = " + filePath);
+
+			if (!File.Exists(filePath))
+			{
+				Console.WriteLine(".reftree file does not exist.");
+				return null;
+			}
+
+			string[] serialisedLines = File.ReadAllLines(filePath);
+
+			CRefTree refTree = new CRefTree(pFileName, serialisedLines);
+
+			return refTree;
+		}
+
+		public List<string> Serialize()
+		{
+			List<string> lines = new List<string>();
+			lines.Add("treeIndex");
+			lines.Add(treeIndex.ToString());
+			lines.Add("peak");
+			lines.Add(peak.Serialize());
+			lines.Add("branches");
+			foreach (CBranch b in branches)
+			{
+				lines.Add("branch " + branches.IndexOf(b));
+				lines.AddRange(b.Serialize());
+			}
+			lines.Add("stem");
+			lines.AddRange(stem.Serialize());
+
+			return lines;
+		}
+
 		/// <summary>
 		/// In reference tree the tree is defined in great detail from peak to the ground.
 		/// </summary>
@@ -41,12 +159,44 @@ namespace ForestReco
 		{
 			return minBB.Y;
 		}
-		
+
+		protected override void OnProcess()
+		{
+			string filePath = GetRefTreePath(Obj.Name + ".reftree");
+			Console.WriteLine("filePath = " + filePath);
+
+			if (File.Exists(filePath))
+			{
+				Console.WriteLine("ERROR: .reftree file already exists");
+				return;
+			}
+
+			DateTime processStartTime = DateTime.Now;
+			Console.WriteLine("Serialization. Start = " + processStartTime);
+			List<string> serializedTree = Serialize();
+
+			using (StreamWriter file = new StreamWriter(filePath, false))
+			{
+				foreach (string line in serializedTree)
+				{
+					file.WriteLine(line);
+				}
+			}
+			Console.WriteLine("Serialized | duration = " + (DateTime.Now - processStartTime));
+
+			Console.WriteLine("filePath = " + filePath);
+		}
+
 		//INIT PROCESSING
 
-		private static string GetRefTreePath(string pFileName)
+		public static string GetRefTreePath(string pFileName)
 		{
-			return CPlatformManager.GetPodkladyPath() + "\\tree_models\\" + pFileName;
+			return GetRefTreeFolder() + pFileName;
+		}
+
+		private static string GetRefTreeFolder()
+		{
+			return CPlatformManager.GetPodkladyPath() + "\\tree_models\\";
 		}
 
 		private static string[] GetFileLines(string pFileName)

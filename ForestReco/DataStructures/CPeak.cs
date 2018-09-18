@@ -8,7 +8,23 @@ namespace ForestReco
 	{
 
 		public CPeak(Vector3 pPoint) : base(pPoint){ }
-		
+
+		/// <summary>
+		/// TODO: merge with CTreePoint method
+		/// </summary>
+		public new static CPeak Deserialize(string pLine)
+		{
+			string[] split = pLine.Split(null);
+
+			Vector3 _minBB = new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));
+
+			Vector3 _maxBB = new Vector3(float.Parse(split[3]), float.Parse(split[4]), float.Parse(split[5]));
+
+			CPeak peak = new CPeak((_minBB + _maxBB) / 2);
+			peak.OnAddPoint(_minBB);
+			peak.OnAddPoint(_maxBB);
+			return peak;
+		}
 
 		public override bool Includes(Vector3 pPoint)
 		{

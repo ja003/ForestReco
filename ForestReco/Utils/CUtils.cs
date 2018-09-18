@@ -115,5 +115,10 @@ namespace ForestReco
 				list[n] = value;
 			}
 		}
+
+		public static string SerializeVector3(Vector3 pVector)
+		{
+			return pVector.X + " " + pVector.Y + " " + pVector.Z;
+		}
 	}
 }

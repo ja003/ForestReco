@@ -12,12 +12,10 @@ namespace ForestReco
 		public float X => Center.X;
 		public float Y => Center.Y;
 		public float Z => Center.Z;
-
-
+		
 		//private Vector3 botLeft => minBB;
 		//private Vector3 botLeft => minBB;
-
-
+		
 		public Vector3 maxHeight;
 
 		private const float POINT_EXTENT = 0.1f;
@@ -26,7 +24,29 @@ namespace ForestReco
 		{
 			AddPoint(pPoint);
 		}
-		
+
+		/// <summary>
+		/// TODO: is maxHeight neccessary?
+		/// </summary>
+		public string Serialize()
+		{
+			return CUtils.SerializeVector3(minBB) + " " + CUtils.SerializeVector3(maxBB);
+		}
+
+		public static CTreePoint Deserialize(string pLine)
+		{
+			string[] split = pLine.Split(null);
+
+			Vector3 _minBB = new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));
+
+			Vector3 _maxBB = new Vector3(float.Parse(split[3]), float.Parse(split[4]), float.Parse(split[5]));
+
+			CTreePoint treePoint = new CTreePoint((_minBB + _maxBB)/2);
+			treePoint.OnAddPoint(_minBB);
+			treePoint.OnAddPoint(_maxBB);
+			return treePoint;
+		}
+
 		public void AddPoint(Vector3 pPoint)
 		{
 			Points.Add(pPoint);

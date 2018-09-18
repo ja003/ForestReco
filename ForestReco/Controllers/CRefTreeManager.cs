@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using ObjParser;
@@ -19,8 +20,8 @@ namespace ForestReco
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
 				//podkladyPath + @"\tree_models\m1_reduced"
-				//"m1_reduced"
-				"debug_tree_06"
+				"m1_reduced"
+				//"debug_tree_06"
 			};
 			//todo: uncomment to load tree obj from db
 			LoadTrees(treeFileNames);
@@ -30,17 +31,12 @@ namespace ForestReco
 		{
 			foreach (string fileName in pFileNames)
 			{
-				CRefTree refTree = new CRefTree(fileName, pFileNames.IndexOf(fileName));
+				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
+				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName));
 
 				Trees.Add(refTree);
 				Console.WriteLine("Loaded tree: " + fileName);
 			}
-			//test
-			//Trees[0].Rotation = new Vector3(0, 10, 0);
-
-			//Trees[1].Position = new Vector3(10, 5, 0);
-			//Trees[1].Scale = new Vector3(3, 5, 1);
-			//Trees[1].Rotation = new Vector3(10, 0, 0);
 		}
 
 		private static int counter;
@@ -102,7 +98,7 @@ namespace ForestReco
 			pRefTree.Obj.Position.Y = (float)groundHeight;*/
 
 			pRefTree.Obj.Position.Y = pTargetTree.GetGroundHeight();
-			
+
 			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
 			float treeHeight = pTargetTree.GetTreeHeight();
 			float heightRatio = treeHeight / (pRefTree.Obj.Size.YMax - pRefTree.Obj.Size.YMin);

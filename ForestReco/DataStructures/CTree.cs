@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net.Http.Headers;
 using System.Numerics;
 using System.Runtime.Remoting.Messaging;
+using System.Runtime.Serialization;
 using System.Security.Principal;
 using ObjParser;
 using ObjParser.Types;
@@ -19,7 +21,7 @@ namespace ForestReco
 		//public List<CTreePoint> points = new List<CTreePoint>();
 		protected List<CBranch> branches = new List<CBranch>();
 		public List<CBranch> Branches => branches;
-		public CBranch stem { get; private set; }
+		public CBranch stem { get; protected set; }
 
 		public static int BRANCH_ANGLE_STEP = 45;
 		private const float MAX_STEM_POINT_DISTANCE = 0.1f;
@@ -56,6 +58,8 @@ namespace ForestReco
 			AddPoint(pPoint);
 		}
 
+		
+
 		//MOST IMPORTANT
 
 		/// <summary>
@@ -74,6 +78,13 @@ namespace ForestReco
 					GetBranchFor(point).AddPoint(point);
 				}
 			}
+
+			OnProcess();
+		}
+
+		protected virtual void OnProcess()
+		{
+			Console.WriteLine("OnProcess");
 		}
 
 		public bool TryAddPoint(Vector3 pPoint, bool pForce)
