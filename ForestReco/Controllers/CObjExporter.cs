@@ -147,12 +147,16 @@ namespace ForestReco
 				foreach (Obj obj in pObjs)
 				{
 					writer.WriteLine("o " + obj.Name);
-					//writer.WriteLine("o XX");
 
 					int thisTreeVertexIndexOffset = vertexIndexOffset;
 					foreach (Vertex v in obj.VertexList)
 					{
-						writer.WriteLine(v.ToString(obj.GetVertexTransform()));
+						string vertexString = v.ToString(obj.GetVertexTransform());
+						if (vertexString == "v 0.2059677 -0.004917747 0.1736171")
+						{
+							Console.WriteLine("§");
+						}
+						writer.WriteLine(vertexString);
 						vertexIndexOffset++;
 					}
 

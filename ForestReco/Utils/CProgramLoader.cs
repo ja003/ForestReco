@@ -19,10 +19,11 @@ namespace ForestReco
 		//fileName = @"BK_1000AGL_classified_0007559_0182972";
 		//@"BK_1000AGL_classified_0007559_0182972_0037797";
 		//fileName = "debug_tree_04";
+		//"debug_tree_03";
 		//"debug_tree_06";
+		"BK_1000AGL_59_72_97_x90_y62";
 		//fileName = "debug_tree_05";
 		//fileName = "R2-F-1-j_fix";
-		"BK_1000AGL_59_72_97_x90_y62";
 
 		internal static string[] GetFileLines()
 		{

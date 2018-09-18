@@ -25,12 +25,16 @@ namespace ObjParser
 		public Vector3 Rotation;
 		public Vector3 Scale = Vector3.One;
 		public string Name;
-		
+
+		private bool isObjCentered;
+
 		public SVertexTransform GetVertexTransform()
 		{
-			return new SVertexTransform(Position, Scale, Rotation,
-				//bot center point
-				new Vector3((Size.XMin + Size.XMax) / 2, Size.YMin, (Size.ZMin + Size.ZMax) / 2));
+			//return new SVertexTransform(Position, Scale, Rotation, Vector3.Zero);
+			float xMid = (Size.XMin + Size.XMax) / 2;
+			float zMid = (Size.ZMin + Size.ZMax) / 2;
+			Vector3 referenceVertex = isObjCentered ? Vector3.Zero : new Vector3(xMid, Size.YMin, zMid);
+			return new SVertexTransform(Position, Scale, Rotation, referenceVertex);
 		}
 
 
@@ -48,10 +52,10 @@ namespace ObjParser
 		/// <summary>
 		/// Load .obj from a filepath.
 		/// </summary>
-		/// <param name="file"></param>
 		public void LoadObj(string path)
 		{
 			LoadObj(File.ReadAllLines(path));
+			isObjCentered = true; //we count on that all loaded models are centered
 		}
 
 		/// <summary>
@@ -237,14 +241,15 @@ namespace ObjParser
 				Rotation = Rotation,
 				Scale = Scale,
 				Size = Size,
-				Mtl = Mtl
+				Mtl = Mtl,
+				isObjCentered = isObjCentered
 			};
 			return clone;
 		}
 
 		public override string ToString()
 		{
-			return "[" + Position + "]" + vertexList.Count;
+			return Name + "[" + Position + "]" + vertexList.Count;
 		}
 
 		public int GetNextVertexIndex()

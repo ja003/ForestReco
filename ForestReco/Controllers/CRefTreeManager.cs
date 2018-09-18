@@ -90,7 +90,7 @@ namespace ForestReco
 			float minHeight = CProjectData.GetMinHeight();
 
 			//align position to tree
-			pRefTree.Obj.Position = pTargetTree.peak.maxHeight;
+			pRefTree.Obj.Position = pTargetTree.peak.Center;
 
 			/*float? groundHeight = CProjectData.array?.GetElementContainingPoint(pRefTree.Obj.Position).
 				GetHeight(EHeight.GroundMax, true);

@@ -11,8 +11,9 @@ namespace ObjParser.Types
 {
 	public class Vertex : IType
 	{
-		public Vertex(){ }
+		public Vertex() { }
 
+		private Vector3 position => new Vector3(X, Y, Z);
 
 		public Vertex(Vector3 pVector3, int pVertexIndex)
 		{
@@ -25,11 +26,9 @@ namespace ObjParser.Types
 		public const int MinimumDataLength = 4;
 		public const string Prefix = "v";
 
-		public float X { get; set; }
-
-		public float Y { get; set; }
-
-		public float Z { get; set; }
+		public float X;
+		public float Y;
+		public float Z;
 
 		public int Index { get; set; }
 
@@ -72,18 +71,18 @@ namespace ObjParser.Types
 		/// </summary>
 		public string ToString(SVertexTransform pTransform)
 		{
-			Vector3 newPos = GetPosition();
+			Vector3 newPos = position;
 			if (pTransform.Defined)
 			{
 				//1.scale
 				newPos = Vector3.Transform(newPos, Matrix4x4.CreateScale(
 					pTransform.Scale.X, pTransform.Scale.Y, pTransform.Scale.Z, pTransform.ReferenceVertex));
-					
+
 				//2.rotate
 				Vector3 rotate = new Vector3(
-					(float)CUtils.ToRadians(pTransform.Rotation.X),
-					(float)CUtils.ToRadians(pTransform.Rotation.Y),
-					(float)CUtils.ToRadians(pTransform.Rotation.Z));
+					CUtils.ToRadians(pTransform.Rotation.X),
+					CUtils.ToRadians(pTransform.Rotation.Y),
+					CUtils.ToRadians(pTransform.Rotation.Z));
 				newPos = Vector3.Transform(newPos, Matrix4x4.CreateRotationX(rotate.X, pTransform.ReferenceVertex));
 				newPos = Vector3.Transform(newPos, Matrix4x4.CreateRotationY(rotate.Y, pTransform.ReferenceVertex));
 				newPos = Vector3.Transform(newPos, Matrix4x4.CreateRotationZ(rotate.Z, pTransform.ReferenceVertex));
@@ -93,11 +92,6 @@ namespace ObjParser.Types
 				newPos += pTransform.PositionOffset;
 			}
 			return $"v {newPos.X} {newPos.Y} {newPos.Z}";
-		}
-
-		private Vector3 GetPosition()
-		{
-			return new Vector3((float)X, (float)Y, (float)Z);
 		}
 	}
 
