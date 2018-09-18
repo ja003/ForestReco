@@ -52,9 +52,11 @@ namespace ForestReco
 
 			foreach (CRefTree refTree in Trees)
 			{
-				if (refTree.GetSimilarityWith(pTree) > bestSimilarity)
+				float similarity = CTreeMath.GetSimilarityWith(refTree, pTree);
+				if (similarity > bestSimilarity)
 				{
 					mostSuitableTree = refTree;
+					bestSimilarity = similarity;
 				}
 			}
 
@@ -112,7 +114,7 @@ namespace ForestReco
 			pRefTree.Obj.Position -= arrayCenter;
 			pRefTree.Obj.Position -= new Vector3(0, minHeight, 2 * pRefTree.Obj.Position.Z);
 
-			pRefTree.Obj.Rotation = new Vector3(0, -pRefTree.GetOffsetAngleTo(pTargetTree), 0);
+			pRefTree.Obj.Rotation = new Vector3(0, -CTreeMath.GetOffsetAngleTo(pRefTree, pTargetTree), 0);
 
 			Console.WriteLine(counter +
 				"[" + pRefTree.Obj.Position + "], " +

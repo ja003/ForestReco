@@ -89,18 +89,7 @@ namespace ForestReco
 			OnAddPoint(pSubTree.minBB);
 			OnAddPoint(pSubTree.maxBB);
 		}
-
-		/// <summary>
-		/// We use only 2D offset. 
-		/// Height difference between tree and reference tree is handled by scale ratio
-		/// </summary>
-		protected Vector3 Get2DOffsetTo(CTree pOtherTree)
-		{
-			Vector3 offset = pOtherTree.peak.Center - peak.Center;
-			offset.Y = 0;
-			return offset;
-		}
-
+		
 		public float GetTreeHeight()
 		{
 			float treeHeight = peak.Center.Y - GetGroundHeight();
