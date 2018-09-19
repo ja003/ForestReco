@@ -41,7 +41,7 @@ namespace ForestReco
 		public static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
 			float stepSize = .4f; //in meters
-			if (pArray) { CProjectData.array = new CPointArray(stepSize); }
+			if (pArray) { CProjectData.array = new CGroundArray(stepSize); }
 
 			//store coordinates to corresponding data strucures based on their class
 			const int DEFAULT_START_LINE = 19;
@@ -115,7 +115,7 @@ namespace ForestReco
 				Console.WriteLine("Export array" + " | " + DateTime.Now);
 
 				int counter = 0;
-				while (CProjectData.array != null && !CProjectData.array.IsAllDefined(EHeight.GroundMax))
+				while (CProjectData.array != null && !CProjectData.array.IsAllDefined())
 				{
 					Console.WriteLine("FillMissingHeights " + counter);
 					CProjectData.array?.FillMissingHeights();
@@ -128,7 +128,7 @@ namespace ForestReco
 				}
 
 				CProjectData.objsToExport.Add(
-					CPointFieldExporter.ExportToObj("arr", EExportStrategy.None, new List<EHeight> { EHeight.GroundMax }));
+					CGroundFieldExporter.ExportToObj("arr", EExportStrategy.None));
 			}
 
 			if (CProjectData.exportPoints)
@@ -196,7 +196,14 @@ namespace ForestReco
 						CTreeManager.AddPoint(point, i);
 					}
 				}
-				if (CProjectData.setArray) { CProjectData.array?.AddPointInField(parsedLine.Item1, point); }
+				if (CProjectData.setArray)
+				{
+					//add only ground points
+					if (parsedLine.Item1 == 2)
+					{
+						CProjectData.array?.AddPointInField(point);
+					}
+				}
 
 				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{

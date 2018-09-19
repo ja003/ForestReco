@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CPlatformManager.cs" />
-    <Compile Include="Controllers\CPointFieldExporter.cs" />
+    <Compile Include="Controllers\CGroundFieldExporter.cs" />
     <Compile Include="Controllers\CObjExporter.cs" />
     <Compile Include="Controllers\CProjectData.cs" />
     <Compile Include="Controllers\CTreeManager.cs" />
@@ -55,12 +55,10 @@
     <Compile Include="DataStructures\CTree.cs" />
     <Compile Include="DataStructures\CRefTree.cs" />
     <Compile Include="DataStructures\CTreePoint.cs" />
-    <Compile Include="DataStructures\CPointArray.cs" />
-    <Compile Include="DataStructures\CPointField.cs" />
-    <Compile Include="Enums\EClass.cs" />
+    <Compile Include="DataStructures\CGroundArray.cs" />
+    <Compile Include="DataStructures\CGroundField.cs" />
     <Compile Include="Enums\EDirection.cs" />
     <Compile Include="Enums\EExportStrategy.cs" />
-    <Compile Include="Enums\EHeight.cs" />
     <Compile Include="ObjParser\Extent.cs" />
     <Compile Include="ObjParser\Mtl.cs" />
     <Compile Include="ObjParser\Obj.cs" />

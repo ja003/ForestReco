@@ -204,8 +204,7 @@ namespace ForestReco
 		/// </summary>
 		public virtual float GetGroundHeight()
 		{
-			float? groundHeight = CProjectData.array?.GetElementContainingPoint(peak.Center).
-				GetHeight(EHeight.GroundMax, true);
+			float? groundHeight = CProjectData.array?.GetHeight(peak.Center, true);
 			groundHeight = groundHeight ?? peak.Center.Y;
 			return (float)groundHeight;
 		}
