@@ -23,8 +23,30 @@ namespace ForestReco
 				"m1_reduced"
 				//"debug_tree_06"
 			};
-			//todo: uncomment to load tree obj from db
-			LoadTrees(treeFileNames);
+
+			if (CProjectData.loadRefTrees)
+			{
+				LoadTrees(treeFileNames);
+			}
+		}
+
+		public static List<Obj> GetTreeObjs()
+		{
+			List<Obj> treeObjs = new List<Obj>();
+
+			foreach (CTree t in CTreeManager.Trees)
+			{
+				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
+
+				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
+
+				Obj suitableTree = mostSuitableRefTree.Obj.Clone();
+				suitableTree.Name += "_" + counter;
+				counter++;
+
+				treeObjs.Add(suitableTree);
+			}
+			return treeObjs;
 		}
 
 		private static void LoadTrees(List<string> pFileNames)
@@ -61,26 +83,7 @@ namespace ForestReco
 			//counter++;
 			return mostSuitableTree;
 		}
-
-		internal static List<Obj> GetTreeObjs()
-		{
-			List<Obj> treeObjs = new List<Obj>();
-
-			foreach (CTree t in CTreeManager.Trees)
-			{
-				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
-
-				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
-
-				Obj suitableTree = mostSuitableRefTree.Obj.Clone();
-				suitableTree.Name += "_" + counter;
-				counter++;
-
-				treeObjs.Add(suitableTree);
-			}
-			return treeObjs;
-		}
-
+		
 		/// <summary>
 		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
 		/// </summary>

@@ -13,19 +13,18 @@ namespace ForestReco
 	{
 		public static bool useDebugData = false;
 
-		private static string fileName = 
+		private static string fileName =
 		//@"BK_1000AGL_classified";
 		//@"BK_1000AGL_cl_split_s_mezerou";
-		//fileName = @"BK_1000AGL_classified_0007559_0182972";
+		//@"BK_1000AGL_classified_0007559_0182972";
 		//@"BK_1000AGL_classified_0007559_0182972_0037797";
 		//fileName = "debug_tree_04";
 		//"debug_tree_03";
 		//"debug_tree_06";
 		"BK_1000AGL_59_72_97_x90_y62";
 		//fileName = "debug_tree_05";
-		//fileName = "R2-F-1-j_fix";
 
-		internal static string[] GetFileLines()
+		public static string[] GetFileLines()
 		{
 			CProjectData.saveFileName = fileName;
 			//string saveFileName = "BK_1000AGL_";
@@ -39,8 +38,7 @@ namespace ForestReco
 			return lines;
 		}
 
-
-		internal static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
+		public static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
 			float stepSize = .4f; //in meters
 			if (pArray) { CProjectData.array = new CPointArray(stepSize); }
@@ -75,7 +73,7 @@ namespace ForestReco
 			return parsedLines;
 		}
 
-		internal static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
+		public static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
 		{
 			AddPointsFromLines(parsedLines);
 
@@ -89,9 +87,9 @@ namespace ForestReco
 			CTreeManager.TryMergeAllTrees();
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
-			
+
 			CTreeManager.ProcessAllTrees();
-			
+
 			Console.WriteLine("\nAdd trees to export " + CTreeManager.Trees.Count + " | " + DateTime.Now);
 			foreach (CTree t in CTreeManager.Trees)
 			{
@@ -99,32 +97,21 @@ namespace ForestReco
 				CProjectData.objsToExport.Add(tObj);
 			}
 
-			bool addTreeObjModels = true;
-			if (addTreeObjModels && !useDebugData)
+			if (CProjectData.useRefTrees)
 			{
 				Console.WriteLine("Add tree obj models " + " | " + DateTime.Now);
-
-				/*int counter = 0;
-				while (CProjectData.array != null && !CProjectData.array.IsAllDefined(EHeight.GroundMax))
-				{
-					Console.WriteLine("FillMissingHeights " + counter);
-					CProjectData.array?.FillMissingHeights();
-					counter++;
-					if (counter > 10)
-					{
-						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
-						break;
-					}
-				}*/
-				
 
 				List<Obj> trees = CRefTreeManager.GetTreeObjs();
 				CProjectData.objsToExport.AddRange(trees);
 			}
 
-			bool exportArray = true;
-			if (exportArray && CProjectData.array != null)
+			if (CProjectData.exportArray)
 			{
+				if (CProjectData.array == null)
+				{
+					Console.WriteLine("Error: no array to export");
+					return;
+				}
 				Console.WriteLine("Export array" + " | " + DateTime.Now);
 
 				int counter = 0;
@@ -144,15 +131,14 @@ namespace ForestReco
 					CPointFieldExporter.ExportToObj("arr", EExportStrategy.None, new List<EHeight> { EHeight.GroundMax }));
 			}
 
-			bool exportAllPoints = true;
-			if (exportAllPoints)
+			if (CProjectData.exportPoints)
 			{
 				Obj justPoints = new Obj("points");
 				CObjExporter.AddPointsToObj(ref justPoints, CProjectData.allPoints);
 				CProjectData.objsToExport.Add(justPoints);
 			}
 
-			bool processArray = false;
+			/*bool processArray = false;
 			if (processArray && CProjectData.array != null)
 			{
 				CPointArray array = CProjectData.array;
@@ -179,11 +165,13 @@ namespace ForestReco
 				Obj field = CPointFieldExporter.ExportToObj(CProjectData.saveFileName + "_ground",
 					EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
 				CProjectData.objsToExport.Add(field);
-			}
+			}*/
 		}
 
 		private static void AddPointsFromLines(List<Tuple<int, Vector3>> pParsedLines)
 		{
+			if (!CProjectData.detectTrees && !CProjectData.setArray) { return; }
+
 			DateTime processStartTime = DateTime.Now;
 			Console.WriteLine("ProcessParsedLines " + pParsedLines.Count + ". Start = " + processStartTime);
 			int pointsToAddCount = pParsedLines.Count;
@@ -200,12 +188,15 @@ namespace ForestReco
 				//1 = unclassified
 				//2 = ground
 				//5 = high vegetation
-				bool pForceTreePoint = true;
-				if (parsedLine.Item1 == 5 || (pForceTreePoint && parsedLine.Item1 != 2 && parsedLine.Item1 != 1))
+				if (CProjectData.detectTrees)
 				{
-					CTreeManager.AddPoint(point, i);
+					//bool pForceTreePoint = true;
+					if (parsedLine.Item1 == 5 || /*pForceTreePoint && */parsedLine.Item1 != 2 && parsedLine.Item1 != 1)
+					{
+						CTreeManager.AddPoint(point, i);
+					}
 				}
-				if (!useDebugData) { CProjectData.array?.AddPointInField(parsedLine.Item1, point); }
+				if (CProjectData.setArray) { CProjectData.array?.AddPointInField(parsedLine.Item1, point); }
 
 				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
 				{

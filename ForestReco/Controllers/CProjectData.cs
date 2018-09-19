@@ -22,6 +22,13 @@ namespace ForestReco
 
 		public static List<Obj> objsToExport = new List<Obj>();
 
+		public static bool detectTrees;
+		public static bool setArray;
+		public static bool loadRefTrees;
+		public static bool useRefTrees;
+		public static bool exportArray;
+		public static bool exportPoints;
+
 		public static Vector3 GetOffset()
 		{
 			return header?.Offset ?? Vector3.Zero;

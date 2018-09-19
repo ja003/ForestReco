@@ -25,6 +25,13 @@ namespace ForestReco
 			//CProgramLoader.platform = EPlatform.HomePC;
 			//CProgramLoader.platform = EPlatform.Tiarra;
 
+			CProjectData.detectTrees = false;
+			CProjectData.setArray = true;
+			CProjectData.exportArray = true;
+			CProjectData.loadRefTrees = false;
+			CProjectData.useRefTrees = false;
+			CProjectData.exportPoints = true;
+
 			string[] lines = CProgramLoader.GetFileLines();
 
 			if (CHeaderInfo.HasHeader(lines[0]))
@@ -40,11 +47,7 @@ namespace ForestReco
 
 			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
-
-			//todo: replace load from array 
-			//List<Obj> treeObjs = treeManager.GetTreeObjsFromField(combinedArray);
-			//CObjExporter.ExportObjs(treeObjs, "trees_");
-
+			
 			Console.WriteLine("\n===============\n");
 			CTreeManager.WriteResult();			
 

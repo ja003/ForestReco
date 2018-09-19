@@ -80,7 +80,7 @@ namespace ForestReco
 					case DeserialiseMode.Branches:
 						if (line.Contains("branch "))
 						{
-							int branchIndex = branches.Count - 1;
+							int branchIndex = branches.Count;
 							if (branchIndex > 0)
 							{
 								branches.Last().SetTreePoints(_treepointsOnBranch);

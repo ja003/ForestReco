@@ -84,7 +84,7 @@ namespace ForestReco
 
 		protected virtual void OnProcess()
 		{
-			Console.WriteLine("OnProcess");
+			//Console.WriteLine("OnProcess");
 		}
 
 		public bool TryAddPoint(Vector3 pPoint, bool pForce)
