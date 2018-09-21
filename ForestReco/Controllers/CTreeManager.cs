@@ -18,10 +18,15 @@ namespace ForestReco
 
 		public static bool DEBUG = false;
 		private static int pointCounter;
+
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
+			if (pPointIndex == 824)
+			{
+				Console.Write("!");
+			}
 
 			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint);
 			pointCounter++;

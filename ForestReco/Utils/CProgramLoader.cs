@@ -13,7 +13,7 @@ namespace ForestReco
 	{
 		public static bool useDebugData = false;
 
-		private static string fileName =
+		public static string fileName;
 		//@"BK_1000AGL_classified";
 		//@"BK_1000AGL_cl_split_s_mezerou";
 		//@"BK_1000AGL_classified_0007559_0182972";
@@ -21,7 +21,8 @@ namespace ForestReco
 		//fileName = "debug_tree_04";
 		//"debug_tree_03";
 		//"debug_tree_06";
-		"BK_1000AGL_59_72_97_x90_y62";
+		//"BK_1000AGL_59_72_97_x90_y62";
+		//"R2-F-1-j_fix";
 		//fileName = "debug_tree_05";
 
 		public static string[] GetFileLines()
@@ -170,7 +171,7 @@ namespace ForestReco
 
 		private static void AddPointsFromLines(List<Tuple<int, Vector3>> pParsedLines)
 		{
-			if (!CProjectData.detectTrees && !CProjectData.setArray) { return; }
+			if (!CProjectData.detectTrees && !CProjectData.setArray && !CProjectData.exportPoints) { return; }
 
 			DateTime processStartTime = DateTime.Now;
 			Console.WriteLine("ProcessParsedLines " + pParsedLines.Count + ". Start = " + processStartTime);

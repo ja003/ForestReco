@@ -38,7 +38,21 @@ namespace ForestReco
 		private void LoadObj(string pFileName)
 		{
 			Obj = new Obj(pFileName);
-			Obj.LoadObj(GetRefTreePath(pFileName) + ".obj");
+
+			string refTreePath = GetRefTreePath(pFileName + ".obj");
+
+			if (!File.Exists(refTreePath))
+			{
+				Console.WriteLine("Ref tree " + refTreePath + " OBJ does not exist. Try reduced file.");
+				refTreePath = GetRefTreePath(pFileName + "_reduced.obj");
+				if (!File.Exists(refTreePath))
+				{
+					Console.WriteLine("ERROR: No ref tree OBJ found!");
+					return;
+				}
+			}
+
+			Obj.LoadObj(refTreePath);
 		}
 
 		public CRefTree(string pFileName, string[] pSerializedLines)
@@ -105,7 +119,7 @@ namespace ForestReco
 			stem.SetTreePoints(_treepointsOnBranch);
 			LoadObj(pFileName);
 		}
-		
+
 		private enum DeserialiseMode
 		{
 			None,

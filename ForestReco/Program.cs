@@ -21,16 +21,19 @@ namespace ForestReco
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			CPlatformManager.platform = EPlatform.Notebook;
-			//CProgramLoader.platform = EPlatform.HomePC;
+			//CPlatformManager.platform = EPlatform.Notebook;
+			CPlatformManager.platform = EPlatform.HomePC;
 			//CProgramLoader.platform = EPlatform.Tiarra;
 
-			CProjectData.detectTrees = false;
-			CProjectData.setArray = true;
-			CProjectData.exportArray = true;
+			CProjectData.detectTrees = true;
+			CProjectData.setArray = false;
+			CProjectData.exportArray = false;
 			CProjectData.loadRefTrees = false;
 			CProjectData.useRefTrees = false;
 			CProjectData.exportPoints = true;
+
+			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
+			CProgramLoader.fileName = "R7";
 
 			string[] lines = CProgramLoader.GetFileLines();
 
