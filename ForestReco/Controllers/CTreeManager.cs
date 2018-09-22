@@ -12,6 +12,8 @@ namespace ForestReco
 		public static List<CTree> Trees => trees;
 
 		public const float MAX_TREE_EXTENT = 3;
+		public const float DEFAULT_TREE_HEIGHT = 10;
+
 		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
 		public static float MAX_BRANCH_ANGLE = 45;
 		private static int treeIndex;
@@ -61,6 +63,7 @@ namespace ForestReco
 			}
 			else// if (selectedTree == null)
 			{
+				Console.WriteLine(pPointIndex + " new tree " + pPoint);
 				trees.Add(new CTree(pPoint, treeIndex));
 				treeIndex++;
 			}
@@ -134,29 +137,7 @@ namespace ForestReco
 				}
 			}
 		}
-
-		//TODO: not used anymore from array
-		public static List<Obj> GetTreeObjsFromField()
-		{
-			List<Obj> treesObjs = new List<Obj>();
-			//foreach (CPointField t in pArray.Maximas)
-			foreach (CTree t in trees)
-			{
-				Obj treeObj = t.GetObj("Tree_" + trees.IndexOf(t), true, false);
-				//move obj so it is at 0,0,0
-				//Vector3 arrayCenter = (pArray.botLeftCorner + pArray.topRightCorner) / 2;
-				//treeObj.Position -= arrayCenter.ToVector3(true);
-				//move Y position so the tree touches the ground
-				//treeObj.Position -= new Vector3(0, (float)pArray.minHeight, 2 * treeObj.Position.Z);
-
-				treesObjs.Add(treeObj);
-			}
-			//treesObjs.Add(trees[trees.Count - 1].GetObj("last", pArray));
-
-
-			return treesObjs;
-		}
-
+		
 		public static void TryMergeAllTrees()
 		{
 			DateTime mergeStartTime = DateTime.Now;
@@ -169,6 +150,9 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = trees[i];
+				float treeHeight = tree.GetTreeHeight();
+				Console.WriteLine(i + " = " + treeHeight);
+
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree.peak.Center);
 
 				foreach (CTree t in possibleTrees)

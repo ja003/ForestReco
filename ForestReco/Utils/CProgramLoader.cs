@@ -50,11 +50,12 @@ namespace ForestReco
 			int linesToRead = lines.Length;
 			//linesToRead = startLine + 500;
 
+			bool classesCorect = true;
 			List<Tuple<int, Vector3>> parsedLines = new List<Tuple<int, Vector3>>();
 			if (useDebugData)
 			{
 				parsedLines = CDebug.GetStandartTree();
-				CDebug.DefineArray(true);
+				CDebug.DefineArray(true, 0);
 			}
 			else
 			{
@@ -62,11 +63,18 @@ namespace ForestReco
 				{
 					// <class, coordinate>
 					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i], pUseHeader);
+					//some files have different class counting. we are interested only in these classes
+					if (c.Item1 != 0 && c.Item1 != 1 && c.Item1 != 5)
+					{
+						c = new Tuple<int, Vector3>(5, c.Item2);
+						classesCorect = false;
+					}
 					if (c == null) { continue; }
 					parsedLines.Add(c);
 				}
 			}
 
+			if (!classesCorect) { Console.WriteLine("classes not correct. using default class"); }
 			Console.WriteLine("parsedLines: " + parsedLines.Count);
 			parsedLines.Sort((y, x) => x.Item2.Y.CompareTo(y.Item2.Y)); //sort descending by height
 			Console.WriteLine("\n=======sorted========\n");
@@ -78,9 +86,9 @@ namespace ForestReco
 		{
 			AddPointsFromLines(parsedLines);
 
-			if (CProjectData.array == null)
+			if (CProjectData.exportArray)
 			{
-				CDebug.DefineArray(true);
+				CProjectData.objsToExport.Add(CGroundFieldExporter.ExportToObj("arr", EExportStrategy.None));
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
@@ -106,31 +114,7 @@ namespace ForestReco
 				CProjectData.objsToExport.AddRange(trees);
 			}
 
-			if (CProjectData.exportArray)
-			{
-				if (CProjectData.array == null)
-				{
-					Console.WriteLine("Error: no array to export");
-					return;
-				}
-				Console.WriteLine("Export array" + " | " + DateTime.Now);
 
-				int counter = 0;
-				while (CProjectData.array != null && !CProjectData.array.IsAllDefined())
-				{
-					Console.WriteLine("FillMissingHeights " + counter);
-					CProjectData.array?.FillMissingHeights();
-					counter++;
-					if (counter > 2)
-					{
-						Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
-						break;
-					}
-				}
-
-				CProjectData.objsToExport.Add(
-					CGroundFieldExporter.ExportToObj("arr", EExportStrategy.None));
-			}
 
 			if (CProjectData.exportPoints)
 			{
@@ -138,85 +122,102 @@ namespace ForestReco
 				CObjExporter.AddPointsToObj(ref justPoints, CProjectData.allPoints);
 				CProjectData.objsToExport.Add(justPoints);
 			}
+		}
 
-			/*bool processArray = false;
-			if (processArray && CProjectData.array != null)
+		private static void FillArray()
+		{
+			if (CProjectData.array == null)
 			{
-				CPointArray array = CProjectData.array;
-				Console.WriteLine("Process array: " + array);
-				array.FillMissingHeights();
-				array.FillMissingHeights();
-				array.CalculateLocalExtrems();
-				array.AssignTreesToNeighbourFields();
-				array.AssignPointsToTrees();
+				Console.WriteLine("Error: no array to export");
+				return;
+			}
+			Console.WriteLine("Export array" + " | " + DateTime.Now);
 
-				Obj treePoints = CPointFieldExporter.ExportTreePointsToObj(array, CProjectData.saveFileName + "Tree points");
-				CProjectData.objsToExport.Add(treePoints);
-
-				//select tree models based on trees in array
-				//todo: uncomment to add tree models from loaded db
-				//List<Obj> trees = treeObjManager.GetTreeObjsFromField(combinedArray);
-				//objsToExport.AddRange(trees);
-
-				//combinedArray.AssignTreesToAllFields();
-
-				//combinedArray.ExportToObj(saveFileName + "_comb",
-				//	EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
-
-				Obj field = CPointFieldExporter.ExportToObj(CProjectData.saveFileName + "_ground",
-					EExportStrategy.None, new List<EHeight> { EHeight.GroundMax });
-				CProjectData.objsToExport.Add(field);
-			}*/
+			int counter = 0;
+			while (CProjectData.array != null && !CProjectData.array.IsAllDefined())
+			{
+				Console.WriteLine("FillMissingHeights " + counter);
+				CProjectData.array?.FillMissingHeights();
+				counter++;
+				if (counter > 2)
+				{
+					Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
+					break;
+				}
+			}
 		}
 
 		private static void AddPointsFromLines(List<Tuple<int, Vector3>> pParsedLines)
 		{
 			if (!CProjectData.detectTrees && !CProjectData.setArray && !CProjectData.exportPoints) { return; }
 
+			List<Vector3> groundPoints = GetPointsOfClass(pParsedLines, 1);
+			List<Vector3> vegePoints = GetPointsOfClass(pParsedLines, 5);
+
 			DateTime processStartTime = DateTime.Now;
 			Console.WriteLine("ProcessParsedLines " + pParsedLines.Count + ". Start = " + processStartTime);
+			ProcessGroundPoints(groundPoints);
+			ProcessVegePoints(vegePoints);
+
+			Console.WriteLine("All points added | duration = " + (DateTime.Now - processStartTime));
+		}
+
+		private static void ProcessVegePoints(List<Vector3> vegePoints)
+		{
+			if (!CProjectData.detectTrees) { return; }
+
+			for (int i = 0; i < vegePoints.Count; i++)
+			{
+
+				Vector3 point = vegePoints[i];
+				CTreeManager.AddPoint(point, i);
+				CProjectData.allPoints.Add(point);
+			}
+		}
+
+		private static void ProcessGroundPoints(List<Vector3> groundPoints)
+		{
+			if (!CProjectData.setArray) { return; }
+
+			for (int i = 0; i < groundPoints.Count; i++)
+			{
+
+				Vector3 point = groundPoints[i];
+				CProjectData.array?.AddPointInField(point);
+
+				CProjectData.allPoints.Add(point);
+			}
+
+			if (CProjectData.array == null)
+			{
+				//CDebug.DefineArray(true);
+				CDebug.DefineArray(true, -8);
+			}
+			FillArray();
+
+
+
+		}
+
+		private static List<Vector3> GetPointsOfClass(List<Tuple<int, Vector3>> pParsedLines, int pClass)
+		{
+			List<Vector3> classPoints = new List<Vector3>();
 			int pointsToAddCount = pParsedLines.Count;
 			for (int i = 0; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
-				DateTime lineStartTime = DateTime.Now;
-
 				Tuple<int, Vector3> parsedLine = pParsedLines[i];
-				Vector3 point = parsedLine.Item2;
-				/*float tmpY = point.Y;
-				point.Y = point.Z;
-				point.Z = tmpY;*/
 
 				//1 = unclassified
 				//2 = ground
 				//5 = high vegetation
-				if (CProjectData.detectTrees)
+				if (parsedLine.Item1 == pClass)
 				{
-					//bool pForceTreePoint = true;
-					if (parsedLine.Item1 == 5 || /*pForceTreePoint && */parsedLine.Item1 != 2 && parsedLine.Item1 != 1)
-					{
-						CTreeManager.AddPoint(point, i);
-					}
-				}
-				if (CProjectData.setArray)
-				{
-					//add only ground points
-					if (parsedLine.Item1 == 2)
-					{
-						CProjectData.array?.AddPointInField(point);
-					}
+					Vector3 point = parsedLine.Item2;
+					classPoints.Add(point);
 				}
 
-				/*if (processArray && (parsedLine.Item1 == 2 || parsedLine.Item1 == 5))
-				{
-					array.AddPointInField(parsedLine.Item1, parsedLine.Item2);
-				}*/
-
-				CProjectData.allPoints.Add(point);
-
-				TimeSpan duration = DateTime.Now - lineStartTime;
-				if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }
 			}
-			Console.WriteLine("All points added | duration = " + (DateTime.Now - processStartTime));
+			return classPoints;
 		}
 	}
 }

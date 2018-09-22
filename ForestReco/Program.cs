@@ -22,12 +22,12 @@ namespace ForestReco
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
 			//CPlatformManager.platform = EPlatform.Notebook;
-			CPlatformManager.platform = EPlatform.HomePC;
-			//CProgramLoader.platform = EPlatform.Tiarra;
+			//CPlatformManager.platform = EPlatform.HomePC;
+			CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.detectTrees = true;
-			CProjectData.setArray = false;
-			CProjectData.exportArray = false;
+			CProjectData.setArray = true;
+			CProjectData.exportArray = true;
 			CProjectData.loadRefTrees = false;
 			CProjectData.useRefTrees = false;
 			CProjectData.exportPoints = true;

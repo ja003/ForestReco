@@ -52,7 +52,7 @@ namespace ForestReco
 			return pointTuples;
 		}
 
-		public static void DefineArray(bool pZeroHeights)
+		public static void DefineArray(bool pConstantHeight, float pHeight)
 		{
 			Console.WriteLine("Define debug array");
 
@@ -63,13 +63,14 @@ namespace ForestReco
 			});
 			CProjectData.array = new CGroundArray(1);
 
-			if (pZeroHeights)
+			if (pConstantHeight)
 			{
 				for (int x = 0; x < CProjectData.array.arrayXRange; x++)
 				{
 					for (int y = 0; y < CProjectData.array.arrayXRange; y++)
 					{
-						CProjectData.array.SetHeight(0, x, y);
+						CProjectData.array.GetElement(x, y).AddPoint(new Vector3(0, pHeight, 0));
+						//CProjectData.array.SetHeight(pHeight, x, y);
 					}
 				}
 			}

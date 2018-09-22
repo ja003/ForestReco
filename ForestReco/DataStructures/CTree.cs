@@ -312,7 +312,11 @@ namespace ForestReco
 			float distToBB = Get2DDistanceFromBBTo(pPoint);
 			//bool contains = Contains(pPoint);
 			//it must be close to peak of some tree or to its BB
-			if (dist2D > CTreeManager.MAX_TREE_EXTENT / 2 && distToBB > MAX_DIST_TO_TREE_BB)
+
+			float treeHeight = GetTreeHeight();
+			float maxTreeExtent = GetMaxTreeExtent();
+
+			if (dist2D > maxTreeExtent / 2 && distToBB > MAX_DIST_TO_TREE_BB)
 			{
 				if (CTreeManager.DEBUG && pDebug) Console.WriteLine("- dist too high " + dist2D + "|" + distToBB);
 				return false;
@@ -333,7 +337,14 @@ namespace ForestReco
 
 			return true;
 		}
-		
+
+		private float GetMaxTreeExtent()
+		{
+			float treeHeight = GetTreeHeight();
+			float ratio = treeHeight / CTreeManager.DEFAULT_TREE_HEIGHT;
+			return Math.Max(CTreeManager.MAX_TREE_EXTENT, ratio * CTreeManager.MAX_TREE_EXTENT);
+		}
+
 		//DEBUG TRANSLATIONS - NOT CORRECT ON ALL TREES
 
 		public void Rotate(int pYangle)

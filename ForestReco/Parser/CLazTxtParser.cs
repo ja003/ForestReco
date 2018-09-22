@@ -26,7 +26,8 @@ namespace ForestReco
 			double x = double.Parse(split[0]);
 			double y = double.Parse(split[1]);
 			double z = double.Parse(split[2]);
-			int cathegory = int.Parse(split[3]);
+			int _class = int.Parse(split[3]);
+			
 			//we don't use prescribed coordinate parsing as it produces badly visualisable terrain (with offset etc)
 			//it should not have any effect on data processing
 			Vector3 headerOffset = pUseHeader ? CProjectData.GetOffset() : Vector3.Zero;
@@ -39,7 +40,7 @@ namespace ForestReco
 			yFloat = zFloat;
 			zFloat = tmp;
 
-			return new Tuple<int, Vector3>(cathegory, new Vector3(xFloat, yFloat, zFloat)); 
+			return new Tuple<int, Vector3>(_class, new Vector3(xFloat, yFloat, zFloat)); 
 			///* * pHeader.ScaleFactor*/ - pHeader.Offset);
 		}
 	}
