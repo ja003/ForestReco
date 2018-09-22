@@ -26,9 +26,9 @@ namespace ForestReco
 			return peak;
 		}
 
-		public override bool Includes(Vector3 pPoint)
+		public override bool Includes(Vector3 pPoint, float pToleranceMultiply = 1)
 		{
-			return base.Includes(pPoint) || IsPartOfPeak(pPoint);
+			return base.Includes(pPoint, pToleranceMultiply) || IsPartOfPeak(pPoint);
 		}
 
 		private bool IsPartOfPeak(Vector3 pPointCenter)

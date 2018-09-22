@@ -31,7 +31,7 @@ namespace ForestReco
 				{
 					offsetBranchIndex = pRefTree.Branches.Count + offsetBranchIndex;
 				}
-				CBranch refBranch = pRefTree.Branches[offsetBranchIndex];
+				CBranch refBranch = pRefTree.Branches[offsetBranchIndex % pRefTree.Branches.Count];
 				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch, offsetToOtherTree, scaleRatio);
 				if (similarityWithOtherBranch >= 0)
 				{

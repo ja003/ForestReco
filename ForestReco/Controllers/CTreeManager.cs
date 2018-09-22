@@ -11,7 +11,7 @@ namespace ForestReco
 		private static List<CTree> trees = new List<CTree>();
 		public static List<CTree> Trees => trees;
 
-		public const float MAX_TREE_EXTENT = 3;
+		public const float MAX_TREE_EXTENT = 3.2f;
 		public const float DEFAULT_TREE_HEIGHT = 10;
 
 		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
@@ -25,7 +25,7 @@ namespace ForestReco
 		{
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
-			if (pPointIndex == 824)
+			if (pPointIndex == 10525)
 			{
 				Console.Write("!");
 			}
@@ -124,7 +124,7 @@ namespace ForestReco
 				CUtils.Get2DDistance(y.peak.Center, pPoint)));
 			return possibleTrees;
 		}
-		
+
 		public static void WriteResult()
 		{
 			foreach (CTree t in trees)
@@ -137,7 +137,7 @@ namespace ForestReco
 				}
 			}
 		}
-		
+
 		public static void TryMergeAllTrees()
 		{
 			DateTime mergeStartTime = DateTime.Now;
@@ -185,7 +185,16 @@ namespace ForestReco
 				t.Process();
 			}
 			Console.WriteLine("Trees processed | duration = " + (DateTime.Now - processTreesStartTime));
+
+			if (CProjectData.exportTrees)
+			{
+				Console.WriteLine("\nAdd trees to export " + Trees.Count + " | " + DateTime.Now);
+				foreach (CTree t in Trees)
+				{
+					Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
+					CProjectData.objsToExport.Add(tObj);
+				}
+			}
 		}
 	}
-
 }

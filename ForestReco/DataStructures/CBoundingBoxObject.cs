@@ -32,6 +32,11 @@ namespace ForestReco
 			minBB = pPoint;
 			maxBB = pPoint;
 		}
+		
+		public string Serialize()
+		{
+			return CUtils.SerializeVector3(minBB) + " " + CUtils.SerializeVector3(maxBB);
+		}
 
 		public void ResetBounds(Vector3 pPoint)
 		{

@@ -99,12 +99,6 @@ namespace ForestReco
 
 			CTreeManager.ProcessAllTrees();
 
-			Console.WriteLine("\nAdd trees to export " + CTreeManager.Trees.Count + " | " + DateTime.Now);
-			foreach (CTree t in CTreeManager.Trees)
-			{
-				Obj tObj = t.GetObj("tree_" + CTreeManager.Trees.IndexOf(t), true, false);
-				CProjectData.objsToExport.Add(tObj);
-			}
 
 			if (CProjectData.useRefTrees)
 			{

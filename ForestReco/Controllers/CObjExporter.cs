@@ -125,7 +125,9 @@ namespace ForestReco
 
 		public static void ExportObjsToExport()
 		{
+			DateTime start = DateTime.Now;
 			ExportObjs(CProjectData.objsToExport, CProjectData.saveFileName);
+			Console.WriteLine("Export time =" + (DateTime.Now - start));
 		}
 
 		public static void ExportObj(Obj pObj, string pFileName)

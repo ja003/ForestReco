@@ -23,7 +23,7 @@ namespace ForestReco
 			angleFrom = pAngleFrom;
 			angleTo = pAngleTo;
 		}
-		
+
 		public List<string> Serialize()
 		{
 			List<string> lines = new List<string>();
@@ -80,7 +80,7 @@ namespace ForestReco
 		/// <summary>
 		/// If given tree point is included in one of points on this branch
 		/// </summary>
-		private bool Contains(CTreePoint pPoint, Vector3 pOffset, int pAngleOffset, float pScale)
+		private bool Contains(CTreePoint pPoint, Vector3 pOffset, int pAngleOffset, float pScale, float pToleranceMultiply)
 		{
 			foreach (CTreePoint p in treePoints)
 			{
@@ -96,7 +96,7 @@ namespace ForestReco
 					scaledPoint, Matrix4x4.CreateRotationY(angleOffsetRadians, tree.peak.Center));
 
 				//todo: include complete rotation based on tree orientation
-				if (p.Includes(rotatedPoint)) { return true; }
+				if (p.Includes(rotatedPoint, pToleranceMultiply)) { return true; }
 			}
 			return false;
 		}
@@ -126,14 +126,19 @@ namespace ForestReco
 			}
 
 			float similarity = 0;
-
 			foreach (CTreePoint p in pOtherBranch.TreePoints)
 			{
-				if (Contains(p, pMoveOffset, angleFrom - pOtherBranch.angleFrom, pScale))
+				const int branchToleranceMultiply = 2;
+				if (Contains(p, pMoveOffset, angleFrom - pOtherBranch.angleFrom, pScale, branchToleranceMultiply))
 				{
 					similarity += 1f / pOtherBranch.TreePoints.Count;
 				}
 			}
+			if (similarity - 1 > 0.1f) //similarity can be > 1 due to float imprecision
+			{
+				Console.WriteLine("Error. Similarity rounding error too big.");
+			}
+			similarity = Math.Min(1, similarity);
 			return similarity;
 		}
 

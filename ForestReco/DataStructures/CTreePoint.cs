@@ -25,13 +25,6 @@ namespace ForestReco
 			AddPoint(pPoint);
 		}
 
-		/// <summary>
-		/// TODO: is maxHeight neccessary?
-		/// </summary>
-		public string Serialize()
-		{
-			return CUtils.SerializeVector3(minBB) + " " + CUtils.SerializeVector3(maxBB);
-		}
 
 		public static CTreePoint Deserialize(string pLine)
 		{
@@ -90,9 +83,9 @@ namespace ForestReco
 			return closestPoint;
 		}
 
-		public virtual bool Includes(Vector3 pPoint)
+		public virtual bool Includes(Vector3 pPoint, float pToleranceMultiply = 1)
 		{
-			return Vector3.Distance(Center, pPoint) < POINT_EXTENT || Contains(pPoint);
+			return Vector3.Distance(Center, pPoint) < POINT_EXTENT * pToleranceMultiply || Contains(pPoint);
 		}
 		
 		public override string ToString()

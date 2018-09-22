@@ -19,6 +19,8 @@ namespace ForestReco
 	{
 		static void Main()
 		{
+			DateTime start = DateTime.Now;
+
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
 			//CPlatformManager.platform = EPlatform.Notebook;
@@ -26,14 +28,16 @@ namespace ForestReco
 			CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.detectTrees = true;
+			CProjectData.exportTrees = false;
 			CProjectData.setArray = true;
 			CProjectData.exportArray = true;
-			CProjectData.loadRefTrees = false;
-			CProjectData.useRefTrees = false;
-			CProjectData.exportPoints = true;
+			CProjectData.loadRefTrees = true;
+			CProjectData.useRefTrees = true;
+			CProjectData.exportPoints = false;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "R7";
+			CProgramLoader.fileName = "R7_F_1+2";
 
 			string[] lines = CProgramLoader.GetFileLines();
 
@@ -52,12 +56,12 @@ namespace ForestReco
 			CProgramLoader.ProcessParsedLines(parsedLines);
 			
 			Console.WriteLine("\n===============\n");
-			CTreeManager.WriteResult();			
+			CTreeManager.WriteResult();
 
-			Console.WriteLine("ExportObjsToExport" + " | " + DateTime.Now);
+			Console.WriteLine("ExportObjsToExport");
 			CObjExporter.ExportObjsToExport();
 
-			Console.WriteLine("Press any key to exit." + " | " + DateTime.Now);
+			Console.WriteLine("Press any key to exit." + " | Complete time =" + (DateTime.Now - start));
 			Console.ReadKey();
 		}
 	}

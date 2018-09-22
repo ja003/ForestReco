@@ -28,6 +28,7 @@ namespace ForestReco
 		public static bool useRefTrees;
 		public static bool exportArray;
 		public static bool exportPoints;
+		internal static bool exportTrees;
 
 		public static Vector3 GetOffset()
 		{

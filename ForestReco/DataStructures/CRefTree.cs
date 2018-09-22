@@ -81,6 +81,9 @@ namespace ForestReco
 						branches.Last().SetTreePoints(_treepointsOnBranch);
 						_treepointsOnBranch = new List<CTreePoint>();
 						continue;
+					case "boundingBox":
+						currentMode = DeserialiseMode.BoundingBox;
+						continue;
 				}
 
 				switch (currentMode)
@@ -114,6 +117,11 @@ namespace ForestReco
 					case DeserialiseMode.Stem:
 						_treepointsOnBranch.Add(CTreePoint.Deserialize(line));
 						break;
+					case DeserialiseMode.BoundingBox:
+						string[] split = line.Split(null);
+						minBB = new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));
+						maxBB = new Vector3(float.Parse(split[3]), float.Parse(split[4]), float.Parse(split[5]));
+						break;
 				}
 			}
 			stem.SetTreePoints(_treepointsOnBranch);
@@ -126,7 +134,8 @@ namespace ForestReco
 			TreeIndex,
 			Peak,
 			Branches,
-			Stem
+			Stem,
+			BoundingBox
 		}
 
 		public static CRefTree Deserialize(string pFileName)
@@ -147,7 +156,7 @@ namespace ForestReco
 			return refTree;
 		}
 
-		public List<string> Serialize()
+		public new List<string> Serialize()
 		{
 			List<string> lines = new List<string>();
 			lines.Add("treeIndex");
@@ -162,6 +171,9 @@ namespace ForestReco
 			}
 			lines.Add("stem");
 			lines.AddRange(stem.Serialize());
+
+			lines.Add("boundingBox");
+			lines.Add(base.Serialize());
 
 			return lines;
 		}
@@ -215,10 +227,22 @@ namespace ForestReco
 
 		private static string[] GetFileLines(string pFileName)
 		{
-			//todo: firt try to load serialised file
-			string fullFilePath = GetRefTreePath(pFileName) + @".txt";
-			string[] lines = File.ReadAllLines(fullFilePath);
-			Console.WriteLine("load: " + fullFilePath + "\n");
+
+			string refTreeTxtPath = GetRefTreePath(pFileName + ".txt");
+
+			if (!File.Exists(refTreeTxtPath))
+			{
+				Console.WriteLine("Ref tree " + refTreeTxtPath + " TXT does not exist. Try reduced file.");
+				refTreeTxtPath = GetRefTreePath(pFileName + "_F_1+2.txt");
+				if (!File.Exists(refTreeTxtPath))
+				{
+					Console.WriteLine("ERROR: No ref tree TXT found!");
+					throw new Exception(); //todo: exception
+				}
+			}
+
+			string[] lines = File.ReadAllLines(refTreeTxtPath);
+			Console.WriteLine("load: " + refTreeTxtPath + "\n");
 			return lines;
 		}
 
