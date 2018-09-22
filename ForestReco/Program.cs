@@ -28,16 +28,17 @@ namespace ForestReco
 			CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.detectTrees = true;
-			CProjectData.exportTrees = false;
+			CProjectData.exportTrees = true;
 			CProjectData.setArray = true;
 			CProjectData.exportArray = true;
-			CProjectData.loadRefTrees = true;
-			CProjectData.useRefTrees = true;
-			CProjectData.exportPoints = false;
+			CProjectData.loadRefTrees = false;
+			CProjectData.useRefTrees = false;
+			CProjectData.exportPoints = true;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			CProgramLoader.fileName = "R7";
-			CProgramLoader.fileName = "R7_F_1+2";
+			//CProgramLoader.fileName = "R7";
+			//CProgramLoader.fileName = "R7_F_1+2";
+			//CProgramLoader.fileName = "R2_F_1+2";
 
 			string[] lines = CProgramLoader.GetFileLines();
 
@@ -61,7 +62,7 @@ namespace ForestReco
 			Console.WriteLine("ExportObjsToExport");
 			CObjExporter.ExportObjsToExport();
 
-			Console.WriteLine("Press any key to exit." + " | Complete time =" + (DateTime.Now - start));
+			Console.WriteLine("Press any key to exit." + " | Complete time = " + (DateTime.Now - start).TotalSeconds + " seconds");
 			Console.ReadKey();
 		}
 	}

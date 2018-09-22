@@ -185,7 +185,8 @@ namespace ForestReco
 			if (CProjectData.array == null)
 			{
 				//CDebug.DefineArray(true);
-				CDebug.DefineArray(true, -8);
+				//CDebug.DefineArray(true, -12.55f); //todo: this is just to test match between source refTree
+				CDebug.DefineArray(true, -8.07f);
 			}
 			FillArray();
 

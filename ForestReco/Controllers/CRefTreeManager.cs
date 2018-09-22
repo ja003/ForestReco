@@ -20,7 +20,7 @@ namespace ForestReco
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
 				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
 				//podkladyPath + @"\tree_models\m1_reduced"
-				//"R2",
+				"R2",
 				"R7",
 				//"debug_tree_06"
 			};
@@ -37,6 +37,8 @@ namespace ForestReco
 
 			foreach (CTree t in CTreeManager.Trees)
 			{
+				Console.WriteLine("\n mostSuitableRefTree");
+
 				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
 
 				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
@@ -44,6 +46,9 @@ namespace ForestReco
 				Obj suitableTree = mostSuitableRefTree.Obj.Clone();
 				suitableTree.Name += "_" + counter;
 				counter++;
+
+				Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree);
+
 
 				treeObjs.Add(suitableTree);
 			}

@@ -403,7 +403,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToString(true, true, true, true);
+			return ToString(true, true, true, false);
 		}
 
 		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches)

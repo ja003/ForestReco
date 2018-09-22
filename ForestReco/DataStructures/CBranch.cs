@@ -80,23 +80,12 @@ namespace ForestReco
 		/// <summary>
 		/// If given tree point is included in one of points on this branch
 		/// </summary>
-		private bool Contains(CTreePoint pPoint, Vector3 pOffset, int pAngleOffset, float pScale, float pToleranceMultiply)
+		private bool Contains(Vector3 pPoint, float pToleranceMultiply)
 		{
 			foreach (CTreePoint p in treePoints)
 			{
-				Vector3 movedPoint = pPoint.Center + pOffset;
-
-				//scale point in reference to the ground point
-				Vector3 scaledPoint = Vector3.Transform(movedPoint,
-					Matrix4x4.CreateScale(pScale, pScale, pScale, tree.GetGroundPosition()));
-
-				//CreateRotationY rotates point counter-clockwise => -pAngleOffset
-				float angleOffsetRadians = CUtils.ToRadians(-pAngleOffset);
-				Vector3 rotatedPoint = Vector3.Transform(
-					scaledPoint, Matrix4x4.CreateRotationY(angleOffsetRadians, tree.peak.Center));
-
 				//todo: include complete rotation based on tree orientation
-				if (p.Includes(rotatedPoint, pToleranceMultiply)) { return true; }
+				if (p.Includes(pPoint, pToleranceMultiply)) { return true; }
 			}
 			return false;
 		}
@@ -115,8 +104,11 @@ namespace ForestReco
 		/// Calculates similarity with other branch.
 		/// Range = [0,1]. 1 = Best match.
 		/// </summary>
-		public float GetSimilarityWith(CBranch pOtherBranch, Vector3 pMoveOffset, float pScale)
+		public float GetSimilarityWith(CBranch pOtherBranch)
 		{
+			Vector3 offsetToThisTree = CTreeMath.GetOffsetTo(pOtherBranch.tree, tree);
+			float scaleRatio = CTreeMath.GetScaleRatioTo(pOtherBranch.tree, tree);
+
 			if (pOtherBranch.TreePoints.Count == 0)
 			{
 				if (TreePoints.Count == 0) { return 1; }
@@ -126,10 +118,21 @@ namespace ForestReco
 			}
 
 			float similarity = 0;
+			//Vector3 groundPosition = tree.GetGroundPosition();
+
+			//CreateRotationY rotates point counter-clockwise => -pAngleOffset
+			float angleOffsetRadians = CUtils.ToRadians(-(angleFrom - pOtherBranch.angleFrom));
+			Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, tree.peak.Center);
+			Matrix4x4 rotationMatrix = Matrix4x4.CreateRotationY(angleOffsetRadians, tree.peak.Center);
+
 			foreach (CTreePoint p in pOtherBranch.TreePoints)
 			{
+				Vector3 movedPoint = p.Center + offsetToThisTree;
+				Vector3 scaledPoint = Vector3.Transform(movedPoint, scaleMatrix);
+				Vector3 rotatedPoint = Vector3.Transform(scaledPoint, rotationMatrix);
+
 				const int branchToleranceMultiply = 2;
-				if (Contains(p, pMoveOffset, angleFrom - pOtherBranch.angleFrom, pScale, branchToleranceMultiply))
+				if (Contains(rotatedPoint, branchToleranceMultiply))
 				{
 					similarity += 1f / pOtherBranch.TreePoints.Count;
 				}

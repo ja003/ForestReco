@@ -14,8 +14,8 @@ namespace ForestReco
 		/// </summary>
 		public static float GetSimilarityWith(CRefTree pRefTree, CTree pOtherTree)
 		{
-			Vector3 offsetToOtherTree = Get2DOffsetTo(pRefTree, pOtherTree);
-			float scaleRatio = GetScaleRatioTo(pRefTree, pOtherTree);
+			//Vector3 offsetToOtherTree = Get2DOffsetTo(pRefTree, pOtherTree);
+			//float scaleRatio = GetScaleRatioTo(pRefTree, pOtherTree);
 			int indexOffset = GetIndexOffsetBetweenBestMatchBranches(pRefTree, pOtherTree);
 
 			float similarity = 0;
@@ -32,14 +32,14 @@ namespace ForestReco
 					offsetBranchIndex = pRefTree.Branches.Count + offsetBranchIndex;
 				}
 				CBranch refBranch = pRefTree.Branches[offsetBranchIndex % pRefTree.Branches.Count];
-				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch, offsetToOtherTree, scaleRatio);
+				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch);
 				if (similarityWithOtherBranch >= 0)
 				{
 					similarity += similarityWithOtherBranch;
 					definedSimilarityCount++;
 				}
 			}
-			Console.WriteLine("\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
+			Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
 
 			if (definedSimilarityCount == 0)
 			{
@@ -69,16 +69,11 @@ namespace ForestReco
 		/// </summary>
 		private static int GetIndexOffsetBetweenBestMatchBranches(CRefTree pRefTree, CTree pOtherTree)
 		{
-			Vector3 offsetToOtherTree = Get2DOffsetTo(pRefTree, pOtherTree);
-			float scaleRatio = GetScaleRatioTo(pRefTree, pOtherTree);
-
-			Console.WriteLine("offsetToOtherTree = " + offsetToOtherTree);
-			Console.WriteLine("scaleRatio = " + scaleRatio);
 
 			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
 
 			//todo: try rotate other tree to find bestMatch and include this rotation in similarity calculation
-			CBranch bestMatchBranch = GetBestMatchBranch(pRefTree, mostDefinedBranch, offsetToOtherTree, scaleRatio);
+			CBranch bestMatchBranch = GetBestMatchBranch(pRefTree, mostDefinedBranch);
 
 			int indexOfMostDefined = pOtherTree.Branches.IndexOf(mostDefinedBranch);
 			int indexOfBestMatch = pRefTree.Branches.IndexOf(bestMatchBranch);
@@ -95,13 +90,19 @@ namespace ForestReco
 		/// <summary>
 		/// Returns branch with the highest similarity with other branch
 		/// </summary>
-		private static CBranch GetBestMatchBranch(CRefTree pRefTree, CBranch pOtherBranch, Vector3 pOffset, float pScale)
+		private static CBranch GetBestMatchBranch(CRefTree pRefTree, CBranch pOtherBranch)
 		{
+			Vector3 offsetToRefTree = GetOffsetTo(pOtherBranch.tree, pRefTree);
+			float scaleRatio = GetScaleRatioTo(pOtherBranch.tree, pRefTree);
+			
+			//Console.WriteLine("offsetToRefTree = " + offsetToRefTree);
+			//Console.WriteLine("scaleRatio = " + scaleRatio);
+
 			float bestSimilarity = 0;
 			CBranch bestMatchBranch = pRefTree.Branches[0];
 			foreach (CBranch b in pRefTree.Branches)
 			{
-				float similarity = b.GetSimilarityWith(pOtherBranch, pOffset, pScale);
+				float similarity = b.GetSimilarityWith(pOtherBranch);
 				if (similarity > bestSimilarity)
 				{
 					bestSimilarity = similarity;
@@ -116,25 +117,22 @@ namespace ForestReco
 		/// <summary>
 		/// Returns ratio of tree heights
 		/// </summary>
-		private static float GetScaleRatioTo(CRefTree pRefTree, CTree pOtherTree)
+		public static float GetScaleRatioTo(CTree pTree, CTree pRefTree)
 		{
-			float otherTreeHeight = pOtherTree.GetTreeHeight();
+			float treeHeight = pTree.GetTreeHeight();
 			float refTreeHeight = pRefTree.GetTreeHeight();
 
-			float heightRatio = refTreeHeight / otherTreeHeight;
+			float heightRatio = treeHeight / refTreeHeight;
 			return heightRatio;
 		}
 
 		/// <summary>
 		/// We use only 2D offset. 
-		/// Height difference between tree and reference tree is handled by scale ratio
 		/// </summary>
-		private static Vector3 Get2DOffsetTo(CTree pFromTree,CTree pToTree)
+		public static Vector3 GetOffsetTo(CTree pFromTree, CTree pToTree)
 		{
 			Vector3 offset = pToTree.peak.Center - pFromTree.peak.Center;
-			offset.Y = 0;
 			return offset;
 		}
-
 	}
 }
