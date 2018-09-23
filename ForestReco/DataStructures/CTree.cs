@@ -164,9 +164,11 @@ namespace ForestReco
 
 		public static float GetMaxBranchAngle(Vector3 pPeakPoint, Vector3 pNewPoint)
 		{
-			float distance = Vector3.Distance(pPeakPoint, pNewPoint);
+			//float distance = Vector3.Distance(pPeakPoint, pNewPoint);
+			float heightDiff = pPeakPoint.Y - pNewPoint.Y;
 			const float DIST_STEP = 0.15f;
-			float maxAngle = 100 - 5 * distance / DIST_STEP;
+			const int ANGLE_STEP = 5;
+			float maxAngle = 100 - ANGLE_STEP * heightDiff / DIST_STEP;
 
 			return Math.Max(CTreeManager.MAX_BRANCH_ANGLE, maxAngle);
 		}
