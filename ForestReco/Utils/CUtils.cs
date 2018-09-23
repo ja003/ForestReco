@@ -101,6 +101,55 @@ namespace ForestReco
 			return Vector2.Distance(new Vector2(a.X, a.Z), new Vector2(b.X, b.Z));
 		}
 
+		public static float GetOverlapRatio(CBoundingBoxObject pOfObject, CBoundingBoxObject pWithObject)
+		{
+			float overlapVolume = GetOverlapVolume(pOfObject, pWithObject);
+			float ofObjectVolume = pOfObject.Volume;
+			//Console.WriteLine("overlapVolume = " + overlapVolume);
+			//Console.WriteLine("ofObjectVolume = " + ofObjectVolume);
+			
+			if(ofObjectVolume == 0){
+				Console.WriteLine("ERROR: object " + pWithObject + " has no volume");
+				return 0;
+			}
+			float ratio = overlapVolume / ofObjectVolume;
+			return ratio;
+		}
+
+		/// <summary>
+		/// copied from: https://stackoverflow.com/questions/5556170/finding-shared-volume-of-two-overlapping-cuboids
+		/// </summary>
+		private static float GetOverlapVolume(CBoundingBoxObject pObject1, CBoundingBoxObject pObject2)
+		{
+			float o1minX = pObject1.b000.X;
+			float o1minY = pObject1.b000.Y;
+			float o1minZ = pObject1.b000.Z;
+
+			float o1maxX = pObject1.b111.X;
+			float o1maxY = pObject1.b111.Y;
+			float o1maxZ = pObject1.b111.Z;
+
+			float o2minX = pObject2.b000.X;
+			float o2minY = pObject2.b000.Y;
+			float o2minZ = pObject2.b000.Z;
+
+			float o2maxX = pObject2.b111.X;
+			float o2maxY = pObject2.b111.Y;
+			float o2maxZ = pObject2.b111.Z;
+
+			//float xOverlap = Math.Max(Math.Min(a2, x2) - Math.Max(a, x), 0);
+			//float yOverlap = Math.Max(Math.Min(b2, y2) - Math.Max(b, y), 0);
+			//float zOverlap = Math.Max(Math.Min(c2, z2) - Math.Max(c, z), 0);
+			float xOverlap = Math.Min(o2maxX, o1maxX) - Math.Max(o2minX, o1minX);
+			float yOverlap = Math.Min(o2maxY, o1maxY) - Math.Max(o2minY, o1minY);
+			float zOverlap = Math.Min(o2maxZ, o1maxZ) - Math.Max(o2minZ, o1minZ);
+			if(xOverlap < 0){ return 0; }
+			if(yOverlap < 0){ return 0; }
+			if(zOverlap < 0){ return 0; }
+			float volume = xOverlap * yOverlap * zOverlap;
+			return volume;
+		}
+
 		private static Random rng = new Random();
 
 		public static void Shuffle<T>(this IList<T> list)

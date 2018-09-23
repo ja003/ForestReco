@@ -96,10 +96,6 @@ namespace ForestReco
 			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
 
-			if(higherTree.treeIndex == 5 && lowerTree.treeIndex == 7){
-				Console.Write("!");
-			}
-
 			Vector3 lowerTreePeak = lowerTree.peak.Center;
 			//Vector3 higherTreePeak = higherTree.peak.GetClosestPointTo(lowerTreePeak);
 			Vector3 higherTreePeak = higherTree.peak.Center;
@@ -112,9 +108,41 @@ namespace ForestReco
 			float distBetweenPeaks = CUtils.Get2DDistance(pTree1.peak.Center, pTree2.peak.Center);
 
 			//tree peaks must be close to each other and lower peak must be in appropriate angle with higher peak
-			if (distBetweenPeaks < GetMinPeakDistance(1.5f) && angle < maxBranchAngle)
+			bool distOK = distBetweenPeaks < GetMinPeakDistance(1.5f); //todo: zlepšit toto kritérium
+			bool angleOK = angle < maxBranchAngle;
+			//bool lowerPeakIsInsideHigherTree = higherTree.Contains(lowerTreePeak);
+
+			if (higherTree.treeIndex == 9 && lowerTree.treeIndex == 20)
 			{
-				if (lowerTree.treeIndex == 7)
+				Console.Write("!");
+			}
+			//measure how much does lower tree overlap with higher tree
+			float overlapRatio = CUtils.GetOverlapRatio(lowerTree, higherTree);
+			bool overlapRatioOK = overlapRatio > 0.5f;
+			//todo: using overlapRatio results in too much merging...doladit
+			overlapRatioOK = false;
+			/*if (overlapRatioOK)
+			{
+				float distToTree = higherTree.GetDistanceTo(lowerTreePeak);
+				Console.WriteLine("\n overlapRatio " + lowerTree + " with " + higherTree + " = " + overlapRatio);
+				Console.WriteLine("distOK " + distOK);
+				Console.WriteLine("angleOK " + angleOK);
+				//if (distToTree > 0.3f) //use overlap criterium only of peak of lower tree is close to tree
+
+
+				//float maxExtent = higherTree.GetTreeExtentFor(lowerTreePeak);
+				float maxExtent = DEFAULT_TREE_EXTENT;
+				Console.WriteLine("distToTree " + distToTree);
+				Console.WriteLine("maxExtent " + maxExtent);
+				if (distToTree > maxExtent)
+				{
+					overlapRatioOK = false;
+				}
+			}*/
+
+			if ((distOK && angleOK) || overlapRatioOK)
+			{
+				//if (lowerTree.treeIndex == 666)
 				{
 					Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
 					Console.WriteLine("distBetweenPeaks = " + distBetweenPeaks + ". angle = " + angle);
@@ -170,7 +198,7 @@ namespace ForestReco
 			DateTime mergeStartTime = DateTime.Now;
 			Console.WriteLine("TryMergeAllTrees. Start = " + mergeStartTime);
 
-			Trees.Sort((x, y) => x.peak.Center.Y.CompareTo(y.peak.Center.Y));
+			Trees.Sort((x, y) => y.peak.Center.Y.CompareTo(x.peak.Center.Y));
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
 				if (i >= Trees.Count)
@@ -181,6 +209,10 @@ namespace ForestReco
 				CTree tree = Trees[i];
 				float treeHeight = tree.GetTreeHeight();
 				Console.WriteLine(i + " = " + treeHeight);
+				if (tree.treeIndex == 20)
+				{
+					Console.Write("!");
+				}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree.peak.Center);
 
@@ -220,7 +252,8 @@ namespace ForestReco
 				Console.WriteLine("\nAdd trees to export " + Trees.Count + " | " + DateTime.Now);
 				foreach (CTree t in Trees)
 				{
-					Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
+					//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
+					Obj tObj = t.GetObj("tree_" + t.treeIndex, true, false);
 					CProjectData.objsToExport.Add(tObj);
 				}
 			}

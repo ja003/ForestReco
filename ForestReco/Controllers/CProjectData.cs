@@ -34,6 +34,9 @@ namespace ForestReco
 		public static bool fillArray;
 		public static bool tryMergeTrees;
 
+		public static float lowestHeight = int.MaxValue;
+		public static float highestHeight = int.MinValue;
+
 		public static Vector3 GetOffset()
 		{
 			return header?.Offset ?? Vector3.Zero;
@@ -47,6 +50,32 @@ namespace ForestReco
 		public static float GetMinHeight()
 		{
 			return header?.MinHeight ?? 0;
+		}
+
+		public static void AddPoint(Tuple<EClass, Vector3> pParsedLine)
+		{
+			//1 = unclassified
+			//2 = ground
+			//5 = high vegetation
+			Vector3 point = pParsedLine.Item2;
+
+			if (pParsedLine.Item1 == EClass.Ground)
+			{
+				groundPoints.Add(point);
+			}
+			else if (pParsedLine.Item1 == EClass.Vege)
+			{
+				vegePoints.Add(point);
+			}
+
+			if (point.Y < lowestHeight)
+			{
+				lowestHeight = point.Y;
+			}
+			if (point.Y > highestHeight)
+			{
+				highestHeight = point.Y;
+			}
 		}
 	}
 }

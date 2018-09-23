@@ -38,7 +38,7 @@ namespace ForestReco
 			CProjectData.loadRefTrees = false;
 			CProjectData.useRefTrees = false;
 
-			CProjectData.exportPoints = true;
+			CProjectData.exportPoints = false;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			//CProgramLoader.fileName = "R7";

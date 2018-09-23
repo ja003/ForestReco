@@ -145,6 +145,24 @@ namespace ForestReco
 			return similarity;
 		}
 
+		public float GetDistanceTo(Vector3 pPoint)
+		{
+			float distance = int.MaxValue;
+			foreach (CTreePoint p in treePoints)
+			{
+				float dist = Vector3.Distance(p.Center, pPoint);
+				if (dist < distance)
+				{
+					distance = dist;
+				}
+				//else
+				//{
+				//	break;
+				//}
+			}
+			return distance;
+		}
+
 		public override string ToString()
 		{
 			//return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";

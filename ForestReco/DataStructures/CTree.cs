@@ -128,7 +128,7 @@ namespace ForestReco
 
 			//only points from subTree peak can be part of this tree peak. Try to add them
 			List<Vector3> peakPoints = pSubTree.peak.Points;
-			for (int i = peakPoints.Count-1; i >=0 ; i--)
+			for (int i = peakPoints.Count - 1; i >= 0; i--)
 			{
 				if (peak.Includes(peakPoints[i]))
 				{
@@ -164,6 +164,29 @@ namespace ForestReco
 			return mostDefinedBranch;
 		}
 
+		public float GetDistanceTo(Vector3 pPoint)
+		{
+			//todo: pick closest point
+			float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
+			float distToBranch = GetBranchFor(pPoint).GetDistanceTo(pPoint);
+
+			float distanceToAnyPoint = int.MaxValue;
+			foreach (Vector3 p in Points)
+			{
+				float dist = Vector3.Distance(p, pPoint);
+				if (dist < distanceToAnyPoint)
+				{
+					distanceToAnyPoint = dist;
+				}
+				//else
+				//{
+				//	break;
+				//}
+			}
+
+			return Math.Min(distToPeak, distanceToAnyPoint);
+		}
+
 		public float GetTreeHeight()
 		{
 			float treeHeight = peak.Center.Y - GetGroundHeight();
@@ -175,10 +198,15 @@ namespace ForestReco
 			//float distance = Vector3.Distance(pPeakPoint, pNewPoint);
 			float heightDiff = pPeakPoint.Y - pNewPoint.Y;
 			float distance = CUtils.Get2DDistance(pPeakPoint, pNewPoint);
-			const float HEIGHT_DIFF_STEP = 0.15f;
+			const float HEIGHT_DIFF_STEP = 0.2f;
 			const float DIST_STEP = 0.15f;
 			const float ANGLE_STEP = 2.5f;
 			const int MAX_ANGLE = 100;
+			if (heightDiff < 0.5f)
+			{
+				return MAX_ANGLE;
+			}
+
 			float maxAngle = MAX_ANGLE - ANGLE_STEP * heightDiff / HEIGHT_DIFF_STEP;
 			maxAngle -= ANGLE_STEP * distance / DIST_STEP;
 
@@ -355,7 +383,7 @@ namespace ForestReco
 		/// <summary>
 		/// Calculates max acceptable 2D distance from peak for the new point to be added
 		/// </summary>
-		private float GetTreeExtentFor(Vector3 pNewPoint)
+		public float GetTreeExtentFor(Vector3 pNewPoint)
 		{
 			float treeHeight = GetTreeHeight();
 			float ratio = treeHeight / CTreeManager.DEFAULT_TREE_HEIGHT;
@@ -363,8 +391,9 @@ namespace ForestReco
 			float yDiff = peak.Center.Y - pNewPoint.Y;
 			const float MIN_TREE_EXTENT = .5f;
 			const float Y_DIFF_STEP = 0.1f;
+			const float EXTENT_VALUE_STEP = 0.12f;
 
-			float extent = MIN_TREE_EXTENT + Y_DIFF_STEP * yDiff / Y_DIFF_STEP;
+			float extent = MIN_TREE_EXTENT + EXTENT_VALUE_STEP * yDiff / Y_DIFF_STEP;
 
 			return Math.Min(extent, maxExtent);
 		}

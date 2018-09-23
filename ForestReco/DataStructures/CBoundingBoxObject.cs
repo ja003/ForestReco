@@ -25,6 +25,8 @@ namespace ForestReco
 
 		public Vector3 Extent => 2 * new Vector3(maxBB.X - Center.X, maxBB.Y - Center.Y, maxBB.Z - Center.Z);
 
+		public float Volume => Extent.X * Extent.Y * Extent.Z;
+
 		public CBoundingBoxObject(){ }
 
 		public CBoundingBoxObject(Vector3 pPoint)
@@ -65,7 +67,8 @@ namespace ForestReco
 			if (pPoint.Z > maxBB.Z) { maxBB.Z = pPoint.Z; }
 		}
 
-		protected bool Contains(Vector3 pPoint)
+
+		public bool Contains(Vector3 pPoint)
 		{
 			return
 				pPoint.X > minBB.X && pPoint.X < maxBB.X &&

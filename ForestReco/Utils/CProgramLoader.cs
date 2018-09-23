@@ -66,7 +66,7 @@ namespace ForestReco
 					//some files have different class counting. we are interested only in classes in EClass
 					if (c.Item1 == EClass.Other)
 					{
-						c = new Tuple<EClass, Vector3>(EClass.Ground, c.Item2);
+						c = new Tuple<EClass, Vector3>(EClass.Vege, c.Item2);
 						classesCorect = false;
 					}
 					if (c == null) { continue; }
@@ -96,6 +96,7 @@ namespace ForestReco
 			if (CProjectData.tryMergeTrees)
 			{
 				CTreeManager.TryMergeAllTrees();
+				//CTreeManager.TryMergeAllTrees();
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
@@ -141,26 +142,24 @@ namespace ForestReco
 		{
 			if (!CProjectData.detectTrees && !CProjectData.setArray && !CProjectData.exportPoints) { return; }
 
-			List<Vector3> groundPoints = GetPointsOfClass(pParsedLines, EClass.Ground);
-			List<Vector3> vegePoints = GetPointsOfClass(pParsedLines, EClass.Vege);
+			ClassifyPoints(pParsedLines);
 
 			DateTime processStartTime = DateTime.Now;
 			Console.WriteLine("ProcessParsedLines " + pParsedLines.Count + ". Start = " + processStartTime);
-			ProcessGroundPoints(groundPoints);
-			ProcessVegePoints(vegePoints);
+			ProcessGroundPoints();
+			ProcessVegePoints();
 
 			Console.WriteLine("All points added | duration = " + (DateTime.Now - processStartTime));
 		}
 
-		private static void ProcessVegePoints(List<Vector3> vegePoints)
+		private static void ProcessVegePoints()
 		{
 			if (!CProjectData.detectTrees) { return; }
 
-			for (int i = 0; i < vegePoints.Count; i++)
+			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
-				Vector3 point = vegePoints[i];
+				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
-				CProjectData.vegePoints.Add(point);
 			}
 
 			if (CProjectData.exportPoints)
@@ -171,16 +170,14 @@ namespace ForestReco
 			}
 		}
 
-		private static void ProcessGroundPoints(List<Vector3> groundPoints)
+		private static void ProcessGroundPoints()
 		{
 			if (!CProjectData.setArray) { return; }
 
-			for (int i = 0; i < groundPoints.Count; i++)
+			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
-				Vector3 point = groundPoints[i];
+				Vector3 point = CProjectData.groundPoints[i];
 				CProjectData.array?.AddPointInField(point);
-
-				CProjectData.groundPoints.Add(point);
 			}
 
 			if (CProjectData.exportPoints)
@@ -194,33 +191,25 @@ namespace ForestReco
 			{
 				//CDebug.DefineArray(true);
 				//CDebug.DefineArray(true, -12.55f); //todo: this is just to test match between source refTree
-				CDebug.DefineArray(true, -8.07f);
+				//CDebug.DefineArray(true, -8.07f);
+				Console.WriteLine("No array defined. setting height to " + CProjectData.lowestHeight);
+				CDebug.DefineArray(true, CProjectData.lowestHeight);
 			}
 			if (CProjectData.fillArray)
 			{
 				FillArray();
 			}
-
-
-
 		}
 
-		private static List<Vector3> GetPointsOfClass(List<Tuple<EClass, Vector3>> pParsedLines, EClass pClass)
+		private static List<Vector3> ClassifyPoints(List<Tuple<EClass, Vector3>> pParsedLines)
 		{
 			List<Vector3> classPoints = new List<Vector3>();
+
 			int pointsToAddCount = pParsedLines.Count;
 			for (int i = 0; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
 				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
-
-				//1 = unclassified
-				//2 = ground
-				//5 = high vegetation
-				if (parsedLine.Item1 == pClass)
-				{
-					Vector3 point = parsedLine.Item2;
-					classPoints.Add(point);
-				}
+				CProjectData.AddPoint(parsedLine);
 			}
 			return classPoints;
 		}

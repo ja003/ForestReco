@@ -39,7 +39,7 @@ namespace ForestReco
 			if (Min == Vector3.Zero && Max == Vector3.Zero)
 			{
 				Console.WriteLine("Invalid header. Creating default header.");
-				const int defaultArraySize = 10;
+				const int defaultArraySize = 15;
 				Min = new Vector3(-defaultArraySize, 0, -defaultArraySize);
 				Max = new Vector3(defaultArraySize, 0, defaultArraySize);
 				Offset = Vector3.Zero;
