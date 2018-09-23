@@ -111,7 +111,9 @@ namespace ForestReco
 
 		public void SetHeight(float pHeight, int pXindex, int pYindex)
 		{
-			array[pXindex, pYindex].MaxGround = pHeight;
+			//array[pXindex, pYindex].MaxGround = pHeight;
+			CGroundField field = array[pXindex, pYindex];
+			field.SetHeight(pHeight);
 		}
 
 		public void FillMissingHeights()
@@ -143,7 +145,7 @@ namespace ForestReco
 		private void FillMissingHeights(CGroundField.EFillMethod pMethod)
 		{
 			List<CGroundField> fieldsRandom = fields;
-			//fieldsRandom.Shuffle();
+			fieldsRandom.Shuffle();
 			foreach (CGroundField el in fieldsRandom)
 			{
 				if (!el.IsDefined())

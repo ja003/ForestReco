@@ -57,6 +57,7 @@
     <Compile Include="DataStructures\CTreePoint.cs" />
     <Compile Include="DataStructures\CGroundArray.cs" />
     <Compile Include="DataStructures\CGroundField.cs" />
+    <Compile Include="Enums\EClass.cs" />
     <Compile Include="Enums\EDirection.cs" />
     <Compile Include="Enums\EExportStrategy.cs" />
     <Compile Include="ObjParser\Extent.cs" />

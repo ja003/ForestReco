@@ -26,7 +26,7 @@ namespace ForestReco
 			bool processLines = true;
 			if (processLines)
 			{
-				List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false, false);
+				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false, false);
 				AddPointsFromLines(parsedLines);
 				DateTime processStartTime = DateTime.Now;
 				Console.WriteLine("Process. Start = " + processStartTime);
@@ -246,7 +246,7 @@ namespace ForestReco
 			return lines;
 		}
 
-		private void AddPointsFromLines(List<Tuple<int, Vector3>> pParsedLines)
+		private void AddPointsFromLines(List<Tuple<EClass, Vector3>> pParsedLines)
 		{
 			DateTime addStartTime = DateTime.Now;
 			Console.WriteLine("AddPointsFromLines " + pParsedLines.Count + ". Start = " + addStartTime);
@@ -259,7 +259,7 @@ namespace ForestReco
 			{
 				DateTime lineStartTime = DateTime.Now;
 
-				Tuple<int, Vector3> parsedLine = pParsedLines[i];
+				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
 				Vector3 point = parsedLine.Item2;
 
 				//all points belong to 1 tree. force add it

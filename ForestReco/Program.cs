@@ -30,6 +30,7 @@ namespace ForestReco
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
 			CProjectData.setArray = true;
+			CProjectData.fillArray = true;
 			CProjectData.exportArray = true;
 			CProjectData.loadRefTrees = false;
 			CProjectData.useRefTrees = false;
@@ -53,7 +54,7 @@ namespace ForestReco
 
 			CRefTreeManager.Init();
 
-			List<Tuple<int, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
+			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 			
 			Console.WriteLine("\n===============\n");

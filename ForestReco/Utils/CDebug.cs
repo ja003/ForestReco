@@ -31,7 +31,7 @@ namespace ForestReco
 			return points;
 		}
 
-		public static List<Tuple<int, Vector3>> GetStandartTree()
+		public static List<Tuple<EClass, Vector3>> GetStandartTree()
 		{
 			List<Vector3> points = new List<Vector3>();
 			points.Add(new Vector3(0, 0, 1));
@@ -43,10 +43,10 @@ namespace ForestReco
 			points.Add(new Vector3(0, -.2f, .5f));
 
 
-			List<Tuple<int, Vector3>> pointTuples = new List<Tuple<int, Vector3>>();
+			List<Tuple<EClass, Vector3>> pointTuples = new List<Tuple<EClass, Vector3>>();
 			foreach (Vector3 p in points)
 			{
-				pointTuples.Add(new Tuple<int, Vector3>(5, p));
+				pointTuples.Add(new Tuple<EClass, Vector3>(EClass.Ground, p));
 			}
 
 			return pointTuples;
@@ -69,8 +69,8 @@ namespace ForestReco
 				{
 					for (int y = 0; y < CProjectData.array.arrayXRange; y++)
 					{
-						CProjectData.array.GetElement(x, y).AddPoint(new Vector3(0, pHeight, 0));
-						//CProjectData.array.SetHeight(pHeight, x, y);
+						//CProjectData.array.GetElement(x, y).AddPoint(new Vector3(0, pHeight, 0));
+						CProjectData.array.SetHeight(pHeight, x, y);
 					}
 				}
 			}

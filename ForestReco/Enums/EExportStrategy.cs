@@ -4,6 +4,7 @@
 	{
 		None,
 		FillMissingHeight,
-		FillHeightsAroundDefined
+		FillHeightsAroundDefined,
+		ZeroAroundDefined
 	}
 }

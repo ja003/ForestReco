@@ -16,7 +16,9 @@ namespace ForestReco
 		public static string saveFileName;
 
 		//during one session is always processed one array file
-		public static List<Vector3> allPoints = new List<Vector3>();
+		//public static List<Vector3> allPoints = new List<Vector3>();
+		public static List<Vector3> groundPoints = new List<Vector3>();
+		public static List<Vector3> vegePoints = new List<Vector3>();
 		public static CGroundArray array;
 		public static CHeaderInfo header;
 
@@ -28,7 +30,8 @@ namespace ForestReco
 		public static bool useRefTrees;
 		public static bool exportArray;
 		public static bool exportPoints;
-		internal static bool exportTrees;
+		public static bool exportTrees;
+		public static bool fillArray;
 
 		public static Vector3 GetOffset()
 		{

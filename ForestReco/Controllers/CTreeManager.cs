@@ -11,7 +11,7 @@ namespace ForestReco
 		private static List<CTree> trees = new List<CTree>();
 		public static List<CTree> Trees => trees;
 
-		public const float MAX_TREE_EXTENT = 3.2f;
+		public const float MAX_TREE_EXTENT = 3f;
 		public const float DEFAULT_TREE_HEIGHT = 10;
 
 		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
@@ -25,7 +25,7 @@ namespace ForestReco
 		{
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
-			if (pPointIndex == 10525)
+			if (pPointIndex == 32)
 			{
 				Console.Write("!");
 			}
@@ -34,10 +34,6 @@ namespace ForestReco
 			pointCounter++;
 			CTree selectedTree = null;
 
-			if (Vector3.Distance(pPoint, new Vector3(677.99f, 136.17f, 1160.24f)) < 0.01f)
-			{
-				Console.WriteLine("¨¨");
-			}
 			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint);
 
 

@@ -15,7 +15,7 @@ namespace ForestReco
 			return new Vector3(x, y, z);
 		}
 
-		public static Tuple<int, Vector3> ParseLine(string pLine, bool pUseHeader)
+		public static Tuple<EClass, Vector3> ParseLine(string pLine, bool pUseHeader)
 		{
 			string[] split = pLine.Split(null);
 			if (split.Length < 4 || (split.Length > 0 && split[0].Contains("#")))
@@ -27,7 +27,7 @@ namespace ForestReco
 			double y = double.Parse(split[1]);
 			double z = double.Parse(split[2]);
 			int _class = int.Parse(split[3]);
-			
+
 			//we don't use prescribed coordinate parsing as it produces badly visualisable terrain (with offset etc)
 			//it should not have any effect on data processing
 			Vector3 headerOffset = pUseHeader ? CProjectData.GetOffset() : Vector3.Zero;
@@ -40,7 +40,11 @@ namespace ForestReco
 			yFloat = zFloat;
 			zFloat = tmp;
 
-			return new Tuple<int, Vector3>(_class, new Vector3(xFloat, yFloat, zFloat)); 
+			if (_class != (int)EClass.Undefined && _class != (int)EClass.Ground && _class != (int)EClass.Vege)
+			{
+				_class = (int)EClass.Other;
+			}
+			return new Tuple<EClass, Vector3>((EClass)_class, new Vector3(xFloat, yFloat, zFloat));
 			///* * pHeader.ScaleFactor*/ - pHeader.Offset);
 		}
 	}

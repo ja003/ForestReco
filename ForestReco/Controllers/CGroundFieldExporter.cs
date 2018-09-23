@@ -27,6 +27,8 @@ namespace ForestReco
 					Vertex v = new Vertex();
 					CGroundField el = pArray.GetElement(x, y);
 					float? height = el.GetHeight();
+					bool coord = false;
+					if (coord) { height = y; minHeight = 0; }
 
 					if (pStrategy == EExportStrategy.FillMissingHeight)
 					{
@@ -41,6 +43,14 @@ namespace ForestReco
 						if (height == null && el.IsAnyNeighbourDefined())
 						{
 							height = el.GetHeight(true);
+							//Console.WriteLine("Fill " + el + " = " + height);
+						}
+					}
+					else if (pStrategy == EExportStrategy.ZeroAroundDefined)
+					{
+						if (height == null && el.IsAnyNeighbourDefined())
+						{
+							height = el.GetHeight(true) - 1;
 							//Console.WriteLine("Fill " + el + " = " + height);
 						}
 					}
@@ -69,12 +79,16 @@ namespace ForestReco
 				}
 			}
 			//Console.WriteLine("missingCoordCount = " + missingCoordCount);
-
+			int faceCount = 0;
 			//generate faces
 			for (int x = 0; x < pArray.arrayXRange - 1; x++)
 			{
 				for (int y = 0; y < pArray.arrayYRange - 1; y++)
 				{
+					if (x == 0 && y == 14)
+					{
+						Console.Write("!");
+					}
 					//create face only if all necessary vertices has been defined. -1 = not defined
 					//| /|	3:[0,1]	2:[1,1]
 					//|/ |  1:[0,0] 4:[1,0]
@@ -95,6 +109,7 @@ namespace ForestReco
 								});
 
 								obj.FaceList.Add(f);
+								faceCount++;
 							}
 							int ind4 = pArray.GetElement(x + 1, y).VertexIndex;
 							if (ind4 != -1)
@@ -111,12 +126,12 @@ namespace ForestReco
 					}
 				}
 			}
-
+			Console.WriteLine("faceCount = " + faceCount);
 
 			return obj;
 			//WriteObjFile(pOutputFileName, obj);
 		}
-		
+
 		private static void WriteObjFile(string pOutputFileName, ObjParser.Obj pObj)
 		{
 			string fileName = pOutputFileName.Length > 0 ? pOutputFileName : DEFAULT_FILENAME;

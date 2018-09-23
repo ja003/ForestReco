@@ -39,7 +39,7 @@ namespace ForestReco
 			return lines;
 		}
 
-		public static List<Tuple<int, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
+		public static List<Tuple<EClass, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
 			float stepSize = .4f; //in meters
 			if (pArray) { CProjectData.array = new CGroundArray(stepSize); }
@@ -51,7 +51,7 @@ namespace ForestReco
 			//linesToRead = startLine + 500;
 
 			bool classesCorect = true;
-			List<Tuple<int, Vector3>> parsedLines = new List<Tuple<int, Vector3>>();
+			List<Tuple<EClass, Vector3>> parsedLines = new List<Tuple<EClass, Vector3>>();
 			if (useDebugData)
 			{
 				parsedLines = CDebug.GetStandartTree();
@@ -62,11 +62,11 @@ namespace ForestReco
 				for (int i = startLine; i < Math.Min(lines.Length, linesToRead); i++)
 				{
 					// <class, coordinate>
-					Tuple<int, Vector3> c = CLazTxtParser.ParseLine(lines[i], pUseHeader);
-					//some files have different class counting. we are interested only in these classes
-					if (c.Item1 != 0 && c.Item1 != 1 && c.Item1 != 5)
+					Tuple<EClass, Vector3> c = CLazTxtParser.ParseLine(lines[i], pUseHeader);
+					//some files have different class counting. we are interested only in classes in EClass
+					if (c.Item1 == EClass.Other)
 					{
-						c = new Tuple<int, Vector3>(5, c.Item2);
+						c = new Tuple<EClass, Vector3>(EClass.Ground, c.Item2);
 						classesCorect = false;
 					}
 					if (c == null) { continue; }
@@ -82,13 +82,13 @@ namespace ForestReco
 			return parsedLines;
 		}
 
-		public static void ProcessParsedLines(List<Tuple<int, Vector3>> parsedLines)
+		public static void ProcessParsedLines(List<Tuple<EClass, Vector3>> parsedLines)
 		{
 			AddPointsFromLines(parsedLines);
 
 			if (CProjectData.exportArray)
 			{
-				CProjectData.objsToExport.Add(CGroundFieldExporter.ExportToObj("arr", EExportStrategy.None));
+				CProjectData.objsToExport.Add(CGroundFieldExporter.ExportToObj("arr", EExportStrategy.FillHeightsAroundDefined));
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
@@ -110,12 +110,6 @@ namespace ForestReco
 
 
 
-			if (CProjectData.exportPoints)
-			{
-				Obj justPoints = new Obj("points");
-				CObjExporter.AddPointsToObj(ref justPoints, CProjectData.allPoints);
-				CProjectData.objsToExport.Add(justPoints);
-			}
 		}
 
 		private static void FillArray()
@@ -125,13 +119,12 @@ namespace ForestReco
 				Console.WriteLine("Error: no array to export");
 				return;
 			}
-			Console.WriteLine("Export array" + " | " + DateTime.Now);
 
 			int counter = 0;
-			while (CProjectData.array != null && !CProjectData.array.IsAllDefined())
+			while (!CProjectData.array.IsAllDefined())
 			{
 				Console.WriteLine("FillMissingHeights " + counter);
-				CProjectData.array?.FillMissingHeights();
+				CProjectData.array.FillMissingHeights();
 				counter++;
 				if (counter > 2)
 				{
@@ -141,12 +134,12 @@ namespace ForestReco
 			}
 		}
 
-		private static void AddPointsFromLines(List<Tuple<int, Vector3>> pParsedLines)
+		private static void AddPointsFromLines(List<Tuple<EClass, Vector3>> pParsedLines)
 		{
 			if (!CProjectData.detectTrees && !CProjectData.setArray && !CProjectData.exportPoints) { return; }
 
-			List<Vector3> groundPoints = GetPointsOfClass(pParsedLines, 1);
-			List<Vector3> vegePoints = GetPointsOfClass(pParsedLines, 5);
+			List<Vector3> groundPoints = GetPointsOfClass(pParsedLines, EClass.Ground);
+			List<Vector3> vegePoints = GetPointsOfClass(pParsedLines, EClass.Vege);
 
 			DateTime processStartTime = DateTime.Now;
 			Console.WriteLine("ProcessParsedLines " + pParsedLines.Count + ". Start = " + processStartTime);
@@ -162,10 +155,16 @@ namespace ForestReco
 
 			for (int i = 0; i < vegePoints.Count; i++)
 			{
-
 				Vector3 point = vegePoints[i];
 				CTreeManager.AddPoint(point, i);
-				CProjectData.allPoints.Add(point);
+				CProjectData.vegePoints.Add(point);
+			}
+
+			if (CProjectData.exportPoints)
+			{
+				Obj vegePointsObj = new Obj("vegePoints");
+				CObjExporter.AddPointsToObj(ref vegePointsObj, CProjectData.vegePoints);
+				CProjectData.objsToExport.Add(vegePointsObj);
 			}
 		}
 
@@ -175,11 +174,17 @@ namespace ForestReco
 
 			for (int i = 0; i < groundPoints.Count; i++)
 			{
-
 				Vector3 point = groundPoints[i];
 				CProjectData.array?.AddPointInField(point);
 
-				CProjectData.allPoints.Add(point);
+				CProjectData.groundPoints.Add(point);
+			}
+
+			if (CProjectData.exportPoints)
+			{
+				Obj groundPointsObj = new Obj("groundPoints");
+				CObjExporter.AddPointsToObj(ref groundPointsObj, CProjectData.groundPoints);
+				CProjectData.objsToExport.Add(groundPointsObj);
 			}
 
 			if (CProjectData.array == null)
@@ -188,19 +193,22 @@ namespace ForestReco
 				//CDebug.DefineArray(true, -12.55f); //todo: this is just to test match between source refTree
 				CDebug.DefineArray(true, -8.07f);
 			}
-			FillArray();
+			if (CProjectData.fillArray)
+			{
+				FillArray();
+			}
 
 
 
 		}
 
-		private static List<Vector3> GetPointsOfClass(List<Tuple<int, Vector3>> pParsedLines, int pClass)
+		private static List<Vector3> GetPointsOfClass(List<Tuple<EClass, Vector3>> pParsedLines, EClass pClass)
 		{
 			List<Vector3> classPoints = new List<Vector3>();
 			int pointsToAddCount = pParsedLines.Count;
 			for (int i = 0; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
-				Tuple<int, Vector3> parsedLine = pParsedLines[i];
+				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
 
 				//1 = unclassified
 				//2 = ground
@@ -210,7 +218,6 @@ namespace ForestReco
 					Vector3 point = parsedLine.Item2;
 					classPoints.Add(point);
 				}
-
 			}
 			return classPoints;
 		}

@@ -194,6 +194,11 @@ namespace ForestReco
 			return null;
 		}
 
+		public void SetHeight(float pHeight)
+		{
+			AddPoint(new Vector3(center.X, pHeight, center.Z));
+		}
+
 		/// <summary>
 		/// Returns height of given type.
 		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
@@ -216,6 +221,7 @@ namespace ForestReco
 				return null;
 			}
 			//todo: decide which height to return on default
+			//return MaxGround;
 			return GetHeightAverage();
 		}
 
