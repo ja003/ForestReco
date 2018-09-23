@@ -35,7 +35,7 @@ namespace ForestReco
 		{
 			float distance2D = CUtils.Get2DDistance(Center, pPointCenter);
 			float yDiff = Math.Abs(Center.Y - pPointCenter.Y);
-			return distance2D < CTreeManager.MIN_PEAKS_DISTANCE && yDiff < 0.25f;
+			return distance2D < CTreeManager.GetMinPeakDistance(1) && yDiff < 0.25f;
 		}
 
 		public new CPeak Clone()

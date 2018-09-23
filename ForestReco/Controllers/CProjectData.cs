@@ -32,6 +32,7 @@ namespace ForestReco
 		public static bool exportPoints;
 		public static bool exportTrees;
 		public static bool fillArray;
+		public static bool tryMergeTrees;
 
 		public static Vector3 GetOffset()
 		{

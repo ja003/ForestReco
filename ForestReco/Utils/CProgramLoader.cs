@@ -93,7 +93,10 @@ namespace ForestReco
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
 
-			CTreeManager.TryMergeAllTrees();
+			if (CProjectData.tryMergeTrees)
+			{
+				CTreeManager.TryMergeAllTrees();
+			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
 

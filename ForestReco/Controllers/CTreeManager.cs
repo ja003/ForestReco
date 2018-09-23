@@ -8,13 +8,18 @@ namespace ForestReco
 {
 	public static class CTreeManager
 	{
-		private static List<CTree> trees = new List<CTree>();
-		public static List<CTree> Trees => trees;
+		public static List<CTree> Trees { get; } = new List<CTree>();
 
-		public const float MAX_TREE_EXTENT = 3f;
+		//public const float DEFAULT_TREE_EXTENT = 1.5f;
+		public const float DEFAULT_TREE_EXTENT = 1f;
 		public const float DEFAULT_TREE_HEIGHT = 10;
 
-		public const float MIN_PEAKS_DISTANCE = MAX_TREE_EXTENT / 2;
+		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
+		public static float GetMinPeakDistance(float pMultiply)
+		{
+			return DEFAULT_TREE_EXTENT * pMultiply;
+		}
+
 		public static float MAX_BRANCH_ANGLE = 45;
 		private static int treeIndex;
 
@@ -25,7 +30,12 @@ namespace ForestReco
 		{
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
-			if (pPointIndex == 32)
+			//if (pPointIndex == 32)
+			if (pPointIndex == 335)
+			{
+				Console.Write("!");
+			}
+			if (Vector3.Distance(pPoint, new Vector3(679.07f, 135.63f, 1159.93f)) < 0.1f)
 			{
 				Console.Write("!");
 			}
@@ -44,6 +54,17 @@ namespace ForestReco
 				if (t.TryAddPoint(pPoint, false))
 				{
 					selectedTree = t;
+					if (t.treeIndex == 6)
+					{
+						float dist = CUtils.Get2DDistance(pPoint, t.Center);
+						float yDiff = t.Center.Y - pPoint.Y;
+						if (dist > 1.3f)
+						{
+							Console.WriteLine("\nAdd " + pPoint + " [" + pPointIndex + "]");
+							Console.WriteLine("dist = " + dist);
+							Console.WriteLine("yDiff = " + yDiff);
+						}
+					}
 					break;
 				}
 			}
@@ -59,12 +80,12 @@ namespace ForestReco
 			}
 			else// if (selectedTree == null)
 			{
-				Console.WriteLine(pPointIndex + " new tree " + pPoint);
-				trees.Add(new CTree(pPoint, treeIndex));
+				Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " + pPoint);
+				Trees.Add(new CTree(pPoint, treeIndex));
 				treeIndex++;
 			}
 
-			if (trees.Count == 1 && pPointIndex != trees[0].Points.Count - 1)
+			if (Trees.Count == 1 && pPointIndex != Trees[0].Points.Count - 1)
 			{
 				Console.WriteLine(pPointIndex + "Error. Incorrect point count. " + pPoint);
 			}
@@ -75,8 +96,13 @@ namespace ForestReco
 			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
 
+			if(higherTree.treeIndex == 5 && lowerTree.treeIndex == 7){
+				Console.Write("!");
+			}
+
 			Vector3 lowerTreePeak = lowerTree.peak.Center;
-			Vector3 higherTreePeak = higherTree.peak.GetClosestPointTo(lowerTreePeak);
+			//Vector3 higherTreePeak = higherTree.peak.GetClosestPointTo(lowerTreePeak);
+			Vector3 higherTreePeak = higherTree.peak.Center;
 			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
 			{
 				higherTreePeak - Vector3.UnitY, higherTree.peak.Center, lowerTreePeak
@@ -86,10 +112,15 @@ namespace ForestReco
 			float distBetweenPeaks = CUtils.Get2DDistance(pTree1.peak.Center, pTree2.peak.Center);
 
 			//tree peaks must be close to each other and lower peak must be in appropriate angle with higher peak
-			if (distBetweenPeaks < MAX_TREE_EXTENT / 2 && angle < maxBranchAngle)
+			if (distBetweenPeaks < GetMinPeakDistance(1.5f) && angle < maxBranchAngle)
 			{
+				if (lowerTree.treeIndex == 7)
+				{
+					Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+					Console.WriteLine("distBetweenPeaks = " + distBetweenPeaks + ". angle = " + angle);
+				}
 				higherTree.MergeWith(lowerTree);
-				trees.Remove(lowerTree);
+				Trees.Remove(lowerTree);
 			}
 			return higherTree;
 		}
@@ -97,7 +128,7 @@ namespace ForestReco
 		private static List<CTree> GetPossibleTreesFor(Vector3 pPoint)
 		{
 			List<CTree> possibleTrees = new List<CTree>();
-			foreach (CTree t in trees)
+			foreach (CTree t in Trees)
 			{
 				//const float MAX_DIST_TO_TREE_BB = 0.1f;
 				//it must be close to peak of some tree
@@ -123,10 +154,10 @@ namespace ForestReco
 
 		public static void WriteResult()
 		{
-			foreach (CTree t in trees)
+			foreach (CTree t in Trees)
 			{
-				Console.WriteLine(trees.IndexOf(t).ToString("00") + ": " + t);
-				if (trees.IndexOf(t) > 100)
+				Console.WriteLine(Trees.IndexOf(t).ToString("00") + ": " + t);
+				if (Trees.IndexOf(t) > 100)
 				{
 					Console.WriteLine("too much...");
 					return;
@@ -138,14 +169,16 @@ namespace ForestReco
 		{
 			DateTime mergeStartTime = DateTime.Now;
 			Console.WriteLine("TryMergeAllTrees. Start = " + mergeStartTime);
-			for (int i = trees.Count - 1; i >= 0; i--)
+
+			Trees.Sort((x, y) => x.peak.Center.Y.CompareTo(y.peak.Center.Y));
+			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
-				if (i >= trees.Count)
+				if (i >= Trees.Count)
 				{
 					Console.WriteLine("Tree was deleted");
 					continue;
 				}
-				CTree tree = trees[i];
+				CTree tree = Trees[i];
 				float treeHeight = tree.GetTreeHeight();
 				Console.WriteLine(i + " = " + treeHeight);
 
@@ -157,10 +190,10 @@ namespace ForestReco
 					{
 						tree = TryMergeTrees(tree, t);
 						//they were merged
-						if (tree.treeIndex == t.treeIndex)
-						{
-							Console.WriteLine("Merge");
-						}
+						//if (tree.treeIndex == t.treeIndex)
+						//{
+						//	Console.WriteLine("Merge");
+						//}
 					}
 				}
 			}
@@ -170,7 +203,7 @@ namespace ForestReco
 		public static void ProcessAllTrees()
 		{
 			DateTime processTreesStartTime = DateTime.Now;
-			Console.WriteLine("ProcessAllTrees. Start = " + processTreesStartTime); foreach (CTree t in trees)
+			Console.WriteLine("ProcessAllTrees. Start = " + processTreesStartTime); foreach (CTree t in Trees)
 			{
 				bool testTranslate = false;
 				if (testTranslate)

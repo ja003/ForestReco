@@ -29,11 +29,15 @@ namespace ForestReco
 
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
+			CProjectData.tryMergeTrees = true;
+
 			CProjectData.setArray = true;
 			CProjectData.fillArray = true;
 			CProjectData.exportArray = true;
+
 			CProjectData.loadRefTrees = false;
 			CProjectData.useRefTrees = false;
+
 			CProjectData.exportPoints = true;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
