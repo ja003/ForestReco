@@ -101,8 +101,15 @@ namespace ForestReco
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
 
-			CTreeManager.ProcessAllTrees();
+			if (CProjectData.processTrees)
+			{
+				CTreeManager.ProcessAllTrees(); 
+			}
 
+			if (CProjectData.exportTrees)
+			{
+				CTreeManager.ExportTrees();
+			}
 
 			if (CProjectData.useRefTrees)
 			{

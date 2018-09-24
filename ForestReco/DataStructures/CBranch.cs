@@ -12,6 +12,7 @@ namespace ForestReco
 		public List<CTreePoint> TreePoints { get; } = new List<CTreePoint>();
 
 		private Vector3 furthestPoint;
+		private float furthestPointDistance => CUtils.Get2DDistance(furthestPoint, tree.peak);
 
 		public CTree tree { get; }
 
@@ -57,8 +58,44 @@ namespace ForestReco
 		public float GetAddPointFactor(Vector3 pPoint)
 		{
 			//Vector3 referencePoint = GetClosestPointTo(pPoint, 5);
-			Vector3 referencePoint = furthestPoint;
-			return GetAddPointFactorInRefTo(pPoint, referencePoint);
+
+			Vector3 refPoint1 = furthestPoint;
+			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1);
+			float bestFactor = refPoint1Factor;
+			if (bestFactor > .99f) { return bestFactor; }
+
+			Vector3 refPoint2 = GetNeigbourBranch(1).furthestPoint;
+			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2);
+			if (refPoint2Factor > bestFactor)
+			{
+				bestFactor = refPoint2Factor;
+				if (bestFactor > .99f) { return bestFactor; }
+			}
+
+			Vector3 refPoint3 = GetNeigbourBranch(-1).furthestPoint;
+			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3);
+			if (refPoint3Factor > bestFactor)
+			{
+				bestFactor = refPoint3Factor;
+			}
+
+			if (Vector3.Distance(pPoint, new Vector3(-10.74f, 3.011f, 9.02f)) < 0.01f)
+			{
+				Console.WriteLine("\nP = " + pPoint);
+				Console.WriteLine(refPoint1);
+				Console.WriteLine(refPoint2);
+				Console.WriteLine(refPoint3);
+			}
+
+			return bestFactor;
+		}
+
+		private CBranch GetNeigbourBranch(int pIndexIncrement)
+		{
+			int indexOfthis = tree.Branches.IndexOf(this);
+			int neighbourBranchIndex = (indexOfthis + pIndexIncrement) % tree.Branches.Count;
+			if (neighbourBranchIndex < 0) { neighbourBranchIndex += tree.Branches.Count; }
+			return tree.Branches[neighbourBranchIndex];
 		}
 
 		private Vector3 GetClosestPointTo(Vector3 pPoint, int pMaxIterationCount)
@@ -95,9 +132,9 @@ namespace ForestReco
 				return 1;
 			}
 
-			float refAngleToPoint = 
+			float refAngleToPoint =
 				CUtils.AngleBetweenThreePoints(pReferencePoint - Vector3.UnitY, pReferencePoint, pPoint);
-			float peakAngleToPoint = 
+			float peakAngleToPoint =
 				CUtils.AngleBetweenThreePoints(tree.peak.Center - Vector3.UnitY, tree.peak.Center, pPoint);
 			float angle = Math.Min(refAngleToPoint, peakAngleToPoint);
 
@@ -116,6 +153,8 @@ namespace ForestReco
 		{
 			if (CTreeManager.DEBUG)
 				Console.WriteLine("--- AddPoint " + pPoint.ToString("#+0.00#;-0.00") + " to " + this);
+
+			RefreshFurthestPoint(pPoint);
 
 			for (int i = 0; i < TreePoints.Count; i++)
 			{
@@ -138,10 +177,27 @@ namespace ForestReco
 			TreePoints.Add(newPoint);
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
 
+		}
+
+		private void RefreshFurthestPoint(Vector3 pPoint)
+		{
+			//if (Vector3.Distance(pPoint, new Vector3(-10.019f,3.113f,9.264f)) < 0.1f)
+			//{
+			//	Console.WriteLine("+++ "+pPoint);
+			//}
+
 			float pointDistToPeak = CUtils.Get2DDistance(pPoint, tree.peak);
-			if (pointDistToPeak > Vector3.Distance(furthestPoint, tree.peak.Center))
+			if (pointDistToPeak > furthestPointDistance)
 			{
 				furthestPoint = pPoint;
+
+				//int indexOfThis = tree.Branches.IndexOf(this);
+				//if (indexOfThis == 4 || indexOfThis == 5 || indexOfThis == 6)
+				//{
+				//	Console.WriteLine(tree.Branches.IndexOf(this) + " furthestPoint = " + furthestPoint+ " | " + pointDistToPeak);
+				//}
+
+				//Console.WriteLine(tree.Branches.IndexOf(this)  + " furthestPoint = " + furthestPoint);
 			}
 		}
 
@@ -149,7 +205,7 @@ namespace ForestReco
 		/// <summary>
 		/// If given tree point is included in one of points on this branch
 		/// </summary>
-		private bool Contains(Vector3 pPoint, float pToleranceMultiply)
+		public bool Contains(Vector3 pPoint, float pToleranceMultiply)
 		{
 			foreach (CTreePoint p in TreePoints)
 			{
@@ -240,5 +296,19 @@ namespace ForestReco
 				   "[" + TreePoints.Count.ToString("00") + "] |";
 		}
 
+		public bool IsPointInExtent(Vector3 pPoint)
+		{
+			bool thisBranchInExtent =
+				furthestPointDistance > CUtils.Get2DDistance(pPoint, tree.peak);
+			if (thisBranchInExtent) { return true; }
+
+			bool leftBranchInExtent =
+				GetNeigbourBranch(-1).furthestPointDistance > CUtils.Get2DDistance(pPoint, tree.peak);
+			if (leftBranchInExtent) { return true; }
+
+			bool rightBranchInExtent =
+				GetNeigbourBranch(1).furthestPointDistance > CUtils.Get2DDistance(pPoint, tree.peak);
+			return rightBranchInExtent;
+		}
 	}
 }

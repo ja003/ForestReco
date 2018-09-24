@@ -98,21 +98,20 @@ namespace ForestReco
 		public float GetAddPointFactor(Vector3 pPoint)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
-			float branchFactor = GetBranchFor(pPoint).GetAddPointFactor(pPoint);
+			CBranch branchForPoint = GetBranchFor(pPoint);
+			float branchFactor = branchForPoint.GetAddPointFactor(pPoint);
 			return branchFactor;
 		}
 
-		private void AddPoint(Vector3 pPoint)
+		public void AddPoint(Vector3 pPoint)
 		{
-			//todo: rozdělit body na Points a na peak. teď jsou v peaku duplicitně a při mergi se nesmažou
-
-			/*if (peak == null)
-			{
-				peak = new CPeak(pPoint);
-			}
-			else */if (peak.Includes(pPoint))
+			if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
+			}
+			else
+			{
+				GetBranchFor(pPoint).AddPoint(pPoint);
 			}
 			Points.Add(pPoint);
 			OnAddPoint(pPoint);
@@ -129,7 +128,12 @@ namespace ForestReco
 				return;
 			}
 
-			Points.AddRange(pSubTree.Points);
+			foreach (Vector3 point in pSubTree.Points)
+			{
+				AddPoint(point);
+			}
+
+			/*Points.AddRange(pSubTree.Points);
 
 			//only points from subTree peak can be part of this tree peak. Try to add them
 			List<Vector3> peakPoints = pSubTree.peak.Points;
@@ -147,7 +151,7 @@ namespace ForestReco
 			Points.Sort((b, a) => a.Y.CompareTo(b.Y));
 			//update extents
 			OnAddPoint(pSubTree.minBB);
-			OnAddPoint(pSubTree.maxBB);
+			OnAddPoint(pSubTree.maxBB);*/
 		}
 
 		//GETTERS
@@ -337,6 +341,11 @@ namespace ForestReco
 		}
 
 		//BOOLS
+
+		public override bool Contains(Vector3 pPoint)
+		{
+			return base.Contains(pPoint) && GetBranchFor(pPoint).IsPointInExtent(pPoint);
+		}
 
 		private bool IsNewPeak(Vector3 pPoint)
 		{

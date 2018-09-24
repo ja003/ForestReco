@@ -85,6 +85,11 @@ namespace ForestReco
 			return Vector2.Distance(new Vector2(a.X, a.Z), new Vector2(b.X, b.Z));
 		}
 
+		public static float Get2DDistance(CTreePoint a, CTreePoint b)
+		{
+			return Vector2.Distance(new Vector2(a.X, a.Z), new Vector2(b.X, b.Z));
+		}
+
 		public static float Get2DDistance(Vector3 a, Vector3 b)
 		{
 			return Vector2.Distance(new Vector2(a.X, a.Z), new Vector2(b.X, b.Z));

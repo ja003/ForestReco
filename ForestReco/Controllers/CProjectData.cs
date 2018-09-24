@@ -25,14 +25,18 @@ namespace ForestReco
 		public static List<Obj> objsToExport = new List<Obj>();
 
 		public static bool detectTrees;
-		public static bool setArray;
+		public static bool processTrees;
+		public static bool tryMergeTrees;
+		
 		public static bool loadRefTrees;
 		public static bool useRefTrees;
+
+		public static bool setArray;
 		public static bool exportArray;
+		public static bool fillArray;
+
 		public static bool exportPoints;
 		public static bool exportTrees;
-		public static bool fillArray;
-		public static bool tryMergeTrees;
 
 		public static float lowestHeight = int.MaxValue;
 		public static float highestHeight = int.MinValue;

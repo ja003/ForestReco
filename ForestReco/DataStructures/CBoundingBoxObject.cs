@@ -68,7 +68,7 @@ namespace ForestReco
 		}
 
 
-		public bool Contains(Vector3 pPoint)
+		public virtual bool Contains(Vector3 pPoint)
 		{
 			return
 				pPoint.X > minBB.X && pPoint.X < maxBB.X &&
