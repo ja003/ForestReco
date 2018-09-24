@@ -9,8 +9,7 @@ namespace ForestReco
 		public static bool PointBelongsToTree(Vector3 pPoint, Vector3 pTreetop)
 		{
 			Vector3 botPoint = new Vector3(pTreetop.X, pPoint.Y, pTreetop.Z);
-			List<Vector3> botTreetopPoint = new List<Vector3> { botPoint, pTreetop, pPoint };
-			float angleBetweenPointAndTreetop = AngleBetweenThreePoints(botTreetopPoint, Vector3.UnitY);
+			float angleBetweenPointAndTreetop = AngleBetweenThreePoints(botPoint, pTreetop, pPoint);
 			return angleBetweenPointAndTreetop < 45;
 		}
 
@@ -41,34 +40,19 @@ namespace ForestReco
 			double atan2 = Math.Atan2(b.Y, b.X) - Math.Atan2(a.Y, a.X);
 			return ToDegree((float)atan2);
 		}
-
-		public static float AngleBetweenThreePoints(List<Vector3> points, Vector3 up)
-		{
-			return AngleBetweenThreePoints(points);
-		}
-
+		
 		public static float GetAngleToTree(CTree pTree, Vector3 pPoint)
 		{
-			List<Vector3> points = new List<Vector3>
-			{
-				pTree.peak.Center - Vector3.UnitY * 100,
-				pTree.peak.Center,
-				pPoint
-			};
-			return AngleBetweenThreePoints(points);
+			return AngleBetweenThreePoints(pTree.peak.Center - Vector3.UnitY * 100, pTree.peak.Center, pPoint);
 		}
 
 		//https://stackoverflow.com/questions/19729831/angle-between-3-points-in-3d-space
-		public static float AngleBetweenThreePoints(List<Vector3> points, bool pToDegree = true)
+		public static float AngleBetweenThreePoints(Vector3 pA, Vector3 pB, Vector3 pC, bool pToDegree = true)
 		{
-			Vector3 A = points[0];
-			Vector3 B = points[1];
-			Vector3 C = points[2];
-
-			Vector3 v1 = new Vector3(A.X - B.X, A.Y - B.Y, A.Z - B.Z);
+			Vector3 v1 = new Vector3(pA.X - pB.X, pA.Y - pB.Y, pA.Z - pB.Z);
 			//Similarly the vector BC(call it v2) is:
 
-			Vector3 v2 = new Vector3(C.X - B.X, C.Y - B.Y, C.Z - B.Z);
+			Vector3 v2 = new Vector3(pC.X - pB.X, pC.Y - pB.Y, pC.Z - pB.Z);
 			//The dot product of v1 and v2 is a function of the cosine of the angle between them(it's scaled by the product of their magnitudes). So first normalize v1 and v2:
 
 			float v1mag = (float)Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z);
@@ -94,6 +78,11 @@ namespace ForestReco
 		private static float ToDegree(float angle)
 		{
 			return (float)(angle * (180.0 / Math.PI));
+		}
+
+		public static float Get2DDistance(Vector3 a, CTreePoint b)
+		{
+			return Vector2.Distance(new Vector2(a.X, a.Z), new Vector2(b.X, b.Z));
 		}
 
 		public static float Get2DDistance(Vector3 a, Vector3 b)

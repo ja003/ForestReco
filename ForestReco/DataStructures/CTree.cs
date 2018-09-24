@@ -43,7 +43,7 @@ namespace ForestReco
 
 		protected void Init(Vector3 pPoint, int pTreeIndex)
 		{
-			//peak = new CPeak(pPoint);
+			peak = new CPeak(pPoint);
 
 			if (CTreeManager.DEBUG) { Console.WriteLine("new tree " + pTreeIndex); }
 
@@ -57,9 +57,7 @@ namespace ForestReco
 
 			AddPoint(pPoint);
 		}
-
-
-
+		
 		//MOST IMPORTANT
 
 		/// <summary>
@@ -96,16 +94,23 @@ namespace ForestReco
 			}
 			return false;
 		}
+		
+		public float GetAddPointFactor(Vector3 pPoint)
+		{
+			if (IsNewPeak(pPoint)) { return 1; }
+			float branchFactor = GetBranchFor(pPoint).GetAddPointFactor(pPoint);
+			return branchFactor;
+		}
 
 		private void AddPoint(Vector3 pPoint)
 		{
 			//todo: rozdělit body na Points a na peak. teď jsou v peaku duplicitně a při mergi se nesmažou
 
-			if (peak == null)
+			/*if (peak == null)
 			{
 				peak = new CPeak(pPoint);
 			}
-			else if (peak.Includes(pPoint))
+			else */if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
 			}
@@ -337,8 +342,7 @@ namespace ForestReco
 		{
 			if (peak.Includes(pPoint)) { return true; }
 			if (pPoint.Y < peak.Y) { return false; }
-			float angle = CUtils.AngleBetweenThreePoints(
-				new List<Vector3> { pPoint - Vector3.UnitY, pPoint, peak.Center }, Vector3.UnitY);
+			float angle = CUtils.AngleBetweenThreePoints(pPoint - Vector3.UnitY, pPoint, peak.Center);
 			return Math.Abs(angle) < CTreeManager.MAX_BRANCH_ANGLE;
 		}
 
@@ -365,10 +369,7 @@ namespace ForestReco
 			}
 
 			Vector3 suitablePoint = peak.GetClosestPointTo(pPoint);
-			float angle = CUtils.AngleBetweenThreePoints(new List<Vector3>
-			{
-				suitablePoint - Vector3.UnitY, suitablePoint, pPoint
-			}, Vector3.UnitY);
+			float angle = CUtils.AngleBetweenThreePoints(suitablePoint - Vector3.UnitY, suitablePoint, pPoint);
 			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint);
 			if (angle > maxBranchAngle)
 			{
@@ -487,5 +488,6 @@ namespace ForestReco
 			CTree t = (CTree)obj;
 			return treeIndex == t.treeIndex;
 		}
+
 	}
 }
