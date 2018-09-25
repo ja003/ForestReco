@@ -116,7 +116,7 @@ namespace ForestReco
 			return closestPoint;
 		}
 
-		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pUseDistToPeakDiff)
+		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pIsTreeProcessed)
 		{
 			if (pPoint.Y > pReferencePoint.Y)
 			{
@@ -140,6 +140,19 @@ namespace ForestReco
 			{
 				return 1;
 			}
+			if (!pIsTreeProcessed && distToPeakDiff > 0.5f)
+			{
+				float peakRefPointAngle = CUtils.AngleBetweenThreePoints(tree.peak.Center, pReferencePoint, pPoint);
+				//todo: check this criterium
+				//new point is too far from furthest point and goes too much out of direction of peak->furthestPoint
+				if (peakRefPointAngle < 180 - 45)
+				{
+					return 0;
+				}
+			}
+
+
+
 			//TODO:TEST. not very effective
 			float unacceptabledistToPeakDiff = 0.5f;
 			//bool useDistToPeakDiff = distToPeakDiff < unacceptabledistToPeakDiff;
@@ -171,9 +184,9 @@ namespace ForestReco
 
 			float totalFactor = 0;
 
-			if (pUseDistToPeakDiff)
+			if (pIsTreeProcessed)
 			{
-				totalFactor = (angleFactor + distFactor + distToPeakDiffFactor) / 3;
+				totalFactor = (angleFactor + distFactor + .5f * distToPeakDiffFactor) / 2.5f;
 			}
 			else
 			{

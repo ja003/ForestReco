@@ -192,8 +192,16 @@ namespace ForestReco
 		private static void MoveToCenter(ref Vector3 pPoint)
 		{
 			if (CProgramLoader.useDebugData) { return; }
+			pPoint = GetMovedPoint(pPoint);
+			//pPoint -= arrayCenter;
+			//pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 2 * pPoint.Z);
+		}
+
+		public static Vector3 GetMovedPoint(Vector3 pPoint)
+		{
 			pPoint -= arrayCenter;
 			pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 2 * pPoint.Z);
+			return pPoint;
 		}
 
 		private static void WriteHeader(StreamWriter pWriter, List<Obj> pTrees)

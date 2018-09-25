@@ -44,14 +44,16 @@ namespace ForestReco
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
 			//if (pPointIndex == 32)
-			if (pPointIndex == 2827)
+			if (pPointIndex == 423)
 			{
 				Console.Write("!");
 			}
-			//if (Vector3.Distance(pPoint, new Vector3(679.07f, 135.63f, 1159.93f)) < 0.1f)
-			//{
-			//	Console.Write("!");
-			//}
+			Vector3 debugPoint = CObjExporter.GetMovedPoint(pPoint);
+			debugPoint.Z *= -1;
+			if (Vector3.Distance(debugPoint, new Vector3(-6.39f, 14.248f, 6.87f)) < .1f)
+			{
+				Console.Write("!");
+			}
 
 			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint);
 			pointCounter++;
@@ -235,7 +237,7 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				if (tree.treeIndex == 8)
+				if (tree.treeIndex == 71)
 				{
 					Console.WriteLine("!");
 				}
