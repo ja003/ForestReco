@@ -42,7 +42,7 @@ namespace ForestReco
 			CProjectData.exportPoints = false;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			CProgramLoader.fileName = "BK_1000AGL_classified_0007559_0182972_0037797";
+			//CProgramLoader.fileName = "BK_1000AGL_classified_0007559_0182972_0037797";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 

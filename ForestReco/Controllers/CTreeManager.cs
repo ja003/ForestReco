@@ -44,7 +44,7 @@ namespace ForestReco
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
 			//if (pPointIndex == 32)
-			if (pPointIndex == 16572)
+			if (pPointIndex == 790)
 			{
 				Console.Write("!");
 			}
@@ -83,7 +83,8 @@ namespace ForestReco
 			}
 			else// if (selectedTree == null)
 			{
-				Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " + pPoint);
+				Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " + 
+					pPoint + ". Best factor = " + bestAddPointFactor);
 				Trees.Add(new CTree(pPoint, treeIndex));
 				treeIndex++;
 			}

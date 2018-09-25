@@ -134,14 +134,25 @@ namespace ForestReco
 
 			float refAngleToPoint =
 				CUtils.AngleBetweenThreePoints(pReferencePoint - Vector3.UnitY, pReferencePoint, pPoint);
+
+			Vector3 suitablePeakPoint = tree.peak.GetClosestPointTo(pPoint);
 			float peakAngleToPoint =
-				CUtils.AngleBetweenThreePoints(tree.peak.Center - Vector3.UnitY, tree.peak.Center, pPoint);
+				CUtils.AngleBetweenThreePoints(suitablePeakPoint - Vector3.UnitY, suitablePeakPoint, pPoint);
 			float angle = Math.Min(refAngleToPoint, peakAngleToPoint);
 
-			const float unacceptableAngle = CTreeManager.MAX_BRANCH_ANGLE * 2;
+			//const float unacceptableAngle = CTreeManager.MAX_BRANCH_ANGLE * 2;
+			float maxBranchAngle = CTree.GetMaxBranchAngle(suitablePeakPoint, pPoint);
+			float unacceptableAngle = maxBranchAngle;
+			if (angle > unacceptableAngle) { return 0;}
+			unacceptableAngle += 30;
+			unacceptableAngle = Math.Min(unacceptableAngle, 100);
+
 			float angleFactor = (unacceptableAngle - angle) / unacceptableAngle;
 
-			const float unacceptableDistance = CTreeManager.DEFAULT_TREE_EXTENT * 3;
+			//const float unacceptableDistance = CTreeManager.DEFAULT_TREE_EXTENT * 3;
+			float unacceptableDistance = tree.GetTreeExtentFor(pPoint) + 0.5f;
+			if (pointDistToPeak > unacceptableDistance) { return 0;}
+			unacceptableDistance += 0.5f;
 			float distFactor = (unacceptableDistance - pointDistToPeak) / unacceptableDistance;
 
 			float totalFactor = (angleFactor + distFactor) / 2;
