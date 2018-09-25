@@ -44,7 +44,7 @@ namespace ForestReco
 			//CTreePoint treePoint = new CTreePoint(pPoint);
 
 			//if (pPointIndex == 32)
-			if (pPointIndex == 790)
+			if (pPointIndex == 2196)
 			{
 				Console.Write("!");
 			}

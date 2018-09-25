@@ -131,6 +131,16 @@ namespace ForestReco
 			{
 				return 1;
 			}
+			float distToPeakDiff = pointDistToPeak - refDistToPeak;
+			if (distToPeakDiff < 0.3)
+			{
+				return 1;
+			}
+			//not very effective
+			//float unacceptabledistToPeakDiff = 0.5f;
+			//bool useDistToPeakDiff = distToPeakDiff < unacceptabledistToPeakDiff;
+			//float distToPeakDiffFactor = (unacceptabledistToPeakDiff - distToPeakDiff) / unacceptabledistToPeakDiff;
+			//distToPeakDiffFactor = Math.Max(0, distToPeakDiffFactor);
 
 			float refAngleToPoint =
 				CUtils.AngleBetweenThreePoints(pReferencePoint - Vector3.UnitY, pReferencePoint, pPoint);
@@ -143,7 +153,7 @@ namespace ForestReco
 			//const float unacceptableAngle = CTreeManager.MAX_BRANCH_ANGLE * 2;
 			float maxBranchAngle = CTree.GetMaxBranchAngle(suitablePeakPoint, pPoint);
 			float unacceptableAngle = maxBranchAngle;
-			if (angle > unacceptableAngle) { return 0;}
+			if (angle > unacceptableAngle) { return 0; }
 			unacceptableAngle += 30;
 			unacceptableAngle = Math.Min(unacceptableAngle, 100);
 
@@ -151,11 +161,20 @@ namespace ForestReco
 
 			//const float unacceptableDistance = CTreeManager.DEFAULT_TREE_EXTENT * 3;
 			float unacceptableDistance = tree.GetTreeExtentFor(pPoint) + 0.5f;
-			if (pointDistToPeak > unacceptableDistance) { return 0;}
+			if (pointDistToPeak > unacceptableDistance) { return 0; }
 			unacceptableDistance += 0.5f;
 			float distFactor = (unacceptableDistance - pointDistToPeak) / unacceptableDistance;
 
-			float totalFactor = (angleFactor + distFactor) / 2;
+			float totalFactor = 0;
+			/*if (useDistToPeakDiff)
+			{
+				totalFactor = (angleFactor + distFactor + distToPeakDiffFactor) / 3;
+			}
+			else
+			{
+				totalFactor = (angleFactor + distFactor) / 2;
+			}*/
+			totalFactor = (angleFactor + distFactor) / 2;
 
 			return totalFactor;
 		}
