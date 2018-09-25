@@ -95,11 +95,11 @@ namespace ForestReco
 			return false;
 		}
 		
-		public float GetAddPointFactor(Vector3 pPoint)
+		public float GetAddPointFactor(Vector3 pPoint, bool pUseDistToPeakDiff)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
 			CBranch branchForPoint = GetBranchFor(pPoint);
-			float branchFactor = branchForPoint.GetAddPointFactor(pPoint);
+			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pUseDistToPeakDiff);
 			return branchFactor;
 		}
 

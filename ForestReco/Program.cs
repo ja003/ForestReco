@@ -30,6 +30,10 @@ namespace ForestReco
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
 			CProjectData.tryMergeTrees = false;
+			CProjectData.mergeContaingTrees = false;
+			CProjectData.mergeBelongingTrees = false;
+			CProjectData.mergeGoodAddFactorTrees = true;
+
 			CProjectData.processTrees = false;
 
 			CProjectData.setArray = true;

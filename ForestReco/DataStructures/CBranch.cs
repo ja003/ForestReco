@@ -54,18 +54,22 @@ namespace ForestReco
 			}
 		}
 
-
-		public float GetAddPointFactor(Vector3 pPoint)
+		/// <summary>
+		/// Calculates factor, showing how much does given point fit to this branch.
+		/// Range = 0-1. 1 = best fit.
+		/// pUseDistToPeakDiff = uses criterium of pUseDistToPeakDiff (viz GetAddPointFactorInRefTo)
+		/// </summary>
+		public float GetAddPointFactor(Vector3 pPoint, bool pUseDistToPeakDiff)
 		{
 			//Vector3 referencePoint = GetClosestPointTo(pPoint, 5);
 
 			Vector3 refPoint1 = furthestPoint;
-			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1);
+			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, pUseDistToPeakDiff);
 			float bestFactor = refPoint1Factor;
 			if (bestFactor > .99f) { return bestFactor; }
 
 			Vector3 refPoint2 = GetNeigbourBranch(1).furthestPoint;
-			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2);
+			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, pUseDistToPeakDiff);
 			if (refPoint2Factor > bestFactor)
 			{
 				bestFactor = refPoint2Factor;
@@ -73,7 +77,7 @@ namespace ForestReco
 			}
 
 			Vector3 refPoint3 = GetNeigbourBranch(-1).furthestPoint;
-			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3);
+			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, pUseDistToPeakDiff);
 			if (refPoint3Factor > bestFactor)
 			{
 				bestFactor = refPoint3Factor;
@@ -112,7 +116,7 @@ namespace ForestReco
 			return closestPoint;
 		}
 
-		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint)
+		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pUseDistToPeakDiff)
 		{
 			if (pPoint.Y > pReferencePoint.Y)
 			{
@@ -136,11 +140,11 @@ namespace ForestReco
 			{
 				return 1;
 			}
-			//not very effective
-			//float unacceptabledistToPeakDiff = 0.5f;
+			//TODO:TEST. not very effective
+			float unacceptabledistToPeakDiff = 0.5f;
 			//bool useDistToPeakDiff = distToPeakDiff < unacceptabledistToPeakDiff;
-			//float distToPeakDiffFactor = (unacceptabledistToPeakDiff - distToPeakDiff) / unacceptabledistToPeakDiff;
-			//distToPeakDiffFactor = Math.Max(0, distToPeakDiffFactor);
+			float distToPeakDiffFactor = (unacceptabledistToPeakDiff - distToPeakDiff) / unacceptabledistToPeakDiff;
+			distToPeakDiffFactor = Math.Max(0, distToPeakDiffFactor);
 
 			float refAngleToPoint =
 				CUtils.AngleBetweenThreePoints(pReferencePoint - Vector3.UnitY, pReferencePoint, pPoint);
@@ -166,15 +170,16 @@ namespace ForestReco
 			float distFactor = (unacceptableDistance - pointDistToPeak) / unacceptableDistance;
 
 			float totalFactor = 0;
-			/*if (useDistToPeakDiff)
+
+			if (pUseDistToPeakDiff)
 			{
 				totalFactor = (angleFactor + distFactor + distToPeakDiffFactor) / 3;
 			}
 			else
 			{
 				totalFactor = (angleFactor + distFactor) / 2;
-			}*/
-			totalFactor = (angleFactor + distFactor) / 2;
+			}
+			//totalFactor = (angleFactor + distFactor) / 2;
 
 			return totalFactor;
 		}
@@ -328,17 +333,16 @@ namespace ForestReco
 
 		public bool IsPointInExtent(Vector3 pPoint)
 		{
-			bool thisBranchInExtent =
-				furthestPointDistance > CUtils.Get2DDistance(pPoint, tree.peak);
+			float pointDistToPeak = CUtils.Get2DDistance(pPoint, tree.peak);
+			bool thisBranchInExtent = furthestPointDistance > pointDistToPeak;
 			if (thisBranchInExtent) { return true; }
 
-			bool leftBranchInExtent =
-				GetNeigbourBranch(-1).furthestPointDistance > CUtils.Get2DDistance(pPoint, tree.peak);
+			bool leftBranchInExtent = GetNeigbourBranch(-1).furthestPointDistance > pointDistToPeak;
 			if (leftBranchInExtent) { return true; }
 
-			bool rightBranchInExtent =
-				GetNeigbourBranch(1).furthestPointDistance > CUtils.Get2DDistance(pPoint, tree.peak);
+			bool rightBranchInExtent = GetNeigbourBranch(1).furthestPointDistance > pointDistToPeak;
 			return rightBranchInExtent;
+			//return rightBranchInExtent && leftBranchInExtent;
 		}
 	}
 }
