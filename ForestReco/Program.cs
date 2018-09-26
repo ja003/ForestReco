@@ -41,8 +41,8 @@ namespace ForestReco
 			CProjectData.fillArray = true;
 			CProjectData.exportArray = true;
 
-			CProjectData.loadRefTrees = true;
-			CProjectData.useRefTrees = true;
+			CProjectData.loadRefTrees = false;
+			CProjectData.useRefTrees = false;
 
 			CProjectData.exportPoints = true;
 

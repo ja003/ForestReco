@@ -399,7 +399,7 @@ namespace ForestReco
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
 				CTree tree = Trees[i];
-				if (!tree.IsValid())
+				if (!tree.IsValid(true))
 				{
 					InvalidTrees.Add(tree);
 					Trees.RemoveAt(i);

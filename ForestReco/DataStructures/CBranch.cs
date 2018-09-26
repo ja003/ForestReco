@@ -357,5 +357,24 @@ namespace ForestReco
 			return rightBranchInExtent;
 			//return rightBranchInExtent && leftBranchInExtent;
 		}
+
+		public float GetDefinedFactor()
+		{
+			if (TreePoints.Count == 0) { return 0; }
+
+			float height = tree.GetTreeHeight();
+			float distLowestToPeak = Vector3.Distance(TreePoints.Last().Center, tree.peak.Center);
+			distLowestToPeak += 3; //first meter from ground is not well defined
+			distLowestToPeak = Math.Min(height, distLowestToPeak);
+			float lowestPointRatio = distLowestToPeak / height;
+
+			int treePointCount = TreePoints.Count;
+			const int minPointsPerMeter = 3;
+			float pointCountRatio = treePointCount / (height * minPointsPerMeter);
+			pointCountRatio = Math.Min(pointCountRatio, 1);
+
+			float factor = (lowestPointRatio + pointCountRatio) / 2;
+			return factor;
+		}
 	}
 }

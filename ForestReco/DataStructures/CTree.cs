@@ -341,12 +341,33 @@ namespace ForestReco
 		}
 
 		//BOOLS
-		
-		public bool IsValid()
+
+		/// <summary>
+		/// Determines whether the tree is defined enough.
+		/// pAllBranchDefined = if one of branches is not defined => tree is not valid.
+		/// All trees touching the boundaries should be eliminated by this
+		/// </summary>
+		public bool IsValid(bool pAllBranchDefined)
 		{
 			float height = GetTreeHeight();
-			Console.WriteLine("VALID " + treeIndex + " height = " + height + " pointCount = " + Points.Count);
-			return Points.Count > 10;
+
+			if (treeIndex == 12)
+			{
+				Console.WriteLine("!");
+			}
+			float branchDefinedFactor = 0;
+			foreach (CBranch b in branches)
+			{
+				float branchFactor = b.GetDefinedFactor();
+				if (pAllBranchDefined && Math.Abs(branchFactor) < 0.1f)
+				{
+					return false;
+				}
+				branchDefinedFactor += branchFactor;
+			}
+			float validFactor = branchDefinedFactor / branches.Count;
+			Console.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
+			return validFactor > 0.5f;
 		}
 
 		public override bool Contains(Vector3 pPoint)
