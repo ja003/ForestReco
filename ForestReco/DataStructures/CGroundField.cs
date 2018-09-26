@@ -38,7 +38,8 @@ namespace ForestReco
 
 		public bool IsAnyNeighbourDefined()
 		{
-			foreach (CGroundField n in GetNeighbours())
+			List<CGroundField> _neighbours = GetNeighbours();
+			foreach (CGroundField n in _neighbours)
 			{
 				if (n.IsDefined()) { return true; }
 			}
@@ -204,18 +205,24 @@ namespace ForestReco
 		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
 		/// pVisited: dont use these points in DFS
 		/// </summary>
-		public float? GetHeight(bool pGetHeightFromNeighbour = false, List<CGroundField> pVisited = null)
+		public float? GetHeight(bool pGetHeightFromNeighbour = false, List<CGroundField> pVisited = null, int pMaxIterations = 5)
 		{
+			pMaxIterations--;
 			if (!IsDefined() && pGetHeightFromNeighbour)
 			{
+				if (pMaxIterations <= 0) { return null;}
+
 				if (pVisited == null) { pVisited = new List<CGroundField>(); }
 
-				foreach (CGroundField n in GetNeighbours())
+				if (pVisited.Contains(this)) { return null;}
+
+				List<CGroundField> _neighbours = GetNeighbours();
+				foreach (CGroundField n in _neighbours)
 				{
 					if (!pVisited.Contains(n))
 					{
 						pVisited.Add(this);
-						return n.GetHeight(true, pVisited);
+						return n.GetHeight(true, pVisited, pMaxIterations);
 					}
 				}
 				return null;

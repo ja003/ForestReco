@@ -74,9 +74,9 @@ namespace ForestReco
 			}
 			else
 			{
-				if (treeIndex < MAX_DEBUG_COUNT)
+				if (treeIndex < MAX_DEBUG_COUNT || treeIndex % MAX_DEBUG_COUNT == 0)
 				{
-					Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " +
+					Console.WriteLine("NEW TREE " + treeIndex + ": point[" + pPointIndex + "]: " +
 					                  pPoint + ". Best factor = " + bestAddPointFactor);
 				}
 				if (treeIndex == MAX_DEBUG_COUNT)

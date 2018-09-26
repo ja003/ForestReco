@@ -25,9 +25,9 @@ namespace ForestReco
 
 		//--------------------------------------------------------------
 
-		public CGroundArray(float pStepSize)
+		public CGroundArray()
 		{
-			stepSize = pStepSize;
+			stepSize = CProjectData.groundArrayStep;
 
 			botLeftCorner = CProjectData.header.BotLeftCorner;
 			topRightCorner = CProjectData.header.TopRightCorner;
@@ -36,8 +36,8 @@ namespace ForestReco
 			float h = topRightCorner.Z - botLeftCorner.Z;
 
 			//TODO: if not +2, GetPositionInField is OOR
-			arrayXRange = (int)(w / pStepSize) + 2;
-			arrayYRange = (int)(h / pStepSize) + 2;
+			arrayXRange = (int)(w / stepSize) + 2;
+			arrayYRange = (int)(h / stepSize) + 2;
 
 			array = new CGroundField[arrayXRange, arrayYRange];
 			fields = new List<CGroundField>();

@@ -27,6 +27,9 @@ namespace ForestReco
 			//CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
+			CProjectData.maxLinesToLoad = 30000;
+
+
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
 			CProjectData.tryMergeTrees = true;
@@ -39,7 +42,9 @@ namespace ForestReco
 
 			CProjectData.setArray = true;
 			CProjectData.fillArray = true;
+			CProjectData.maxFillArrayIterations = 3;
 			CProjectData.exportArray = true;
+			CProjectData.groundArrayStep = .4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 			CProjectData.loadRefTrees = true;
 			CProjectData.useRefTrees = true;
@@ -47,7 +52,8 @@ namespace ForestReco
 			CProjectData.exportPoints = true;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 

@@ -41,15 +41,16 @@ namespace ForestReco
 
 		public static List<Tuple<EClass, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
-			float stepSize = .4f; //in meters
-			if (pArray) { CProjectData.array = new CGroundArray(stepSize); }
+			//float stepSize = .4f; //in meters
+			if (pArray) { CProjectData.array = new CGroundArray(); }
 
 			//store coordinates to corresponding data strucures based on their class
 			const int DEFAULT_START_LINE = 19;
 			int startLine = pUseHeader && CProjectData.header != null ? DEFAULT_START_LINE : 0;
-			int linesToRead = lines.Length;
-			//linesToRead = startLine + 500;
-
+			
+			
+			int linesToRead = Math.Min(CProjectData.maxLinesToLoad, lines.Length);
+			
 			bool classesCorect = true;
 			List<Tuple<EClass, Vector3>> parsedLines = new List<Tuple<EClass, Vector3>>();
 			if (useDebugData)
@@ -59,7 +60,7 @@ namespace ForestReco
 			}
 			else
 			{
-				for (int i = startLine; i < Math.Min(lines.Length, linesToRead); i++)
+				for (int i = startLine; i < linesToRead; i++)
 				{
 					// <class, coordinate>
 					Tuple<EClass, Vector3> c = CLazTxtParser.ParseLine(lines[i], pUseHeader);
@@ -140,14 +141,17 @@ namespace ForestReco
 			int counter = 0;
 			while (!CProjectData.array.IsAllDefined())
 			{
+				DateTime fillHeightsStart = DateTime.Now;
+
 				Console.WriteLine("\nFillMissingHeights " + counter);
 				CProjectData.array.FillMissingHeights();
 				counter++;
-				if (counter > 2)
+				if (counter > CProjectData.maxFillArrayIterations)
 				{
 					Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
 					break;
 				}
+				Console.WriteLine("duration = " + (DateTime.Now - fillHeightsStart).TotalSeconds);
 			}
 		}
 
@@ -169,10 +173,16 @@ namespace ForestReco
 		{
 			if (!CProjectData.detectTrees) { return; }
 
+			const int debugFrequency = 10000;
+
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
+				if (i % debugFrequency == 0)
+				{
+					Console.WriteLine("\nAdded point " + i + " out of " + CProjectData.vegePoints.Count);
+				}
 			}
 
 			if (CProjectData.exportPoints)
@@ -214,17 +224,14 @@ namespace ForestReco
 			}
 		}
 
-		private static List<Vector3> ClassifyPoints(List<Tuple<EClass, Vector3>> pParsedLines)
+		private static void ClassifyPoints(List<Tuple<EClass, Vector3>> pParsedLines)
 		{
-			List<Vector3> classPoints = new List<Vector3>();
-
 			int pointsToAddCount = pParsedLines.Count;
 			for (int i = 0; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
 				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
 				CProjectData.AddPoint(parsedLine);
 			}
-			return classPoints;
 		}
 	}
 }

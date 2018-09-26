@@ -15,11 +15,15 @@ namespace ForestReco
 	{
 		public static string saveFileName;
 
+		public static int maxLinesToLoad;
+
 		//during one session is always processed one array file
 		//public static List<Vector3> allPoints = new List<Vector3>();
 		public static List<Vector3> groundPoints = new List<Vector3>();
 		public static List<Vector3> vegePoints = new List<Vector3>();
 		public static CGroundArray array;
+		public static float groundArrayStep;
+
 		public static CHeaderInfo header;
 
 		public static List<Obj> objsToExport = new List<Obj>();
@@ -38,6 +42,7 @@ namespace ForestReco
 		public static bool setArray;
 		public static bool exportArray;
 		public static bool fillArray;
+		public static int maxFillArrayIterations;
 
 		public static bool exportPoints;
 		public static bool exportTrees;

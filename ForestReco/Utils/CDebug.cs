@@ -61,7 +61,7 @@ namespace ForestReco
 				"","","","","","","","","","","","","","","",
 				"0 0 0", "0 0 0" , "0 0 0" , "0 0 0"
 			});
-			CProjectData.array = new CGroundArray(1);
+			CProjectData.array = new CGroundArray();
 
 			if (pConstantHeight)
 			{
