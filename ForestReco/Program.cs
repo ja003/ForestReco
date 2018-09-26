@@ -30,11 +30,12 @@ namespace ForestReco
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
 			CProjectData.tryMergeTrees = true;
-			CProjectData.mergeContaingTrees = false;
-			CProjectData.mergeBelongingTrees = false;
+			CProjectData.mergeContaingTrees = false; //todo: not used anymore
+			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
 			CProjectData.mergeGoodAddFactorTrees = true;
+			CProjectData.detectInvalidTrees = true;
 
-			CProjectData.processTrees = false;
+			CProjectData.processTrees = false; //todo: not used anymore
 
 			CProjectData.setArray = true;
 			CProjectData.fillArray = true;

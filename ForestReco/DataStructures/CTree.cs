@@ -341,6 +341,13 @@ namespace ForestReco
 		}
 
 		//BOOLS
+		
+		public bool IsValid()
+		{
+			float height = GetTreeHeight();
+			Console.WriteLine("VALID " + treeIndex + " height = " + height + " pointCount = " + Points.Count);
+			return Points.Count > 10;
+		}
 
 		public override bool Contains(Vector3 pPoint)
 		{

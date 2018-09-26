@@ -9,6 +9,7 @@ namespace ForestReco
 	public static class CTreeManager
 	{
 		public static List<CTree> Trees { get; } = new List<CTree>();
+		public static List<CTree> InvalidTrees { get; } = new List<CTree>();
 
 		public const float DEFAULT_TREE_EXTENT = 1.5f;
 		//public const float DEFAULT_TREE_EXTENT = 1f;
@@ -391,6 +392,20 @@ namespace ForestReco
 			return higherTree;
 		}
 
+		public static void DetectInvalidTrees()
+		{
+			Console.WriteLine("DetectInvalidTrees");
+
+			for (int i = Trees.Count - 1; i >= 0; i--)
+			{
+				CTree tree = Trees[i];
+				if (!tree.IsValid())
+				{
+					InvalidTrees.Add(tree);
+					Trees.RemoveAt(i);
+				}
+			}
+		}
 
 		public static void ProcessAllTrees()
 		{
@@ -418,6 +433,12 @@ namespace ForestReco
 				Obj tObj = t.GetObj("tree_" + t.treeIndex, true, false);
 				CProjectData.objsToExport.Add(tObj);
 			}
+			foreach (CTree t in InvalidTrees)
+			{
+				//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
+				Obj tObj = t.GetObj("invalidTree_" + t.treeIndex, true, false);
+				CProjectData.objsToExport.Add(tObj);
+			}
 		}
 
 		public static void WriteResult()
@@ -433,5 +454,6 @@ namespace ForestReco
 			}
 		}
 
+		
 	}
 }
