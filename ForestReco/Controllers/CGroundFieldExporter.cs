@@ -126,7 +126,7 @@ namespace ForestReco
 					}
 				}
 			}
-			Console.WriteLine("faceCount = " + faceCount);
+			//Console.WriteLine("faceCount = " + faceCount);
 
 			return obj;
 			//WriteObjFile(pOutputFileName, obj);

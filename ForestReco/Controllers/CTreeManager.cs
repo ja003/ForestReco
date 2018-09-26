@@ -40,6 +40,8 @@ namespace ForestReco
 		public static bool DEBUG = false;
 		private static int pointCounter;
 
+		private const int MAX_DEBUG_COUNT = 30;
+
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
 			//DebugPoint(pPoint, pPointIndex);
@@ -72,8 +74,15 @@ namespace ForestReco
 			}
 			else
 			{
-				Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " +
-					pPoint + ". Best factor = " + bestAddPointFactor);
+				if (treeIndex < MAX_DEBUG_COUNT)
+				{
+					Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " +
+					                  pPoint + ". Best factor = " + bestAddPointFactor);
+				}
+				if (treeIndex == MAX_DEBUG_COUNT)
+				{
+					Console.WriteLine("....");
+				}
 				Trees.Add(new CTree(pPoint, treeIndex));
 				treeIndex++;
 			}
@@ -206,7 +215,7 @@ namespace ForestReco
 		public static void TryMergeAllTrees()
 		{
 			DateTime mergeStartTime = DateTime.Now;
-			Console.WriteLine("TryMergeAllTrees. Start = " + mergeStartTime);
+			Console.WriteLine("\nTryMergeAllTrees. Start = " + mergeStartTime);
 
 			Trees.Sort((x, y) => y.peak.Center.Y.CompareTo(x.peak.Center.Y));
 
@@ -214,20 +223,20 @@ namespace ForestReco
 
 			if (CProjectData.mergeContaingTrees)
 			{
-				Console.WriteLine("\n MergeContainingTrees");
+				//Console.WriteLine("\n MergeContainingTrees");
 				MergeContainingTrees();
 			}
 			if (CProjectData.mergeBelongingTrees)
 			{
-				Console.WriteLine("\n MergeBelongingTrees");
+				//Console.WriteLine("\n MergeBelongingTrees");
 				MergeBelongingTrees();
 			}
 			if (CProjectData.mergeGoodAddFactorTrees)
 			{
-				Console.WriteLine("\n MergeGoodAddFactorTrees");
+				//Console.WriteLine("\n MergeGoodAddFactorTrees");
 				MergeGoodAddFactorTrees();
 			}
-			Console.WriteLine("\nTrees merged | duration = " + (DateTime.Now - mergeStartTime));
+			Console.WriteLine("Trees merged | duration = " + (DateTime.Now - mergeStartTime).TotalSeconds);
 			Console.WriteLine("Number of trees merged = " + (treeCountBeforeMerge - Trees.Count));
 		}
 
@@ -279,10 +288,10 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				if (tree.treeIndex == 90)
-				{
-					Console.WriteLine("!");
-				}
+				//if (tree.treeIndex == 90)
+				//{
+				//	Console.WriteLine("!");
+				//}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Belongs);
 
@@ -310,10 +319,10 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				if (tree.treeIndex == 3)
-				{
-					Console.WriteLine("!");
-				}
+				//if (tree.treeIndex == 3)
+				//{
+				//	Console.WriteLine("!");
+				//}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Contains);
 
@@ -356,10 +365,6 @@ namespace ForestReco
 			bool angleOK = angle < maxBranchAngle;
 			//bool lowerPeakIsInsideHigherTree = higherTree.Contains(lowerTreePeak);
 
-			if (higherTree.treeIndex == 9 && lowerTree.treeIndex == 20)
-			{
-				Console.Write("!");
-			}
 			//measure how much does lower tree overlap with higher tree
 			float overlapRatio = CUtils.GetOverlapRatio(lowerTree, higherTree);
 			bool overlapRatioOK = overlapRatio > 0.5f;
@@ -426,7 +431,7 @@ namespace ForestReco
 
 		public static void ExportTrees()
 		{
-			Console.WriteLine("\nAdd trees to export " + Trees.Count + " | " + DateTime.Now);
+			Console.WriteLine("\nAdd trees to export ");
 			foreach (CTree t in Trees)
 			{
 				//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
@@ -443,17 +448,17 @@ namespace ForestReco
 
 		public static void WriteResult()
 		{
+			Console.WriteLine("\n===============\n");
 			foreach (CTree t in Trees)
 			{
 				Console.WriteLine(Trees.IndexOf(t).ToString("00") + ": " + t);
-				if (Trees.IndexOf(t) > 100)
+				if (Trees.IndexOf(t) > MAX_DEBUG_COUNT)
 				{
-					Console.WriteLine("too much...");
+					Console.WriteLine("too much to debug...total = " + Trees.Count);
 					return;
 				}
 			}
+			Console.WriteLine("\n===============\n");
 		}
-
-		
 	}
 }

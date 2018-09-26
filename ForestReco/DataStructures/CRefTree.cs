@@ -29,7 +29,7 @@ namespace ForestReco
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false, false);
 				AddPointsFromLines(parsedLines);
 				DateTime processStartTime = DateTime.Now;
-				Console.WriteLine("Process. Start = " + processStartTime);
+				Console.WriteLine("\nProcess. Start = " + processStartTime);
 				Process();
 				Console.WriteLine("Processed | duration = " + (DateTime.Now - processStartTime));
 			}
@@ -43,8 +43,10 @@ namespace ForestReco
 
 			if (!File.Exists(refTreePath))
 			{
-				Console.WriteLine("Ref tree " + refTreePath + " OBJ does not exist. Try reduced file.");
-				refTreePath = GetRefTreePath(pFileName + "_reduced.obj");
+				Console.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
+				string reducedObjFileName = pFileName + "_reduced.obj";
+				Console.WriteLine("Try reduced file: " + reducedObjFileName);
+				refTreePath = GetRefTreePath(reducedObjFileName);
 				if (!File.Exists(refTreePath))
 				{
 					Console.WriteLine("ERROR: No ref tree OBJ found!");
@@ -143,7 +145,7 @@ namespace ForestReco
 		public static CRefTree Deserialize(string pFileName)
 		{
 			string filePath = GetRefTreePath(pFileName + ".reftree");
-			Console.WriteLine("Deserialize. filePath = " + filePath);
+			Console.WriteLine("\nDeserialize. filePath = " + filePath);
 
 			if (!File.Exists(filePath))
 			{
@@ -191,7 +193,7 @@ namespace ForestReco
 		protected override void OnProcess()
 		{
 			string filePath = GetRefTreePath(Obj.Name + ".reftree");
-			Console.WriteLine("filePath = " + filePath);
+			Console.WriteLine("\nfilePath = " + filePath);
 
 			if (File.Exists(filePath))
 			{
@@ -200,7 +202,7 @@ namespace ForestReco
 			}
 
 			DateTime processStartTime = DateTime.Now;
-			Console.WriteLine("Serialization. Start = " + processStartTime);
+			Console.WriteLine("Serialization");
 			List<string> serializedTree = Serialize();
 
 			using (StreamWriter file = new StreamWriter(filePath, false))
@@ -211,8 +213,7 @@ namespace ForestReco
 				}
 			}
 			Console.WriteLine("Serialized | duration = " + (DateTime.Now - processStartTime));
-
-			Console.WriteLine("filePath = " + filePath);
+			Console.WriteLine("saved to: " + filePath);
 		}
 
 		//INIT PROCESSING
@@ -234,8 +235,9 @@ namespace ForestReco
 
 			if (!File.Exists(refTreeTxtPath))
 			{
-				Console.WriteLine("Ref tree " + refTreeTxtPath + " TXT does not exist. Try reduced file.");
+				Console.WriteLine("Ref tree " + refTreeTxtPath + " TXT does not exist.");
 				refTreeTxtPath = GetRefTreePath(pFileName + "_F_1+2.txt");
+				Console.WriteLine("Try file: " + refTreeTxtPath);
 				if (!File.Exists(refTreeTxtPath))
 				{
 					Console.WriteLine("ERROR: No ref tree TXT found!");

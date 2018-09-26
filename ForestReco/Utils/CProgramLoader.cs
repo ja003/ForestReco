@@ -109,8 +109,9 @@ namespace ForestReco
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
-			Console.WriteLine("\nInvalidTrees = " + CTreeManager.InvalidTrees.Count);
+			Console.WriteLine("InvalidTrees = " + CTreeManager.InvalidTrees.Count);
 
+			//todo: deprecated
 			if (CProjectData.processTrees)
 			{
 				CTreeManager.ProcessAllTrees(); 
@@ -123,12 +124,9 @@ namespace ForestReco
 
 			if (CProjectData.useRefTrees)
 			{
-				Console.WriteLine("Add tree obj models " + " | " + DateTime.Now);
-
-				List<Obj> trees = CRefTreeManager.GetTreeObjs();
+				List<Obj> trees = CRefTreeManager.GetRefTreeObjs();
 				CProjectData.objsToExport.AddRange(trees);
 			}
-
 		}
 
 		private static void FillArray()
@@ -142,7 +140,7 @@ namespace ForestReco
 			int counter = 0;
 			while (!CProjectData.array.IsAllDefined())
 			{
-				Console.WriteLine("FillMissingHeights " + counter);
+				Console.WriteLine("\nFillMissingHeights " + counter);
 				CProjectData.array.FillMissingHeights();
 				counter++;
 				if (counter > 2)
@@ -164,7 +162,7 @@ namespace ForestReco
 			ProcessGroundPoints();
 			ProcessVegePoints();
 
-			Console.WriteLine("All points added | duration = " + (DateTime.Now - processStartTime));
+			Console.WriteLine("\nAll points added | duration = " + (DateTime.Now - processStartTime).TotalSeconds);
 		}
 
 		private static void ProcessVegePoints()

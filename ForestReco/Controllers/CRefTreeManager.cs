@@ -33,8 +33,12 @@ namespace ForestReco
 			}
 		}
 
-		public static List<Obj> GetTreeObjs()
+		public static List<Obj> GetRefTreeObjs()
 		{
+
+			DateTime addTreeObjModelsStart = DateTime.Now;
+			Console.WriteLine("\nGet ref tree models");
+
 			List<Obj> treeObjs = new List<Obj>();
 
 			//int maxRefTreePointsCount = 1;
@@ -68,13 +72,21 @@ namespace ForestReco
 					}
 				}*/
 			}
-
+			
+			Console.WriteLine("Get ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
 
 			return treeObjs;
 		}
 
 		private static void LoadTrees(List<string> pFileNames)
 		{
+			DateTime loadTreesStartTime = DateTime.Now;
+			Console.WriteLine("Load ref trees: ");
+			foreach (string fileName in pFileNames)
+			{
+				Console.WriteLine(" - " + fileName);
+			}
+
 			foreach (string fileName in pFileNames)
 			{
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
@@ -83,6 +95,7 @@ namespace ForestReco
 				Trees.Add(refTree);
 				Console.WriteLine("Loaded tree: " + fileName);
 			}
+			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
 		}
 
 		private static int counter;

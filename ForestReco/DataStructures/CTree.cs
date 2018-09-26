@@ -349,12 +349,11 @@ namespace ForestReco
 		/// </summary>
 		public bool IsValid(bool pAllBranchDefined)
 		{
-			float height = GetTreeHeight();
-
-			if (treeIndex == 12)
-			{
-				Console.WriteLine("!");
-			}
+			//float height = GetTreeHeight();
+			//if (treeIndex == 12)
+			//{
+			//	Console.WriteLine("!");
+			//}
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
 			{
@@ -366,7 +365,7 @@ namespace ForestReco
 				branchDefinedFactor += branchFactor;
 			}
 			float validFactor = branchDefinedFactor / branches.Count;
-			Console.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
+			//Console.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
 			return validFactor > 0.5f;
 		}
 

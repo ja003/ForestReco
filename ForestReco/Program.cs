@@ -41,13 +41,13 @@ namespace ForestReco
 			CProjectData.fillArray = true;
 			CProjectData.exportArray = true;
 
-			CProjectData.loadRefTrees = false;
-			CProjectData.useRefTrees = false;
+			CProjectData.loadRefTrees = true;
+			CProjectData.useRefTrees = true;
 
 			CProjectData.exportPoints = true;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 
@@ -67,12 +67,11 @@ namespace ForestReco
 			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 			
-			Console.WriteLine("\n===============\n");
 			CTreeManager.WriteResult();
 
-			Console.WriteLine("ExportObjsToExport");
 			CObjExporter.ExportObjsToExport();
 
+			Console.WriteLine("\n==============\n");
 			Console.WriteLine("Press any key to exit." + " | Complete time = " + (DateTime.Now - start).TotalSeconds + " seconds");
 			Console.ReadKey();
 		}
