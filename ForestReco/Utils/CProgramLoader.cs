@@ -119,8 +119,6 @@ namespace ForestReco
 				CProjectData.objsToExport.AddRange(trees);
 			}
 
-
-
 		}
 
 		private static void FillArray()

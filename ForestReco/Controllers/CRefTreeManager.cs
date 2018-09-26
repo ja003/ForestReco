@@ -35,6 +35,7 @@ namespace ForestReco
 		{
 			List<Obj> treeObjs = new List<Obj>();
 
+			int maxRefTreePointsCount = 1;
 			foreach (CTree t in CTreeManager.Trees)
 			{
 				Console.WriteLine("\n mostSuitableRefTree");
@@ -48,10 +49,25 @@ namespace ForestReco
 				counter++;
 
 				Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree);
-
-
+				
 				treeObjs.Add(suitableTree);
+
+				//export of refTree points. not very effective, data are not centered and positioning them
+				//correctly would be a bit complicated
+				/*if (CProjectData.exportPoints)
+				{
+					if (maxRefTreePointsCount > 0)
+					{
+						maxRefTreePointsCount--;
+						Obj refTreesPoints = new Obj("refTreesPoints");
+						CObjExporter.AddPointsToObj(ref refTreesPoints, mostSuitableRefTree.Points,
+							-mostSuitableRefTree.botCenter + suitableTree.Position, false);
+						CProjectData.objsToExport.Add(refTreesPoints);
+					}
+				}*/
 			}
+			
+
 			return treeObjs;
 		}
 

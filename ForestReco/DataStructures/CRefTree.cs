@@ -61,7 +61,6 @@ namespace ForestReco
 
 			branches = new List<CBranch>();
 			List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
-			stem = new CBranch(this, 0, 0);
 
 			foreach (string line in pSerializedLines)
 			{
@@ -93,6 +92,7 @@ namespace ForestReco
 						break;
 					case DeserialiseMode.Peak:
 						peak = CPeak.Deserialize(line);
+						stem = new CBranch(this, 0, 0);
 						break;
 					case DeserialiseMode.Branches:
 						if (line.Contains("branch "))
@@ -111,7 +111,9 @@ namespace ForestReco
 						}
 						else
 						{
-							_treepointsOnBranch.Add(CTreePoint.Deserialize(line));
+							CTreePoint treePointOnBranch = CTreePoint.Deserialize(line);
+							_treepointsOnBranch.Add(treePointOnBranch);
+							Points.Add(treePointOnBranch.Center);
 						}
 						break;
 					case DeserialiseMode.Stem:

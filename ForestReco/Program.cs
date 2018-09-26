@@ -40,10 +40,10 @@ namespace ForestReco
 			CProjectData.fillArray = true;
 			CProjectData.exportArray = true;
 
-			CProjectData.loadRefTrees = false;
-			CProjectData.useRefTrees = false;
+			CProjectData.loadRefTrees = true;
+			CProjectData.useRefTrees = true;
 
-			CProjectData.exportPoints = false;
+			CProjectData.exportPoints = true;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";

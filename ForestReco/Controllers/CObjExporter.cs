@@ -18,16 +18,22 @@ namespace ForestReco
 		public static void ExportPoints(List<Vector3> pPoints, string pFileName)
 		{
 			Obj obj = new Obj(pFileName);
-			AddPointsToObj(ref obj, pPoints);
+			AddPointsToObj(ref obj, pPoints, Vector3.Zero);
 			ExportObj(obj, pFileName);
 		}
 
 		public static void AddPointsToObj(ref Obj obj, List<Vector3> pPoints)
 		{
+			AddPointsToObj(ref obj, pPoints, Vector3.Zero);
+		}
+
+		public static void AddPointsToObj(ref Obj obj, List<Vector3> pPoints, Vector3 pOffset, bool pMoveToCenter = true)
+		{
 			foreach (Vector3 p in pPoints)
 			{
 				Vector3 clonePoint = p;
-				MoveToCenter(ref clonePoint);
+				if (pMoveToCenter) { MoveToCenter(ref clonePoint); }
+				else { MoveByOffset(ref clonePoint, pOffset); }
 
 				Vertex v1 = new Vertex(clonePoint, obj.GetNextVertexIndex());
 				obj.AddVertex(v1);
@@ -58,7 +64,7 @@ namespace ForestReco
 				if(p.Points.Count < 2){ continue; }
 
 				//bot side
-				AddPointsToObj(ref obj, p.GetBBPoints());
+				AddPointsToObj(ref obj, p.GetBBPoints(), Vector3.Zero);
 				AddLineToObj(ref obj, p.b000, p.b100);
 				AddLineToObj(ref obj, p.b100, p.b101);
 				AddLineToObj(ref obj, p.b101, p.b001);
@@ -195,6 +201,11 @@ namespace ForestReco
 			pPoint = GetMovedPoint(pPoint);
 			//pPoint -= arrayCenter;
 			//pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 2 * pPoint.Z);
+		}
+
+		private static void MoveByOffset(ref Vector3 pPoint, Vector3 pOffset)
+		{
+			pPoint += pOffset;
 		}
 
 		public static Vector3 GetMovedPoint(Vector3 pPoint)
