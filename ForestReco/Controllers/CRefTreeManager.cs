@@ -11,6 +11,8 @@ namespace ForestReco
 	{
 		public static List<CRefTree> Trees = new List<CRefTree>();
 
+		public static bool DEBUG = false;
+
 		public static void Init()
 		{
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
@@ -35,10 +37,10 @@ namespace ForestReco
 		{
 			List<Obj> treeObjs = new List<Obj>();
 
-			int maxRefTreePointsCount = 1;
+			//int maxRefTreePointsCount = 1;
 			foreach (CTree t in CTreeManager.Trees)
 			{
-				Console.WriteLine("\n mostSuitableRefTree");
+				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
 
 				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
 
@@ -48,8 +50,8 @@ namespace ForestReco
 				suitableTree.Name += "_" + counter;
 				counter++;
 
-				Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree);
-				
+				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
+
 				treeObjs.Add(suitableTree);
 
 				//export of refTree points. not very effective, data are not centered and positioning them
@@ -66,7 +68,7 @@ namespace ForestReco
 					}
 				}*/
 			}
-			
+
 
 			return treeObjs;
 		}
@@ -105,7 +107,7 @@ namespace ForestReco
 			//counter++;
 			return mostSuitableTree;
 		}
-		
+
 		/// <summary>
 		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
 		/// </summary>
@@ -137,10 +139,13 @@ namespace ForestReco
 
 			pRefTree.Obj.Rotation = new Vector3(0, -CTreeMath.GetOffsetAngleTo(pRefTree, pTargetTree), 0);
 
-			Console.WriteLine(counter +
-				"[" + pRefTree.Obj.Position + "], " +
-				"[" + pRefTree.Obj.Rotation + "]" +
-				". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
+			if (DEBUG)
+			{
+				Console.WriteLine(counter +
+					"[" + pRefTree.Obj.Position + "], " +
+					"[" + pRefTree.Obj.Rotation + "]" +
+					". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
+			}
 		}
 	}
 }

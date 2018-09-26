@@ -41,21 +41,8 @@ namespace ForestReco
 
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
-			//CTreePoint treePoint = new CTreePoint(pPoint);
+			//DebugPoint(pPoint, pPointIndex);
 
-			//if (pPointIndex == 32)
-			if (pPointIndex == 423)
-			{
-				Console.Write("!");
-			}
-			Vector3 debugPoint = CObjExporter.GetMovedPoint(pPoint);
-			debugPoint.Z *= -1;
-			if (Vector3.Distance(debugPoint, new Vector3(-6.39f, 14.248f, 6.87f)) < .1f)
-			{
-				Console.Write("!");
-			}
-
-			if (DEBUG) Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint);
 			pointCounter++;
 			CTree selectedTree = null;
 
@@ -64,26 +51,25 @@ namespace ForestReco
 			float bestAddPointFactor = 0;
 			foreach (CTree t in possibleTrees)
 			{
-				if (DEBUG) Console.WriteLine("- try add to : " + t.ToString(false, false, true, false));
-				//CTreePoint peak = t.peak;
+				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(false, false, true, false)); }
+
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
 				if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
 				{
 					selectedTree = t;
 					bestAddPointFactor = addPointFactor;
 				}
-				/*if (t.TryAddPoint(pPoint, false))
-				{
-					selectedTree = t;
-					break;
-				}*/
 			}
 			if (selectedTree != null)
 			{
-				if (DEBUG) { Console.WriteLine(bestAddPointFactor + " SELECTED TREE " + selectedTree + " for " + pPointIndex + ": " + pPoint); }
+				if (DEBUG)
+				{
+					Console.WriteLine(bestAddPointFactor + " SELECTED TREE " +
+						selectedTree + " for " + pPointIndex + ": " + pPoint);
+				}
 				selectedTree.AddPoint(pPoint);
 			}
-			else// if (selectedTree == null)
+			else
 			{
 				Console.WriteLine("TREE " + treeIndex + ": " + pPointIndex + " new tree " +
 					pPoint + ". Best factor = " + bestAddPointFactor);
@@ -94,6 +80,24 @@ namespace ForestReco
 			if (Trees.Count == 1 && pPointIndex != Trees[0].Points.Count - 1)
 			{
 				Console.WriteLine(pPointIndex + "Error. Incorrect point count. " + pPoint);
+			}
+		}
+
+		private static void DebugPoint(Vector3 pPoint, int pPointIndex)
+		{
+			if (DEBUG) { Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint); }
+
+			//if (pPointIndex == 32)
+			if (pPointIndex == 423)
+			{
+				Console.Write("!");
+			}
+
+			Vector3 debugPoint = CObjExporter.GetMovedPoint(pPoint);
+			debugPoint.Z *= -1;
+			if (Vector3.Distance(debugPoint, new Vector3(-6.39f, 14.248f, 6.87f)) < .1f)
+			{
+				Console.Write("!");
 			}
 		}
 
@@ -192,7 +196,7 @@ namespace ForestReco
 			Belongs, //finds trees, in which given point belongs
 			ClosestHigher, //finds closest trees which are higher than given point
 			Contains, //finds trees, which contains given point
-			//GoodAddFactor
+					  //GoodAddFactor
 		}
 
 
@@ -204,6 +208,8 @@ namespace ForestReco
 			Console.WriteLine("TryMergeAllTrees. Start = " + mergeStartTime);
 
 			Trees.Sort((x, y) => y.peak.Center.Y.CompareTo(x.peak.Center.Y));
+
+			int treeCountBeforeMerge = CTreeManager.Trees.Count;
 
 			if (CProjectData.mergeContaingTrees)
 			{
@@ -220,8 +226,8 @@ namespace ForestReco
 				Console.WriteLine("\n MergeGoodAddFactorTrees");
 				MergeGoodAddFactorTrees();
 			}
-
 			Console.WriteLine("\nTrees merged | duration = " + (DateTime.Now - mergeStartTime));
+			Console.WriteLine("Number of trees merged = " + (treeCountBeforeMerge - Trees.Count));
 		}
 
 		/// <summary>
@@ -233,14 +239,14 @@ namespace ForestReco
 			{
 				if (i >= Trees.Count)
 				{
-					Console.WriteLine("Tree was deleted");
+					//Console.WriteLine("Tree was deleted");
 					continue;
 				}
 				CTree tree = Trees[i];
-				if (tree.treeIndex == 71)
-				{
-					Console.WriteLine("!");
-				}
+				//if (tree.treeIndex == 71)
+				//{
+				//	Console.WriteLine("!");
+				//}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.ClosestHigher);
 				Vector3 pPoint = tree.peak.Center;
@@ -377,7 +383,7 @@ namespace ForestReco
 			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
 
-			Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+			//Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
 
 			higherTree.MergeWith(lowerTree);
 			Trees.Remove(lowerTree);

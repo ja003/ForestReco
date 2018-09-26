@@ -39,7 +39,7 @@ namespace ForestReco
 					definedSimilarityCount++;
 				}
 			}
-			Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
+			//Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
 
 			if (definedSimilarityCount == 0)
 			{
@@ -48,7 +48,7 @@ namespace ForestReco
 			}
 			similarity /= definedSimilarityCount;
 
-			Console.WriteLine("similarity = " + similarity + ". defined = " + definedSimilarityCount + "\n--------");
+			//Console.WriteLine("similarity = " + similarity + ". defined = " + definedSimilarityCount + "\n--------");
 
 			return similarity;
 		}
@@ -109,7 +109,7 @@ namespace ForestReco
 					bestMatchBranch = b;
 				}
 			}
-			Console.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
+			//Console.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
 			return bestMatchBranch;
 		}
 
