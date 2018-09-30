@@ -54,7 +54,7 @@ namespace ForestReco
 			float bestAddPointFactor = 0;
 			foreach (CTree t in possibleTrees)
 			{
-				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(false, false, true, false)); }
+				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(false, false, true, false, false)); }
 
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
 				if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)

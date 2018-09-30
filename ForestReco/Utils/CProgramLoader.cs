@@ -130,6 +130,10 @@ namespace ForestReco
 			{
 				CTreeManager.ExportTrees();
 			}
+			if (CProjectData.exportRefTrees)
+			{
+				CRefTreeManager.ExportTrees();
+			}
 
 			if (CProjectData.useRefTrees)
 			{

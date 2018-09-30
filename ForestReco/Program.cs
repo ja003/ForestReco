@@ -29,9 +29,10 @@ namespace ForestReco
 
 			CProjectData.maxLinesToLoad = 1000000;
 
-
+			//TREES
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
+			//merge
 			CProjectData.tryMergeTrees = true;
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
@@ -47,10 +48,13 @@ namespace ForestReco
 			CProjectData.groundArrayStep = 1;
 			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
+
+			//REF TREES
 			CProjectData.loadRefTrees = true;
 			CProjectData.useRefTrees = true;
 			CProjectData.useReducedRefTreeObjs = true;
-			//
+			CProjectData.exportRefTrees = false; //debug shape of processed ref trees. WARNING: BIG FILE
+			//xyz
 			CProjectData.refTreeFirst = true;
 			CProjectData.refTreeLast = true;
 			CProjectData.refTreeFront = true;
@@ -60,7 +64,7 @@ namespace ForestReco
 
 
 			CProjectData.exportPoints = true;
-			CProjectData.exportRefTreePoints = false; //to debug reftree shape
+			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";

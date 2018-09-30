@@ -18,22 +18,21 @@ namespace ForestReco
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
-				"R1",
-				"R2",
-				"R3",
-				"R4",
-				"R5",
-				"R6",
+				//"R1",
+				//"R2",
+				//"R3",
+				//"R4",
+				//"R5",
+				//"R6",
 				"R7",
-				"R8",
-				"R9",
-				"R10",
-				"R11",
-				"R12",
-				"R13",
-				"R14",
-				"R15",
-				//"debug_tree_06"
+				//"R8",
+				//"R9",
+				//"R10",
+				//"R11",
+				//"R12",
+				//"R13",
+				//"R14",
+				//"R15",
 			};
 
 			if (CProjectData.loadRefTrees)
@@ -55,15 +54,15 @@ namespace ForestReco
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
 
-				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
+				t.mostSuitableRefTree = GetMostSuitableRefTree(t);
 
-				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
+				SetRefTreeObjTransform(ref t.mostSuitableRefTree, t);
 
-				Obj suitableTree = mostSuitableRefTree.Obj.Clone();
+				Obj suitableTree = t.mostSuitableRefTree.Obj.Clone();
 				suitableTree.Name += "_" + counter;
 				counter++;
 
-				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
+				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + t.mostSuitableRefTree); }
 
 				treeObjs.Add(suitableTree);
 
@@ -137,6 +136,17 @@ namespace ForestReco
 			//suitableTree.Name += "_" + counter;
 			//counter++;
 			return mostSuitableTree;
+		}
+
+		public static void ExportTrees()
+		{
+			Console.WriteLine("\nAdd ref trees to export ");
+			foreach (CRefTree t in Trees)
+			{
+				//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
+				Obj tObj = t.GetObj("refTree_" + t.Obj.Name, true, false);
+				CProjectData.objsToExport.Add(tObj);
+			}
 		}
 
 		/// <summary>

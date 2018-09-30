@@ -32,6 +32,8 @@ namespace ForestReco
 
 		public List<Vector3> Points = new List<Vector3>();
 
+		public CRefTree mostSuitableRefTree;
+
 		//INIT
 
 		public CTree() { }
@@ -57,7 +59,7 @@ namespace ForestReco
 
 			AddPoint(pPoint);
 		}
-		
+
 		//MOST IMPORTANT
 
 		/// <summary>
@@ -96,7 +98,7 @@ namespace ForestReco
 			}
 			return false;
 		}
-		
+
 		public float GetAddPointFactor(Vector3 pPoint, bool pUseDistToPeakDiff)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
@@ -121,8 +123,11 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
-			if (CTreeManager.DEBUG) Console.WriteLine(this.ToString(false, false, true, false) + " MergeWith " +
-													  pSubTree.ToString(false, false, true, false));
+			if (CTreeManager.DEBUG)
+			{
+				Console.WriteLine(this.ToString(false, false, true, false, false) + " MergeWith " +
+					pSubTree.ToString(false, false, true, false, false));
+			}
 			//todo: make effective
 			if (pSubTree.Equals(this))
 			{
@@ -495,16 +500,18 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToString(true, true, true, false);
+			return ToString(true, true, true, false, true);
 		}
 
-		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches)
+		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree)
 		{
 			string indexS = pIndex ? treeIndex.ToString("000") : "";
 			string pointsS = pPoints ? (" [" + GetAllPoints().Count.ToString("000") + "]") : "";
 			string peakS = pPeak ? "||peak = " + peak : "";
 			string branchesS = pBranches ? "||BR=" + GetBranchesCount() +
 				"[" + GetBranchesPointCount().ToString("000") + "]" + "_|" : "";
+			string refTreeS = pReftree && mostSuitableRefTree != null ? "||reftree = " + mostSuitableRefTree.fileName : "";
+
 			if (pBranches)
 			{
 				foreach (CBranch b in branches)
@@ -513,7 +520,7 @@ namespace ForestReco
 					branchesS += b;
 				}
 			}
-			return indexS + pointsS + peakS + branchesS;
+			return indexS + pointsS + peakS + branchesS + refTreeS;
 		}
 
 		//OTHERS

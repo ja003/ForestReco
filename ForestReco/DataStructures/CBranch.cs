@@ -204,7 +204,7 @@ namespace ForestReco
 
 			RefreshFurthestPoint(pPoint);
 
-			for (int i = 0; i < TreePoints.Count; i++)
+			/*for (int i = 0; i < TreePoints.Count; i++)
 			{
 				CTreePoint pointOnBranch = TreePoints[i];
 				if (pointOnBranch.Includes(pPoint))
@@ -220,7 +220,19 @@ namespace ForestReco
 					if (CTreeManager.DEBUG) { Console.WriteLine("---- inserted at " + i); }
 					return;
 				}
+			}*/
+			//improve: try add just to last
+			if (TreePoints.Count > 0)
+			{
+				CTreePoint pointOnBranch = TreePoints.Last();
+				if (pointOnBranch.Includes(pPoint))
+				{
+					pointOnBranch.AddPoint(pPoint);
+					if (CTreeManager.DEBUG) {Console.WriteLine("---- added at " + TreePoints.IndexOf(pointOnBranch));}
+					return;
+				}
 			}
+			
 			CTreePoint newPoint = new CTreePoint(pPoint);
 			TreePoints.Add(newPoint);
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }

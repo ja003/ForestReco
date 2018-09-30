@@ -68,6 +68,7 @@ namespace ForestReco
 		public CRefTree(string pFileName, string[] pSerializedLines)
 		{
 			DeserialiseMode currentMode = DeserialiseMode.None;
+			fileName = pFileName;
 
 			branches = new List<CBranch>();
 			List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
