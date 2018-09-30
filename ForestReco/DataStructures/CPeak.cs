@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace ForestReco
@@ -28,15 +27,19 @@ namespace ForestReco
 
 		public override bool Includes(Vector3 pPoint, float pToleranceMultiply = 1)
 		{
+			float yDiff = Math.Abs(Center.Y - pPoint.Y);
+			if (yDiff > MAX_PEAK_Y_DIFF) { return false;} //just try if it makes processing faster
 			return base.Includes(pPoint, pToleranceMultiply) || IsPartOfPeak(pPoint);
 		}
+
+		private const float MAX_PEAK_Y_DIFF = 0.25f;
 
 		private bool IsPartOfPeak(Vector3 pPointCenter)
 		{
 			float distance2D = CUtils.Get2DDistance(Center, pPointCenter);
 			float yDiff = Math.Abs(Center.Y - pPointCenter.Y);
 			//return distance2D < CTreeManager.GetMinPeakDistance(1) && yDiff < 0.25f;
-			return distance2D < MAX_PEAK_EXTENT && yDiff < 0.25f;
+			return distance2D < MAX_PEAK_EXTENT && yDiff < MAX_PEAK_Y_DIFF;
 		}
 
 		private const float MAX_PEAK_EXTENT = 1;

@@ -358,6 +358,8 @@ namespace ForestReco
 			//lines are sorted. first point is peak for sure
 			Init(pParsedLines[0].Item2, treeIndex);
 
+			DateTime lineStartTime = DateTime.Now;
+
 			for (int i = 1; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
 				//DateTime lineStartTime = DateTime.Now;
@@ -370,7 +372,12 @@ namespace ForestReco
 
 				//TimeSpan duration = DateTime.Now - lineStartTime;
 				//if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }
-				if (i % 100000 == 0) { Console.WriteLine("added point: " + i + "/" + pParsedLines.Count); }
+				if (i % 100000 == 0)
+				{
+					TimeSpan duration = DateTime.Now - lineStartTime; 
+					Console.WriteLine("added point: " + i + "/" + pParsedLines.Count + ". time = " + duration.TotalSeconds);
+					lineStartTime = DateTime.Now;
+				}
 			}
 			Console.WriteLine("All points added | duration = " + (DateTime.Now - addStartTime));
 		}
