@@ -228,8 +228,9 @@ namespace ForestReco
 				return null;
 			}
 			//todo: decide which height to return on default
+			return MinGround;
 			//return MaxGround;
-			return GetHeightAverage();
+			//return GetHeightAverage();
 		}
 
 		public int GetDistanceTo(CGroundField pGroundField)

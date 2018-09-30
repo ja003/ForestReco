@@ -38,6 +38,15 @@ namespace ForestReco
 		
 		public static bool loadRefTrees;
 		public static bool useRefTrees;
+		public static bool useReducedRefTreeObjs;
+
+		public static bool refTreeFirst = true;
+		public static bool refTreeLast = true;
+		public static bool refTreeFront = true;
+		public static bool refTreeBack = true;
+		public static bool refTreeJehlici = true;
+		public static bool refTreeKmeny = true;
+		
 
 		public static bool setArray;
 		public static bool exportArray;

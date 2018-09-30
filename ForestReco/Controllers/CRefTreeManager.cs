@@ -18,12 +18,9 @@ namespace ForestReco
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
-				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy.obj",
-				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\tree_dummy_02.obj",
-				//@"D:\ja004\OneDrive - MUNI\ŠKOLA [old]\SDIPR\podklady\tree_models\m1__2013-01-04_00-54-51.obj",
-				//podkladyPath + @"\tree_models\m1_reduced"
-				"R2",
-				"R7",
+				"R1",
+				//"R2",
+				//"R7",
 				//"debug_tree_06"
 			};
 
@@ -114,6 +111,8 @@ namespace ForestReco
 					bestSimilarity = similarity;
 				}
 			}
+
+			//Console.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
 
 			//Obj suitableTree = bestTree.Obj.Clone();
 			//suitableTree.Name += "_" + counter;

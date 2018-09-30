@@ -44,15 +44,17 @@ namespace ForestReco
 			CProjectData.fillArray = true;
 			CProjectData.maxFillArrayIterations = 3;
 			CProjectData.exportArray = true;
-			CProjectData.groundArrayStep = .4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
+			CProjectData.groundArrayStep = 1;
+			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 			CProjectData.loadRefTrees = true;
 			CProjectData.useRefTrees = true;
+			CProjectData.useReducedRefTreeObjs = true;
 
 			CProjectData.exportPoints = true;
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";

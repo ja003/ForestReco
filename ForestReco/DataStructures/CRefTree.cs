@@ -39,14 +39,20 @@ namespace ForestReco
 		{
 			Obj = new Obj(pFileName);
 
-			string refTreePath = GetRefTreePath(pFileName + ".obj");
+			string refTreePath = GetRefTreeFilePath(pFileName, pFileName + ".obj");
 
-			if (!File.Exists(refTreePath))
+			if (CProjectData.useReducedRefTreeObjs || !File.Exists(refTreePath))
 			{
-				Console.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
+				Obj.Name += "_reduced";
+
 				string reducedObjFileName = pFileName + "_reduced.obj";
-				Console.WriteLine("Try reduced file: " + reducedObjFileName);
-				refTreePath = GetRefTreePath(reducedObjFileName);
+
+				if (!CProjectData.useReducedRefTreeObjs)
+				{
+					Console.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
+					Console.WriteLine("Try reduced file: " + reducedObjFileName);
+				}
+				refTreePath = GetRefTreeFilePath(pFileName, reducedObjFileName);
 				if (!File.Exists(refTreePath))
 				{
 					Console.WriteLine("ERROR: No ref tree OBJ found!");
@@ -144,7 +150,7 @@ namespace ForestReco
 
 		public static CRefTree Deserialize(string pFileName)
 		{
-			string filePath = GetRefTreePath(pFileName + ".reftree");
+			string filePath = GetRefTreeFilePath(pFileName, pFileName + ".reftree");
 			Console.WriteLine("\nDeserialize. filePath = " + filePath);
 
 			if (!File.Exists(filePath))
@@ -192,7 +198,7 @@ namespace ForestReco
 
 		protected override void OnProcess()
 		{
-			string filePath = GetRefTreePath(Obj.Name + ".reftree");
+			string filePath = GetRefTreeFilePath(Obj.Name, Obj.Name + ".reftree");
 			Console.WriteLine("\nfilePath = " + filePath);
 
 			if (File.Exists(filePath))
@@ -218,35 +224,126 @@ namespace ForestReco
 
 		//INIT PROCESSING
 
-		public static string GetRefTreePath(string pFileName)
+		public static string GetRefTreeFilePath(string pSubfolder, string pFileName)
 		{
-			return GetRefTreeFolder() + pFileName;
+			return GetRefTreeFolder(pSubfolder) + "\\" + pFileName;
 		}
 
-		private static string GetRefTreeFolder()
+		private static string GetRefTreeFolder(string pSubfolder)
 		{
-			return CPlatformManager.GetPodkladyPath() + "\\tree_models\\";
+			return CPlatformManager.GetPodkladyPath() + "\\tree_models\\reftrees\\" + pSubfolder;
 		}
 
+
+		private static bool refTreeFirst => CProjectData.refTreeFirst;
+		private static bool refTreeLast => CProjectData.refTreeLast;
+
+		private static bool refTreeFront => CProjectData.refTreeFront;
+		private static bool refTreeBack => CProjectData.refTreeBack;
+
+		private static bool refTreeJehlici => CProjectData.refTreeJehlici;
+		private static bool refTreeKmeny => CProjectData.refTreeKmeny;
+
+
+		private static string GetXyzFileName(string pFileName, bool pFirst, bool pFront, bool pJehlici)
+		{
+			string firstString = pFirst ? "F" : "L";
+			string frontString = pFront ? "1" : "2";
+			string jehliciString = pJehlici ? "J" : "K";
+			return pFileName + "-" + firstString + "-" + frontString + "-" + jehliciString + ".xyz";
+		}
+
+		/// <summary>
+		/// TODO: maybe cancel arrays and just work woth list?
+		/// </summary>
 		private static string[] GetFileLines(string pFileName)
 		{
+			string firstFrontJehliciPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, true, true, true));
+			string firstFrontKmenyPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, true, true, false));
+			string firstBackJehliciPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, true, false, true));
+			string firstBackKmenyPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, true, false, false));
 
-			string refTreeTxtPath = GetRefTreePath(pFileName + ".txt");
+			string lastFrontJehliciPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, false, true, true));
+			string lastFrontKmenyPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, false, true, false));
+			string lastBackJehliciPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, false, false, true));
+			string lastBackKmenyPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, false, false, false));
 
-			if (!File.Exists(refTreeTxtPath))
+			List<string> lines = new List<string>();
+
+			//TODO: refactor these XYZ getters
+			if (refTreeFirst)
 			{
-				Console.WriteLine("Ref tree " + refTreeTxtPath + " TXT does not exist.");
-				refTreeTxtPath = GetRefTreePath(pFileName + "_F_1+2.txt");
-				Console.WriteLine("Try file: " + refTreeTxtPath);
-				if (!File.Exists(refTreeTxtPath))
+				if (refTreeFront)
 				{
-					Console.WriteLine("ERROR: No ref tree TXT found!");
-					throw new Exception(); //todo: exception
+					if (refTreeJehlici)
+					{
+						string[] firstFrontJehliciLines = GetReftreeLines(firstFrontJehliciPath);
+						lines.AddRange(firstFrontJehliciLines);
+					}
+					else if (refTreeKmeny)
+					{
+						string[] firstFrontKmenyLines = GetReftreeLines(firstFrontKmenyPath);
+						lines.AddRange(firstFrontKmenyLines);
+					}
+				}
+				if (refTreeBack)
+				{
+					if (refTreeJehlici)
+					{
+						string[] firstBackJehliciLines = GetReftreeLines(firstBackJehliciPath);
+						lines.AddRange(firstBackJehliciLines);
+					}
+					if (refTreeKmeny)
+					{
+						string[] firstBackKmenyLines = GetReftreeLines(firstBackKmenyPath);
+						lines.AddRange(firstBackKmenyLines);
+					}
+				}
+			}
+			if (refTreeLast)
+			{
+				if (refTreeFront)
+				{
+					if (refTreeJehlici)
+					{
+						string[] lastFrontJehliciLines = GetReftreeLines(lastFrontJehliciPath);
+						lines.AddRange(lastFrontJehliciLines);
+					}
+					if (refTreeKmeny)
+					{
+						string[] lastFrontKmenyLines = GetReftreeLines(lastFrontKmenyPath);
+						lines.AddRange(lastFrontKmenyLines);
+					}
+				}
+				if (refTreeBack)
+				{
+					if (refTreeJehlici)
+					{
+						string[] lastBackJehliciLines = GetReftreeLines(lastBackJehliciPath);
+						lines.AddRange(lastBackJehliciLines);
+					}
+					if (refTreeKmeny)
+					{
+						string[] lastBackKmenyLines = GetReftreeLines(lastBackKmenyPath);
+						lines.AddRange(lastBackKmenyLines);
+					}
 				}
 			}
 
-			string[] lines = File.ReadAllLines(refTreeTxtPath);
-			Console.WriteLine("load: " + refTreeTxtPath + "\n");
+			return lines.ToArray();
+		}
+
+
+		private static string[] GetReftreeLines(string refTreeXyzPath)
+		{
+			if (!File.Exists(refTreeXyzPath))
+			{
+				Console.WriteLine("Ref tree " + refTreeXyzPath + " TXT does not exist.");
+				return new string[0];
+			}
+
+			string[] lines = File.ReadAllLines(refTreeXyzPath);
+			Console.WriteLine("load: " + refTreeXyzPath);
 			return lines;
 		}
 

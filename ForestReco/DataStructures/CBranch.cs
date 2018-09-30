@@ -83,13 +83,13 @@ namespace ForestReco
 				bestFactor = refPoint3Factor;
 			}
 
-			if (Vector3.Distance(pPoint, new Vector3(-10.74f, 3.011f, 9.02f)) < 0.01f)
-			{
-				Console.WriteLine("\nP = " + pPoint);
-				Console.WriteLine(refPoint1);
-				Console.WriteLine(refPoint2);
-				Console.WriteLine(refPoint3);
-			}
+			//if (Vector3.Distance(pPoint, new Vector3(-10.74f, 3.011f, 9.02f)) < 0.01f)
+			//{
+			//	Console.WriteLine("\nP = " + pPoint);
+			//	Console.WriteLine(refPoint1);
+			//	Console.WriteLine(refPoint2);
+			//	Console.WriteLine(refPoint3);
+			//}
 
 			return bestFactor;
 		}
