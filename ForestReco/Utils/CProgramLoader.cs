@@ -39,6 +39,10 @@ namespace ForestReco
 			return lines;
 		}
 
+		/// <summary>
+		/// Reads parsed lines and loads class and point list.
+		/// Result is sorted in descending order.
+		/// </summary>
 		public static List<Tuple<EClass, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
 			//float stepSize = .4f; //in meters
@@ -47,10 +51,14 @@ namespace ForestReco
 			//store coordinates to corresponding data strucures based on their class
 			const int DEFAULT_START_LINE = 19;
 			int startLine = pUseHeader && CProjectData.header != null ? DEFAULT_START_LINE : 0;
-			
-			
+
+			if (lines.Length > CProjectData.maxLinesToLoad)
+			{
+				Console.WriteLine("WARNING: loading " + lines.Length + " lines!");
+			}
+
 			int linesToRead = Math.Min(CProjectData.maxLinesToLoad, lines.Length);
-			
+
 			bool classesCorect = true;
 			List<Tuple<EClass, Vector3>> parsedLines = new List<Tuple<EClass, Vector3>>();
 			if (useDebugData)
@@ -115,7 +123,7 @@ namespace ForestReco
 			//todo: deprecated
 			if (CProjectData.processTrees)
 			{
-				CTreeManager.ProcessAllTrees(); 
+				CTreeManager.ProcessAllTrees();
 			}
 
 			if (CProjectData.exportTrees)

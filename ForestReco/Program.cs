@@ -27,7 +27,7 @@ namespace ForestReco
 			//CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
-			CProjectData.maxLinesToLoad = 30000;
+			CProjectData.maxLinesToLoad = 1000000;
 
 
 			CProjectData.detectTrees = true;
@@ -50,8 +50,17 @@ namespace ForestReco
 			CProjectData.loadRefTrees = true;
 			CProjectData.useRefTrees = true;
 			CProjectData.useReducedRefTreeObjs = true;
+			//
+			CProjectData.refTreeFirst = true;
+			CProjectData.refTreeLast = true;
+			CProjectData.refTreeFront = true;
+			CProjectData.refTreeBack = true;
+			CProjectData.refTreeJehlici = true;
+			CProjectData.refTreeKmeny = true;
+
 
 			CProjectData.exportPoints = true;
+			CProjectData.exportRefTreePoints = false; //to debug reftree shape
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
@@ -74,7 +83,7 @@ namespace ForestReco
 
 			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
-			
+
 			CTreeManager.WriteResult();
 
 			CObjExporter.ExportObjsToExport();

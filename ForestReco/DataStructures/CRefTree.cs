@@ -14,12 +14,14 @@ namespace ForestReco
 	public class CRefTree : CTree
 	{
 		public Obj Obj;
+		public string fileName;
 
 		public CRefTree() { }
 
 		public CRefTree(string pFileName, int pTreeIndex)
 		{
 			treeIndex = pTreeIndex;
+			fileName = pFileName;
 			string[] lines = GetFileLines(pFileName);
 			LoadObj(pFileName);
 
@@ -198,7 +200,7 @@ namespace ForestReco
 
 		protected override void OnProcess()
 		{
-			string filePath = GetRefTreeFilePath(Obj.Name, Obj.Name + ".reftree");
+			string filePath = GetRefTreeFilePath(fileName, fileName + ".reftree");
 			Console.WriteLine("\nfilePath = " + filePath);
 
 			if (File.Exists(filePath))
@@ -338,7 +340,7 @@ namespace ForestReco
 		{
 			if (!File.Exists(refTreeXyzPath))
 			{
-				Console.WriteLine("Ref tree " + refTreeXyzPath + " TXT does not exist.");
+				Console.WriteLine("Ref tree " + refTreeXyzPath + " XYZ does not exist.");
 				return new string[0];
 			}
 
@@ -358,7 +360,7 @@ namespace ForestReco
 
 			for (int i = 1; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
-				DateTime lineStartTime = DateTime.Now;
+				//DateTime lineStartTime = DateTime.Now;
 
 				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
 				Vector3 point = parsedLine.Item2;
@@ -366,8 +368,9 @@ namespace ForestReco
 				//all points belong to 1 tree. force add it
 				TryAddPoint(point, true);
 
-				TimeSpan duration = DateTime.Now - lineStartTime;
-				if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }
+				//TimeSpan duration = DateTime.Now - lineStartTime;
+				//if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }
+				if (i % 100000 == 0) { Console.WriteLine("added point: " + i + "/" + pParsedLines.Count); }
 			}
 			Console.WriteLine("All points added | duration = " + (DateTime.Now - addStartTime));
 		}

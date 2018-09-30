@@ -19,7 +19,7 @@ namespace ForestReco
 			List<string> treeFileNames = new List<string>()
 			{
 				"R1",
-				//"R2",
+				"R2",
 				//"R7",
 				//"debug_tree_06"
 			};
@@ -91,6 +91,13 @@ namespace ForestReco
 
 				Trees.Add(refTree);
 				Console.WriteLine("Loaded tree: " + fileName);
+
+				if (CProjectData.exportRefTreePoints)
+				{
+					Obj reftreePoints = new Obj(fileName + "_points");
+					CObjExporter.AddPointsToObj(ref reftreePoints, refTree.Points);
+					CProjectData.objsToExport.Add(reftreePoints);
+				}
 			}
 			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
 		}

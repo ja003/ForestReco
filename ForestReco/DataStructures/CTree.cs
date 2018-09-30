@@ -65,6 +65,8 @@ namespace ForestReco
 		/// </summary>
 		public void Process()
 		{
+			//TODO: Process not used anymore
+			/*
 			foreach (Vector3 point in Points)
 			{
 				if (peak.Includes(point))
@@ -76,7 +78,7 @@ namespace ForestReco
 					GetBranchFor(point).AddPoint(point);
 				}
 			}
-
+			*/
 			OnProcess();
 		}
 

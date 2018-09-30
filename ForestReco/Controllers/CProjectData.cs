@@ -54,6 +54,7 @@ namespace ForestReco
 		public static int maxFillArrayIterations;
 
 		public static bool exportPoints;
+		public static bool exportRefTreePoints;
 		public static bool exportTrees;
 
 		public static float lowestHeight = int.MaxValue;
