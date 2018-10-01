@@ -50,7 +50,8 @@ namespace ForestReco
 					{
 						if (height == null && el.IsAnyNeighbourDefined())
 						{
-							height = el.GetHeight(true) - 1;
+							//height = el.GetHeight(true) - 1;
+							height = 0;
 							//Console.WriteLine("Fill " + el + " = " + height);
 						}
 					}

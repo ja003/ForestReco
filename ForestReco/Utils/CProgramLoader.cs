@@ -97,7 +97,7 @@ namespace ForestReco
 
 			if (CProjectData.exportArray)
 			{
-				CProjectData.objsToExport.Add(CGroundFieldExporter.ExportToObj("arr", EExportStrategy.None));
+				CProjectData.objsToExport.Add(CGroundFieldExporter.ExportToObj("arr", EExportStrategy.ZeroAroundDefined));
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);

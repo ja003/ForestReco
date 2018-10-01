@@ -22,6 +22,7 @@ namespace ForestReco
 
 		Vector3 botLeftCorner;
 		Vector3 topRightCorner;
+		Vector3 topLeftCorner;
 
 		//--------------------------------------------------------------
 
@@ -31,13 +32,15 @@ namespace ForestReco
 
 			botLeftCorner = CProjectData.header.BotLeftCorner;
 			topRightCorner = CProjectData.header.TopRightCorner;
+			topLeftCorner = new Vector3(botLeftCorner.X, 0, topRightCorner.Z);
 
 			float w = topRightCorner.X - botLeftCorner.X;
 			float h = topRightCorner.Z - botLeftCorner.Z;
 
 			//TODO: if not +2, GetPositionInField is OOR
-			arrayXRange = (int)(w / stepSize) + 2;
-			arrayYRange = (int)(h / stepSize) + 2;
+			//todo: 2 is incorrect, all array was shifted
+			arrayXRange = (int)(w / stepSize) + 1;
+			arrayYRange = (int)(h / stepSize) + 1;
 
 			array = new CGroundField[arrayXRange, arrayYRange];
 			fields = new List<CGroundField>();

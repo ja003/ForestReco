@@ -59,8 +59,8 @@ namespace ForestReco
 				SetRefTreeObjTransform(ref t.mostSuitableRefTree, t);
 
 				Obj suitableTree = t.mostSuitableRefTree.Obj.Clone();
-				suitableTree.Name += "_" + counter;
-				counter++;
+				suitableTree.Name += "_" + t.treeIndex;
+				//counter++;
 
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + t.mostSuitableRefTree); }
 
@@ -113,7 +113,7 @@ namespace ForestReco
 			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
 		}
 
-		private static int counter;
+		//private static int counter;
 
 		private static CRefTree GetMostSuitableRefTree(CTree pTree)
 		{
@@ -182,7 +182,7 @@ namespace ForestReco
 
 			if (DEBUG)
 			{
-				Console.WriteLine(counter +
+				Console.WriteLine(pRefTree.treeIndex +
 					"[" + pRefTree.Obj.Position + "], " +
 					"[" + pRefTree.Obj.Rotation + "]" +
 					". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);

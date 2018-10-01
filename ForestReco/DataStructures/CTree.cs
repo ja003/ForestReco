@@ -257,14 +257,16 @@ namespace ForestReco
 			return branches[branchIndex];
 		}
 
+		private float? groundHeight;
+
 		/// <summary>
 		/// Returns height of ground under peak of this tree
 		/// </summary>
 		public virtual float GetGroundHeight()
 		{
-			float? groundHeight = CProjectData.array?.GetHeight(peak.Center, true);
-			groundHeight = groundHeight ?? peak.Center.Y;
-			return (float)groundHeight;
+			if (groundHeight != null) { return (float)this.groundHeight;}
+			groundHeight = CProjectData.array?.GetHeight(peak.Center, true);
+			return groundHeight ?? peak.Center.Y;
 		}
 
 		public List<CTreePoint> GetAllPoints()
