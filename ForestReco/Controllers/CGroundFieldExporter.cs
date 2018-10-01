@@ -11,7 +11,7 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "try";
 
-		public static Obj ExportToObj(string pArrayName, EExportStrategy pStrategy)
+		public static Obj ExportToObj(string pArrayName, EExportStrategy pStrategy, bool pUseSmoothHeight)
 		{
 			CGroundArray pArray = CProjectData.array;
 			Obj obj = new Obj(pArrayName);
@@ -26,7 +26,7 @@ namespace ForestReco
 				{
 					Vertex v = new Vertex();
 					CGroundField el = pArray.GetElement(x, y);
-					float? height = el.GetHeight();
+					float? height = el.GetHeight(pUseSmoothHeight);
 					bool coord = false;
 					if (coord) { height = y; minHeight = 0; }
 

@@ -29,6 +29,15 @@ namespace ForestReco
 
 			CProjectData.maxLinesToLoad = 3000000;
 
+			//ARRAY
+			CProjectData.setArray = true;
+			CProjectData.fillArray = true;
+			CProjectData.smoothArray = true;
+			CProjectData.maxFillArrayIterations = 3;
+			CProjectData.exportArray = true;
+			CProjectData.groundArrayStep = 1f;
+			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
+
 			//TREES
 			CProjectData.detectTrees = false;
 			CProjectData.exportTrees = true;
@@ -41,17 +50,11 @@ namespace ForestReco
 
 			CProjectData.processTrees = false; //todo: not used anymore
 
-			CProjectData.setArray = true;
-			CProjectData.fillArray = true;
-			CProjectData.maxFillArrayIterations = 2;
-			CProjectData.exportArray = true;
-			CProjectData.groundArrayStep = 1f;
-			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 
 			//REF TREES
 			CProjectData.loadRefTrees = false;
-			CProjectData.useRefTrees = false;
+			CProjectData.useRefTrees = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = false; //debug shape of processed ref trees. WARNING: BIG FILE
 			//xyz
@@ -68,7 +71,7 @@ namespace ForestReco
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			CProgramLoader.fileName = "BK_1000AGL_classified";
+			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 

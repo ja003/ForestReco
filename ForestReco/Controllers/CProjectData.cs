@@ -52,6 +52,7 @@ namespace ForestReco
 		public static bool setArray;
 		public static bool exportArray;
 		public static bool fillArray;
+		public static bool smoothArray;
 		public static int maxFillArrayIterations;
 
 		public static bool exportPoints;

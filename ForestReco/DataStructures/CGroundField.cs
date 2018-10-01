@@ -266,8 +266,12 @@ namespace ForestReco
 		//	//return GetHeightAverage();
 		//}
 
-		public float? GetHeight()
+		public float? GetHeight(bool pUseSmoothHeight = true)
 		{
+			if (pUseSmoothHeight && SmoothHeight != null)
+			{
+				return SmoothHeight;
+			}
 			return MaxGround;
 		}
 
@@ -360,6 +364,40 @@ namespace ForestReco
 			return Math.Abs(indexInField.Item1 - pGroundField.indexInField.Item1) +
 				   Math.Abs(indexInField.Item2 - pGroundField.indexInField.Item2);
 		}
+
+		public float? SmoothHeight;
+
+		/// <summary>
+		/// Sets SmoothHeight based on average from neighbourhood
+		/// </summary>
+		public void CalculateSmoothHeight(int pKernelMultiplier)
+		{
+			if (!IsDefined()) { return; }
+
+			int pKernelSize = GetKernelSize();
+			pKernelSize *= pKernelMultiplier;
+
+			int defined = 0;
+			float heightSum = 0;
+			for (int x = -pKernelSize; x < pKernelSize; x++)
+			{
+				for (int y = -pKernelSize; y < pKernelSize; y++)
+				{
+					int xIndex = indexInField.Item1 + x;
+					int yIndex = indexInField.Item2 + y;
+					CGroundField el = CProjectData.array.GetElement(xIndex, yIndex);
+					float? elHeight = el?.GetHeight();
+					if (elHeight != null)
+					{
+						defined++;
+						heightSum += (float)elHeight;
+					}
+				}
+			}
+			if (defined == 0) { return; }
+			SmoothHeight = heightSum / defined;
+		}
+
 
 		public float? MaxGroundFilled;
 

@@ -147,6 +147,16 @@ namespace ForestReco
 			//FillMissingHeights(CGroundField.EFillMethod.ClosestDefined);
 		}
 
+		public void SmoothenArray(int pKernelMultiplier)
+		{
+			List<CGroundField> fieldsRandom = fields;
+			fieldsRandom.Shuffle();
+			foreach (CGroundField el in fieldsRandom)
+			{
+				el.CalculateSmoothHeight(pKernelMultiplier);
+			}
+		}
+
 		public bool IsAllDefined()
 		{
 			foreach (CGroundField f in fields)
