@@ -24,6 +24,8 @@ namespace ForestReco
 		Vector3 topRightCorner;
 		Vector3 topLeftCorner;
 
+		private Vector3 CenterOffset;
+
 		//--------------------------------------------------------------
 
 		public CGroundArray()
@@ -41,6 +43,9 @@ namespace ForestReco
 			//todo: 2 is incorrect, all array was shifted
 			arrayXRange = (int)(w / stepSize) + 1;
 			arrayYRange = (int)(h / stepSize) + 1;
+
+			CenterOffset = new Vector3(arrayXRange / 2f * stepSize, 0, arrayYRange / 2f * stepSize);
+			CenterOffset += new Vector3(-stepSize / 2, 0, -stepSize / 2); //better visualization
 
 			array = new CGroundField[arrayXRange, arrayYRange];
 			fields = new List<CGroundField>();
@@ -109,20 +114,20 @@ namespace ForestReco
 			int xPos = (int)((pPoint.X - topLeftCorner.X) / stepSize);
 			//due to array orientation
 			//int yPos = arrayYRange - (int)((pPoint.Z - botLeftCorner.Z) / stepSize) - 1;
-			int yPos = (int)((topLeftCorner.Z- pPoint.Z) / stepSize);
+			int yPos = (int)((topLeftCorner.Z - pPoint.Z) / stepSize);
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
-		public Vector3 GetCenterOffset()
-		{
-			return new Vector3(arrayXRange / 2f * stepSize, 0, arrayYRange / 2f * stepSize);
-		}
 
 		//PUBLIC
 
 		public void AddPointInField(Vector3 pPoint)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
+			//if (Equals(index, new Tuple<int, int>(0, 5)))
+			//{
+			//	Tuple<int, int> index2 = GetPositionInField(pPoint);
+			//}
 			array[index.Item1, index.Item2].AddPoint(pPoint);
 			//Console.WriteLine(index + " = " + pPointField);
 			coordinatesCount++;
@@ -135,11 +140,11 @@ namespace ForestReco
 			field.SetHeight(pHeight);
 		}
 
-		public void FillMissingHeights()
+		public void FillMissingHeights(int pKernelMultiplier)
 		{
-			FillMissingHeights(CGroundField.EFillMethod.ClosestDefined);
-			FillMissingHeights(CGroundField.EFillMethod.FromNeighbourhood);
-			FillMissingHeights(CGroundField.EFillMethod.ClosestDefined);
+			FillMissingHeights(CGroundField.EFillMethod.FromNeighbourhood, pKernelMultiplier);
+			//FillMissingHeights(CGroundField.EFillMethod.ClosestDefined);
+			//FillMissingHeights(CGroundField.EFillMethod.ClosestDefined);
 		}
 
 		public bool IsAllDefined()
@@ -161,7 +166,7 @@ namespace ForestReco
 			}
 		}
 
-		private void FillMissingHeights(CGroundField.EFillMethod pMethod)
+		private void FillMissingHeights(CGroundField.EFillMethod pMethod, int pKernelMultiplier)
 		{
 			List<CGroundField> fieldsRandom = fields;
 			fieldsRandom.Shuffle();
@@ -169,7 +174,7 @@ namespace ForestReco
 			{
 				if (!el.IsDefined())
 				{
-					el.FillMissingHeight(pMethod);
+					el.FillMissingHeight(pMethod, pKernelMultiplier);
 				}
 			}
 			ApplyFillMissingHeights();
@@ -182,7 +187,7 @@ namespace ForestReco
 		/// </summary>
 		public float GetFieldXCoord(int pXindex)
 		{
-			return pXindex * stepSize - GetCenterOffset().X;
+			return pXindex * stepSize - CenterOffset.X;
 		}
 
 		/// <summary>
@@ -190,7 +195,7 @@ namespace ForestReco
 		/// </summary>
 		public float GetFieldZCoord(int pYindex)
 		{
-			return pYindex * stepSize - GetCenterOffset().Z;
+			return pYindex * stepSize - CenterOffset.Z;
 		}
 
 		public override string ToString()

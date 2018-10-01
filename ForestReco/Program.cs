@@ -27,10 +27,10 @@ namespace ForestReco
 			//CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
-			CProjectData.maxLinesToLoad = 1000000;
+			CProjectData.maxLinesToLoad = 3000000;
 
 			//TREES
-			CProjectData.detectTrees = true;
+			CProjectData.detectTrees = false;
 			CProjectData.exportTrees = true;
 			//merge
 			CProjectData.tryMergeTrees = true;
@@ -43,15 +43,15 @@ namespace ForestReco
 
 			CProjectData.setArray = true;
 			CProjectData.fillArray = true;
-			CProjectData.maxFillArrayIterations = 3;
+			CProjectData.maxFillArrayIterations = 2;
 			CProjectData.exportArray = true;
-			CProjectData.groundArrayStep = .5f;
+			CProjectData.groundArrayStep = 1f;
 			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 
 			//REF TREES
-			CProjectData.loadRefTrees = true;
-			CProjectData.useRefTrees = true;
+			CProjectData.loadRefTrees = false;
+			CProjectData.useRefTrees = false;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = false; //debug shape of processed ref trees. WARNING: BIG FILE
 			//xyz
@@ -67,8 +67,8 @@ namespace ForestReco
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			//CProgramLoader.fileName = "BK_1000AGL_classified";
+			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 

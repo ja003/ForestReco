@@ -26,6 +26,8 @@ namespace ForestReco
 
 		private Vector3 center;
 
+		private const float DEFAULT_KERNEL_SIZE = 3; //IN METERS
+
 		//--------------------------------------------------------------
 
 		public CGroundField(Tuple<int, int> pIndexInField, Vector3 pCenter)
@@ -117,8 +119,11 @@ namespace ForestReco
 			return points.Count > 0;
 		}
 
-		public float? GetAverageHeightFromNeighbourhood(int pKernelSize)
+		public float? GetAverageHeightFromNeighbourhood(int pKernelSizeMultiplier)
 		{
+			int pKernelSize = GetKernelSize();
+			pKernelSize *= pKernelSizeMultiplier;
+
 			int defined = 0;
 			float heightSum = 0;
 			for (int x = -pKernelSize; x < pKernelSize; x++)
@@ -135,10 +140,23 @@ namespace ForestReco
 						//is checked
 						heightSum += (float)el.GetHeight();
 					}
+					//average height will be also affected by filled values
+					//result should be smoother
+					//todo: doesnt help much
+					/*else if (el?.MaxGroundFilled != null)
+					{
+						defined++;
+						heightSum += (float)el.MaxGroundFilled;
+					}*/
 				}
 			}
 			if (defined == 0) { return null; }
 			return heightSum / defined;
+		}
+
+		private int GetKernelSize()
+		{
+			return (int)(DEFAULT_KERNEL_SIZE / CProjectData.groundArrayStep);
 		}
 
 		/// <summary>
@@ -149,6 +167,11 @@ namespace ForestReco
 		{
 			if (IsDefined()) { return GetHeight(); }
 			//
+			if (Equals(indexInField, new Tuple<int, int>(2, 5)))
+			{
+				Console.WriteLine("!");
+			}
+
 			CGroundField closestFirst = null;
 			CGroundField closestSecond = null;
 			CGroundField closestLeft = GetClosestDefined(pDiagonal ? EDirection.LeftTop : EDirection.Left, pMaxSteps);
@@ -338,7 +361,7 @@ namespace ForestReco
 				   Math.Abs(indexInField.Item2 - pGroundField.indexInField.Item2);
 		}
 
-		private float? MaxGroundFilled;
+		public float? MaxGroundFilled;
 
 		public void ApplyFillMissingHeight()
 		{
@@ -352,7 +375,7 @@ namespace ForestReco
 		}
 
 
-		public void FillMissingHeight(EFillMethod pMethod)
+		public void FillMissingHeight(EFillMethod pMethod, int pKernelMultiplier)
 		{
 			if (IsDefined()) { return; }
 
@@ -361,10 +384,11 @@ namespace ForestReco
 			{
 				case EFillMethod.ClosestDefined:
 					//todo: maybe maxSteps should be infinite
+					//todo: does not produce very good results
 					MaxGroundFilled = GetAverageHeightFromClosestDefined(10 * maxSteps, false);
 					break;
 				case EFillMethod.FromNeighbourhood:
-					MaxGroundFilled = GetAverageHeightFromNeighbourhood(maxSteps);
+					MaxGroundFilled = GetAverageHeightFromNeighbourhood(pKernelMultiplier);
 					break;
 			}
 		}

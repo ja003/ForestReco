@@ -52,7 +52,7 @@ namespace ForestReco
 			const int DEFAULT_START_LINE = 19;
 			int startLine = pUseHeader && CProjectData.header != null ? DEFAULT_START_LINE : 0;
 
-			if (lines.Length > CProjectData.maxLinesToLoad)
+			if (lines.Length > CProjectData.maxLinesToLoad / 2)
 			{
 				Console.WriteLine("WARNING: loading " + lines.Length + " lines!");
 			}
@@ -150,15 +150,15 @@ namespace ForestReco
 				return;
 			}
 
-			int counter = 0;
+			int counter = 1;
 			while (!CProjectData.array.IsAllDefined())
 			{
 				DateTime fillHeightsStart = DateTime.Now;
 
 				Console.WriteLine("\nFillMissingHeights " + counter);
-				CProjectData.array.FillMissingHeights();
+				CProjectData.array.FillMissingHeights(counter);
 				counter++;
-				if (counter > CProjectData.maxFillArrayIterations)
+				if (counter > CProjectData.maxFillArrayIterations + 1)
 				{
 					Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
 					break;
