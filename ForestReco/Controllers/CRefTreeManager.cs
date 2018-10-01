@@ -55,6 +55,7 @@ namespace ForestReco
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
 
 				t.mostSuitableRefTree = GetMostSuitableRefTree(t);
+				if(t.mostSuitableRefTree == null){ continue;}
 
 				SetRefTreeObjTransform(ref t.mostSuitableRefTree, t);
 
@@ -117,6 +118,11 @@ namespace ForestReco
 
 		private static CRefTree GetMostSuitableRefTree(CTree pTree)
 		{
+			if (Trees.Count == 0)
+			{
+				Console.WriteLine("Error: no reftrees defined!");
+				return null;
+			}
 			CRefTree mostSuitableTree = Trees[0];
 			float bestSimilarity = 0;
 

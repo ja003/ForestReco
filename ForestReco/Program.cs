@@ -39,7 +39,7 @@ namespace ForestReco
 			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 			//TREES
-			CProjectData.detectTrees = false;
+			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
 			//merge
 			CProjectData.tryMergeTrees = true;

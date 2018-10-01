@@ -151,9 +151,17 @@ namespace ForestReco
 		{
 			List<CGroundField> fieldsRandom = fields;
 			fieldsRandom.Shuffle();
+
+			//prepare gauss kernel
+			int kernelSize = KernelSize;
+			kernelSize *= pKernelMultiplier;
+			//cant work with even sized kernel
+			if (kernelSize % 2 == 0) { kernelSize++; }
+			double[,] gaussKernel = CUtils.CalculateGaussKernel(kernelSize, 1);
+
 			foreach (CGroundField el in fieldsRandom)
 			{
-				el.CalculateSmoothHeight(pKernelMultiplier);
+				el.CalculateSmoothHeight(gaussKernel);
 			}
 		}
 
@@ -165,6 +173,10 @@ namespace ForestReco
 			}
 			return true;
 		}
+
+		private const float DEFAULT_KERNEL_SIZE = 5; //IN METERS
+
+		public static int KernelSize => (int)(DEFAULT_KERNEL_SIZE / CProjectData.groundArrayStep);
 
 		///PRIVATE
 

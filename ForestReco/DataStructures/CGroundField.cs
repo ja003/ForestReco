@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+// ReSharper disable PossibleInvalidOperationException - resharper doesnt recognise IsDefined functionality
 #pragma warning disable 659
 
 namespace ForestReco
@@ -26,7 +27,6 @@ namespace ForestReco
 
 		private Vector3 center;
 
-		private const float DEFAULT_KERNEL_SIZE = 3; //IN METERS
 
 		//--------------------------------------------------------------
 
@@ -121,7 +121,7 @@ namespace ForestReco
 
 		public float? GetAverageHeightFromNeighbourhood(int pKernelSizeMultiplier)
 		{
-			int pKernelSize = GetKernelSize();
+			int pKernelSize = CGroundArray.KernelSize;
 			pKernelSize *= pKernelSizeMultiplier;
 
 			int defined = 0;
@@ -154,10 +154,6 @@ namespace ForestReco
 			return heightSum / defined;
 		}
 
-		private int GetKernelSize()
-		{
-			return (int)(DEFAULT_KERNEL_SIZE / CProjectData.groundArrayStep);
-		}
 
 		/// <summary>
 		/// Finds closest defined fields in direction based on pDiagonal parameter.
@@ -370,35 +366,42 @@ namespace ForestReco
 		/// <summary>
 		/// Sets SmoothHeight based on average from neighbourhood
 		/// </summary>
-		public void CalculateSmoothHeight(int pKernelMultiplier)
+		public void CalculateSmoothHeight(double[,] pGaussKernel)
 		{
 			if (!IsDefined()) { return; }
+			//if (!HasAllNeighbours()) { return; } //creates unsmooth step on borders
 
-			int pKernelSize = GetKernelSize();
-			pKernelSize *= pKernelMultiplier;
-
-			int defined = 0;
+			//int defined = 0;
 			float heightSum = 0;
-			for (int x = -pKernelSize; x < pKernelSize; x++)
+
+			//double[,] gaussKernel = CUtils.CalculateGaussKernel(kernelSize, 1);
+			float midHeight = (float)GetHeight();
+
+			int kernelSize = CGroundArray.KernelSize;
+
+			for (int x = 0; x < kernelSize; x++)
 			{
-				for (int y = -pKernelSize; y < pKernelSize; y++)
+				for (int y = 0; y < kernelSize; y++)
 				{
-					int xIndex = indexInField.Item1 + x;
-					int yIndex = indexInField.Item2 + y;
+					int xIndex = indexInField.Item1 + x - kernelSize/2;
+					int yIndex = indexInField.Item2 + y - kernelSize / 2;
 					CGroundField el = CProjectData.array.GetElement(xIndex, yIndex);
 					float? elHeight = el?.GetHeight();
+
+					//if element is not defined, use height from the middle element
+					float definedHeight = midHeight;
 					if (elHeight != null)
 					{
-						defined++;
-						heightSum += (float)elHeight;
+						definedHeight = (float)elHeight;
 					}
+					heightSum += definedHeight * (float)pGaussKernel[x, y];
 				}
 			}
-			if (defined == 0) { return; }
-			SmoothHeight = heightSum / defined;
+			//if (defined == 0) { return; }
+			//SmoothHeight = heightSum / defined;
+			SmoothHeight = heightSum;
 		}
-
-
+		
 		public float? MaxGroundFilled;
 
 		public void ApplyFillMissingHeight()
