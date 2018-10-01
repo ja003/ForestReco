@@ -86,10 +86,6 @@ namespace ForestReco
 			{
 				for (int y = 0; y < pArray.arrayYRange - 1; y++)
 				{
-					if (x == 0 && y == 14)
-					{
-						Console.Write("!");
-					}
 					//create face only if all necessary vertices has been defined. -1 = not defined
 					//| /|	3:[0,1]	2:[1,1]
 					//|/ |  1:[0,0] 4:[1,0]

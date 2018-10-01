@@ -203,7 +203,7 @@ namespace ForestReco
 			return Math.Min(distToPeak, distanceToAnyPoint);
 		}
 
-		public float GetTreeHeight()
+		public virtual float GetTreeHeight()
 		{
 			float treeHeight = peak.Center.Y - GetGroundHeight();
 			return treeHeight;

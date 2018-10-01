@@ -49,7 +49,7 @@ namespace ForestReco
 				for (int y = 0; y < arrayYRange; y++)
 				{
 					CGroundField newGroundField = new CGroundField(new Tuple<int, int>(x, y),
-						new Vector3(x * stepSize, 0, y * stepSize));
+						new Vector3(topLeftCorner.X + x * stepSize, 0, topLeftCorner.Z + y * stepSize));
 					array[x, y] = newGroundField;
 					fields.Add(newGroundField);
 				}
@@ -91,9 +91,10 @@ namespace ForestReco
 
 		private Tuple<int, int> GetPositionInField(Vector3 pPoint)
 		{
-			int xPos = (int)((pPoint.X - botLeftCorner.X) / stepSize);
+			int xPos = (int)((pPoint.X - topLeftCorner.X) / stepSize);
 			//due to array orientation
-			int yPos = arrayYRange - (int)((pPoint.Z - botLeftCorner.Z) / stepSize) - 1;
+			//int yPos = arrayYRange - (int)((pPoint.Z - botLeftCorner.Z) / stepSize) - 1;
+			int yPos = (int)((topLeftCorner.Z- pPoint.Z) / stepSize);
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
@@ -179,7 +180,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return "Field " + arrayXRange + " x " + arrayYRange;
+			return "Field " + arrayXRange + " x " + arrayYRange + ". Corner = " + topLeftCorner;
 		}
 
 	}

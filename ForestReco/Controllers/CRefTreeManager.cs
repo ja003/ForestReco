@@ -157,22 +157,19 @@ namespace ForestReco
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
 
-			//align position to tree
-			pRefTree.Obj.Position = pTargetTree.peak.Center;
-
-			/*float? groundHeight = CProjectData.array?.GetElementContainingPoint(pRefTree.Obj.Position).
-				GetHeight(EHeight.GroundMax, true);
-			groundHeight = groundHeight ?? pRefTree.Obj.Position.Y;
-			pRefTree.Obj.Position.Y = (float)groundHeight;*/
-
-			pRefTree.Obj.Position.Y = pTargetTree.GetGroundHeight();
+			
 
 			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
 			float treeHeight = pTargetTree.GetTreeHeight();
-			float heightRatio = treeHeight / (pRefTree.Obj.Size.YMax - pRefTree.Obj.Size.YMin);
+			float heightRatio = treeHeight / pRefTree.GetTreeHeight();
 			//todo: scale X and Z based on pTargetTree extents
 			pRefTree.Obj.Scale = heightRatio * Vector3.One;
 
+
+			//align position to tree
+			pRefTree.Obj.Position = pTargetTree.peak.Center;
+			pRefTree.Obj.Position.Y -= pRefTree.GetTreeHeight() * heightRatio;
+			//pRefTree.Obj.Position.Y = pTargetTree.GetGroundHeight();
 
 			//move obj so it is at 0,0,0
 			pRefTree.Obj.Position -= arrayCenter;
