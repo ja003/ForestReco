@@ -49,7 +49,7 @@ namespace ForestReco
 				for (int y = 0; y < arrayYRange; y++)
 				{
 					CGroundField newGroundField = new CGroundField(new Tuple<int, int>(x, y),
-						new Vector3(topLeftCorner.X + x * stepSize, 0, topLeftCorner.Z + y * stepSize));
+						new Vector3(topLeftCorner.X + x * stepSize, 0, topLeftCorner.Z - y * stepSize));
 					array[x, y] = newGroundField;
 					fields.Add(newGroundField);
 				}
@@ -58,10 +58,25 @@ namespace ForestReco
 			{
 				for (int y = 0; y < arrayYRange; y++)
 				{
-					if (x > 0) { array[x, y].Left = array[x - 1, y]; }
-					if (x < arrayXRange - 1) { array[x, y].Right = array[x + 1, y]; }
-					if (y > 0) { array[x, y].Top = array[x, y - 1]; }
-					if (y < arrayYRange - 1) { array[x, y].Bot = array[x, y + 1]; }
+					if (x > 0)
+					{
+						array[x, y].Left = array[x - 1, y];
+					}
+					if (x < arrayXRange - 1)
+					{
+						array[x, y].Right = array[x + 1, y];
+					}
+					if (y > 0)
+					{
+						//todo: check if change (Bot-Top) is ok
+						//array[x, y].Top = array[x, y + 1];
+						array[x, y].Top = array[x, y - 1]; //orig
+					}
+					if (y < arrayYRange - 1)
+					{
+						//array[x, y].Bot = array[x, y - 1];
+						array[x, y].Bot = array[x, y + 1]; //orig
+					}
 				}
 			}
 		}
@@ -84,9 +99,9 @@ namespace ForestReco
 			return array[index.Item1, index.Item2];
 		}
 
-		public float? GetHeight(Vector3 pPoint, bool pGetHeightFromNeighbour = false)
+		public float? GetHeight(Vector3 pPoint)
 		{
-			return GetElementContainingPoint(pPoint).GetHeight(pGetHeightFromNeighbour);
+			return GetElementContainingPoint(pPoint).GetHeight(pPoint);
 		}
 
 		private Tuple<int, int> GetPositionInField(Vector3 pPoint)

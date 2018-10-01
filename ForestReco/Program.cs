@@ -45,7 +45,7 @@ namespace ForestReco
 			CProjectData.fillArray = true;
 			CProjectData.maxFillArrayIterations = 3;
 			CProjectData.exportArray = true;
-			CProjectData.groundArrayStep = 1;
+			CProjectData.groundArrayStep = .5f;
 			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 

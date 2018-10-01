@@ -42,7 +42,7 @@ namespace ForestReco
 					{
 						if (height == null && el.IsAnyNeighbourDefined())
 						{
-							height = el.GetHeight(true);
+							height = el.GetHeight();
 							//Console.WriteLine("Fill " + el + " = " + height);
 						}
 					}

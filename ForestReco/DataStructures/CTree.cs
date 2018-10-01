@@ -265,7 +265,7 @@ namespace ForestReco
 		public virtual float GetGroundHeight()
 		{
 			if (groundHeight != null) { return (float)this.groundHeight;}
-			groundHeight = CProjectData.array?.GetHeight(peak.Center, true);
+			groundHeight = CProjectData.array?.GetHeight(peak.Center);
 			return groundHeight ?? peak.Center.Y;
 		}
 
@@ -305,6 +305,8 @@ namespace ForestReco
 
 		public Vector3 GetGroundPosition()
 		{
+			Vector3 gp = new Vector3(peak.X, GetGroundHeight(), peak.Z);
+			return gp;
 			return peak.Center - GetTreeHeight() * Vector3.UnitY;
 		}
 

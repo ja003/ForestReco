@@ -46,6 +46,16 @@ namespace ForestReco
 			return false;
 		}
 
+		public bool AreAllNeighboursDefined()
+		{
+			List<CGroundField> _neighbours = GetNeighbours();
+			foreach (CGroundField n in _neighbours)
+			{
+				if (!n.IsDefined()) { return false; }
+			}
+			return true;
+		}
+
 		private CGroundField GetNeighbour(EDirection pNeighbour)
 		{
 			switch (pNeighbour)
@@ -200,37 +210,126 @@ namespace ForestReco
 			AddPoint(new Vector3(center.X, pHeight, center.Z));
 		}
 
-		/// <summary>
-		/// Returns height of given type.
-		/// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
-		/// pVisited: dont use these points in DFS
-		/// </summary>
-		public float? GetHeight(bool pGetHeightFromNeighbour = false, List<CGroundField> pVisited = null, int pMaxIterations = 5)
+		///// <summary>
+		///// Returns height of given type.
+		///// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
+		///// pVisited: dont use these points in DFS
+		///// </summary>
+		//public float? GetHeight(bool pGetHeightFromNeighbour = false, List<CGroundField> pVisited = null, int pMaxIterations = 5)
+		//{
+		//	pMaxIterations--;
+		//	if (!IsDefined() && pGetHeightFromNeighbour)
+		//	{
+		//		if (pMaxIterations <= 0) { return null;}
+
+		//		if (pVisited == null) { pVisited = new List<CGroundField>(); }
+
+		//		if (pVisited.Contains(this)) { return null;}
+
+		//		List<CGroundField> _neighbours = GetNeighbours();
+		//		foreach (CGroundField n in _neighbours)
+		//		{
+		//			if (!pVisited.Contains(n))
+		//			{
+		//				pVisited.Add(this);
+		//				return n.GetHeight(true, pVisited, pMaxIterations);
+		//			}
+		//		}
+		//		return null;
+		//	}
+		//	//todo: decide which height to return on default
+		//	return MinGround;
+		//	//return MaxGround;
+		//	//return GetHeightAverage();
+		//}
+
+		public float? GetHeight()
 		{
-			pMaxIterations--;
-			if (!IsDefined() && pGetHeightFromNeighbour)
+			return MaxGround;
+		}
+
+		/// <summary>
+		/// Returns the interpolated height.
+		/// Interpolation = bilinear.
+		/// </summary>
+		public float? GetHeight(Vector3 pPoint)
+		{
+			if (!HasAllNeighbours())
 			{
-				if (pMaxIterations <= 0) { return null;}
-
-				if (pVisited == null) { pVisited = new List<CGroundField>(); }
-
-				if (pVisited.Contains(this)) { return null;}
-
-				List<CGroundField> _neighbours = GetNeighbours();
-				foreach (CGroundField n in _neighbours)
+				if (!IsDefined())
 				{
-					if (!pVisited.Contains(n))
-					{
-						pVisited.Add(this);
-						return n.GetHeight(true, pVisited, pMaxIterations);
-					}
+					return null;
 				}
-				return null;
+				return GetHeight();
 			}
-			//todo: decide which height to return on default
-			return MinGround;
-			//return MaxGround;
-			//return GetHeightAverage();
+			//return GetHeight(); //to cancel interpolation
+
+			//http://www.geocomputation.org/1999/082/gc_082.htm
+			//3.4 Bilinear interpolation
+
+			List<CGroundField> bilinearFields = GetBilinearFieldsFor(pPoint);
+			CGroundField h1 = bilinearFields[0];
+			CGroundField h2 = bilinearFields[1];
+			CGroundField h3 = bilinearFields[2];
+			CGroundField h4 = bilinearFields[3];
+
+			float a00 = (float)h1.GetHeight();
+			float a10 = (float)h2.GetHeight() - (float)h1.GetHeight();
+			float a01 = (float)h3.GetHeight() - (float)h1.GetHeight();
+			float a11 = (float)h1.GetHeight() - (float)h2.GetHeight() - (float)h3.GetHeight() + (float)h4.GetHeight();
+
+			float x = pPoint.X - center.X;// + CProjectData.groundArrayStep;
+			//float z = pPoint.Z - center.Z;//+ CProjectData.groundArrayStep;
+			float z = CProjectData.groundArrayStep - (center.Z - pPoint.Z);
+
+			if (x < 0 || x > 1 || z < 0 || z > 1)
+			{
+				Console.WriteLine("Error: field " + this + " interpolation is incorrect! x = " + x + " z = " + z);
+			}
+
+			//pPoint space coords are X and Z, Y = height
+			float hi = a00 + a10 * x + a01 * z + a11 * x * z;
+			return hi;
+		}
+
+		private List<CGroundField> GetBilinearFieldsFor(Vector3 pPoint)
+		{
+			List<CGroundField> fields = new List<CGroundField>();
+			if (pPoint.X > center.X)
+			{
+				if (pPoint.Z > center.Z)
+				{
+					fields.Add(this);
+					fields.Add(GetNeighbour(EDirection.Right));
+					fields.Add(GetNeighbour(EDirection.Top));
+					fields.Add(GetNeighbour(EDirection.RightTop));
+				}
+				else
+				{
+					fields.Add(GetNeighbour(EDirection.Bot));
+					fields.Add(GetNeighbour(EDirection.RightBot));
+					fields.Add(this);
+					fields.Add(GetNeighbour(EDirection.Right));
+				}
+			}
+			else
+			{
+				if (pPoint.Z > center.Z)
+				{
+					fields.Add(GetNeighbour(EDirection.Left));
+					fields.Add(this);
+					fields.Add(GetNeighbour(EDirection.LeftTop));
+					fields.Add(GetNeighbour(EDirection.Top));
+				}
+				else
+				{
+					fields.Add(GetNeighbour(EDirection.LeftBot));
+					fields.Add(GetNeighbour(EDirection.Bot));
+					fields.Add(GetNeighbour(EDirection.Left));
+					fields.Add(this);
+				}
+			}
+			return fields;
 		}
 
 		public int GetDistanceTo(CGroundField pGroundField)
@@ -255,7 +354,6 @@ namespace ForestReco
 
 		public void FillMissingHeight(EFillMethod pMethod)
 		{
-
 			if (IsDefined()) { return; }
 
 			int maxSteps = 1;
@@ -343,7 +441,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToStringIndex() + " Ground = " + GetHeight();
+			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center;
 			//return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}
 
