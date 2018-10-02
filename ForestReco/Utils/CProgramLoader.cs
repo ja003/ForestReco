@@ -99,8 +99,8 @@ namespace ForestReco
 			{
 				CProjectData.objsToExport.Add(CGroundFieldExporter.
 					ExportToObj("array_smooth", EExportStrategy.ZeroAroundDefined, true));
-				CProjectData.objsToExport.Add(CGroundFieldExporter.
-					ExportToObj("array_normal", EExportStrategy.ZeroAroundDefined, false));
+				//CProjectData.objsToExport.Add(CGroundFieldExporter.
+				//	ExportToObj("array_normal", EExportStrategy.ZeroAroundDefined, false));
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
@@ -190,15 +190,33 @@ namespace ForestReco
 
 			const int debugFrequency = 10000;
 
+			DateTime processVegePointsStart = DateTime.Now;
+			Console.WriteLine("\nProcessVegePoints start = " + processVegePointsStart);
+
+			DateTime previousDebugStart = DateTime.Now;
+
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
-				if (i % debugFrequency == 0)
+				if (i % debugFrequency == 0 && i > 0)
 				{
 					Console.WriteLine("\nAdded point " + i + " out of " + CProjectData.vegePoints.Count);
+					Console.WriteLine("- time of last " + debugFrequency + " points = " +
+						(DateTime.Now - previousDebugStart).TotalSeconds);
+
+					double totalTime = (DateTime.Now - processVegePointsStart).TotalSeconds;
+					float remainsRatio = (float)CProjectData.vegePoints.Count / i;
+					double totalSeconds = remainsRatio * totalTime;
+					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
+					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
+					Console.WriteLine("- estimated time left = " + timeString + "\n");
+
+					previousDebugStart = DateTime.Now;
 				}
 			}
+			Console.WriteLine("\nProcessVegePoints time = " + (DateTime.Now - processVegePointsStart));
+
 
 			if (CProjectData.exportPoints)
 			{

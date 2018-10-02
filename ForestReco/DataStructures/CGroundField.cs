@@ -36,6 +36,8 @@ namespace ForestReco
 			center = pCenter;
 		}
 
+		public List<CTree> DetectedTrees = new List<CTree>();
+
 		//NEIGHBOUR
 
 		public bool IsAnyNeighbourDefined()

@@ -82,7 +82,7 @@ namespace ForestReco
 				}*/
 			}
 			
-			Console.WriteLine("Get ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
+			Console.WriteLine("\nGet ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
 
 			return treeObjs;
 		}

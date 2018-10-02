@@ -27,7 +27,7 @@ namespace ForestReco
 			//CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
-			CProjectData.maxLinesToLoad = 3000000;
+			CProjectData.maxLinesToLoad = 3000000; //for now just informative
 
 			//ARRAY
 			CProjectData.setArray = true;
@@ -54,7 +54,7 @@ namespace ForestReco
 
 			//REF TREES
 			CProjectData.loadRefTrees = false;
-			CProjectData.useRefTrees = true;
+			CProjectData.useRefTrees = false;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = false; //debug shape of processed ref trees. WARNING: BIG FILE
 			//xyz
@@ -71,7 +71,7 @@ namespace ForestReco
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			//CProgramLoader.fileName = "BK_1000AGL_classified";
+			CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 

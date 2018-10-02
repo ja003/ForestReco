@@ -41,6 +41,7 @@ namespace ForestReco
 		private static int pointCounter;
 
 		private const int MAX_DEBUG_COUNT = 30;
+		private const int MAX_DISTANCE_FOR_POSSIBLE_TREES = 5;
 
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
 		{
@@ -74,23 +75,32 @@ namespace ForestReco
 			}
 			else
 			{
-				if (treeIndex < MAX_DEBUG_COUNT || treeIndex % MAX_DEBUG_COUNT == 0)
+				bool debugFrequency = false;
+				if (treeIndex < MAX_DEBUG_COUNT || (debugFrequency && treeIndex % MAX_DEBUG_COUNT == 0))
 				{
 					Console.WriteLine("NEW TREE " + treeIndex + ": point[" + pPointIndex + "]: " +
-					                  pPoint + ". Best factor = " + bestAddPointFactor);
+									  pPoint + ". Best factor = " + bestAddPointFactor);
 				}
 				if (treeIndex == MAX_DEBUG_COUNT)
 				{
 					Console.WriteLine("....");
 				}
-				Trees.Add(new CTree(pPoint, treeIndex));
-				treeIndex++;
+				CreateNewTree(pPoint);
 			}
 
 			if (Trees.Count == 1 && pPointIndex != Trees[0].Points.Count - 1)
 			{
 				Console.WriteLine(pPointIndex + "Error. Incorrect point count. " + pPoint);
 			}
+		}
+
+		private static void CreateNewTree(Vector3 pPoint)
+		{
+			CTree newTree = new CTree(pPoint, treeIndex);
+			Trees.Add(newTree);
+			treeIndex++;
+
+			CProjectData.array.GetElementContainingPoint(pPoint).DetectedTrees.Add(newTree);
 		}
 
 		private static void DebugPoint(Vector3 pPoint, int pPointIndex)
@@ -141,7 +151,7 @@ namespace ForestReco
 			}
 			else if (pMethod == EPossibleTreesMethos.ClosestHigher)
 			{
-				possibleTrees.AddRange(Trees);
+				possibleTrees.AddRange(CProjectData.array.GetTreesInDistanceFrom(pPoint, MAX_DISTANCE_FOR_POSSIBLE_TREES));
 			}
 			else if (pMethod == EPossibleTreesMethos.Contains)
 			{
@@ -178,8 +188,11 @@ namespace ForestReco
 
 			if (pMethod == EPossibleTreesMethos.ClosestHigher)
 			{
+				//Console.WriteLine("SELECT FROM " + possibleTrees.Count);
+
 				List<CTree> closestTrees = new List<CTree>();
-				const int maxClosestTreesCount = 3;
+				//no reason to select more. small chance that point would fit better to further tree
+				const int maxClosestTreesCount = 3; 
 				int counter = 0;
 				foreach (CTree possibleTree in possibleTrees)
 				{

@@ -225,5 +225,26 @@ namespace ForestReco
 			return "Field " + arrayXRange + " x " + arrayYRange + ". Corner = " + topLeftCorner;
 		}
 
+		public List<CTree> GetTreesInDistanceFrom(Vector3 pPoint, float pDistance)
+		{
+			Tuple<int, int> index = GetPositionInField(pPoint);
+			int steps = (int)(pDistance / stepSize);
+
+			List<CTree> trees = new List<CTree>();
+
+			for (int x = index.Item1 - steps; x < index.Item1 + steps; x++)
+			{
+				for (int y = index.Item2 - steps; y < index.Item2 + steps; y++)
+				{
+					List<CTree> detectedTrees = GetElement(x, y)?.DetectedTrees;
+					if (detectedTrees != null)
+					{
+						trees.AddRange(detectedTrees);
+					}
+				}
+			}
+
+			return trees;
+		}
 	}
 }
