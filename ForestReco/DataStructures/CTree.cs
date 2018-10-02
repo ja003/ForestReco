@@ -307,7 +307,7 @@ namespace ForestReco
 		{
 			Vector3 gp = new Vector3(peak.X, GetGroundHeight(), peak.Z);
 			return gp;
-			return peak.Center - GetTreeHeight() * Vector3.UnitY;
+			//return peak.Center - GetTreeHeight() * Vector3.UnitY;
 		}
 
 		public Obj GetObj(string pName, bool pExportBranches, bool pExportBB)
@@ -315,6 +315,12 @@ namespace ForestReco
 			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
 			Obj obj = new Obj(pName);
+
+			if (CProjectData.exportSimpleTreeModel)
+			{
+				CObjExporter.AddLineToObj(ref obj, peak.Center, GetGroundPosition());
+				return obj;
+			}
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
 

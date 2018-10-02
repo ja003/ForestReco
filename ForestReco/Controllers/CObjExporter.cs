@@ -82,7 +82,7 @@ namespace ForestReco
 			}
 		}
 
-		private static void AddLineToObj(ref Obj obj, Vector3 pFrom, Vector3 pTo)
+		public static void AddLineToObj(ref Obj obj, Vector3 pFrom, Vector3 pTo)
 		{
 			MoveToCenter(ref pFrom);
 
