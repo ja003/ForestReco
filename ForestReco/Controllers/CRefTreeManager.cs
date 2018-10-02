@@ -41,31 +41,35 @@ namespace ForestReco
 			}
 		}
 
-		public static List<Obj> GetRefTreeObjs()
+		/// <summary>
+		/// Assigns to each of detected trees the most suitable refTree
+		/// </summary>
+		public static void AssignRefTrees()
 		{
-
 			DateTime addTreeObjModelsStart = DateTime.Now;
 			Console.WriteLine("\nGet ref tree models");
 
-			List<Obj> treeObjs = new List<Obj>();
+			//List<Obj> treeObjs = new List<Obj>();
 
 			//int maxRefTreePointsCount = 1;
 			foreach (CTree t in CTreeManager.Trees)
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
 
-				t.mostSuitableRefTree = GetMostSuitableRefTree(t);
-				if(t.mostSuitableRefTree == null){ continue;}
+				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
+				if(mostSuitableRefTree == null){ continue;}
 
-				SetRefTreeObjTransform(ref t.mostSuitableRefTree, t);
+				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
 
-				Obj suitableTree = t.mostSuitableRefTree.Obj.Clone();
-				suitableTree.Name += "_" + t.treeIndex;
+				Obj suitableTreeObj = mostSuitableRefTree.Obj.Clone();
+				suitableTreeObj.Name += "_" + t.treeIndex;
+				t.mostSuitableRefTreeObj = suitableTreeObj;
+
 				//counter++;
 
-				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + t.mostSuitableRefTree); }
+				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
 
-				treeObjs.Add(suitableTree);
+				//treeObjs.Add(suitableTree);
 
 				//export of refTree points. not very effective, data are not centered and positioning them
 				//correctly would be a bit complicated
@@ -82,9 +86,9 @@ namespace ForestReco
 				}*/
 			}
 			
-			Console.WriteLine("\nGet ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
+			Console.WriteLine("\nAssign ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
 
-			return treeObjs;
+			//return treeObjs;
 		}
 
 		private static void LoadTrees(List<string> pFileNames)
@@ -99,16 +103,17 @@ namespace ForestReco
 			foreach (string fileName in pFileNames)
 			{
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
-				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName));
+				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName), true);
 
 				Trees.Add(refTree);
 				Console.WriteLine("Loaded tree: " + fileName);
 
 				if (CProjectData.exportRefTreePoints)
 				{
-					Obj reftreePoints = new Obj(fileName + "_points");
-					CObjExporter.AddPointsToObj(ref reftreePoints, refTree.Points);
-					CProjectData.objsToExport.Add(reftreePoints);
+					Console.WriteLine("TODO: exportRefTreePoints not used");
+					//Obj reftreePoints = new Obj(fileName + "_points");
+					//CObjExporter.AddPointsToObj(ref reftreePoints, refTree.Points);
+					//CProjectData.objsToExport.Add(reftreePoints);
 				}
 			}
 			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
@@ -144,7 +149,7 @@ namespace ForestReco
 			return mostSuitableTree;
 		}
 
-		public static void ExportTrees()
+		/*public static void ExportTrees()
 		{
 			Console.WriteLine("\nAdd ref trees to export ");
 			foreach (CRefTree t in Trees)
@@ -153,7 +158,7 @@ namespace ForestReco
 				Obj tObj = t.GetObj("refTree_" + t.Obj.Name, true, false);
 				CProjectData.objsToExport.Add(tObj);
 			}
-		}
+		}*/
 
 		/// <summary>
 		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 

@@ -32,7 +32,10 @@ namespace ForestReco
 
 		public List<Vector3> Points = new List<Vector3>();
 
-		public CRefTree mostSuitableRefTree;
+		//public CRefTree mostSuitableRefTree;
+		public Obj mostSuitableRefTreeObj;
+
+		public bool isValid = true; //valid by default - until Validate is called
 
 		//INIT
 
@@ -310,11 +313,13 @@ namespace ForestReco
 			//return peak.Center - GetTreeHeight() * Vector3.UnitY;
 		}
 
-		public Obj GetObj(string pName, bool pExportBranches, bool pExportBB)
+		public Obj GetObj(bool pExportBranches, bool pExportBB)
 		{
 			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
 
-			Obj obj = new Obj(pName);
+			string prefix = isValid ? "tree_" : "invalidTree_";
+
+			Obj obj = new Obj(prefix + treeIndex);
 
 			if (CProjectData.exportSimpleTreeModel)
 			{
@@ -359,12 +364,13 @@ namespace ForestReco
 
 		//BOOLS
 
+
 		/// <summary>
 		/// Determines whether the tree is defined enough.
 		/// pAllBranchDefined = if one of branches is not defined => tree is not valid.
 		/// All trees touching the boundaries should be eliminated by this
 		/// </summary>
-		public bool IsValid(bool pAllBranchDefined)
+		public bool Validate(bool pAllBranchDefined)
 		{
 			//float height = GetTreeHeight();
 			//if (treeIndex == 12)
@@ -377,13 +383,15 @@ namespace ForestReco
 				float branchFactor = b.GetDefinedFactor();
 				if (pAllBranchDefined && Math.Abs(branchFactor) < 0.1f)
 				{
+					isValid = false;
 					return false;
 				}
 				branchDefinedFactor += branchFactor;
 			}
 			float validFactor = branchDefinedFactor / branches.Count;
 			//Console.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
-			return validFactor > 0.5f;
+			isValid = validFactor > 0.5f;
+			return isValid;
 		}
 
 		public override bool Contains(Vector3 pPoint)
@@ -520,7 +528,7 @@ namespace ForestReco
 			string peakS = pPeak ? "||peak = " + peak : "";
 			string branchesS = pBranches ? "||BR=" + GetBranchesCount() +
 				"[" + GetBranchesPointCount().ToString("000") + "]" + "_|" : "";
-			string refTreeS = pReftree && mostSuitableRefTree != null ? "||reftree = " + mostSuitableRefTree.fileName : "";
+			string refTreeS = pReftree && mostSuitableRefTreeObj != null ? "||reftree = " + mostSuitableRefTreeObj.Name : "";
 
 			if (pBranches)
 			{

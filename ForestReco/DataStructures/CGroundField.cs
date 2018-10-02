@@ -15,7 +15,8 @@ namespace ForestReco
 		public CGroundField Bot;
 		private List<CGroundField> neighbours;
 
-		private List<Vector3> points = new List<Vector3>();
+		public List<Vector3> goundPoints = new List<Vector3>();
+		public List<Vector3> vegePoints = new List<Vector3>();
 
 		public float? MinGround;
 		public float? MaxGround;
@@ -23,7 +24,7 @@ namespace ForestReco
 
 		public int VertexIndex = -1;
 
-		private readonly Tuple<int, int> indexInField;
+		public readonly Tuple<int, int> indexInField;
 
 		private Vector3 center;
 
@@ -104,21 +105,25 @@ namespace ForestReco
 
 		//PUBLIC
 
-		public void AddPoint(Vector3 pPoint)
+		public void AddGroundPoint(Vector3 pPoint)
 		{
 			float height = pPoint.Y;
 
-			points.Add(pPoint);
+			goundPoints.Add(pPoint);
 			if (SumGround != null) { SumGround += height; }
 			else { SumGround = height; }
 			if (height > MaxGround || MaxGround == null) { MaxGround = height; }
 			if (height < MinGround || MinGround == null) { MinGround = height; }
+		}
 
+		public void AddVegePoint(Vector3 pPoint)
+		{
+			vegePoints.Add(pPoint);
 		}
 
 		public bool IsDefined()
 		{
-			return points.Count > 0;
+			return goundPoints.Count > 0;
 		}
 
 		public float? GetAverageHeightFromNeighbourhood(int pKernelSizeMultiplier)
@@ -228,7 +233,7 @@ namespace ForestReco
 
 		public void SetHeight(float pHeight)
 		{
-			AddPoint(new Vector3(center.X, pHeight, center.Z));
+			AddGroundPoint(new Vector3(center.X, pHeight, center.Z));
 		}
 
 		///// <summary>
@@ -414,7 +419,7 @@ namespace ForestReco
 
 			Vector3 filledPoint = center;
 			filledPoint.Y = (float)MaxGroundFilled;
-			AddPoint(filledPoint);
+			AddGroundPoint(filledPoint);
 		}
 
 
@@ -463,7 +468,7 @@ namespace ForestReco
 		private float? GetHeightAverage()
 		{
 			if (!IsDefined()) { return null; }
-			return SumGround / points.Count;
+			return SumGround / goundPoints.Count;
 		}
 
 		/// <summary>

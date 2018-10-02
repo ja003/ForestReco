@@ -410,14 +410,14 @@ namespace ForestReco
 			return higherTree;
 		}
 
-		public static void DetectInvalidTrees()
+		public static void ValidateTrees()
 		{
 			Console.WriteLine("DetectInvalidTrees");
 
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
 				CTree tree = Trees[i];
-				if (!tree.IsValid(true))
+				if (!tree.Validate(true))
 				{
 					InvalidTrees.Add(tree);
 					Trees.RemoveAt(i);
@@ -442,7 +442,7 @@ namespace ForestReco
 
 		}
 
-		public static void ExportTrees()
+		/*public static void ExportTrees()
 		{
 			Console.WriteLine("\nAdd trees to export ");
 			foreach (CTree t in Trees)
@@ -457,7 +457,7 @@ namespace ForestReco
 				Obj tObj = t.GetObj("invalidTree_" + t.treeIndex, true, false);
 				CProjectData.objsToExport.Add(tObj);
 			}
-		}
+		}*/
 
 		public static void WriteResult()
 		{

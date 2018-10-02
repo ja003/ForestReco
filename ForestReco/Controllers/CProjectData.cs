@@ -26,7 +26,7 @@ namespace ForestReco
 
 		public static CHeaderInfo header;
 
-		public static List<Obj> objsToExport = new List<Obj>();
+		//public static List<Obj> objsToExport = new List<Obj>();
 
 		public static bool detectTrees;
 		public static bool processTrees;
@@ -34,10 +34,10 @@ namespace ForestReco
 		public static bool mergeContaingTrees;
 		public static bool mergeBelongingTrees; 
 		public static bool mergeGoodAddFactorTrees;
-		public static bool detectInvalidTrees;
+		public static bool validateTrees;
 		
 		public static bool loadRefTrees;
-		public static bool useRefTrees;
+		public static bool assignRefTrees;
 		public static bool useReducedRefTreeObjs;
 		public static bool exportRefTrees;
 		

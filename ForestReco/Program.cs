@@ -36,47 +36,46 @@ namespace ForestReco
 			CProjectData.maxFillArrayIterations = 3;
 			CProjectData.exportArray = true;
 			CProjectData.groundArrayStep = 1f;
-			//.4f; //todo: pro větší krok (1,2,..) se array zobrazuje s velkým offsetem
 
 			//TREES
 			CProjectData.detectTrees = true;
 			CProjectData.exportTrees = true;
-			CProjectData.exportSimpleTreeModel = true;
+			CProjectData.exportSimpleTreeModel = false;
+			CProjectData.validateTrees = true;
 			//merge
 			CProjectData.tryMergeTrees = true;
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
 			CProjectData.mergeGoodAddFactorTrees = true;
-			CProjectData.detectInvalidTrees = true;
 
 			CProjectData.processTrees = false; //todo: not used anymore
-
-
-
+			
 			//REF TREES
-			CProjectData.loadRefTrees = false;
-			CProjectData.useRefTrees = false;
+			CProjectData.loadRefTrees = true;
+			CProjectData.assignRefTrees = true;
 			CProjectData.useReducedRefTreeObjs = true;
-			CProjectData.exportRefTrees = false; //debug shape of processed ref trees. WARNING: BIG FILE
-			//xyz
+			CProjectData.exportRefTrees = true; 
+			//source xyz-files
 			CProjectData.refTreeFirst = true;
 			CProjectData.refTreeLast = true;
 			CProjectData.refTreeFront = true;
 			CProjectData.refTreeBack = true;
 			CProjectData.refTreeJehlici = true;
 			CProjectData.refTreeKmeny = true;
-
-
+			
 			CProjectData.exportPoints = true;
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
+			
 
 			string[] lines = CProgramLoader.GetFileLines();
+
+
 
 			if (CHeaderInfo.HasHeader(lines[0]))
 			{
@@ -94,7 +93,8 @@ namespace ForestReco
 
 			CTreeManager.WriteResult();
 
-			CObjExporter.ExportObjsToExport();
+			//CObjExporter.ExportObjsToExport();
+			CObjPartition.ExportPartition();
 
 			Console.WriteLine("\n==============\n");
 			Console.WriteLine("Press any key to exit." + " | Complete time = " + (DateTime.Now - start).TotalSeconds + " seconds");

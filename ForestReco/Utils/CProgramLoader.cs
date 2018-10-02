@@ -47,6 +47,9 @@ namespace ForestReco
 		{
 			//float stepSize = .4f; //in meters
 			if (pArray) { CProjectData.array = new CGroundArray(); }
+			
+			//CObjPartition is dependent on Array initialization
+			CObjPartition.Init();
 
 			//store coordinates to corresponding data strucures based on their class
 			const int DEFAULT_START_LINE = 19;
@@ -97,8 +100,10 @@ namespace ForestReco
 
 			if (CProjectData.exportArray)
 			{
-				CProjectData.objsToExport.Add(CGroundFieldExporter.
-					ExportToObj("array_smooth", EExportStrategy.ZeroAroundDefined, true));
+				CObjPartition.AddArray();
+				//CProjectData.objsToExport.Add(CGroundFieldExporter.
+				//	ExportToObj("array_smooth", EExportStrategy.ZeroAroundDefined, true));
+
 				//CProjectData.objsToExport.Add(CGroundFieldExporter.
 				//	ExportToObj("array_normal", EExportStrategy.ZeroAroundDefined, false));
 			}
@@ -109,39 +114,37 @@ namespace ForestReco
 			{
 				CTreeManager.TryMergeAllTrees();
 			}
-
-			if (CProjectData.tryMergeTrees)
+			
+			if (CProjectData.validateTrees)
 			{
-				CTreeManager.TryMergeAllTrees();
-			}
-
-			if (CProjectData.detectInvalidTrees)
-			{
-				CTreeManager.DetectInvalidTrees();
+				CTreeManager.ValidateTrees();
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
 			Console.WriteLine("InvalidTrees = " + CTreeManager.InvalidTrees.Count);
 
 			//todo: deprecated
-			if (CProjectData.processTrees)
-			{
-				CTreeManager.ProcessAllTrees();
-			}
+			//if (CProjectData.processTrees)
+			//{
+			//	CTreeManager.ProcessAllTrees();
+			//}
 
+
+			if (CProjectData.assignRefTrees)
+			{
+				CRefTreeManager.AssignRefTrees();
+				//CProjectData.objsToExport.AddRange(trees);
+			}
 			if (CProjectData.exportTrees)
 			{
-				CTreeManager.ExportTrees();
-			}
-			if (CProjectData.exportRefTrees)
-			{
-				CRefTreeManager.ExportTrees();
+				//CTreeManager.ExportTrees();
+				CObjPartition.AddTrees();
 			}
 
-			if (CProjectData.useRefTrees)
+			if (CProjectData.exportRefTrees)
 			{
-				List<Obj> trees = CRefTreeManager.GetRefTreeObjs();
-				CProjectData.objsToExport.AddRange(trees);
+				//CRefTreeManager.ExportTrees();
+				CObjPartition.AddRefTrees();
 			}
 		}
 
@@ -199,15 +202,17 @@ namespace ForestReco
 			{
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
+				CProjectData.array.AddPointInField(point, false);
+
 				if (i % debugFrequency == 0 && i > 0)
 				{
 					Console.WriteLine("\nAdded point " + i + " out of " + CProjectData.vegePoints.Count);
-					Console.WriteLine("- time of last " + debugFrequency + " points = " +
-						(DateTime.Now - previousDebugStart).TotalSeconds);
+					double lastPointBatchProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+					Console.WriteLine("- time of last " + debugFrequency + " points = " + lastPointBatchProcessTime);
 
-					double totalTime = (DateTime.Now - processVegePointsStart).TotalSeconds;
-					float remainsRatio = (float)CProjectData.vegePoints.Count / i;
-					double totalSeconds = remainsRatio * totalTime;
+					//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+					float remainsRatio = (float)(CProjectData.vegePoints.Count - i)/ debugFrequency;
+					double totalSeconds = remainsRatio * lastPointBatchProcessTime;
 					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
 					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
 					Console.WriteLine("- estimated time left = " + timeString + "\n");
@@ -218,12 +223,14 @@ namespace ForestReco
 			Console.WriteLine("\nProcessVegePoints time = " + (DateTime.Now - processVegePointsStart));
 
 
-			if (CProjectData.exportPoints)
-			{
-				Obj vegePointsObj = new Obj("vegePoints");
-				CObjExporter.AddPointsToObj(ref vegePointsObj, CProjectData.vegePoints);
-				CProjectData.objsToExport.Add(vegePointsObj);
-			}
+			//moved to CObjpartition - ground export
+			//if (CProjectData.exportPoints)
+			//{
+			//	Obj vegePointsObj = new Obj("vegePoints");
+			//	CObjExporter.AddPointsToObj(ref vegePointsObj, CProjectData.vegePoints);
+			//	CProjectData.objsToExport.Add(vegePointsObj);
+			//	CObjPartition.AddPoints();
+			//}
 		}
 
 		private static void ProcessGroundPoints()
@@ -233,15 +240,16 @@ namespace ForestReco
 			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
 				Vector3 point = CProjectData.groundPoints[i];
-				CProjectData.array?.AddPointInField(point);
+				CProjectData.array?.AddPointInField(point, true);
 			}
 
-			if (CProjectData.exportPoints)
+			//moved to CObjpartition - ground export
+			/*if (CProjectData.exportPoints)
 			{
 				Obj groundPointsObj = new Obj("groundPoints");
 				CObjExporter.AddPointsToObj(ref groundPointsObj, CProjectData.groundPoints);
 				CProjectData.objsToExport.Add(groundPointsObj);
-			}
+			}*/
 
 			if (CProjectData.array == null)
 			{

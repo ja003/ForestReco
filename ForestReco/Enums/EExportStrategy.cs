@@ -5,6 +5,7 @@
 		None,
 		FillMissingHeight,
 		FillHeightsAroundDefined,
-		ZeroAroundDefined
+		ZeroAroundDefined,
+		CoordHeights
 	}
 }

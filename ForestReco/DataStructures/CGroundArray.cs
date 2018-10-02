@@ -12,7 +12,7 @@ namespace ForestReco
 	public class CGroundArray
 	{
 		private CGroundField[,] array;
-		private List<CGroundField> fields;
+		public List<CGroundField> fields { get; private set; }
 
 		private float stepSize;
 		public int arrayXRange { get; }
@@ -84,6 +84,7 @@ namespace ForestReco
 					}
 				}
 			}
+
 		}
 
 		///GETTER
@@ -121,14 +122,21 @@ namespace ForestReco
 
 		//PUBLIC
 
-		public void AddPointInField(Vector3 pPoint)
+		public void AddPointInField(Vector3 pPoint, bool pGround)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
 			//if (Equals(index, new Tuple<int, int>(0, 5)))
 			//{
 			//	Tuple<int, int> index2 = GetPositionInField(pPoint);
 			//}
-			array[index.Item1, index.Item2].AddPoint(pPoint);
+			if (pGround)
+			{
+				array[index.Item1, index.Item2].AddGroundPoint(pPoint);
+			}
+			else
+			{
+				array[index.Item1, index.Item2].AddVegePoint(pPoint);
+			}
 			//Console.WriteLine(index + " = " + pPointField);
 			coordinatesCount++;
 		}

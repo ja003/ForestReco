@@ -27,6 +27,8 @@ namespace ForestReco
 			AddPointsToObj(ref obj, pPoints, Vector3.Zero);
 		}
 
+		private static bool simplePointsObj = true;
+
 		public static void AddPointsToObj(ref Obj obj, List<Vector3> pPoints, Vector3 pOffset, bool pMoveToCenter = true)
 		{
 			foreach (Vector3 p in pPoints)
@@ -43,15 +45,17 @@ namespace ForestReco
 
 				Vertex v3 = new Vertex(clonePoint + Vector3.UnitZ * POINT_OFFSET, obj.GetNextVertexIndex());
 				obj.AddVertex(v3);
-
-				Vertex v4 = new Vertex(clonePoint + Vector3.UnitY * POINT_OFFSET, obj.GetNextVertexIndex());
-				obj.AddVertex(v4);
-
-				//create 4-side representation of point
+				
 				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
-				obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
-				obj.FaceList.Add(new Face(new List<Vertex> { v1, v3, v4 }));
-				obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
+
+				//create 4-side representation of point - otherwise just triangle - big data save
+				if (!simplePointsObj)
+				{
+					Vertex v4 = new Vertex(clonePoint + Vector3.UnitY * POINT_OFFSET, obj.GetNextVertexIndex());
+					obj.AddVertex(v4); obj.FaceList.Add(new Face(new List<Vertex> {v1, v2, v4}));
+					obj.FaceList.Add(new Face(new List<Vertex> {v1, v3, v4}));
+					obj.FaceList.Add(new Face(new List<Vertex> {v2, v3, v4}));
+				}
 			}
 		}
 
@@ -129,13 +133,13 @@ namespace ForestReco
 			}
 		}
 
-		public static void ExportObjsToExport()
+		/*public static void ExportObjsToExport()
 		{
 			Console.WriteLine("\nExportObjsToExport");
 			DateTime start = DateTime.Now;
 			ExportObjs(CProjectData.objsToExport, CProjectData.saveFileName);
 			Console.WriteLine("Export time = " + (DateTime.Now - start).TotalSeconds + " seconds");
-		}
+		}*/
 
 		public static void ExportObj(Obj pObj, string pFileName)
 		{

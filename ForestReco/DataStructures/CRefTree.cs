@@ -18,16 +18,16 @@ namespace ForestReco
 
 		public CRefTree() { }
 
-		public CRefTree(string pFileName, int pTreeIndex)
+		public CRefTree(string pFileName, int pTreeIndex, bool pLoadFromFile)
 		{
 			treeIndex = pTreeIndex;
 			fileName = pFileName;
-			string[] lines = GetFileLines(pFileName);
-			LoadObj(pFileName);
 
-			bool processLines = true;
-			if (processLines)
+			if (pLoadFromFile)
 			{
+				string[] lines = GetFileLines(pFileName);
+				LoadObj(pFileName);
+
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false, false);
 				AddPointsFromLines(parsedLines);
 				DateTime processStartTime = DateTime.Now;
@@ -380,12 +380,22 @@ namespace ForestReco
 				//if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }
 				if (i % 100000 == 0)
 				{
-					TimeSpan duration = DateTime.Now - lineStartTime; 
+					TimeSpan duration = DateTime.Now - lineStartTime;
 					Console.WriteLine("added point: " + i + "/" + pParsedLines.Count + ". time = " + duration.TotalSeconds);
 					lineStartTime = DateTime.Now;
 				}
 			}
 			Console.WriteLine("All points added | duration = " + (DateTime.Now - addStartTime));
 		}
+
+		/*public CRefTree Clone(string pNameAppendix)
+		{
+			CRefTree cloneTree = new CRefTree(fileName + pNameAppendix, treeIndex, false);
+			cloneTree.Obj = Obj.Clone();
+			cloneTree.peak = peak.Clone();
+
+			//TODO: is it necessary to copy other parts?
+			return cloneTree;
+		}*/
 	}
 }

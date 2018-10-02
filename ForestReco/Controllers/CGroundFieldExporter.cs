@@ -11,7 +11,8 @@ namespace ForestReco
 	{
 		private const string DEFAULT_FILENAME = "try";
 
-		public static Obj ExportToObj(string pArrayName, EExportStrategy pStrategy, bool pUseSmoothHeight)
+		public static Obj ExportToObj(string pArrayName, EExportStrategy pStrategy, bool pUseSmoothHeight, 
+			Tuple<int, int> pStartIndex, Tuple<int, int> pEndIndex)
 		{
 			CGroundArray pArray = CProjectData.array;
 			Obj obj = new Obj(pArrayName);
@@ -19,10 +20,18 @@ namespace ForestReco
 
 			int missingCoordCount = 0;
 
+			int xStart = pStartIndex.Item1;
+			int yStart = pStartIndex.Item2;
+			int xEnd = pEndIndex.Item1;
+			int yEnd = pEndIndex.Item2;
+
+			xEnd = Math.Min(xEnd, pArray.arrayXRange);
+			yEnd = Math.Min(yEnd, pArray.arrayYRange);
+
 			//prepare vertices
-			for (int x = 0; x < pArray.arrayXRange; x++)
+			for (int x = xStart; x < xEnd; x++)
 			{
-				for (int y = 0; y < pArray.arrayYRange; y++)
+				for (int y = yStart; y < yEnd; y++)
 				{
 					Vertex v = new Vertex();
 					CGroundField el = pArray.GetElement(x, y);
@@ -55,6 +64,10 @@ namespace ForestReco
 							//Console.WriteLine("Fill " + el + " = " + height);
 						}
 					}
+					else if (pStrategy == EExportStrategy.CoordHeights)
+					{
+						height = y;
+					}
 
 					//create vertex only if height is defined
 					if (height != null)
@@ -82,9 +95,9 @@ namespace ForestReco
 			//Console.WriteLine("missingCoordCount = " + missingCoordCount);
 			int faceCount = 0;
 			//generate faces
-			for (int x = 0; x < pArray.arrayXRange - 1; x++)
+			for (int x = xStart; x < xEnd - 1; x++)
 			{
-				for (int y = 0; y < pArray.arrayYRange - 1; y++)
+				for (int y = yStart; y < yEnd - 1; y++)
 				{
 					//create face only if all necessary vertices has been defined. -1 = not defined
 					//| /|	3:[0,1]	2:[1,1]
