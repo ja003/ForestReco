@@ -38,9 +38,9 @@ namespace ForestReco
 						EExportStrategy.ZeroAroundDefined, true,
 						new Tuple<int, int>(x, y), new Tuple<int, int>(x + partitionStep, y + partitionStep));
 
-					int partitionIndexX = x / partitionStep;
-					int partitionIndexY = y / partitionStep;
-					AddObj(partitionIndexX, partitionIndexY, groundArrayPartObj);
+					//int partitionIndexX = x / partitionStep;
+					//int partitionIndexY = y / partitionStep;
+					AddObj(x, y, groundArrayPartObj);
 
 					if (CProjectData.exportPoints)
 					{
@@ -63,14 +63,13 @@ namespace ForestReco
 						CObjExporter.AddPointsToObj(ref vegePointsObj, vegePoints);
 						CObjExporter.AddPointsToObj(ref groundPointsObj, groundPoints);
 
-						AddObj(partitionIndexX, partitionIndexY, vegePointsObj);
-						AddObj(partitionIndexX, partitionIndexY, groundPointsObj);
+						AddObj(x, y, vegePointsObj);
+						AddObj(x, y, groundPointsObj);
 					}
 				}
 			}
 		}
-
-
+		
 		public static void AddTrees()
 		{
 			foreach (CGroundField f in CProjectData.array.fields)
@@ -103,17 +102,22 @@ namespace ForestReco
 
 		public static void AddObj(int pArrayIndexX, int pArrayIndexY, Obj pObj)
 		{
+			if (pObj == null)
+			{
+				Console.WriteLine("!");
+			}
 			Tuple<int, int> index = GetIndexInArray(pArrayIndexX, pArrayIndexY);
 			objPartition[index.Item1, index.Item2].Add(pObj);
 		}
 
 		public static void ExportPartition()
 		{
+			string folderPath = CObjExporter.CreateFolder(CProjectData.saveFileName);
 			for (int x = 0; x < partitionXRange; x++)
 			{
 				for (int y = 0; y < partitionYRange; y++)
 				{
-					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName + "_[" + x + "," + y + "]");
+					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName + "_[" + x + "," + y + "]", folderPath);
 				}
 			}
 		}

@@ -22,8 +22,8 @@ namespace ForestReco
 
 			int xStart = pStartIndex.Item1;
 			int yStart = pStartIndex.Item2;
-			int xEnd = pEndIndex.Item1;
-			int yEnd = pEndIndex.Item2;
+			int xEnd = pEndIndex.Item1 + 1;
+			int yEnd = pEndIndex.Item2 + 1;
 
 			xEnd = Math.Min(xEnd, pArray.arrayXRange);
 			yEnd = Math.Min(yEnd, pArray.arrayYRange);

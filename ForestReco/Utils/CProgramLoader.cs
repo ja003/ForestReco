@@ -134,6 +134,11 @@ namespace ForestReco
 			{
 				CRefTreeManager.AssignRefTrees();
 				//CProjectData.objsToExport.AddRange(trees);
+				if (CProjectData.exportRefTrees) //no reason to export when no refTrees were assigned
+				{
+					//CRefTreeManager.ExportTrees();
+					CObjPartition.AddRefTrees();
+				}
 			}
 			if (CProjectData.exportTrees)
 			{
@@ -141,11 +146,7 @@ namespace ForestReco
 				CObjPartition.AddTrees();
 			}
 
-			if (CProjectData.exportRefTrees)
-			{
-				//CRefTreeManager.ExportTrees();
-				CObjPartition.AddRefTrees();
-			}
+			
 		}
 
 		private static void FillArray()

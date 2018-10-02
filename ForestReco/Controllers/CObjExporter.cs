@@ -143,12 +143,12 @@ namespace ForestReco
 
 		public static void ExportObj(Obj pObj, string pFileName)
 		{
-			ExportObjs(new List<Obj> { pObj }, pFileName);
+			ExportObjs(new List<Obj> { pObj }, pFileName, "");
 		}
 
-		public static void ExportObjs(List<Obj> pObjs, string pFileName)
+		public static void ExportObjs(List<Obj> pObjs, string pFileName, string pFolderPath)
 		{
-			string filePath = GetFileExportPath(pFileName);
+			string filePath = GetFileExportPath(pFileName, pFolderPath);
 
 			using (var outStream = File.OpenWrite(filePath))
 			using (var writer = new StreamWriter(outStream))
@@ -159,6 +159,11 @@ namespace ForestReco
 				int vertexIndexOffset = 0;
 				foreach (Obj obj in pObjs)
 				{
+					if (obj == null)
+					{
+						Console.WriteLine("Error: obj is null...WTF!");
+						continue;
+					}
 					writer.WriteLine("o " + obj.Name);
 
 					int thisTreeVertexIndexOffset = vertexIndexOffset;
@@ -182,13 +187,34 @@ namespace ForestReco
 			Console.WriteLine("Exported to " + filePath);
 		}
 
-		private static string GetFileExportPath(string pFileName)
+		public static string CreateFolder(string pFileName)
+		{
+			string path = Path.GetDirectoryName(
+				              System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+
+			int folderIndex = 0;
+			string chosenFolderName = path + pFileName + "_" + folderIndex;
+			while (Directory.Exists(chosenFolderName))
+			{
+				chosenFolderName = path + pFileName + "_" + folderIndex;
+				folderIndex++;
+			}
+			Directory.CreateDirectory(chosenFolderName);
+			return chosenFolderName + "\\";
+		}
+
+		private static string GetFileExportPath(string pFileName, string pFolder)
 		{
 			string fileName = pFileName.Length > 0 ? pFileName : DEFAULT_FILENAME;
 			string chosenFileName = fileName;
 			string extension = ".Obj";
-			string path = Path.GetDirectoryName(
-							  System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+			string path = pFolder;
+			if (!Directory.Exists(path))
+			{
+				Console.WriteLine("Given folder does not exist! " + pFolder);
+				path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+			}
+			
 			string fullPath = path + chosenFileName + extension;
 			int fileIndex = 0;
 			while (File.Exists(fullPath))
