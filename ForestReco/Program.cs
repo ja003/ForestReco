@@ -70,7 +70,7 @@ namespace ForestReco
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			//CProgramLoader.fileName = "BK_1000AGL_classified";
+			CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 			
@@ -99,7 +99,7 @@ namespace ForestReco
 			CObjPartition.ExportPartition();
 
 			Console.WriteLine("\n==============\n");
-			Console.WriteLine("Press any key to exit." + " | Complete time = " + (DateTime.Now - start).TotalSeconds + " seconds");
+			Console.WriteLine("Press any key to exit." + " | Complete time = " + (DateTime.Now - start));
 			Console.ReadKey();
 		}
 	}

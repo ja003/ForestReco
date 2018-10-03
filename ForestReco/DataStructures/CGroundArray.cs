@@ -254,5 +254,18 @@ namespace ForestReco
 
 			return trees;
 		}
+
+		/// <summary>
+		/// just check
+		/// </summary>
+		public void DebugDetectedTrees()
+		{
+			int detectedTreesCount = 0;
+			foreach (CGroundField f in fields)
+			{
+				detectedTreesCount += f.DetectedTrees.Count;
+			}
+			Console.WriteLine("Detected trees count = " + detectedTreesCount);
+		}
 	}
 }

@@ -123,6 +123,7 @@ namespace ForestReco
 				return;
 			}
 			CGroundField element = pTree.groundField;
+			Trees.Remove(pTree);
 			if (!element.DetectedTrees.Contains(pTree))
 			{
 				Console.WriteLine("Error: element " + element +" doesnt contain " + pTree);
@@ -432,14 +433,10 @@ namespace ForestReco
 
 		private static CTree MergeTrees(ref CTree pTree1, ref CTree pTree2)
 		{
-			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
-			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
+			CTree higherTree = pTree1.peak.maxHeight.Y >= pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
+			CTree lowerTree = pTree1.peak.maxHeight.Y < pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
 
-			Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
-			if (lowerTree.treeIndex == 98)
-			{
-				Console.WriteLine("§");
-			}
+			//Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
 			higherTree.MergeWith(lowerTree);
 			DeleteTree(lowerTree);
 			//Trees.Remove(lowerTree);

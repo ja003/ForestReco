@@ -109,12 +109,12 @@ namespace ForestReco
 			}
 
 			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
-
+			
 			if (CProjectData.tryMergeTrees)
 			{
 				CTreeManager.TryMergeAllTrees();
 			}
-			
+
 			if (CProjectData.validateTrees)
 			{
 				CTreeManager.ValidateTrees();

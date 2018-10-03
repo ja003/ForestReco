@@ -18,7 +18,7 @@ namespace ForestReco
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
-				//"R1",
+				"R1",
 				"R2",
 				//"R3",
 				//"R4",
@@ -49,9 +49,14 @@ namespace ForestReco
 			DateTime addTreeObjModelsStart = DateTime.Now;
 			Console.WriteLine("\nGet ref tree models");
 
-			//List<Obj> treeObjs = new List<Obj>();
+			const int debugFrequency = 10;
 
-			//int maxRefTreePointsCount = 1;
+			DateTime assignRefTreesStart = DateTime.Now;
+			Console.WriteLine("\nAssignRefTrees start = " + assignRefTreesStart);
+
+			DateTime previousDebugStart = DateTime.Now;
+
+			int	counter = 0;
 			foreach (CTree t in CTreeManager.Trees)
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
@@ -73,6 +78,24 @@ namespace ForestReco
 				Obj suitableTreeObj = mostSuitableRefTree.Obj.Clone();
 				suitableTreeObj.Name += "_" + t.treeIndex;
 				t.mostSuitableRefTreeObj = suitableTreeObj;
+
+
+				if (counter % debugFrequency == 0 && counter > 0)
+				{
+					Console.WriteLine("\nAssigned reftree " + counter + " out of " + CTreeManager.Trees.Count);
+					double lastAssignmentProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+					Console.WriteLine("- time of last " + debugFrequency + " trees = " + lastAssignmentProcessTime);
+
+					float remainsRatio = (float)(CTreeManager.Trees.Count - counter) / debugFrequency;
+					double totalSeconds = remainsRatio * lastAssignmentProcessTime;
+					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
+					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
+					Console.WriteLine("- estimated time left = " + timeString + "\n");
+
+					previousDebugStart = DateTime.Now;
+				}
+				counter++;
+
 
 				//counter++;
 
@@ -137,8 +160,13 @@ namespace ForestReco
 				Console.WriteLine("Error: no reftrees defined!");
 				return null;
 			}
+
 			CRefTree mostSuitableTree = Trees[0];
 			float bestSimilarity = 0;
+			if (Trees.Count == 1)
+			{
+				return mostSuitableTree;
+			}
 
 			foreach (CRefTree refTree in Trees)
 			{
