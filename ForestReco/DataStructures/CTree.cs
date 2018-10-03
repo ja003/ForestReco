@@ -128,8 +128,8 @@ namespace ForestReco
 		{
 			if (CTreeManager.DEBUG)
 			{
-				Console.WriteLine(this.ToString(false, false, true, false, false) + " MergeWith " +
-					pSubTree.ToString(false, false, true, false, false));
+				Console.WriteLine(this.ToString(false, false, true, false, false, false) + " MergeWith " +
+					pSubTree.ToString(false, false, true, false, false, false));
 			}
 			//todo: make effective
 			if (pSubTree.Equals(this))
@@ -261,6 +261,7 @@ namespace ForestReco
 		}
 
 		private float? groundHeight;
+		public CGroundField groundField;
 
 		/// <summary>
 		/// Returns height of ground under peak of this tree
@@ -518,13 +519,14 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToString(true, true, true, false, true);
+			return ToString(true, true, true, false, true, true);
 		}
 
-		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree)
+		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree, bool pValid)
 		{
 			string indexS = pIndex ? treeIndex.ToString("000") : "";
 			string pointsS = pPoints ? (" [" + GetAllPoints().Count.ToString("000") + "]") : "";
+			string validS = pValid ? (isValid ? "|<+>" : "<->") : "";
 			string peakS = pPeak ? "||peak = " + peak : "";
 			string branchesS = pBranches ? "||BR=" + GetBranchesCount() +
 				"[" + GetBranchesPointCount().ToString("000") + "]" + "_|" : "";
@@ -538,7 +540,7 @@ namespace ForestReco
 					branchesS += b;
 				}
 			}
-			return indexS + pointsS + peakS + branchesS + refTreeS;
+			return indexS + pointsS + validS + peakS + branchesS + refTreeS;
 		}
 
 		//OTHERS

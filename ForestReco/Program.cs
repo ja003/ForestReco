@@ -29,6 +29,8 @@ namespace ForestReco
 
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
 
+			CObjPartition.partitionStep = 30;
+
 			//ARRAY
 			CProjectData.setArray = true;
 			CProjectData.fillArray = true;
@@ -49,10 +51,10 @@ namespace ForestReco
 			CProjectData.mergeGoodAddFactorTrees = true;
 
 			CProjectData.processTrees = false; //todo: not used anymore
-			
+
 			//REF TREES
-			//CProjectData.loadRefTrees = true;
-			//CProjectData.assignRefTrees = true;
+			CProjectData.loadRefTrees = true;
+			CProjectData.assignRefTrees = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
 			//source xyz-files

@@ -55,7 +55,7 @@ namespace ForestReco
 			float bestAddPointFactor = 0;
 			foreach (CTree t in possibleTrees)
 			{
-				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(false, false, true, false, false)); }
+				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(false, false, true, false, false, false)); }
 
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
 				if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
@@ -100,7 +100,35 @@ namespace ForestReco
 			Trees.Add(newTree);
 			treeIndex++;
 
-			CProjectData.array.GetElementContainingPoint(pPoint).DetectedTrees.Add(newTree);
+			CGroundField element = CProjectData.array.GetElementContainingPoint(pPoint);
+			element.DetectedTrees.Add(newTree);
+
+			newTree.groundField = element;
+
+			if (newTree.treeIndex == 78)
+			{
+				Console.WriteLine("!");
+			}
+			if (newTree.treeIndex == 98)
+			{
+				Console.WriteLine("!");
+			}
+		}
+
+		private static void DeleteTree(CTree pTree)
+		{
+			if (!Trees.Contains(pTree))
+			{
+				Console.WriteLine("Error: Trees dont contain " + pTree);
+				return;
+			}
+			CGroundField element = pTree.groundField;
+			if (!element.DetectedTrees.Contains(pTree))
+			{
+				Console.WriteLine("Error: element " + element +" doesnt contain " + pTree);
+				return;
+			}
+			element.DetectedTrees.Remove(pTree);
 		}
 
 		private static void DebugPoint(Vector3 pPoint, int pPointIndex)
@@ -192,7 +220,7 @@ namespace ForestReco
 
 				List<CTree> closestTrees = new List<CTree>();
 				//no reason to select more. small chance that point would fit better to further tree
-				const int maxClosestTreesCount = 3; 
+				const int maxClosestTreesCount = 3;
 				int counter = 0;
 				foreach (CTree possibleTree in possibleTrees)
 				{
@@ -286,7 +314,7 @@ namespace ForestReco
 				}
 				if (selectedTree != null)
 				{
-					tree = MergeTrees(tree, selectedTree);
+					tree = MergeTrees(ref tree, ref selectedTree);
 				}
 			}
 		}
@@ -308,11 +336,14 @@ namespace ForestReco
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Belongs);
 
-				foreach (CTree t in possibleTrees)
+				//foreach (CTree t in possibleTrees)
+				for (int j = possibleTrees.Count - 1; j >= 0; j--)
 				{
+					CTree t = possibleTrees[j];
+
 					if (!Equals(tree, t))
 					{
-						tree = MergeTrees(tree, t);
+						tree = MergeTrees(ref tree, ref t);
 						//tree = TryMergeTrees(tree, t);
 					}
 				}
@@ -339,8 +370,10 @@ namespace ForestReco
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Contains);
 
-				foreach (CTree t in possibleTrees)
+				//foreach (CTree t in possibleTrees)
+				for (int j = possibleTrees.Count - 1; j >= 0; j--)
 				{
+					CTree t = possibleTrees[j];
 					if (!Equals(tree, t))
 					{
 						float peaksDist = CUtils.Get2DDistance(tree.peak, t.peak);
@@ -352,7 +385,7 @@ namespace ForestReco
 						if (peaksDist < minPeakDistance)
 						//if (higherTree.GetAddPointFactor(lowerTree.peak.Center) > 0.5f)
 						{
-							tree = MergeTrees(tree, t);
+							tree = MergeTrees(ref tree, ref t);
 						}
 					}
 				}
@@ -397,15 +430,20 @@ namespace ForestReco
 			return higherTree;
 		}
 
-		private static CTree MergeTrees(CTree pTree1, CTree pTree2)
+		private static CTree MergeTrees(ref CTree pTree1, ref CTree pTree2)
 		{
 			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
 
-			//Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
-
+			Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+			if (lowerTree.treeIndex == 98)
+			{
+				Console.WriteLine("§");
+			}
 			higherTree.MergeWith(lowerTree);
-			Trees.Remove(lowerTree);
+			DeleteTree(lowerTree);
+			//Trees.Remove(lowerTree);
+			//lowerTree = null;
 
 			return higherTree;
 		}

@@ -11,8 +11,7 @@ namespace ForestReco
 		private static int partitionXRange;
 		private static int partitionYRange;
 
-		static int partitionStep = 10;
-
+		public static int partitionStep = 10;
 
 		public static void Init()
 		{

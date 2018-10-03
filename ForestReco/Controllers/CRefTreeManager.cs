@@ -56,8 +56,17 @@ namespace ForestReco
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
 
+				if (t.treeIndex == 64)
+				{
+					Console.WriteLine("§");
+				}
+
 				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
-				if(mostSuitableRefTree == null){ continue;}
+				if (mostSuitableRefTree == null)
+				{
+					Console.WriteLine("Error: no reftrees assigned!");
+					continue;
+				}
 
 				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
 
