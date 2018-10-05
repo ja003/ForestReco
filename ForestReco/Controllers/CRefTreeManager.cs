@@ -10,6 +10,7 @@ namespace ForestReco
 	public static class CRefTreeManager
 	{
 		public static List<CRefTree> Trees = new List<CRefTree>();
+		private const float TREE_POINT_EXTENT = 0.2f;
 
 		public static bool DEBUG = false;
 
@@ -123,6 +124,7 @@ namespace ForestReco
 			//return treeObjs;
 		}
 
+
 		private static void LoadTrees(List<string> pFileNames)
 		{
 			DateTime loadTreesStartTime = DateTime.Now;
@@ -132,10 +134,11 @@ namespace ForestReco
 				Console.WriteLine(" - " + fileName);
 			}
 
+
 			foreach (string fileName in pFileNames)
 			{
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
-				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName), true);
+				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
 
 				Trees.Add(refTree);
 				Console.WriteLine("Loaded tree: " + fileName);

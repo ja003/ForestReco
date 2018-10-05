@@ -18,15 +18,17 @@ namespace ForestReco
 		
 		public Vector3 maxHeight;
 
-		private const float POINT_EXTENT = 0.1f;
+		//private const float POINT_EXTENT = 0.1f;
+		protected float treePointExtent;
 
-		public CTreePoint(Vector3 pPoint) : base(pPoint)
+		public CTreePoint(Vector3 pPoint, float pTreePointExtent) : base(pPoint)
 		{
+			treePointExtent = pTreePointExtent;
 			AddPoint(pPoint);
 		}
 
 
-		public static CTreePoint Deserialize(string pLine)
+		public static CTreePoint Deserialize(string pLine, float pTreePointExtent)
 		{
 			string[] split = pLine.Split(null);
 
@@ -34,7 +36,7 @@ namespace ForestReco
 
 			Vector3 _maxBB = new Vector3(float.Parse(split[3]), float.Parse(split[4]), float.Parse(split[5]));
 
-			CTreePoint treePoint = new CTreePoint((_minBB + _maxBB)/2);
+			CTreePoint treePoint = new CTreePoint((_minBB + _maxBB)/2, pTreePointExtent);
 			treePoint.OnAddPoint(_minBB);
 			treePoint.OnAddPoint(_maxBB);
 			return treePoint;
@@ -85,7 +87,7 @@ namespace ForestReco
 
 		public virtual bool Includes(Vector3 pPoint, float pToleranceMultiply = 1)
 		{
-			return Vector3.Distance(Center, pPoint) < POINT_EXTENT * pToleranceMultiply || Contains(pPoint);
+			return Vector3.Distance(Center, pPoint) < treePointExtent * pToleranceMultiply || Contains(pPoint);
 		}
 		
 		public override string ToString()
@@ -95,7 +97,7 @@ namespace ForestReco
 
 		public CTreePoint Clone()
 		{
-			CTreePoint cloneTreePoint = new CTreePoint(Center);
+			CTreePoint cloneTreePoint = new CTreePoint(Center, treePointExtent);
 			cloneTreePoint.Points = Points;
 			foreach (Vector3 p in Points)
 			{

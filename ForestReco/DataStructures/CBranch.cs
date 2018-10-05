@@ -221,32 +221,35 @@ namespace ForestReco
 					return;
 				}
 			}*/
+
 			//improve: try add just to last
-			if (tree.Branches.IndexOf(this) == 0)
-			{
-				Console.WriteLine("add " + pPoint);
-			}
 			if (TreePoints.Count > 0)
 			{
-				//if (tree.Branches.IndexOf(this) == 0)
-				//{
-				//	Console.WriteLine("!");
-				//}
-				CTreePoint pointOnBranch = TreePoints.Last();
-				if (pointOnBranch.Includes(pPoint))
+				int lastIndex = TreePoints.Count - 1;
+				CTreePoint pointOnBranch = TreePoints[lastIndex];
+				//try to add the point to some of the last points on the branch, which
+				//should be the closest to the new point
+				while (pointOnBranch.Y - pPoint.Y < tree.treePointExtent * 5)
 				{
-					if (tree.Branches.IndexOf(this) == 0)
+					if (pointOnBranch.Includes(pPoint))
 					{
-						Console.WriteLine("- to " + pointOnBranch);
+						//if (tree.Branches.IndexOf(this) == 0)
+						//{
+						//	Console.WriteLine("- to " + pointOnBranch);
+						//}
+						pointOnBranch.AddPoint(pPoint);
+						if (CTreeManager.DEBUG) { Console.WriteLine("---- added at " + TreePoints.IndexOf(pointOnBranch)); }
+						return;
 					}
-					pointOnBranch.AddPoint(pPoint);
-					if (CTreeManager.DEBUG) {Console.WriteLine("---- added at " + TreePoints.IndexOf(pointOnBranch));}
-					return;
+					lastIndex--;
+					if(lastIndex < 0){ break;}
+					pointOnBranch = TreePoints[lastIndex];
 				}
+				
 			}
-			CheckAddedPoint(pPoint);
+			//CheckAddedPoint(pPoint);
 			
-			CTreePoint newPoint = new CTreePoint(pPoint);
+			CTreePoint newPoint = new CTreePoint(pPoint, tree.treePointExtent);
 			TreePoints.Add(newPoint);
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
 

@@ -22,6 +22,7 @@ namespace ForestReco
 		protected List<CBranch> branches = new List<CBranch>();
 		public List<CBranch> Branches => branches;
 		public CBranch stem { get; protected set; }
+		public float treePointExtent = CTreeManager.TREE_POINT_EXTENT; //default if not set
 
 		public static int BRANCH_ANGLE_STEP = 45;
 		private const float MAX_STEM_POINT_DISTANCE = 0.1f;
@@ -41,14 +42,15 @@ namespace ForestReco
 
 		public CTree() { }
 
-		public CTree(Vector3 pPoint, int pTreeIndex) : base(pPoint)
+		public CTree(Vector3 pPoint, int pTreeIndex, float pTreePointExtent) : base(pPoint)
 		{
-			Init(pPoint, pTreeIndex);
+			Init(pPoint, pTreeIndex, pTreePointExtent);
 		}
 
-		protected void Init(Vector3 pPoint, int pTreeIndex)
+		protected void Init(Vector3 pPoint, int pTreeIndex, float pTreePointExtent)
 		{
-			peak = new CPeak(pPoint);
+			treePointExtent = pTreePointExtent;
+			peak = new CPeak(pPoint, treePointExtent);
 
 			if (CTreeManager.DEBUG) { Console.WriteLine("new tree " + pTreeIndex); }
 
@@ -332,11 +334,11 @@ namespace ForestReco
 			//display all peak points
 			foreach (Vector3 peakPoint in peak.Points)
 			{
-				allTreePoints.Add(new CTreePoint(peakPoint));
+				allTreePoints.Add(new CTreePoint(peakPoint, treePointExtent));
 			}
 
 			//display highest peak point
-			allTreePoints.Add(new CTreePoint(peak.maxHeight));
+			allTreePoints.Add(new CTreePoint(peak.maxHeight, treePointExtent));
 
 			//add centers of all tree points
 			List<Vector3> vectorPoints = new List<Vector3>();
@@ -495,7 +497,7 @@ namespace ForestReco
 			{
 				Console.WriteLine("Cant Scale after process!");
 			}
-			peak = new CPeak(Points[0]);
+			peak = new CPeak(Points[0], treePointExtent);
 		}
 
 		public void Move(Vector3 pOffset)

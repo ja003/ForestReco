@@ -6,12 +6,12 @@ namespace ForestReco
 	public class CPeak : CTreePoint
 	{
 
-		public CPeak(Vector3 pPoint) : base(pPoint){ }
+		public CPeak(Vector3 pPoint, float pTreePointExtent) : base(pPoint, pTreePointExtent) { }
 
 		/// <summary>
 		/// TODO: merge with CTreePoint method
 		/// </summary>
-		public new static CPeak Deserialize(string pLine)
+		public new static CPeak Deserialize(string pLine, float pTreePointExtent)
 		{
 			string[] split = pLine.Split(null);
 
@@ -19,7 +19,7 @@ namespace ForestReco
 
 			Vector3 _maxBB = new Vector3(float.Parse(split[3]), float.Parse(split[4]), float.Parse(split[5]));
 
-			CPeak peak = new CPeak((_minBB + _maxBB) / 2);
+			CPeak peak = new CPeak((_minBB + _maxBB) / 2, pTreePointExtent);
 			peak.OnAddPoint(_minBB);
 			peak.OnAddPoint(_maxBB);
 			return peak;
@@ -46,7 +46,7 @@ namespace ForestReco
 
 		public new CPeak Clone()
 		{
-			CPeak clonePeak = new CPeak(Center);
+			CPeak clonePeak = new CPeak(Center, treePointExtent);
 			clonePeak.Points = Points;
 			foreach (Vector3 p in Points)
 			{

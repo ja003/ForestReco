@@ -11,6 +11,8 @@ namespace ForestReco
 		public static List<CTree> Trees { get; } = new List<CTree>();
 		public static List<CTree> InvalidTrees { get; } = new List<CTree>();
 
+		public const float TREE_POINT_EXTENT = 0.1f;
+
 		public const float DEFAULT_TREE_EXTENT = 1.5f;
 		//public const float DEFAULT_TREE_EXTENT = 1f;
 		public const float DEFAULT_TREE_HEIGHT = 10;
@@ -94,9 +96,10 @@ namespace ForestReco
 			}
 		}
 
+
 		private static void CreateNewTree(Vector3 pPoint)
 		{
-			CTree newTree = new CTree(pPoint, treeIndex);
+			CTree newTree = new CTree(pPoint, treeIndex, TREE_POINT_EXTENT);
 			Trees.Add(newTree);
 			treeIndex++;
 

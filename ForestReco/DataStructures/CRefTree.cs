@@ -18,10 +18,11 @@ namespace ForestReco
 
 		public CRefTree() { }
 
-		public CRefTree(string pFileName, int pTreeIndex, bool pLoadFromFile)
+		public CRefTree(string pFileName, int pTreeIndex, float pTreePointExtent, bool pLoadFromFile)
 		{
 			treeIndex = pTreeIndex;
 			fileName = pFileName;
+			treePointExtent = pTreePointExtent;
 
 			if (pLoadFromFile)
 			{
@@ -80,6 +81,9 @@ namespace ForestReco
 					case "treeIndex":
 						currentMode = DeserialiseMode.TreeIndex;
 						continue;
+					case "treePointExtent":
+						currentMode = DeserialiseMode.TreePointExtent;
+						continue;
 					case "peak":
 						currentMode = DeserialiseMode.Peak;
 						continue;
@@ -101,8 +105,11 @@ namespace ForestReco
 					case DeserialiseMode.TreeIndex:
 						treeIndex = int.Parse(line);
 						break;
+					case DeserialiseMode.TreePointExtent:
+						treePointExtent = float.Parse(line);
+						break;
 					case DeserialiseMode.Peak:
-						peak = CPeak.Deserialize(line);
+						peak = CPeak.Deserialize(line, treePointExtent);
 						stem = new CBranch(this, 0, 0);
 						break;
 					case DeserialiseMode.Branches:
@@ -122,13 +129,13 @@ namespace ForestReco
 						}
 						else
 						{
-							CTreePoint treePointOnBranch = CTreePoint.Deserialize(line);
+							CTreePoint treePointOnBranch = CTreePoint.Deserialize(line, treePointExtent);
 							_treepointsOnBranch.Add(treePointOnBranch);
 							Points.Add(treePointOnBranch.Center);
 						}
 						break;
 					case DeserialiseMode.Stem:
-						_treepointsOnBranch.Add(CTreePoint.Deserialize(line));
+						_treepointsOnBranch.Add(CTreePoint.Deserialize(line, treePointExtent));
 						break;
 					case DeserialiseMode.BoundingBox:
 						string[] split = line.Split(null);
@@ -148,7 +155,8 @@ namespace ForestReco
 			Peak,
 			Branches,
 			Stem,
-			BoundingBox
+			BoundingBox,
+			TreePointExtent
 		}
 
 		public static CRefTree Deserialize(string pFileName)
@@ -174,6 +182,8 @@ namespace ForestReco
 			List<string> lines = new List<string>();
 			lines.Add("treeIndex");
 			lines.Add(treeIndex.ToString());
+			lines.Add("treePointExtent");
+			lines.Add(treePointExtent.ToString());
 			lines.Add("peak");
 			lines.Add(peak.Serialize());
 			lines.Add("branches");
@@ -362,7 +372,7 @@ namespace ForestReco
 			int pointsToAddCount = pParsedLines.Count;
 
 			//lines are sorted. first point is peak for sure
-			Init(pParsedLines[0].Item2, treeIndex);
+			Init(pParsedLines[0].Item2, treeIndex, treePointExtent);
 
 			DateTime lineStartTime = DateTime.Now;
 
