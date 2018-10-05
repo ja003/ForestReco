@@ -23,8 +23,8 @@ namespace ForestReco
 
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			CPlatformManager.platform = EPlatform.Notebook;
-			//CPlatformManager.platform = EPlatform.HomePC;
+			//CPlatformManager.platform = EPlatform.Notebook;
+			CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
@@ -70,7 +70,7 @@ namespace ForestReco
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			CProgramLoader.fileName = "BK_1000AGL_classified";
+			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R2_F_1+2";
 			
@@ -93,7 +93,7 @@ namespace ForestReco
 			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
-			CTreeManager.WriteResult();
+			CTreeManager.DebugTrees();
 
 			//CObjExporter.ExportObjsToExport();
 			CObjPartition.ExportPartition();

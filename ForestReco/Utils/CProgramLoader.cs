@@ -46,10 +46,14 @@ namespace ForestReco
 		public static List<Tuple<EClass, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
 		{
 			//float stepSize = .4f; //in meters
-			if (pArray) { CProjectData.array = new CGroundArray(); }
+			if (pArray)
+			{
+				CProjectData.array = new CGroundArray();
+
+				//CObjPartition is dependent on Array initialization
+				CObjPartition.Init();
+			}
 			
-			//CObjPartition is dependent on Array initialization
-			CObjPartition.Init();
 
 			//store coordinates to corresponding data strucures based on their class
 			const int DEFAULT_START_LINE = 19;

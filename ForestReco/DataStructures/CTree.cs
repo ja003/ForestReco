@@ -128,8 +128,7 @@ namespace ForestReco
 		{
 			if (CTreeManager.DEBUG)
 			{
-				Console.WriteLine(this.ToString(false, false, true, false, false, false) + " MergeWith " +
-					pSubTree.ToString(false, false, true, false, false, false));
+				Console.WriteLine(this.ToString(EDebug.Peak) + " MergeWith " + pSubTree.ToString(EDebug.Peak));
 			}
 			//todo: make effective
 			if (pSubTree.Equals(this))
@@ -519,10 +518,27 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToString(true, true, true, false, true, true);
+			return ToString(true, true, true, false, true, true, true);
 		}
 
-		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree, bool pValid)
+		public string ToString(EDebug pDebug)
+		{
+			switch (pDebug)
+			{
+				case EDebug.Height: return ToString(true, false, false, false, false, false, true);
+				case EDebug.Peak: return ToString(true, false, true, false, false, false, false);
+
+			}
+			return ToString();
+		}
+
+		public enum EDebug
+		{
+			Height,
+			Peak
+		}
+
+		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree, bool pValid, bool pHeight)
 		{
 			string indexS = pIndex ? treeIndex.ToString("000") : "";
 			string pointsS = pPoints ? (" [" + GetAllPoints().Count.ToString("000") + "]") : "";
@@ -531,6 +547,7 @@ namespace ForestReco
 			string branchesS = pBranches ? "||BR=" + GetBranchesCount() +
 				"[" + GetBranchesPointCount().ToString("000") + "]" + "_|" : "";
 			string refTreeS = pReftree && mostSuitableRefTreeObj != null ? "||reftree = " + mostSuitableRefTreeObj.Name : "";
+			string heightS = pHeight ? "||height = " + GetTreeHeight() : "";
 
 			if (pBranches)
 			{
@@ -540,7 +557,7 @@ namespace ForestReco
 					branchesS += b;
 				}
 			}
-			return indexS + pointsS + validS + peakS + branchesS + refTreeS;
+			return indexS + pointsS + validS + peakS + branchesS + refTreeS + heightS;
 		}
 
 		//OTHERS

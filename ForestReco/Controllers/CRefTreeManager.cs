@@ -56,7 +56,7 @@ namespace ForestReco
 
 			DateTime previousDebugStart = DateTime.Now;
 
-			int	counter = 0;
+			int counter = 0;
 			foreach (CTree t in CTreeManager.Trees)
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
@@ -117,7 +117,7 @@ namespace ForestReco
 					}
 				}*/
 			}
-			
+
 			Console.WriteLine("\nAssign ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
 
 			//return treeObjs;
@@ -149,6 +149,17 @@ namespace ForestReco
 				}
 			}
 			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
+
+			DebugRefTrees();
+		}
+
+		private static void DebugRefTrees()
+		{
+			Console.WriteLine("\nLoaded reftrees: ");
+			foreach (CRefTree refTree in Trees)
+			{
+				Console.WriteLine(refTree);
+			}
 		}
 
 		//private static int counter;
@@ -168,14 +179,18 @@ namespace ForestReco
 				return mostSuitableTree;
 			}
 
+			//Console.WriteLine(pTree.treeIndex + " similarities = \n");
+
 			foreach (CRefTree refTree in Trees)
 			{
 				float similarity = CTreeMath.GetSimilarityWith(refTree, pTree);
+				//Console.WriteLine(similarity);
 				if (similarity > bestSimilarity)
 				{
 					mostSuitableTree = refTree;
 					bestSimilarity = similarity;
 				}
+				if (bestSimilarity > 0.9f) { break; }
 			}
 
 			//Console.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
@@ -205,7 +220,7 @@ namespace ForestReco
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
 
-			
+
 
 			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
 			float treeHeight = pTargetTree.GetTreeHeight();

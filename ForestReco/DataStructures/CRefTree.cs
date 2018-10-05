@@ -397,5 +397,10 @@ namespace ForestReco
 			//TODO: is it necessary to copy other parts?
 			return cloneTree;
 		}*/
+
+		public override string ToString()
+		{
+			return "[" + treeIndex + "] : " + GetTreeHeight() + "m.";
+		}
 	}
 }

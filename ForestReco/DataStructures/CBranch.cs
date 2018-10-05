@@ -222,21 +222,45 @@ namespace ForestReco
 				}
 			}*/
 			//improve: try add just to last
+			if (tree.Branches.IndexOf(this) == 0)
+			{
+				Console.WriteLine("add " + pPoint);
+			}
 			if (TreePoints.Count > 0)
 			{
+				//if (tree.Branches.IndexOf(this) == 0)
+				//{
+				//	Console.WriteLine("!");
+				//}
 				CTreePoint pointOnBranch = TreePoints.Last();
 				if (pointOnBranch.Includes(pPoint))
 				{
+					if (tree.Branches.IndexOf(this) == 0)
+					{
+						Console.WriteLine("- to " + pointOnBranch);
+					}
 					pointOnBranch.AddPoint(pPoint);
 					if (CTreeManager.DEBUG) {Console.WriteLine("---- added at " + TreePoints.IndexOf(pointOnBranch));}
 					return;
 				}
 			}
+			CheckAddedPoint(pPoint);
 			
 			CTreePoint newPoint = new CTreePoint(pPoint);
 			TreePoints.Add(newPoint);
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
 
+		}
+
+		private void CheckAddedPoint(Vector3 pPoint)
+		{
+			foreach (CTreePoint p in TreePoints)
+			{
+				if (pPoint.Y > p.Y)
+				{
+					Console.WriteLine("Error " + pPoint);
+				}
+			}
 		}
 
 		private void RefreshFurthestPoint(Vector3 pPoint)
