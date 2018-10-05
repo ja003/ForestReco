@@ -136,7 +136,7 @@ namespace ForestReco
 				return 1;
 			}
 			float distToPeakDiff = pointDistToPeak - refDistToPeak;
-			if (distToPeakDiff < 0.3)
+			if (!pIsTreeProcessed && distToPeakDiff < 0.3)
 			{
 				return 1;
 			}
@@ -190,7 +190,8 @@ namespace ForestReco
 			}
 			else
 			{
-				totalFactor = (angleFactor + distFactor) / 2;
+				//let dist factor have higher influence
+				totalFactor = (angleFactor + 1.5f * distFactor) / 2.5f;
 			}
 			//totalFactor = (angleFactor + distFactor) / 2;
 

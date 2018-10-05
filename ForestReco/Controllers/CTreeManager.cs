@@ -59,6 +59,11 @@ namespace ForestReco
 			{
 				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
+				if (pPointIndex == 6126)
+				{
+					Console.WriteLine("!");
+				}
+
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
 				if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
 				{
@@ -298,10 +303,10 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				//if (tree.treeIndex == 71)
-				//{
-				//	Console.WriteLine("!");
-				//}
+				if (tree.treeIndex == 58|| tree.treeIndex == 92)
+				{
+					Console.WriteLine("!");
+				}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.ClosestHigher);
 				Vector3 pPoint = tree.peak.Center;

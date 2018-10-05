@@ -73,6 +73,9 @@ namespace ForestReco
 		{
 			foreach (CGroundField f in CProjectData.array.fields)
 			{
+				//todo: k ničemu, výsledek stejně není seřaděn
+				//- do OBJ předat informaci o pořadí a pak je sesortit
+				//f.DetectedTrees.Sort((x, y) => x.treeIndex.CompareTo(y.treeIndex));
 				foreach (CTree t in f.DetectedTrees)
 				{
 					AddObj(f.indexInField, t.GetObj(true, false));

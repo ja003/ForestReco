@@ -114,6 +114,17 @@ namespace ForestReco
 
 		public void AddPoint(Vector3 pPoint)
 		{
+			if (treeIndex == 36)
+			{
+				if (Math.Abs(CUtils.Get2DDistance(pPoint, peak.Center) - 1.8f) < 0.2f)
+				{
+					if (peak.Y - pPoint.Y > 4.5f)
+					{
+						Console.WriteLine("!");
+					}
+				}
+			}
+
 			if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
