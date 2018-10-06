@@ -106,7 +106,7 @@ namespace ForestReco
 		{
 			if (pObj == null)
 			{
-				Console.WriteLine("!");
+				Console.WriteLine("AddObj is null!");
 			}
 			Tuple<int, int> index = GetIndexInArray(pArrayIndexX, pArrayIndexY);
 			objPartition[index.Item1, index.Item2].Add(pObj);

@@ -42,7 +42,7 @@ namespace ForestReco
 		public static bool DEBUG = false;
 		private static int pointCounter;
 
-		private const int MAX_DEBUG_COUNT = 30;
+		private const int MAX_DEBUG_COUNT = 5;
 		private const int MAX_DISTANCE_FOR_POSSIBLE_TREES = 5;
 
 		public static void AddPoint(Vector3 pPoint, int pPointIndex)
@@ -61,7 +61,7 @@ namespace ForestReco
 
 				if (pPointIndex == 6126)
 				{
-					Console.WriteLine("!");
+					//Console.WriteLine("!");
 				}
 
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
@@ -112,14 +112,10 @@ namespace ForestReco
 			element.DetectedTrees.Add(newTree);
 
 			newTree.groundField = element;
-
-			if (newTree.treeIndex == 78)
-			{
-				Console.WriteLine("!");
-			}
+			
 			if (newTree.treeIndex == 98)
 			{
-				Console.WriteLine("!");
+				//Console.WriteLine("!");
 			}
 		}
 
@@ -143,19 +139,9 @@ namespace ForestReco
 		private static void DebugPoint(Vector3 pPoint, int pPointIndex)
 		{
 			if (DEBUG) { Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint); }
-
-			//if (pPointIndex == 32)
-			if (pPointIndex == 423)
-			{
-				Console.Write("!");
-			}
-
+			
 			Vector3 debugPoint = CObjExporter.GetMovedPoint(pPoint);
 			debugPoint.Z *= -1;
-			if (Vector3.Distance(debugPoint, new Vector3(-6.39f, 14.248f, 6.87f)) < .1f)
-			{
-				Console.Write("!");
-			}
 		}
 
 		private static List<CTree> GetPossibleTreesFor(CTree pTree, EPossibleTreesMethos pMethod)
@@ -303,10 +289,6 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				if (tree.treeIndex == 58|| tree.treeIndex == 92)
-				{
-					Console.WriteLine("!");
-				}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.ClosestHigher);
 				Vector3 pPoint = tree.peak.Center;
@@ -338,10 +320,6 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				//if (tree.treeIndex == 90)
-				//{
-				//	Console.WriteLine("!");
-				//}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Belongs);
 
@@ -372,10 +350,6 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				//if (tree.treeIndex == 3)
-				//{
-				//	Console.WriteLine("!");
-				//}
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Contains);
 
@@ -455,7 +429,7 @@ namespace ForestReco
 
 		public static void ValidateTrees()
 		{
-			Console.WriteLine("DetectInvalidTrees");
+			Console.WriteLine("\nDetect invalid trees");
 
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{

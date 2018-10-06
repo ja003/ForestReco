@@ -169,12 +169,7 @@ namespace ForestReco
 		public float? GetAverageHeightFromClosestDefined(int pMaxSteps, bool pDiagonal)
 		{
 			if (IsDefined()) { return GetHeight(); }
-			//
-			if (Equals(indexInField, new Tuple<int, int>(2, 5)))
-			{
-				Console.WriteLine("!");
-			}
-
+			
 			CGroundField closestFirst = null;
 			CGroundField closestSecond = null;
 			CGroundField closestLeft = GetClosestDefined(pDiagonal ? EDirection.LeftTop : EDirection.Left, pMaxSteps);

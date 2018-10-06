@@ -91,7 +91,7 @@ namespace ForestReco
 					double totalSeconds = remainsRatio * lastAssignmentProcessTime;
 					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
 					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-					Console.WriteLine("- estimated time left = " + timeString + "\n");
+					Console.WriteLine("- estimated time left = " + timeString);
 
 					previousDebugStart = DateTime.Now;
 				}

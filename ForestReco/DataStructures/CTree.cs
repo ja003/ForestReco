@@ -114,17 +114,6 @@ namespace ForestReco
 
 		public void AddPoint(Vector3 pPoint)
 		{
-			if (treeIndex == 36)
-			{
-				if (Math.Abs(CUtils.Get2DDistance(pPoint, peak.Center) - 1.8f) < 0.2f)
-				{
-					if (peak.Y - pPoint.Y > 4.5f)
-					{
-						Console.WriteLine("!");
-					}
-				}
-			}
-
 			if (peak.Includes(pPoint))
 			{
 				peak.AddPoint(pPoint);
@@ -385,11 +374,6 @@ namespace ForestReco
 		/// </summary>
 		public bool Validate(bool pAllBranchDefined)
 		{
-			//float height = GetTreeHeight();
-			//if (treeIndex == 12)
-			//{
-			//	Console.WriteLine("!");
-			//}
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
 			{
@@ -580,7 +564,6 @@ namespace ForestReco
 			//Console.WriteLine("Check tree " + ToString());
 			foreach (CBranch b in branches)
 			{
-
 				b.CheckBranch();
 			}
 		}

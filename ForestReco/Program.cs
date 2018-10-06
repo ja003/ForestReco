@@ -55,7 +55,7 @@ namespace ForestReco
 			//REF TREES
 			CProjectData.loadRefTrees = true;
 			CProjectData.assignRefTrees = true;
-			CProjectData.assignRandomRefTree = false;
+			CProjectData.assignRandomRefTree = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
 			//source xyz-files

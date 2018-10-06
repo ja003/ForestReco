@@ -128,7 +128,7 @@ namespace ForestReco
 				CTreeManager.ValidateTrees();
 			}
 
-			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
+			Console.WriteLine("Trees = " + CTreeManager.Trees.Count);
 			Console.WriteLine("InvalidTrees = " + CTreeManager.InvalidTrees.Count);
 
 			//todo: deprecated
