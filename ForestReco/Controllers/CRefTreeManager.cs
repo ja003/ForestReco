@@ -181,6 +181,12 @@ namespace ForestReco
 			{
 				return mostSuitableTree;
 			}
+			if (CProjectData.assignRandomRefTree)
+			{
+				int random = new Random().Next(0, Trees.Count);
+				return Trees[random];
+
+			}
 
 			//Console.WriteLine(pTree.treeIndex + " similarities = \n");
 

@@ -38,6 +38,7 @@ namespace ForestReco
 		
 		public static bool loadRefTrees;
 		public static bool assignRefTrees;
+		public static bool assignRandomRefTree;
 		public static bool useReducedRefTreeObjs;
 		public static bool exportRefTrees;
 		
