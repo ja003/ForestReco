@@ -38,9 +38,9 @@ namespace ForestReco
 			a = Vector2.Normalize(a);
 			b = Vector2.Normalize(b);
 			double atan2 = Math.Atan2(b.Y, b.X) - Math.Atan2(a.Y, a.X);
-			return ToDegree((float)atan2);
+			return ToDegree((float) atan2);
 		}
-		
+
 		public static float GetAngleToTree(CTree pTree, Vector3 pPoint)
 		{
 			return AngleBetweenThreePoints(pTree.peak.Center - Vector3.UnitY * 100, pTree.peak.Center, pPoint);
@@ -55,29 +55,32 @@ namespace ForestReco
 			Vector3 v2 = new Vector3(pC.X - pB.X, pC.Y - pB.Y, pC.Z - pB.Z);
 			//The dot product of v1 and v2 is a function of the cosine of the angle between them(it's scaled by the product of their magnitudes). So first normalize v1 and v2:
 
-			float v1mag = (float)Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z);
+			float v1mag = (float) Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z);
 			Vector3 v1norm = new Vector3(v1.X / v1mag, v1.Y / v1mag, v1.Z / v1mag);
 
-			float v2mag = (float)Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z);
+			float v2mag = (float) Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z);
 			Vector3 v2norm = new Vector3(v2.X / v2mag, v2.Y / v2mag, v2.Z / v2mag);
 			//Then calculate the dot product:
 
 			float res = v1norm.X * v2norm.X + v1norm.Y * v2norm.Y + v1norm.Z * v2norm.Z;
 			//And finally, recover the angle:
 
-			float angle = (float)Math.Acos(res);
-			if (pToDegree) { return (float)ToDegree(angle); }
+			float angle = (float) Math.Acos(res);
+			if (pToDegree)
+			{
+				return (float) ToDegree(angle);
+			}
 			return angle;
 		}
 
 		public static float ToRadians(float val)
 		{
-			return (float)Math.PI / 180 * val;
+			return (float) Math.PI / 180 * val;
 		}
 
 		private static float ToDegree(float angle)
 		{
-			return (float)(angle * (180.0 / Math.PI));
+			return (float) (angle * (180.0 / Math.PI));
 		}
 
 		public static float Get2DDistance(Vector3 a, CTreePoint b)
@@ -101,8 +104,9 @@ namespace ForestReco
 			float ofObjectVolume = pOfObject.Volume;
 			//Console.WriteLine("overlapVolume = " + overlapVolume);
 			//Console.WriteLine("ofObjectVolume = " + ofObjectVolume);
-			
-			if(ofObjectVolume == 0){
+
+			if (ofObjectVolume == 0)
+			{
 				Console.WriteLine("ERROR: object " + pWithObject + " has no volume");
 				return 0;
 			}
@@ -137,9 +141,18 @@ namespace ForestReco
 			float xOverlap = Math.Min(o2maxX, o1maxX) - Math.Max(o2minX, o1minX);
 			float yOverlap = Math.Min(o2maxY, o1maxY) - Math.Max(o2minY, o1minY);
 			float zOverlap = Math.Min(o2maxZ, o1maxZ) - Math.Max(o2minZ, o1minZ);
-			if(xOverlap < 0){ return 0; }
-			if(yOverlap < 0){ return 0; }
-			if(zOverlap < 0){ return 0; }
+			if (xOverlap < 0)
+			{
+				return 0;
+			}
+			if (yOverlap < 0)
+			{
+				return 0;
+			}
+			if (zOverlap < 0)
+			{
+				return 0;
+			}
 			float volume = xOverlap * yOverlap * zOverlap;
 			return volume;
 		}
@@ -161,10 +174,12 @@ namespace ForestReco
 			                         (2.0 * Math.PI * Math.Pow(weight, 2));
 
 			for (int filterY = -kernelRadius;
-				filterY <= kernelRadius; filterY++)
+				filterY <= kernelRadius;
+				filterY++)
 			{
 				for (int filterX = -kernelRadius;
-					filterX <= kernelRadius; filterX++)
+					filterX <= kernelRadius;
+					filterX++)
 				{
 					distance = ((filterX * filterX) +
 					            (filterY * filterY)) /
@@ -209,6 +224,11 @@ namespace ForestReco
 		public static string SerializeVector3(Vector3 pVector)
 		{
 			return pVector.X + " " + pVector.Y + " " + pVector.Z;
+		}
+
+		public static bool IsPoint(Vector3 pPoint, Vector3 pEqual, float pTolerance = 0.1f)
+		{
+			return Vector3.Distance(pPoint, new Vector3(675.94f, 128.04f, 1140.9f)) < pTolerance;
 		}
 	}
 }

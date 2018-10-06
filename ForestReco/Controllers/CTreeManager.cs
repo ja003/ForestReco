@@ -516,5 +516,13 @@ namespace ForestReco
 			}
 			Console.WriteLine("\n===============\n");
 		}
+
+		public static void CheckAllTrees()
+		{
+			foreach (CTree t in Trees)
+			{
+				t.CheckTree();
+			}
+		}
 	}
 }

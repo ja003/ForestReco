@@ -280,7 +280,7 @@ namespace ForestReco
 		/// </summary>
 		public virtual float GetGroundHeight()
 		{
-			if (groundHeight != null) { return (float)this.groundHeight;}
+			if (groundHeight != null) { return (float)this.groundHeight; }
 			groundHeight = CProjectData.array?.GetHeight(peak.Center);
 			return groundHeight ?? peak.Center.Y;
 		}
@@ -574,6 +574,16 @@ namespace ForestReco
 		}
 
 		//OTHERS
+
+		public void CheckTree()
+		{
+			//Console.WriteLine("Check tree " + ToString());
+			foreach (CBranch b in branches)
+			{
+
+				b.CheckBranch();
+			}
+		}
 
 		public override bool Equals(object obj)
 		{

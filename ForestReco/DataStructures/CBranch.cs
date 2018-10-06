@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using ObjParser;
-using ObjParser.Types;
 
 namespace ForestReco
 {
@@ -182,7 +180,7 @@ namespace ForestReco
 			unacceptableDistance += 0.5f;
 			float distFactor = (unacceptableDistance - pointDistToPeak) / unacceptableDistance;
 
-			float totalFactor = 0;
+			float totalFactor;
 
 			if (pIsTreeProcessed)
 			{
@@ -204,54 +202,37 @@ namespace ForestReco
 				Console.WriteLine("--- AddPoint " + pPoint.ToString("#+0.00#;-0.00") + " to " + this);
 
 			RefreshFurthestPoint(pPoint);
-
-			/*for (int i = 0; i < TreePoints.Count; i++)
-			{
-				CTreePoint pointOnBranch = TreePoints[i];
-				if (pointOnBranch.Includes(pPoint))
-				{
-					pointOnBranch.AddPoint(pPoint);
-					if (CTreeManager.DEBUG) Console.WriteLine("---- added at " + i);
-					return;
-				}
-				if (pPoint.Y > pointOnBranch.Y)
-				{
-					CTreePoint newPointOnBranch = new CTreePoint(pPoint);
-					TreePoints.Insert(i, newPointOnBranch);
-					if (CTreeManager.DEBUG) { Console.WriteLine("---- inserted at " + i); }
-					return;
-				}
-			}*/
-
-			//improve: try add just to last
+			
+			int insertAtIndex = 0;
+			//find appropriate insert at index
 			if (TreePoints.Count > 0)
 			{
-				int lastIndex = TreePoints.Count - 1;
-				CTreePoint pointOnBranch = TreePoints[lastIndex];
-				//try to add the point to some of the last points on the branch, which
-				//should be the closest to the new point
-				while (pointOnBranch.Y - pPoint.Y < tree.treePointExtent * 5)
+				for (int i = TreePoints.Count - 1; i >= -1; i--)
 				{
+					insertAtIndex = i + 1;
+					if (insertAtIndex == 0)
+					{
+						break;
+					}
+					CTreePoint pointOnBranch = TreePoints[i];
 					if (pointOnBranch.Includes(pPoint))
 					{
-						//if (tree.Branches.IndexOf(this) == 0)
-						//{
-						//	Console.WriteLine("- to " + pointOnBranch);
-						//}
 						pointOnBranch.AddPoint(pPoint);
-						if (CTreeManager.DEBUG) { Console.WriteLine("---- added at " + TreePoints.IndexOf(pointOnBranch)); }
 						return;
 					}
-					lastIndex--;
-					if(lastIndex < 0){ break;}
-					pointOnBranch = TreePoints[lastIndex];
+					//add point at correct position
+					if (pPoint.Y < pointOnBranch.Y)
+					{
+						break;
+					}
 				}
-				
 			}
 			//CheckAddedPoint(pPoint);
-			
+
 			CTreePoint newPoint = new CTreePoint(pPoint, tree.treePointExtent);
-			TreePoints.Add(newPoint);
+			TreePoints.Insert(insertAtIndex, newPoint);
+			CheckBranch();
+
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
 
 		}
@@ -262,8 +243,31 @@ namespace ForestReco
 			{
 				if (pPoint.Y > p.Y)
 				{
-					Console.WriteLine("Error " + pPoint);
+					Console.WriteLine(tree.treeIndex + " Error " + pPoint);
 				}
+			}
+		}
+
+		public void CheckBranch()
+		{
+			//if (tree.treeIndex == 72)
+			//{
+			//	Console.WriteLine("Error");
+			//}
+			CTreePoint previousTp = tree.peak;
+			//foreach (CTreePoint tp in TreePoints)
+			for (int i = 0; i < TreePoints.Count; i++)
+			{
+				CTreePoint tp = TreePoints[i];
+				if (tp.Y > previousTp.Y)
+				{
+
+					//if (tree.treeIndex == 11)
+					{
+						Console.WriteLine("- Error tree "  + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
+					}
+				}
+				previousTp = tp;
 			}
 		}
 
@@ -380,8 +384,8 @@ namespace ForestReco
 		{
 			//return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";
 			return "br_<" + angleTo / CTree.BRANCH_ANGLE_STEP + "> " +
-				   //GetPointCount().ToString("000") + 
-				   "[" + TreePoints.Count.ToString("00") + "] |";
+					//GetPointCount().ToString("000") + 
+					"[" + TreePoints.Count.ToString("00") + "] |";
 		}
 
 		public bool IsPointInExtent(Vector3 pPoint)

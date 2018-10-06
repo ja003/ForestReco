@@ -129,6 +129,11 @@ namespace ForestReco
 				//for first point set first point to connect to peak
 				Vector3 nextP = i == 0 ? pBranch.TreePoints[0].Center : pBranch.TreePoints[i].Center;
 
+				if (obj.Name == "tree_72" && nextP.Y > p.Y)
+				{
+					Console.WriteLine(obj.Name + " error " + nextP);
+				}
+
 				AddLineToObj(ref obj, p, nextP);
 			}
 		}
