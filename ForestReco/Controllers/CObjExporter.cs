@@ -27,7 +27,7 @@ namespace ForestReco
 			AddPointsToObj(ref obj, pPoints, Vector3.Zero);
 		}
 
-		private static bool simplePointsObj = true;
+		public static bool simplePointsObj;
 
 		public static void AddPointsToObj(ref Obj obj, List<Vector3> pPoints, Vector3 pOffset, bool pMoveToCenter = true)
 		{

@@ -48,7 +48,7 @@ namespace ForestReco
 			//REF TREES
 			CProjectData.loadRefTrees = true;
 			CProjectData.assignRefTrees = true;
-			CProjectData.assignRandomRefTree = false;
+			CProjectData.assignRandomRefTree = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
 			//source xyz-files
@@ -60,13 +60,14 @@ namespace ForestReco
 			CProjectData.refTreeKmeny = true;
 			
 			CProjectData.exportPoints = true;
+			CObjExporter.simplePointsObj = false;
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
-			CProgramLoader.fileName = "R7";
+			//CProgramLoader.fileName = "R7";
 			//CProgramLoader.fileName = "R2_F_1+2";
 			
 

@@ -87,6 +87,20 @@ namespace ForestReco
 			return Left != null && Right != null && Top != null && Bot != null;
 		}
 
+		private bool HasAllNeighboursDefined(bool p8neighbourhood)
+		{
+			bool neighbourhood4Defined = Left.IsDefined() && Right.IsDefined() && Top.IsDefined() && Bot.IsDefined();
+			if (!p8neighbourhood)
+			{
+				return neighbourhood4Defined;
+			}
+			else
+			{
+				return neighbourhood4Defined && Left.Top.IsDefined() && Right.Top.IsDefined() && Left.Bot.IsDefined() &&
+				       Right.Bot.IsDefined();
+			}
+		}
+
 
 		private List<CGroundField> GetNeighbours()
 		{
@@ -279,7 +293,7 @@ namespace ForestReco
 		/// </summary>
 		public float? GetHeight(Vector3 pPoint)
 		{
-			if (!HasAllNeighbours())
+			if (!HasAllNeighbours() || !HasAllNeighboursDefined(true))
 			{
 				if (!IsDefined())
 				{
