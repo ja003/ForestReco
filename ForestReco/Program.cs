@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using ObjParser;
-using ObjParser.Types;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse - TEST VALUES
 
@@ -55,7 +48,7 @@ namespace ForestReco
 			//REF TREES
 			CProjectData.loadRefTrees = true;
 			CProjectData.assignRefTrees = true;
-			CProjectData.assignRandomRefTree = true;
+			CProjectData.assignRandomRefTree = false;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
 			//source xyz-files
@@ -66,13 +59,14 @@ namespace ForestReco
 			CProjectData.refTreeJehlici = true;
 			CProjectData.refTreeKmeny = true;
 			
-			CProjectData.exportPoints = false;
+			CProjectData.exportPoints = true;
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
+			CProgramLoader.fileName = "R7";
 			//CProgramLoader.fileName = "R2_F_1+2";
 			
 

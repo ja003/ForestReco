@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\CObjPartition.cs" />
     <Compile Include="Controllers\CPlatformManager.cs" />
     <Compile Include="Controllers\CGroundFieldExporter.cs" />
     <Compile Include="Controllers\CObjExporter.cs" />
@@ -51,7 +52,6 @@
     <Compile Include="Controllers\CRefTreeManager.cs" />
     <Compile Include="DataStructures\CBoundingBoxObject.cs" />
     <Compile Include="DataStructures\CBranch.cs" />
-    <Compile Include="DataStructures\CObjPartition.cs" />
     <Compile Include="DataStructures\CPeak.cs" />
     <Compile Include="DataStructures\CTree.cs" />
     <Compile Include="DataStructures\CRefTree.cs" />

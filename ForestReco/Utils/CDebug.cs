@@ -84,7 +84,7 @@ namespace ForestReco
 				CProjectData.array.SetHeight(5, CProjectData.array.arrayXRange - 1, CProjectData.array.arrayYRange - 1);
 				CProjectData.array.SetHeight(5, 0, CProjectData.array.arrayYRange - 1);
 			}
-
+			CObjPartition.Init();
 		}
 	}
 }

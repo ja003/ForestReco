@@ -140,7 +140,6 @@ namespace ForestReco
 
 						previousDebugStart = DateTime.Now;
 					}
-					counter++;
 				}
 			}
 		}

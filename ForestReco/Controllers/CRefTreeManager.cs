@@ -19,14 +19,14 @@ namespace ForestReco
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
-				"R1",
-				"R2",
+				//"R1",
+				//"R2",
 				//"R3",
 				//"R4",
 				//"R5",
 				//"R6",
-				//"R7",
-				//"R8",
+				"R7",
+				"R8",
 				//"R9",
 				//"R10",
 				//"R11",
@@ -61,12 +61,7 @@ namespace ForestReco
 			foreach (CTree t in CTreeManager.Trees)
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
-
-				if (t.treeIndex == 64)
-				{
-					Console.WriteLine("§");
-				}
-
+				
 				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
 				if (mostSuitableRefTree == null)
 				{
@@ -228,9 +223,7 @@ namespace ForestReco
 		{
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
-
-
-
+			
 			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
 			float treeHeight = pTargetTree.GetTreeHeight();
 			float heightRatio = treeHeight / pRefTree.GetTreeHeight();
