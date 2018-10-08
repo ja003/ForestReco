@@ -226,27 +226,43 @@ namespace ForestReco
 					//add point at correct position
 					if (pPoint.Y < pointOnBranch.Y)
 					{
+						//points doesnt have to neccessarily Y-ordered. check close points for possible candidate
+						int higherPointIndex = Math.Min(TreePoints.Count - 1, insertAtIndex);
+						CTreePoint higherPointOnBranch = TreePoints[higherPointIndex];
+						for (int j = higherPointIndex; j > 0 && higherPointOnBranch.Y - pointOnBranch.Y < tree.treePointExtent; j--)
+						{
+							higherPointOnBranch = TreePoints[j];
+							if (higherPointOnBranch.Includes(pPoint))
+							{
+								higherPointOnBranch.AddPoint(pPoint);
+								return;
+							}
+						}
 						break;
 					}
 				}
 			}
-			//CheckAddedPoint(pPoint);
 
 			CTreePoint newPoint = new CTreePoint(pPoint, tree.treePointExtent);
 			TreePoints.Insert(insertAtIndex, newPoint);
-			CheckBranch();
+
+			CheckBranch(); //todo: delete, expensive!
+			CheckAddedPoint();
 
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
 
 		}
 
-		private void CheckAddedPoint(Vector3 pPoint)
+		private void CheckAddedPoint()
 		{
-			foreach (CTreePoint p in TreePoints)
+			if(TreePoints.Count < 2){ return;}
+			CTreePoint previousTp = TreePoints[TreePoints.Count - 2];
+			CTreePoint tp = TreePoints[TreePoints.Count - 1];
+			if (tp.Y > previousTp.Y)
 			{
-				if (pPoint.Y > p.Y)
+				if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
 				{
-					Console.WriteLine(tree.treeIndex + " Error " + pPoint);
+					Console.WriteLine("-CheckAddedPoint Error tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 				}
 			}
 		}
@@ -257,20 +273,19 @@ namespace ForestReco
 			//{
 			//	Console.WriteLine("Error");
 			//}
-			CTreePoint previousTp = tree.peak;
 			//foreach (CTreePoint tp in TreePoints)
-			for (int i = 0; i < TreePoints.Count; i++)
+			for (int i = 1; i < TreePoints.Count; i++)
 			{
+				CTreePoint previousTp = TreePoints[i-1];
 				CTreePoint tp = TreePoints[i];
 				if (tp.Y > previousTp.Y)
 				{
 
-					//if (tree.treeIndex == 11)
+					if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
 					{
-						Console.WriteLine("- Error tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
+						Console.WriteLine("-CheckBranch Error tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 					}
 				}
-				previousTp = tp;
 			}
 		}
 
@@ -310,11 +325,22 @@ namespace ForestReco
 
 			float treePointExtent = tree.peak.treePointExtent * pToleranceMultiply;
 			int approxIndex = GetAproxIndexOfPoint(pPoint, treePointExtent);
+
 			//which direction on branch should we search
-			int dir = 1;
-			if (TreePoints[approxIndex].Y < pPoint.Y) { dir = -1; }
+			int dir = 1; //actually to be sure we need to check both directions...final treepoints doesnt have to be neccessarily Y-ordered
+			//if (TreePoints[approxIndex].Y < pPoint.Y) { dir = -1; }
 			CTreePoint pointOnBranch = TreePoints[approxIndex];
 			bool isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
+			for (int i = approxIndex; isPointOnBranchWithinRange && i > 0 && i < TreePoints.Count; i += dir)
+			{
+				pointOnBranch = TreePoints[i];
+				if (pointOnBranch.Includes(pPoint)) { return true; }
+				isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
+			}
+
+			dir = -1;
+			pointOnBranch = TreePoints[approxIndex];
+			isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
 			for (int i = approxIndex; isPointOnBranchWithinRange && i > 0 && i < TreePoints.Count; i += dir)
 			{
 				pointOnBranch = TreePoints[i];

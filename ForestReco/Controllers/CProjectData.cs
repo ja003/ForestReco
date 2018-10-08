@@ -16,6 +16,7 @@ namespace ForestReco
 		public static string saveFileName;
 
 		public static int maxLinesToLoad;
+		public static bool useMaxLines;
 
 		//during one session is always processed one array file
 		//public static List<Vector3> allPoints = new List<Vector3>();

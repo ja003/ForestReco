@@ -64,7 +64,11 @@ namespace ForestReco
 				Console.WriteLine("WARNING: loading " + lines.Length + " lines!");
 			}
 
-			int linesToRead = Math.Min(CProjectData.maxLinesToLoad, lines.Length);
+			int linesToRead = lines.Length;
+			if (CProjectData.useMaxLines)
+			{
+				linesToRead = Math.Min(CProjectData.maxLinesToLoad, lines.Length);
+			}
 
 			bool classesCorect = true;
 			List<Tuple<EClass, Vector3>> parsedLines = new List<Tuple<EClass, Vector3>>();

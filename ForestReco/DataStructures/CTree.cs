@@ -128,7 +128,7 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
-			if (CTreeManager.DEBUG)
+			if (CTreeManager.DEBUG || treeIndex == 7058)
 			{
 				Console.WriteLine(this.ToString(EDebug.Peak) + " MergeWith " + pSubTree.ToString(EDebug.Peak));
 			}

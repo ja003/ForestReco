@@ -20,7 +20,7 @@ namespace ForestReco
 			List<string> treeFileNames = new List<string>()
 			{
 				//"R1",
-				//"R2",
+				"R2",
 				//"R3",
 				//"R4",
 				//"R5",
@@ -34,7 +34,9 @@ namespace ForestReco
 				//"R13",
 				//"R14",
 				//"R15",
-				"R7_test"
+
+
+				//"R7_test"
 			};
 
 			if (CProjectData.loadRefTrees)
@@ -174,23 +176,22 @@ namespace ForestReco
 			CRefTree mostSuitableTree = Trees[0];
 			STreeSimilarity treeSimilarity = new STreeSimilarity();
 			float bestSimilarity = 0;
-			/*if (Trees.Count == 1)
+			if (Trees.Count == 1)
 			{
-				return mostSuitableTree;
-			}*/
+				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity); ;
+			}
 			if (CProjectData.assignRandomRefTree)
 			{
 				int random = new Random().Next(0, Trees.Count);
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
 
-			Console.WriteLine(pTree.treeIndex + " similarities = \n");
+			//Console.WriteLine(pTree.treeIndex + " similarities = \n");
 
 			foreach (CRefTree refTree in Trees)
 			{
 				treeSimilarity = CTreeMath.GetSimilarityWith(refTree, pTree);
 				float similarity = treeSimilarity.similarity;
-				Console.WriteLine(similarity);
 				if (similarity > bestSimilarity)
 				{
 					mostSuitableTree = refTree;

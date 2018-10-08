@@ -39,7 +39,7 @@ namespace ForestReco
 					definedSimilarityCount++;
 				}
 			}
-			Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
+			//Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
 
 			if (definedSimilarityCount == 0)
 			{
