@@ -72,6 +72,7 @@ namespace ForestReco
 			fileName = pFileName;
 
 			branches = new List<CBranch>();
+			//List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
 			List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
 
 			foreach (string line in pSerializedLines)

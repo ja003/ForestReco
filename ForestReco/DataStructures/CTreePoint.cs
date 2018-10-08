@@ -19,7 +19,7 @@ namespace ForestReco
 		public Vector3 maxHeight;
 
 		//private const float POINT_EXTENT = 0.1f;
-		protected float treePointExtent;
+		public float treePointExtent;
 
 		public CTreePoint(Vector3 pPoint, float pTreePointExtent) : base(pPoint)
 		{

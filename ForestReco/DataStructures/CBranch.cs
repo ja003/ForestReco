@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace ForestReco
 {
-	public class CBranch
+	public class CBranch : CBoundingBoxObject
 	{
 		public List<CTreePoint> TreePoints { get; } = new List<CTreePoint>();
 
@@ -27,7 +27,7 @@ namespace ForestReco
 			angleTo = pAngleTo;
 		}
 
-		public List<string> Serialize()
+		public new List<string> Serialize()
 		{
 			List<string> lines = new List<string>();
 
@@ -48,6 +48,8 @@ namespace ForestReco
 			foreach (CTreePoint tp in pTreepointsOnBranch)
 			{
 				TreePoints.Add(tp);
+				OnAddPoint(tp.minBB);
+				OnAddPoint(tp.maxBB);
 				//todo: check if added ordered
 			}
 		}
@@ -202,7 +204,8 @@ namespace ForestReco
 				Console.WriteLine("--- AddPoint " + pPoint.ToString("#+0.00#;-0.00") + " to " + this);
 
 			RefreshFurthestPoint(pPoint);
-			
+			OnAddPoint(pPoint);
+
 			int insertAtIndex = 0;
 			//find appropriate insert at index
 			if (TreePoints.Count > 0)
@@ -264,7 +267,7 @@ namespace ForestReco
 
 					//if (tree.treeIndex == 11)
 					{
-						Console.WriteLine("- Error tree "  + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
+						Console.WriteLine("- Error tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 					}
 				}
 				previousTp = tp;
@@ -299,12 +302,59 @@ namespace ForestReco
 		/// </summary>
 		public bool Contains(Vector3 pPoint, float pToleranceMultiply)
 		{
-			foreach (CTreePoint p in TreePoints)
+			//todo: make effective
+			//foreach (CTreePoint p in TreePoints)
+			//{
+			//	if (p.Includes(pPoint, pToleranceMultiply)) { return true; }
+			//}
+
+			float treePointExtent = tree.peak.treePointExtent * pToleranceMultiply;
+			int approxIndex = GetAproxIndexOfPoint(pPoint, treePointExtent);
+			//which direction on branch should we search
+			int dir = 1;
+			if (TreePoints[approxIndex].Y < pPoint.Y) { dir = -1; }
+			CTreePoint pointOnBranch = TreePoints[approxIndex];
+			bool isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
+			for (int i = approxIndex; isPointOnBranchWithinRange && i > 0 && i < TreePoints.Count; i += dir)
 			{
-				//todo: include complete rotation based on tree orientation
-				if (p.Includes(pPoint, pToleranceMultiply)) { return true; }
+				pointOnBranch = TreePoints[i];
+				if (pointOnBranch.Includes(pPoint)) { return true; }
+				isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
 			}
+
 			return false;
+		}
+
+		/// <summary>
+		/// Calculates approximate index on branch where the give point should be placed with given tolerance
+		/// </summary>
+		private int GetAproxIndexOfPoint(Vector3 pPoint, float pMaxDiff)
+		{
+			int fromIndex = 0;
+			int toIndex = TreePoints.Count;
+			int selectedIndex = (fromIndex + toIndex) / 2;
+			CTreePoint selectedTreePoint = TreePoints[selectedIndex];
+			int counter = 0;
+			while (Math.Abs(selectedTreePoint.Y - pPoint.Y) > pMaxDiff && toIndex - fromIndex > 1)
+			{
+				if (selectedTreePoint.Y > pPoint.Y)
+				{
+					fromIndex += (toIndex - fromIndex) / 2;
+				}
+				else
+				{
+					toIndex -= (toIndex - fromIndex) / 2;
+				}
+				selectedIndex = (fromIndex + toIndex) / 2;
+				selectedTreePoint = TreePoints[selectedIndex];
+				counter++;
+			}
+
+			if (counter > 20) { Console.WriteLine("warning: GetAproxIndexOfPoint " + pPoint + " = " + counter); }
+			//float firstLastDiff = TreePoints[fromIndex].Y - TreePoints[toIndex].Y;
+			//float step = firstLastDiff / (toIndex - fromIndex);
+			//float peakPointDiff = tree.peak.Y - pPoint.Y;
+			return selectedIndex;
 		}
 
 		public int GetPointCount()
@@ -359,7 +409,7 @@ namespace ForestReco
 				Console.WriteLine("Error. Similarity rounding error too big.");
 			}
 			similarity = Math.Min(1, similarity);
-			Console.WriteLine(ToString() + " = " + similarity);
+			//Console.WriteLine(ToString() + " = " + similarity);
 			return similarity;
 		}
 

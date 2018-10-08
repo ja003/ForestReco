@@ -8,8 +8,8 @@ namespace ForestReco
 	{
 
 		//bounding box corners
-		protected Vector3 minBB;
-		protected Vector3 maxBB;
+		public Vector3 minBB;
+		public Vector3 maxBB;
 
 		//public Vector3 minY = new Vector3(0, int.MaxValue, 0);
 
