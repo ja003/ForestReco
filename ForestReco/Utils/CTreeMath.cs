@@ -39,7 +39,7 @@ namespace ForestReco
 					definedSimilarityCount++;
 				}
 			}
-			//Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
+			Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
 
 			if (definedSimilarityCount == 0)
 			{
@@ -69,7 +69,6 @@ namespace ForestReco
 		/// </summary>
 		private static int GetIndexOffsetBetweenBestMatchBranches(CRefTree pRefTree, CTree pOtherTree)
 		{
-
 			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
 
 			//todo: try rotate other tree to find bestMatch and include this rotation in similarity calculation

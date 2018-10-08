@@ -201,10 +201,10 @@ namespace ForestReco
 			return lines;
 		}
 
-		public override float GetTreeHeight()
+		/*public override float GetTreeHeight()
 		{
 			return Obj.Size.YMax - Obj.Size.YMin;
-		}
+		}*/
 
 		/// <summary>
 		/// In reference tree the tree is defined in great detail from peak to the ground.

@@ -16,8 +16,8 @@ namespace ForestReco
 
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			//CPlatformManager.platform = EPlatform.Notebook;
-			CPlatformManager.platform = EPlatform.HomePC;
+			CPlatformManager.platform = EPlatform.Notebook;
+			//CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
@@ -48,7 +48,7 @@ namespace ForestReco
 			//REF TREES
 			CProjectData.loadRefTrees = true;
 			CProjectData.assignRefTrees = true;
-			CProjectData.assignRandomRefTree = true;
+			CProjectData.assignRandomRefTree = false;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
 			//source xyz-files
@@ -65,11 +65,12 @@ namespace ForestReco
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			//CProgramLoader.fileName = "BK_1000AGL_classified";
+			CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R7";
+			CProgramLoader.fileName = "R7_test";
 			//CProgramLoader.fileName = "R2_F_1+2";
-			
+
 
 			string[] lines = CProgramLoader.GetFileLines();
 

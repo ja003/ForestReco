@@ -19,14 +19,14 @@ namespace ForestReco
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
-				"R1",
-				"R2",
-				"R3",
-				"R4",
-				"R5",
-				"R6",
-				"R7",
-				"R8",
+				//"R1",
+				//"R2",
+				//"R3",
+				//"R4",
+				//"R5",
+				//"R6",
+				//"R7",
+				//"R8",
 				//"R9",
 				//"R10",
 				//"R11",
@@ -34,6 +34,7 @@ namespace ForestReco
 				//"R13",
 				//"R14",
 				//"R15",
+				"R7_test"
 			};
 
 			if (CProjectData.loadRefTrees)
@@ -128,8 +129,7 @@ namespace ForestReco
 			{
 				Console.WriteLine(" - " + fileName);
 			}
-
-
+			
 			foreach (string fileName in pFileNames)
 			{
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
@@ -172,10 +172,10 @@ namespace ForestReco
 
 			CRefTree mostSuitableTree = Trees[0];
 			float bestSimilarity = 0;
-			if (Trees.Count == 1)
+			/*if (Trees.Count == 1)
 			{
 				return mostSuitableTree;
-			}
+			}*/
 			if (CProjectData.assignRandomRefTree)
 			{
 				int random = new Random().Next(0, Trees.Count);
@@ -183,12 +183,12 @@ namespace ForestReco
 
 			}
 
-			//Console.WriteLine(pTree.treeIndex + " similarities = \n");
+			Console.WriteLine(pTree.treeIndex + " similarities = \n");
 
 			foreach (CRefTree refTree in Trees)
 			{
 				float similarity = CTreeMath.GetSimilarityWith(refTree, pTree);
-				//Console.WriteLine(similarity);
+				Console.WriteLine(similarity);
 				if (similarity > bestSimilarity)
 				{
 					mostSuitableTree = refTree;

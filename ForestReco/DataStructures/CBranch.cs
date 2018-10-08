@@ -359,6 +359,7 @@ namespace ForestReco
 				Console.WriteLine("Error. Similarity rounding error too big.");
 			}
 			similarity = Math.Min(1, similarity);
+			Console.WriteLine(ToString() + " = " + similarity);
 			return similarity;
 		}
 

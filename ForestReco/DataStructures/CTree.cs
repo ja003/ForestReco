@@ -209,7 +209,9 @@ namespace ForestReco
 
 		public virtual float GetTreeHeight()
 		{
-			float treeHeight = peak.Center.Y - GetGroundHeight();
+			//float treeHeight = peak.Center.Y - GetGroundHeight();
+			float treeHeight = maxBB.Y - GetGroundHeight();
+			//float treeHeight = Extent.Y;
 			return treeHeight;
 		}
 
@@ -267,7 +269,7 @@ namespace ForestReco
 		/// <summary>
 		/// Returns height of ground under peak of this tree
 		/// </summary>
-		public virtual float GetGroundHeight()
+		public float GetGroundHeight()
 		{
 			if (groundHeight != null) { return (float)this.groundHeight; }
 			groundHeight = CProjectData.array?.GetHeight(peak.Center);
