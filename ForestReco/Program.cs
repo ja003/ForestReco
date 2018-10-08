@@ -67,8 +67,8 @@ namespace ForestReco
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
-			//CProgramLoader.fileName = "R7";
-			CProgramLoader.fileName = "R7_test";
+			CProgramLoader.fileName = "R7";
+			//CProgramLoader.fileName = "R7_test";
 			//CProgramLoader.fileName = "R2_F_1+2";
 
 

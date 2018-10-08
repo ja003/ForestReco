@@ -12,7 +12,7 @@ namespace ForestReco
 		/// Calculates similarity between this reference tree and given tree
 		/// Returns [0,1]. 1 = best match
 		/// </summary>
-		public static float GetSimilarityWith(CRefTree pRefTree, CTree pOtherTree)
+		public static STreeSimilarity GetSimilarityWith(CRefTree pRefTree, CTree pOtherTree)
 		{
 			//Vector3 offsetToOtherTree = Get2DOffsetTo(pRefTree, pOtherTree);
 			//float scaleRatio = GetScaleRatioTo(pRefTree, pOtherTree);
@@ -44,23 +44,25 @@ namespace ForestReco
 			if (definedSimilarityCount == 0)
 			{
 				Console.WriteLine("Error. no similarity defined");
-				return 0;
+				return new STreeSimilarity(0,0);
 			}
 			similarity /= definedSimilarityCount;
 
 			//Console.WriteLine("similarity = " + similarity + ". defined = " + definedSimilarityCount + "\n--------");
 
-			return similarity;
+			return new STreeSimilarity(similarity, indexOffset * CTree.BRANCH_ANGLE_STEP);
 		}
+
+		
 
 		/// <summary>
 		/// Returns offset angle between best defined branch of pOtherTree and best matching branch 
 		/// from this tree
 		/// </summary>
-		public static int GetOffsetAngleTo(CRefTree pRefTree, CTree pOtherTree)
-		{
-			return GetIndexOffsetBetweenBestMatchBranches(pRefTree, pOtherTree) * CTree.BRANCH_ANGLE_STEP;
-		}
+		//public static int GetOffsetAngleTo(CRefTree pRefTree, CTree pOtherTree)
+		//{
+		//	return GetIndexOffsetBetweenBestMatchBranches(pRefTree, pOtherTree) * CTree.BRANCH_ANGLE_STEP;
+		//}
 
 		/// <summary>
 		/// First finds most defined branch of pOtherTree.

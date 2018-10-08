@@ -25,7 +25,7 @@ namespace ForestReco
 				//"R4",
 				//"R5",
 				//"R6",
-				//"R7",
+				"R7",
 				//"R8",
 				//"R9",
 				//"R10",
@@ -62,15 +62,16 @@ namespace ForestReco
 			foreach (CTree t in CTreeManager.Trees)
 			{
 				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
-				
-				CRefTree mostSuitableRefTree = GetMostSuitableRefTree(t);
+
+				Tuple<CRefTree, STreeSimilarity> suitableRefTree = GetMostSuitableRefTree(t);
+				CRefTree mostSuitableRefTree = suitableRefTree.Item1;
 				if (mostSuitableRefTree == null)
 				{
 					Console.WriteLine("Error: no reftrees assigned!");
 					continue;
 				}
 
-				SetRefTreeObjTransform(ref mostSuitableRefTree, t);
+				SetRefTreeObjTransform(ref mostSuitableRefTree, t, suitableRefTree.Item2.angleOffset);
 
 				Obj suitableTreeObj = mostSuitableRefTree.Obj.Clone();
 				suitableTreeObj.Name += "_" + t.treeIndex;
@@ -162,7 +163,7 @@ namespace ForestReco
 
 		//private static int counter;
 
-		private static CRefTree GetMostSuitableRefTree(CTree pTree)
+		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
 			if (Trees.Count == 0)
 			{
@@ -171,6 +172,7 @@ namespace ForestReco
 			}
 
 			CRefTree mostSuitableTree = Trees[0];
+			STreeSimilarity treeSimilarity = new STreeSimilarity();
 			float bestSimilarity = 0;
 			/*if (Trees.Count == 1)
 			{
@@ -179,15 +181,15 @@ namespace ForestReco
 			if (CProjectData.assignRandomRefTree)
 			{
 				int random = new Random().Next(0, Trees.Count);
-				return Trees[random];
-
+				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
 
 			Console.WriteLine(pTree.treeIndex + " similarities = \n");
 
 			foreach (CRefTree refTree in Trees)
 			{
-				float similarity = CTreeMath.GetSimilarityWith(refTree, pTree);
+				treeSimilarity = CTreeMath.GetSimilarityWith(refTree, pTree);
+				float similarity = treeSimilarity.similarity;
 				Console.WriteLine(similarity);
 				if (similarity > bestSimilarity)
 				{
@@ -202,7 +204,8 @@ namespace ForestReco
 			//Obj suitableTree = bestTree.Obj.Clone();
 			//suitableTree.Name += "_" + counter;
 			//counter++;
-			return mostSuitableTree;
+
+			return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity);
 		}
 
 		/*public static void ExportTrees()
@@ -219,7 +222,7 @@ namespace ForestReco
 		/// <summary>
 		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
 		/// </summary>
-		private static void SetRefTreeObjTransform(ref CRefTree pRefTree, CTree pTargetTree)
+		private static void SetRefTreeObjTransform(ref CRefTree pRefTree, CTree pTargetTree, int pAngleOffset)
 		{
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
@@ -240,7 +243,8 @@ namespace ForestReco
 			pRefTree.Obj.Position -= arrayCenter;
 			pRefTree.Obj.Position -= new Vector3(0, minHeight, 2 * pRefTree.Obj.Position.Z);
 
-			pRefTree.Obj.Rotation = new Vector3(0, -CTreeMath.GetOffsetAngleTo(pRefTree, pTargetTree), 0);
+			pRefTree.Obj.Rotation = new Vector3(0, -pAngleOffset, 0);
+			//pRefTree.Obj.Rotation = new Vector3(0, -CTreeMath.GetOffsetAngleTo(pRefTree, pTargetTree), 0);
 
 			if (DEBUG)
 			{
