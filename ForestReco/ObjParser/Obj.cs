@@ -242,6 +242,7 @@ namespace ObjParser
 				Scale = Scale,
 				Size = Size,
 				Mtl = Mtl,
+				UseMtl = UseMtl,
 				isObjCentered = isObjCentered
 			};
 			return clone;

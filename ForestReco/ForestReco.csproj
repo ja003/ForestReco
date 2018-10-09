@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CMaterialManager.cs" />
     <Compile Include="DataStructures\CObjPartition.cs" />
     <Compile Include="Controllers\CPlatformManager.cs" />
     <Compile Include="Controllers\CGroundFieldExporter.cs" />

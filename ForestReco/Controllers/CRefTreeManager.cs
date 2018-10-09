@@ -132,11 +132,14 @@ namespace ForestReco
 			{
 				Console.WriteLine(" - " + fileName);
 			}
-			
+
+			int counter = 0;
 			foreach (string fileName in pFileNames)
 			{
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
 				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
+
+				refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
 				Trees.Add(refTree);
 				Console.WriteLine("Loaded tree: " + fileName);
@@ -148,6 +151,7 @@ namespace ForestReco
 					//CObjExporter.AddPointsToObj(ref reftreePoints, refTree.Points);
 					//CProjectData.objsToExport.Add(reftreePoints);
 				}
+				counter++;
 			}
 			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
 

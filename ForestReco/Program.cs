@@ -50,7 +50,7 @@ namespace ForestReco
 			//REF TREES
 			CProjectData.loadRefTrees = true;
 			CProjectData.assignRefTrees = true;
-			CProjectData.assignRandomRefTree = false;
+			CProjectData.assignRandomRefTree = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
 			//source xyz-files
@@ -61,6 +61,8 @@ namespace ForestReco
 			CProjectData.refTreeJehlici = true;
 			CProjectData.refTreeKmeny = true;
 			
+			//GENERAL
+			CProjectData.useMaterial = true;
 			CProjectData.exportPoints = true;
 			CObjExporter.simplePointsObj = false;
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
@@ -73,11 +75,10 @@ namespace ForestReco
 			//CProgramLoader.fileName = "R7_test";
 			//CProgramLoader.fileName = "R2_F_1+2";
 
+			CMaterialManager.Init();
 
 			string[] lines = CProgramLoader.GetFileLines();
-
-
-
+			
 			if (CHeaderInfo.HasHeader(lines[0]))
 			{
 				CProjectData.header = new CHeaderInfo(lines);

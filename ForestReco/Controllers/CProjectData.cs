@@ -58,7 +58,8 @@ namespace ForestReco
 		public static int maxFillArrayIterations;
 
 		public static bool exportPoints;
-		public static bool exportRefTreePoints;
+		public static bool useMaterial;
+		public static bool exportRefTreePoints; 
 		public static bool exportTrees;
 		public static bool exportInvalidTrees;
 		public static bool exportSimpleTreeModel;

@@ -9,12 +9,14 @@ namespace ObjParser
     public class Mtl
     {
         public List<Material> MaterialList;
+	    private string fileName;
 
         /// <summary>
         /// Constructor. Initializes VertexList, FaceList and TextureList.
         /// </summary>
-        public Mtl()
+        public Mtl(string pFileName)
         {
+	        fileName = pFileName + ".mtl";
             MaterialList = new List<Material>();
         }
 
@@ -53,7 +55,7 @@ namespace ObjParser
 
         public void WriteMtlFile(string path, string[] headerStrings)
         {
-            using (var outStream = File.OpenWrite(path))
+            using (var outStream = File.OpenWrite(path + "\\" + fileName))
             using (var writer = new StreamWriter(outStream))
             {
                 // Write some header data
@@ -138,5 +140,9 @@ namespace ObjParser
             }
         }
 
+	    public override string ToString()
+	    {
+		    return "mtllib ./" + fileName;
+	    }
     }
 }

@@ -21,9 +21,9 @@ namespace ObjParser.Types
         public float Dissolve { get; set; }
         public float IlluminationModel { get; set; }
 
-        public Material()
+        public Material(string pName = "")
         {
-            this.Name = "DefaultMaterial";
+            this.Name = pName;
             this.AmbientReflectivity = new Color();
             this.DiffuseReflectivity = new Color();
             this.SpecularReflectivity = new Color();
@@ -46,13 +46,13 @@ namespace ObjParser.Types
 
             b.AppendLine(string.Format("Ka {0}", AmbientReflectivity));
             b.AppendLine(string.Format("Kd {0}", DiffuseReflectivity));
-            b.AppendLine(string.Format("Ks {0}", SpecularReflectivity));
-            b.AppendLine(string.Format("Tf {0}", TransmissionFilter));
-            b.AppendLine(string.Format("Ke {0}", EmissiveCoefficient));
-            b.AppendLine(string.Format("Ns {0}", SpecularExponent));
-            b.AppendLine(string.Format("Ni {0}", OpticalDensity));
-            b.AppendLine(string.Format("d {0}", Dissolve));
-            b.AppendLine(string.Format("illum {0}", IlluminationModel));
+            //b.AppendLine(string.Format("Ks {0}", SpecularReflectivity));
+            //b.AppendLine(string.Format("Tf {0}", TransmissionFilter));
+            //b.AppendLine(string.Format("Ke {0}", EmissiveCoefficient));
+            //b.AppendLine(string.Format("Ns {0}", SpecularExponent));
+            //b.AppendLine(string.Format("Ni {0}", OpticalDensity));
+            //b.AppendLine(string.Format("d {0}", Dissolve));
+            //b.AppendLine(string.Format("illum {0}", IlluminationModel));
 
             return b.ToString();
         }

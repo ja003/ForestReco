@@ -161,6 +161,12 @@ namespace ForestReco
 				// Write some header data
 				WriteHeader(writer, pObjs);
 
+				if (CProjectData.useMaterial)
+				{
+					writer.WriteLine(CMaterialManager.materials);
+					CMaterialManager.materials.WriteMtlFile(pFolderPath, new[] {"materials"});
+				}
+
 				int vertexIndexOffset = 0;
 				foreach (Obj obj in pObjs)
 				{
@@ -175,12 +181,13 @@ namespace ForestReco
 					foreach (Vertex v in obj.VertexList)
 					{
 						string vertexString = v.ToString(obj.GetVertexTransform());
-						if (vertexString == "v 0.2059677 -0.004917747 0.1736171")
-						{
-							Console.WriteLine("§");
-						}
 						writer.WriteLine(vertexString);
 						vertexIndexOffset++;
+					}
+
+					if (CProjectData.useMaterial)
+					{
+						writer.WriteLine("usemtl " + obj.UseMtl);
 					}
 
 					foreach (Face f in obj.FaceList)

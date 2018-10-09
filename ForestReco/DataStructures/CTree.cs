@@ -324,6 +324,7 @@ namespace ForestReco
 			string prefix = isValid ? "tree_" : "invalidTree_";
 
 			Obj obj = new Obj(prefix + treeIndex);
+			obj.UseMtl = CMaterialManager.GetMaterial(this);
 
 			if (CProjectData.exportSimpleTreeModel)
 			{

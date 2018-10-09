@@ -14,11 +14,18 @@ namespace ObjParser.Types
         public float g { get; set; }
         public float b { get; set; }
 
-        public Color()
+	    public Color()
+	    {
+			this.r = 1;
+		    this.g = 1;
+		    this.b = 1;
+		}
+
+		public Color(float r, float g, float b)
         {
-            this.r = 1f;
-            this.g = 1f;
-            this.b = 1f;
+            this.r = r;
+            this.g = g;
+            this.b = b;
         }
 
         public void LoadFromStringArray(string[] data)
