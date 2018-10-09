@@ -397,10 +397,10 @@ namespace ForestReco
 		/// Calculates similarity with other branch.
 		/// Range = [0,1]. 1 = Best match.
 		/// </summary>
-		public float GetSimilarityWith(CBranch pOtherBranch)
+		public float GetSimilarityWith(CBranch pOtherBranch, Vector3 offsetToThisTree, Matrix4x4 scaleMatrix)
 		{
-			Vector3 offsetToThisTree = CTreeMath.GetOffsetTo(pOtherBranch.tree, tree);
-			float scaleRatio = CTreeMath.GetScaleRatioTo(pOtherBranch.tree, tree);
+			//Vector3 offsetToThisTree = CTreeMath.GetOffsetTo(pOtherBranch.tree, tree);
+			//float scaleRatio = CTreeMath.GetScaleRatioTo(pOtherBranch.tree, tree);
 
 			if (pOtherBranch.TreePoints.Count == 0)
 			{
@@ -414,8 +414,9 @@ namespace ForestReco
 			//Vector3 groundPosition = tree.GetGroundPosition();
 
 			//CreateRotationY rotates point counter-clockwise => -pAngleOffset
+			//rotation has to be calculated in each branch
 			float angleOffsetRadians = CUtils.ToRadians(-(angleFrom - pOtherBranch.angleFrom));
-			Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, tree.peak.Center);
+			//Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, tree.peak.Center);
 			Matrix4x4 rotationMatrix = Matrix4x4.CreateRotationY(angleOffsetRadians, tree.peak.Center);
 
 			foreach (CTreePoint p in pOtherBranch.TreePoints)

@@ -155,7 +155,11 @@ namespace ForestReco
 			if (CProjectData.exportTrees)
 			{
 				//CTreeManager.ExportTrees();
-				CObjPartition.AddTrees();
+				CObjPartition.AddTrees(true);
+				if (CProjectData.exportInvalidTrees)
+				{
+					CObjPartition.AddTrees(false);
+				}
 			}
 
 			

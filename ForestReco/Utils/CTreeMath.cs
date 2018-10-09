@@ -14,8 +14,9 @@ namespace ForestReco
 		/// </summary>
 		public static STreeSimilarity GetSimilarityWith(CRefTree pRefTree, CTree pOtherTree)
 		{
-			//Vector3 offsetToOtherTree = Get2DOffsetTo(pRefTree, pOtherTree);
-			//float scaleRatio = GetScaleRatioTo(pRefTree, pOtherTree);
+			Vector3 offsetToRefTree = GetOffsetTo(pOtherTree, pRefTree);
+			float scaleRatio = GetScaleRatioTo(pOtherTree, pRefTree);
+			Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, pRefTree.peak.Center);
 			int indexOffset = GetIndexOffsetBetweenBestMatchBranches(pRefTree, pOtherTree);
 
 			float similarity = 0;
@@ -32,7 +33,7 @@ namespace ForestReco
 					offsetBranchIndex = pRefTree.Branches.Count + offsetBranchIndex;
 				}
 				CBranch refBranch = pRefTree.Branches[offsetBranchIndex % pRefTree.Branches.Count];
-				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch);
+				float similarityWithOtherBranch = refBranch.GetSimilarityWith(otherBranch, offsetToRefTree, scaleMatrix);
 				if (similarityWithOtherBranch >= 0)
 				{
 					similarity += similarityWithOtherBranch;
@@ -95,7 +96,8 @@ namespace ForestReco
 		{
 			Vector3 offsetToRefTree = GetOffsetTo(pOtherBranch.tree, pRefTree);
 			float scaleRatio = GetScaleRatioTo(pOtherBranch.tree, pRefTree);
-			
+			Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, pRefTree.peak.Center);
+
 			//Console.WriteLine("offsetToRefTree = " + offsetToRefTree);
 			//Console.WriteLine("scaleRatio = " + scaleRatio);
 
@@ -103,7 +105,7 @@ namespace ForestReco
 			CBranch bestMatchBranch = pRefTree.Branches[0];
 			foreach (CBranch b in pRefTree.Branches)
 			{
-				float similarity = b.GetSimilarityWith(pOtherBranch);
+				float similarity = b.GetSimilarityWith(pOtherBranch, offsetToRefTree, scaleMatrix);
 				if (similarity > bestSimilarity)
 				{
 					bestSimilarity = similarity;

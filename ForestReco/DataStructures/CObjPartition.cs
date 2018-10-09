@@ -69,8 +69,10 @@ namespace ForestReco
 			}
 		}
 		
-		public static void AddTrees()
+		public static void AddTrees(bool pValid)
 		{
+			List<Tuple<Tuple<int, int>, CTree>> treesToExport = new List<Tuple<Tuple<int, int>, CTree>>();
+
 			foreach (CGroundField f in CProjectData.array.fields)
 			{
 				//todo: k ničemu, výsledek stejně není seřaděn
@@ -78,8 +80,17 @@ namespace ForestReco
 				//f.DetectedTrees.Sort((x, y) => x.treeIndex.CompareTo(y.treeIndex));
 				foreach (CTree t in f.DetectedTrees)
 				{
-					AddObj(f.indexInField, t.GetObj(true, false));
+					if (t.isValid == pValid)
+					{
+						treesToExport.Add(new Tuple<Tuple<int, int>, CTree>(f.indexInField, t));
+						//AddObj(f.indexInField, t.GetObj(true, false));
+					}
 				}
+			}
+			treesToExport.Sort((x,y) => x.Item2.treeIndex.CompareTo(y.Item2.treeIndex));
+			foreach (Tuple<Tuple<int, int>, CTree> exportTree in treesToExport)
+			{
+				AddObj(exportTree.Item1, exportTree.Item2.GetObj(true, false));
 			}
 		}
 
