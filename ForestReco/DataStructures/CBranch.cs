@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 
@@ -177,7 +178,9 @@ namespace ForestReco
 			float angleFactor = (unacceptableAngle - angle) / unacceptableAngle;
 
 			//const float unacceptableDistance = CTreeManager.DEFAULT_TREE_EXTENT * 3;
-			float unacceptableDistance = tree.GetTreeExtentFor(pPoint) + 0.5f;
+			float unacceptableDistance = tree.GetTreeExtentFor(pPoint,
+				pIsTreeProcessed ? CTreeManager.TREE_EXTENT_MERGE_MULTIPLY : 1);
+			unacceptableDistance += 0.5f;
 			if (pointDistToPeak > unacceptableDistance) { return 0; }
 			unacceptableDistance += 0.5f;
 			float distFactor = (unacceptableDistance - pointDistToPeak) / unacceptableDistance;
@@ -246,7 +249,7 @@ namespace ForestReco
 			CTreePoint newPoint = new CTreePoint(pPoint, tree.treePointExtent);
 			TreePoints.Insert(insertAtIndex, newPoint);
 
-			CheckBranch(); //todo: delete, expensive!
+			//CheckBranch(); //todo: delete, expensive!
 			CheckAddedPoint();
 
 			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
@@ -255,7 +258,7 @@ namespace ForestReco
 
 		private void CheckAddedPoint()
 		{
-			if(TreePoints.Count < 2){ return;}
+			if (TreePoints.Count < 2) { return; }
 			CTreePoint previousTp = TreePoints[TreePoints.Count - 2];
 			CTreePoint tp = TreePoints[TreePoints.Count - 1];
 			if (tp.Y > previousTp.Y)
@@ -276,7 +279,7 @@ namespace ForestReco
 			//foreach (CTreePoint tp in TreePoints)
 			for (int i = 1; i < TreePoints.Count; i++)
 			{
-				CTreePoint previousTp = TreePoints[i-1];
+				CTreePoint previousTp = TreePoints[i - 1];
 				CTreePoint tp = TreePoints[i];
 				if (tp.Y > previousTp.Y)
 				{
@@ -328,7 +331,7 @@ namespace ForestReco
 
 			//which direction on branch should we search
 			int dir = 1; //actually to be sure we need to check both directions...final treepoints doesnt have to be neccessarily Y-ordered
-			//if (TreePoints[approxIndex].Y < pPoint.Y) { dir = -1; }
+						 //if (TreePoints[approxIndex].Y < pPoint.Y) { dir = -1; }
 			CTreePoint pointOnBranch = TreePoints[approxIndex];
 			bool isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
 			for (int i = approxIndex; isPointOnBranchWithinRange && i > 0 && i < TreePoints.Count; i += dir)
@@ -482,11 +485,32 @@ namespace ForestReco
 
 		public float GetDefinedFactor()
 		{
-			if (TreePoints.Count == 0) { return 0; }
+			if (TreePoints.Count == 0)
+			{
+				return 0;
+			}
+			if (TreePoints.Count < CTreeManager.MIN_BRANCH_POINT_COUNT)
+			{
+				int allTreePointsCount = tree.GetAllPoints().Count;
+				if (allTreePointsCount < CTreeManager.MIN_TREE_POINT_COUNT)
+				{
+					return 0;
+				}
+				//float allPointsToBranchRatio = (float)allTreePointsCount / TreePoints.Count;
+				//if (allPointsToBranchRatio > allTreePointsCount / 2f)
+				//{
+				//	return 0;
+				//}
+			}
+
+			//if (tree.treeIndex == 41)
+			//{
+			//	Console.WriteLine("_");
+			//}
 
 			float height = tree.GetTreeHeight();
 			float distLowestToPeak = Vector3.Distance(TreePoints.Last().Center, tree.peak.Center);
-			distLowestToPeak += 3; //first meter from ground is not well defined
+			distLowestToPeak += 5; //first meters from ground is not well defined
 			distLowestToPeak = Math.Min(height, distLowestToPeak);
 			float lowestPointRatio = distLowestToPeak / height;
 

@@ -13,14 +13,18 @@ namespace ForestReco
 
 		public const float TREE_POINT_EXTENT = 0.1f;
 
-		public const float DEFAULT_TREE_EXTENT = 1.5f;
+		public static float TREE_EXTENT_MERGE_MULTIPLY = 2f;
+		public static float BASE_TREE_EXTENT = 1f;
+		public static float MIN_TREE_EXTENT = 0.5f;
 		//public const float DEFAULT_TREE_EXTENT = 1f;
-		public const float DEFAULT_TREE_HEIGHT = 10;
+		public static float AVERAGE_TREE_HEIGHT = 10;
+		public static int MIN_BRANCH_POINT_COUNT = 5;
+		public static int MIN_TREE_POINT_COUNT = 20;
 
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
 		public static float GetMinPeakDistance(float pMultiply)
 		{
-			return DEFAULT_TREE_EXTENT * pMultiply;
+			return BASE_TREE_EXTENT * pMultiply;
 		}
 
 		/// <summary>
@@ -29,8 +33,8 @@ namespace ForestReco
 		public static float GetMinPeakDistance(CTree pTree1, CTree pTree2)
 		{
 			float treeHeight = Math.Max(pTree1.GetTreeHeight(), pTree2.GetTreeHeight());
-			float ratio = treeHeight / DEFAULT_TREE_HEIGHT;
-			if (ratio < 1) { return DEFAULT_TREE_EXTENT; }
+			float ratio = treeHeight / AVERAGE_TREE_HEIGHT;
+			if (ratio < 1) { return BASE_TREE_EXTENT; }
 			const float EXTENT_VALUE_STEP = 1.5f;
 
 			return GetMinPeakDistance(1) + (ratio - 1) * EXTENT_VALUE_STEP;
@@ -112,7 +116,7 @@ namespace ForestReco
 			element.DetectedTrees.Add(newTree);
 
 			newTree.groundField = element;
-			
+
 			if (newTree.treeIndex == 98)
 			{
 				//Console.WriteLine("!");
@@ -130,7 +134,7 @@ namespace ForestReco
 			Trees.Remove(pTree);
 			if (!element.DetectedTrees.Contains(pTree))
 			{
-				Console.WriteLine("Error: element " + element +" doesnt contain " + pTree);
+				Console.WriteLine("Error: element " + element + " doesnt contain " + pTree);
 				return;
 			}
 			element.DetectedTrees.Remove(pTree);
@@ -139,7 +143,7 @@ namespace ForestReco
 		private static void DebugPoint(Vector3 pPoint, int pPointIndex)
 		{
 			if (DEBUG) { Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint); }
-			
+
 			Vector3 debugPoint = CObjExporter.GetMovedPoint(pPoint);
 			debugPoint.Z *= -1;
 		}
@@ -255,7 +259,7 @@ namespace ForestReco
 
 			Trees.Sort((x, y) => y.peak.Center.Y.CompareTo(x.peak.Center.Y));
 
-			int treeCountBeforeMerge = CTreeManager.Trees.Count;
+			int treeCountBeforeMerge = Trees.Count;
 
 			if (CProjectData.mergeContaingTrees)
 			{
@@ -289,6 +293,12 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
+				if (tree.treeIndex == 48)
+				{
+					Console.WriteLine("__");
+				}
+
+				//if (CProjectData.mergeOnlyInvalidTrees && tree.isValid) { continue; }
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.ClosestHigher);
 				Vector3 pPoint = tree.peak.Center;
@@ -296,6 +306,12 @@ namespace ForestReco
 				CTree selectedTree = null;
 				foreach (CTree t in possibleTrees)
 				{
+					if (CProjectData.mergeOnlyInvalidTrees)
+					{
+						//todo: seems better this way. test
+						if(tree.isValid && t.isValid) { continue; }
+					}
+
 					float addPointFactor = t.GetAddPointFactor(pPoint, true);
 					if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
 					{
@@ -427,7 +443,7 @@ namespace ForestReco
 			return higherTree;
 		}
 
-		public static void ValidateTrees()
+		public static void ValidateTrees(bool pCathegorize)
 		{
 			Console.WriteLine("\nDetect invalid trees");
 
@@ -436,8 +452,11 @@ namespace ForestReco
 				CTree tree = Trees[i];
 				if (!tree.Validate(true))
 				{
-					InvalidTrees.Add(tree);
-					Trees.RemoveAt(i);
+					if (pCathegorize)
+					{
+						InvalidTrees.Add(tree);
+						Trees.RemoveAt(i);
+					}
 				}
 			}
 		}

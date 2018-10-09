@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using ObjParser;
 using ObjParser.Types;
 
@@ -11,29 +12,50 @@ namespace ForestReco
 		public static void Init()
 		{
 			materials = new Mtl("colors");
+			AddMaterial("invalid", .3f);
 
-			Material red = new Material("red");
-			red.DiffuseReflectivity = new Color(1, 0, 0);
-			materials.MaterialList.Add(red);
+			AddMaterial("red", 1, 0, 0);
+			AddMaterial("orange", 1, .5f, 0);
+			AddMaterial("pink", 1, 0, .5f);
+			AddMaterial("purple", .5f, 0, .5f);
 
-			Material green = new Material("green");
-			green.DiffuseReflectivity = new Color(0, 1, 0);
-			materials.MaterialList.Add(green);
+			AddMaterial("green", 0, 1, 0);
 
-			Material blue = new Material("blue");
-			blue.DiffuseReflectivity = new Color(0, 0, 1);
-			materials.MaterialList.Add(blue);
+			AddMaterial("blue", 0, 0, 1);
+			AddMaterial("lightBlue", 0, .5f, 1);
 		}
 
-		public static string GetMaterial(CTree pTree)
+		private static void AddMaterial(string pName, float pColorIntensity)
 		{
-			return materials.MaterialList[0].Name;
+			Material red = new Material(pName);
+			red.DiffuseReflectivity = new Color(pColorIntensity, pColorIntensity, pColorIntensity);
+			materials.MaterialList.Add(red);
+		}
+
+		private static void AddMaterial(string pName, float pR, float pG, float pB)
+		{
+			Material red = new Material(pName);
+			red.DiffuseReflectivity = new Color(pR, pG, pB);
+			materials.MaterialList.Add(red);
+		}
+
+		public static string GetTreeMaterial(int pIndex)
+		{
+			int matIndex = pIndex % materials.MaterialList.Count;
+			matIndex = Math.Max(1, matIndex); //todo: better management
+			return materials.MaterialList[matIndex].Name;
 		}
 
 		public static string GetRefTreeMaterial(int pIndex)
 		{
 			int matIndex = pIndex % materials.MaterialList.Count;
+			matIndex = Math.Max(1, matIndex);
 			return materials.MaterialList[matIndex].Name;
+		}
+
+		public static string GetInvalidMaterial()
+		{
+			return materials.MaterialList[0].Name;
 		}
 	}
 }

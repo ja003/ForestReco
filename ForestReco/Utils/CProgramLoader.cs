@@ -120,6 +120,12 @@ namespace ForestReco
 
 			CTreeManager.CheckAllTrees();
 
+			if (CProjectData.validateTrees)
+			{
+				//dont move invalid trees to invalid list yet, some invalid trees will be merged
+				CTreeManager.ValidateTrees(false);
+			}
+
 			if (CProjectData.tryMergeTrees)
 			{
 				CTreeManager.TryMergeAllTrees();
@@ -129,7 +135,8 @@ namespace ForestReco
 
 			if (CProjectData.validateTrees)
 			{
-				CTreeManager.ValidateTrees();
+				//cathegorize invalid trees
+				CTreeManager.ValidateTrees(true);
 			}
 
 			Console.WriteLine("Trees = " + CTreeManager.Trees.Count);

@@ -25,6 +25,12 @@ namespace ForestReco
 
 			CObjPartition.partitionStep = 30;
 
+			//Input params
+			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
+			CTreeManager.TREE_EXTENT_MERGE_MULTIPLY = 1.5F;
+			CTreeManager.BASE_TREE_EXTENT = 1.5f;
+			CTreeManager.MIN_TREE_EXTENT = 0.5f;
+
 			//ARRAY
 			CProjectData.setArray = true;
 			CProjectData.fillArray = true;
@@ -41,6 +47,7 @@ namespace ForestReco
 			CProjectData.validateTrees = true;
 			//merge
 			CProjectData.tryMergeTrees = true;
+			CProjectData.mergeOnlyInvalidTrees = true;
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
 			CProjectData.mergeGoodAddFactorTrees = true;
@@ -48,8 +55,8 @@ namespace ForestReco
 			CProjectData.processTrees = false; //todo: not used anymore
 
 			//REF TREES
-			CProjectData.loadRefTrees = true;
-			CProjectData.assignRefTrees = true;
+			CProjectData.loadRefTrees = false;
+			CProjectData.assignRefTrees = false;
 			CProjectData.assignRandomRefTree = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true; 
@@ -68,7 +75,7 @@ namespace ForestReco
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R7";

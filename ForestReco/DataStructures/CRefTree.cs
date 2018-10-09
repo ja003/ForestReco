@@ -385,7 +385,7 @@ namespace ForestReco
 				Vector3 point = parsedLine.Item2;
 
 				//all points belong to 1 tree. force add it
-				TryAddPoint(point, true);
+				AddPoint(point);
 
 				//TimeSpan duration = DateTime.Now - lineStartTime;
 				//if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }

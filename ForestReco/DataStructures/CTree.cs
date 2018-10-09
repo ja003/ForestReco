@@ -94,7 +94,7 @@ namespace ForestReco
 			//Console.WriteLine("OnProcess");
 		}
 
-		public bool TryAddPoint(Vector3 pPoint, bool pForce)
+		/*public bool TryAddPoint(Vector3 pPoint, bool pForce)
 		{
 			if (pForce || BelongsToTree(pPoint))
 			{
@@ -102,7 +102,7 @@ namespace ForestReco
 				return true;
 			}
 			return false;
-		}
+		}*/
 
 		public float GetAddPointFactor(Vector3 pPoint, bool pUseDistToPeakDiff)
 		{
@@ -324,7 +324,7 @@ namespace ForestReco
 			string prefix = isValid ? "tree_" : "invalidTree_";
 
 			Obj obj = new Obj(prefix + treeIndex);
-			obj.UseMtl = CMaterialManager.GetMaterial(this);
+			obj.UseMtl = CMaterialManager.GetTreeMaterial(treeIndex);
 
 			if (CProjectData.exportSimpleTreeModel)
 			{
@@ -377,6 +377,10 @@ namespace ForestReco
 		/// </summary>
 		public bool Validate(bool pAllBranchDefined)
 		{
+			if (treeIndex == 33)
+			{
+				Console.WriteLine("5");
+			}
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
 			{
@@ -421,7 +425,7 @@ namespace ForestReco
 			//it must be close to peak of some tree or to its BB
 
 			//float treeHeight = GetTreeHeight();
-			float maxTreeExtent = GetTreeExtentFor(pPoint);
+			float maxTreeExtent = GetTreeExtentFor(pPoint, 1);
 
 			if (dist2D > maxTreeExtent && distToBB > MAX_DIST_TO_TREE_BB)
 			{
@@ -445,17 +449,18 @@ namespace ForestReco
 		/// <summary>
 		/// Calculates max acceptable 2D distance from peak for the new point to be added
 		/// </summary>
-		public float GetTreeExtentFor(Vector3 pNewPoint)
+		public float GetTreeExtentFor(Vector3 pNewPoint, float pMaxExtentMultiplier)
 		{
 			float treeHeight = GetTreeHeight();
-			float ratio = treeHeight / CTreeManager.DEFAULT_TREE_HEIGHT;
-			float maxExtent = Math.Max(CTreeManager.DEFAULT_TREE_EXTENT, ratio * CTreeManager.DEFAULT_TREE_EXTENT);
+			float ratio = treeHeight / CTreeManager.AVERAGE_TREE_HEIGHT;
+			float maxExtent = Math.Max(CTreeManager.BASE_TREE_EXTENT, ratio * CTreeManager.BASE_TREE_EXTENT);
+			maxExtent *= pMaxExtentMultiplier;
 			float yDiff = peak.Center.Y - pNewPoint.Y;
-			const float MIN_TREE_EXTENT = .5f;
+			//const float MIN_TREE_EXTENT = .5f;
 			const float Y_DIFF_STEP = 0.1f;
 			const float EXTENT_VALUE_STEP = 0.12f;
 
-			float extent = MIN_TREE_EXTENT + EXTENT_VALUE_STEP * yDiff / Y_DIFF_STEP;
+			float extent = CTreeManager.MIN_TREE_EXTENT + EXTENT_VALUE_STEP * yDiff / Y_DIFF_STEP;
 
 			return Math.Min(extent, maxExtent);
 		}

@@ -90,7 +90,9 @@ namespace ForestReco
 			treesToExport.Sort((x,y) => x.Item2.treeIndex.CompareTo(y.Item2.treeIndex));
 			foreach (Tuple<Tuple<int, int>, CTree> exportTree in treesToExport)
 			{
-				AddObj(exportTree.Item1, exportTree.Item2.GetObj(true, false));
+				Obj obj = exportTree.Item2.GetObj(true, false);
+				if (!pValid) { obj.UseMtl = CMaterialManager.GetInvalidMaterial();}
+				AddObj(exportTree.Item1, obj);
 			}
 		}
 
