@@ -116,7 +116,10 @@ namespace ForestReco
 			{
 				foreach (CCheckTree tree in f.CheckTrees)
 				{
-					AddObj(f.indexInField, tree.GetObj());
+					Obj treeObj = tree.GetObj();
+					if (tree.assignedTree != null) { treeObj.UseMtl = CMaterialManager.GetCheckTreeMaterial(); }
+					AddObj(f.indexInField, treeObj);
+
 				}
 			}
 

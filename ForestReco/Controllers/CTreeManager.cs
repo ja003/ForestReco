@@ -61,7 +61,7 @@ namespace ForestReco
 
 			if (!CheckPoint(pPoint))
 			{
-				Console.WriteLine(pPoint + " is not valid");
+				//Console.WriteLine(pPoint + " is not valid");
 				return;
 			}
 
@@ -175,7 +175,7 @@ namespace ForestReco
 		/// <summary>
 		/// TODO: refactor
 		/// </summary>
-		private static List<CTree> GetPossibleTreesFor(Vector3 pPoint, EPossibleTreesMethos pMethod,
+		public static List<CTree> GetPossibleTreesFor(Vector3 pPoint, EPossibleTreesMethos pMethod,
 			CTree pExcludeTree = null)
 		{
 			List<CTree> possibleTrees = new List<CTree>();

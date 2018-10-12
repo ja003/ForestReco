@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using ObjParser;
 
 namespace ForestReco
@@ -8,6 +9,7 @@ namespace ForestReco
 		public EClass treeClass { get; }
 		public Vector3 position { get; }
 		public int index { get; }
+		public CTree assignedTree { get; private set; }
 
 		public CCheckTree(int pTreeClass, Vector3 pPosition, int pIndex)
 		{
@@ -20,14 +22,19 @@ namespace ForestReco
 		{
 			Obj obj = new Obj("checkTree_" + index);
 			{
-				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY*30, position);
+				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * 30, position);
+				if (assignedTree != null)
+				{
+					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * 30, assignedTree.peak.Center);
+				}
+
 				return obj;
 			}
 		}
 
 		public override string ToString()
 		{
-			return treeClass + " : " + position;
+			return treeClass + " : " + position + (assignedTree == null ? "" : "+");
 		}
 
 		public enum EClass
@@ -36,6 +43,12 @@ namespace ForestReco
 			Smrk = 11,
 			Jedle = 12,
 			Buk = 13
+		}
+
+		public void AssignTree(CTree pTree)
+		{
+			assignedTree = pTree;
+			Console.WriteLine("Assign to " + this);
 		}
 	}
 }

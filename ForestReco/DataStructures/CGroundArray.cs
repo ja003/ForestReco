@@ -274,7 +274,26 @@ namespace ForestReco
 			Console.WriteLine("Detected trees count = " + detectedTreesCount);
 		}
 
-		public void AddCheckTree(CCheckTree pCheckTree)
+		/// <summary>
+		/// just check
+		/// </summary>
+		public void DebugCheckTrees()
+		{
+			int assignedCheckTreesCOunt = 0;
+			foreach (CGroundField f in fields)
+			{
+				foreach (CCheckTree tree in f.CheckTrees)
+				{
+					if (tree.assignedTree != null)
+					{
+						assignedCheckTreesCOunt++;
+					}
+				}
+			}
+			Console.WriteLine("assigned checkTrees count = " + assignedCheckTreesCOunt);
+		}
+
+		public void AddCheckTree(ref CCheckTree pCheckTree)
 		{
 			CGroundField el = GetElementContainingPoint(pCheckTree.position);
 			if (el != null)
