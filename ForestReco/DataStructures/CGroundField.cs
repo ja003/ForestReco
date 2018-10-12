@@ -540,7 +540,7 @@ namespace ForestReco
 
 		public void AddCheckTree(CCheckTree pCheckTree)
 		{
-			Console.WriteLine("added " + pCheckTree);
+			//Console.WriteLine("added " + pCheckTree);
 			CheckTrees.Add(pCheckTree);
 		}
 	}

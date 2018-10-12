@@ -21,6 +21,9 @@ namespace ForestReco
 		public static int MIN_BRANCH_POINT_COUNT = 5;
 		public static int MIN_TREE_POINT_COUNT = 20;
 
+		public static float MAX_TREE_HEIGHT = 20;
+
+
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
 		public static float GetMinPeakDistance(float pMultiply)
 		{
@@ -55,6 +58,12 @@ namespace ForestReco
 
 			pointCounter++;
 			CTree selectedTree = null;
+
+			if (!CheckPoint(pPoint))
+			{
+				Console.WriteLine(pPoint + " is not valid");
+				return;
+			}
 
 			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint, EPossibleTreesMethos.ClosestHigher);
 
@@ -105,6 +114,16 @@ namespace ForestReco
 			}
 		}
 
+		private static bool CheckPoint(Vector3 pPoint)
+		{
+			float? pointHeight = CProjectData.array.GetPointHeight(pPoint);
+			if (pointHeight == null)
+			{
+				Console.WriteLine("Error: " + pPoint + " ground not defined");
+				return true;
+			}
+			return pointHeight < MAX_TREE_HEIGHT;
+		}
 
 		private static void CreateNewTree(Vector3 pPoint)
 		{

@@ -290,8 +290,15 @@ namespace ForestReco
 		public string WriteBounds(bool pConsole = true)
 		{
 			string output = "[" + botLeftCorner + "," + topRightCorner + "]";
-			if(pConsole){Console.WriteLine(output);}
+			if (pConsole) { Console.WriteLine(output); }
 			return output;
+		}
+
+		public float? GetPointHeight(Vector3 pPoint)
+		{
+			float? groundHeight = GetHeight(pPoint);
+			if (groundHeight == null) { return null; }
+			return pPoint.Y - groundHeight;
 		}
 	}
 }
