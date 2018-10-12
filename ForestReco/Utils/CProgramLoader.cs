@@ -14,6 +14,7 @@ namespace ForestReco
 		public static bool useDebugData = false;
 
 		public static string fileName;
+
 		//@"BK_1000AGL_classified";
 		//@"BK_1000AGL_cl_split_s_mezerou";
 		//@"BK_1000AGL_classified_0007559_0182972";

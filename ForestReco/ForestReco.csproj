@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CMaterialManager.cs" />
+    <Compile Include="Controllers\CCheckTreeManager.cs" />
+    <Compile Include="DataStructures\CCheckTree.cs" />
     <Compile Include="DataStructures\CObjPartition.cs" />
     <Compile Include="Controllers\CPlatformManager.cs" />
     <Compile Include="Controllers\CGroundFieldExporter.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="ObjParser\Types\Material.cs" />
     <Compile Include="ObjParser\Types\TextureVertex.cs" />
     <Compile Include="ObjParser\Types\Vertex.cs" />
+    <Compile Include="Parser\CCheckTreeTxtParser.cs" />
     <Compile Include="Parser\CLazTxtParser.cs" />
     <Compile Include="DataStructures\CHeaderInfo.cs" />
     <Compile Include="Program.cs" />
