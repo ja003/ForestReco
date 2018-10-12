@@ -23,7 +23,7 @@ namespace ForestReco
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
 			CProjectData.useMaxLines = false;
 
-			CObjPartition.partitionStep = 30;
+			CObjPartition.partitionStep = 40;
 
 			//Input params
 			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
@@ -63,6 +63,7 @@ namespace ForestReco
 
 			//CHECK TREES
 			CProjectData.loadCheckTrees = true;
+			CProjectData.exportCheckTrees = true;
 
 			//source xyz-files
 			CProjectData.refTreeFirst = true;
@@ -79,7 +80,10 @@ namespace ForestReco
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
+			CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
+			
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R7";
@@ -104,10 +108,12 @@ namespace ForestReco
 
 			CRefTreeManager.Init();
 
-			CCheckTreeManager.Init();
 
 			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
+
+			//has to be called after array initialization
+			CCheckTreeManager.Init();
 
 			CTreeManager.DebugTrees();
 

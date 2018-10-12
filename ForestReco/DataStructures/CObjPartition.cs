@@ -110,6 +110,25 @@ namespace ForestReco
 			}
 		}
 
+		public static void AddCheckTrees(bool pAllCheckTrees)
+		{
+			foreach (CGroundField f in CProjectData.array.fields)
+			{
+				foreach (CCheckTree tree in f.CheckTrees)
+				{
+					AddObj(f.indexInField, tree.GetObj());
+				}
+			}
+
+			if (pAllCheckTrees)
+			{
+				foreach (CCheckTree tree in CCheckTreeManager.Trees)
+				{
+					AddToPartiotion(tree.GetObj(), new Tuple<int, int>(0,0));
+				}
+			}
+		}
+
 		public static void AddObj(Tuple<int, int> pArrayIndex, Obj pObj)
 		{
 			AddObj(pArrayIndex.Item1, pArrayIndex.Item2, pObj);
@@ -122,7 +141,12 @@ namespace ForestReco
 				Console.WriteLine("AddObj is null!");
 			}
 			Tuple<int, int> index = GetIndexInArray(pArrayIndexX, pArrayIndexY);
-			objPartition[index.Item1, index.Item2].Add(pObj);
+			AddToPartiotion(pObj, index);
+		}
+
+		private static void AddToPartiotion(Obj pObj, Tuple<int, int> pIndex)
+		{
+			objPartition[pIndex.Item1, pIndex.Item2].Add(pObj);
 		}
 
 		public static void ExportPartition()

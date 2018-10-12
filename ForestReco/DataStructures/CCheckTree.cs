@@ -1,16 +1,33 @@
 ﻿using System.Numerics;
+using ObjParser;
 
 namespace ForestReco
 {
 	public class CCheckTree
 	{
-		private EClass treeClass;
-		private Vector3 position;
+		public EClass treeClass { get; }
+		public Vector3 position { get; }
+		public int index { get; }
 
-		public CCheckTree(int pTreeClass, Vector3 pPosition)
+		public CCheckTree(int pTreeClass, Vector3 pPosition, int pIndex)
 		{
-			this.treeClass = (EClass)pTreeClass;
-			this.position = pPosition;
+			treeClass = (EClass)pTreeClass;
+			position = pPosition;
+			index = pIndex;
+		}
+
+		public Obj GetObj()
+		{
+			Obj obj = new Obj("checkTree_" + index);
+			{
+				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY*30, position);
+				return obj;
+			}
+		}
+
+		public override string ToString()
+		{
+			return treeClass + " : " + position;
 		}
 
 		public enum EClass

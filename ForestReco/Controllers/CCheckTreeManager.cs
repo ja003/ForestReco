@@ -20,6 +20,11 @@ namespace ForestReco
 			{
 				LoadTrees(checkFileName);
 			}
+
+			if (CProjectData.exportCheckTrees)
+			{
+				CObjPartition.AddCheckTrees(false);
+			}
 		}
 
 		private static void LoadTrees(string pFileName)
@@ -31,17 +36,42 @@ namespace ForestReco
 			string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
 
 			string[] allLines = File.ReadAllLines(fullFilepath);
+
+			CProjectData.array.WriteBounds();
+
 			foreach (string line in allLines)
 			{
-				Tuple<int, Vector3> parsedLine = CCheckTreeTxtParser.ParseLine(line, false);
+				Tuple<int, Vector3> parsedLine = CCheckTreeTxtParser.ParseLine(line, true);
 				if (parsedLine != null && IsCheckTree(parsedLine))
 				{
-					Trees.Add(new CCheckTree(parsedLine.Item1, parsedLine.Item2));
+					AddNewTree(parsedLine);
 				}
 			}
+			CCheckTreeTxtParser.Debug();
 
 			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
 			
+		}
+
+		//public static void AddTreesToExport()
+		//{
+		//	foreach (CCheckTree tree in Trees)
+		//	{
+		//		CProjectData.
+		//	}
+		//}
+
+		private static void AddNewTree(Tuple<int, Vector3> pParsedLine)
+		{
+			CCheckTree newTree = new CCheckTree(pParsedLine.Item1, pParsedLine.Item2, Trees.Count);
+			Trees.Add(newTree);
+
+			if (CProjectData.array == null)
+			{
+				Console.WriteLine("Error: array not initialized");
+				return;
+			}
+			CProjectData.array.AddCheckTree(newTree);
 		}
 
 		private static bool IsCheckTree(Tuple<int, Vector3> pParsedLine)

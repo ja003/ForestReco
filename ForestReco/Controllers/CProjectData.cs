@@ -45,7 +45,8 @@ namespace ForestReco
 		public static bool exportRefTrees;
 
 		public static bool loadCheckTrees;
-
+		public static bool exportCheckTrees;
+		
 		public static bool refTreeFirst = true;
 		public static bool refTreeLast = true;
 		public static bool refTreeFront = true;

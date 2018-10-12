@@ -54,7 +54,7 @@ namespace ForestReco
 				//CObjPartition is dependent on Array initialization
 				CObjPartition.Init();
 			}
-			
+
 
 			//store coordinates to corresponding data strucures based on their class
 			const int DEFAULT_START_LINE = 19;
@@ -170,7 +170,7 @@ namespace ForestReco
 				}
 			}
 
-			
+
 		}
 
 		private static void FillArray()
@@ -236,7 +236,7 @@ namespace ForestReco
 					Console.WriteLine("- time of last " + debugFrequency + " points = " + lastPointBatchProcessTime);
 
 					//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-					float remainsRatio = (float)(CProjectData.vegePoints.Count - i)/ debugFrequency;
+					float remainsRatio = (float)(CProjectData.vegePoints.Count - i) / debugFrequency;
 					double totalSeconds = remainsRatio * lastPointBatchProcessTime;
 					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
 					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";

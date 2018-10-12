@@ -94,6 +94,11 @@ namespace ForestReco
 			return array[pXindex, pYindex];
 		}
 
+		private bool IsWithinBounds(Tuple<int, int> pIndex)
+		{
+			return IsWithinBounds(pIndex.Item1, pIndex.Item2);
+		}
+
 		private bool IsWithinBounds(int pXindex, int pYindex)
 		{
 			return pXindex >= 0 && pXindex < arrayXRange && pYindex >= 0 && pYindex < arrayYRange;
@@ -102,6 +107,7 @@ namespace ForestReco
 		public CGroundField GetElementContainingPoint(Vector3 pPoint)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
+			if (!IsWithinBounds(index)) { return null; }
 			return array[index.Item1, index.Item2];
 		}
 
@@ -266,6 +272,26 @@ namespace ForestReco
 				detectedTreesCount += f.DetectedTrees.Count;
 			}
 			Console.WriteLine("Detected trees count = " + detectedTreesCount);
+		}
+
+		public void AddCheckTree(CCheckTree pCheckTree)
+		{
+			CGroundField el = GetElementContainingPoint(pCheckTree.position);
+			if (el != null)
+			{
+				el.AddCheckTree(pCheckTree);
+			}
+			else
+			{
+				//Console.WriteLine(pCheckTree + " is out of bounds. " + WriteBounds());
+			}
+		}
+
+		public string WriteBounds(bool pConsole = true)
+		{
+			string output = "[" + botLeftCorner + "," + topRightCorner + "]";
+			if(pConsole){Console.WriteLine(output);}
+			return output;
 		}
 	}
 }

@@ -38,6 +38,7 @@ namespace ForestReco
 		}
 
 		public List<CTree> DetectedTrees = new List<CTree>();
+		public List<CCheckTree> CheckTrees = new List<CCheckTree>();
 
 		//NEIGHBOUR
 
@@ -522,7 +523,8 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center;
+			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center + 
+				". Trees=" + DetectedTrees.Count + "/" + CheckTrees.Count;
 			//return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}
 
@@ -536,6 +538,10 @@ namespace ForestReco
 			return (indexInField.Item1 == e.indexInField.Item1) && (indexInField.Item2 == e.indexInField.Item2);
 		}
 
-
+		public void AddCheckTree(CCheckTree pCheckTree)
+		{
+			Console.WriteLine("added " + pCheckTree);
+			CheckTrees.Add(pCheckTree);
+		}
 	}
 }
