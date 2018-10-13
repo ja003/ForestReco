@@ -17,8 +17,8 @@ namespace ForestReco
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
 			//CPlatformManager.platform = EPlatform.Notebook;
-			CPlatformManager.platform = EPlatform.HomePC;
-			//CPlatformManager.platform = EPlatform.Tiarra;
+			//CPlatformManager.platform = EPlatform.HomePC;
+			CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
 			CProjectData.useMaxLines = false;
@@ -72,7 +72,7 @@ namespace ForestReco
 			CProjectData.refTreeBack = true;
 			CProjectData.refTreeJehlici = true;
 			CProjectData.refTreeKmeny = true;
-			
+
 			//GENERAL
 			CProjectData.useMaterial = true;
 			CProjectData.exportPoints = true;
@@ -83,7 +83,7 @@ namespace ForestReco
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
 			CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
-			
+
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";
 			//CProgramLoader.fileName = "R7";
@@ -96,14 +96,14 @@ namespace ForestReco
 			CMaterialManager.Init();
 
 			string[] lines = CProgramLoader.GetFileLines();
-			
+
 			if (CHeaderInfo.HasHeader(lines[0]))
 			{
 				CProjectData.header = new CHeaderInfo(lines);
 			}
 			else
 			{
-				Console.WriteLine("No header is defined");
+				CDebug.Error("No header is defined");
 			}
 
 			CRefTreeManager.Init();
@@ -120,8 +120,8 @@ namespace ForestReco
 			//CObjExporter.ExportObjsToExport();
 			CObjPartition.ExportPartition();
 
-			Console.WriteLine("\n==============\n");
-			Console.WriteLine("Press any key to exit." + " | Complete time = " + (DateTime.Now - start));
+			CDebug.WriteLine("\n==============\n");
+			CDebug.Duration("Press any key to exit. Complete time = ", start);
 			Console.ReadKey();
 		}
 	}

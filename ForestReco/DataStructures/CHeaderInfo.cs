@@ -38,7 +38,7 @@ namespace ForestReco
 
 			if (Min == Vector3.Zero && Max == Vector3.Zero)
 			{
-				Console.WriteLine("Invalid header. Creating default header.");
+				CDebug.WriteLine("Invalid header. Creating default header.");
 				const int defaultArraySize = 15;
 				Min = new Vector3(-defaultArraySize, 0, -defaultArraySize);
 				Max = new Vector3(defaultArraySize, 0, defaultArraySize);
@@ -47,7 +47,7 @@ namespace ForestReco
 
 			//we set Z offset so the lowest point will have height 0 (better visualization)
 			//Offset.Z = ParseLineVector3(pMinLine).Z;
-			Console.WriteLine(CProjectData.header);
+			//CDebug.WriteLine(this.ToString());
 		}
 
 		private string GetLine(string[] lines, EHeaderAttribute pAttribute)

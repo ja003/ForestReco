@@ -52,7 +52,6 @@ namespace ForestReco
 						if (height == null && el.IsAnyNeighbourDefined())
 						{
 							height = el.GetHeight();
-							//Console.WriteLine("Fill " + el + " = " + height);
 						}
 					}
 					else if (pStrategy == EExportStrategy.ZeroAroundDefined)
@@ -61,7 +60,6 @@ namespace ForestReco
 						{
 							//height = el.GetHeight(true) - 1;
 							height = 0;
-							//Console.WriteLine("Fill " + el + " = " + height);
 						}
 					}
 					else if (pStrategy == EExportStrategy.CoordHeights)
@@ -88,11 +86,9 @@ namespace ForestReco
 					else
 					{
 						missingCoordCount++;
-						//Console.WriteLine("missing = " + el);
 					}
 				}
 			}
-			//Console.WriteLine("missingCoordCount = " + missingCoordCount);
 			int faceCount = 0;
 			//generate faces
 			for (int x = xStart; x < xEnd - 1; x++)
@@ -136,10 +132,8 @@ namespace ForestReco
 					}
 				}
 			}
-			//Console.WriteLine("faceCount = " + faceCount);
 
 			return obj;
-			//WriteObjFile(pOutputFileName, obj);
 		}
 
 		private static void WriteObjFile(string pOutputFileName, ObjParser.Obj pObj)
@@ -158,11 +152,7 @@ namespace ForestReco
 				fileIndex++;
 			}
 
-			Console.WriteLine("write to " + fullPath);
-
-			//String myDocumentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			//path = myDocumentPath + "\\try.pObj";
-			//Console.WriteLine("write to " + path);
+			CDebug.WriteLine("write to " + fullPath);
 
 			pObj.WriteObjFile(fullPath, new[] { "ExportTreePointsToObj" });
 		}

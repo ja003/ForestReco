@@ -20,7 +20,7 @@ namespace ForestReco
 			string[] split = pLine.Split(null);
 			if (split.Length < 4 || (split.Length > 0 && split[0].Contains("#")))
 			{
-				Console.WriteLine(pLine + " not valid");
+				CDebug.WriteLine(pLine + " not valid");
 				return null;
 			}
 			double x = double.Parse(split[0]);

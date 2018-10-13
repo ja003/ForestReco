@@ -141,7 +141,7 @@ namespace ForestReco
 		{
 			if (pObj == null)
 			{
-				Console.WriteLine("AddObj is null!");
+				CDebug.Error("AddObj is null!");
 			}
 			Tuple<int, int> index = GetIndexInArray(pArrayIndexX, pArrayIndexY);
 			AddToPartiotion(pObj, index);
@@ -159,6 +159,7 @@ namespace ForestReco
 			DateTime previousDebugStart = DateTime.Now;
 			int partsCount = partitionXRange * partitionYRange;
 
+			int debugFrequency = 1;
 			for (int x = 0; x < partitionXRange; x++)
 			{
 				for (int y = 0; y < partitionYRange; y++)
@@ -166,20 +167,21 @@ namespace ForestReco
 					counter++;
 					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName + "_[" + x + "," + y + "]", folderPath);
 
+					CDebug.Progress(counter, partsCount, debugFrequency, ref previousDebugStart, "Export of part");
 					//if (counter % debugFrequency == 0 && counter > 0)
-					{
-						Console.WriteLine("\nExport of part " + counter + " out of " + partsCount);
-						double lastExportTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-						Console.WriteLine("- export time of this part = " + lastExportTime);
+					//{
+					//	CDebug.WriteLine("\nExport of part " + counter + " out of " + partsCount);
+					//	double lastExportTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+					//	CDebug.WriteLine("- export time of this part = " + lastExportTime);
 
-						float remainsRatio = (float)(partsCount - counter) / 1;
-						double totalSeconds = remainsRatio * lastExportTime;
-						TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
-						string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-						Console.WriteLine("- estimated time left = " + timeString + "\n");
+					//	float remainsRatio = (float)(partsCount - counter) / 1;
+					//	double totalSeconds = remainsRatio * lastExportTime;
+					//	TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
+					//	string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
+					//	CDebug.WriteLine("- estimated time left = " + timeString + "\n");
 
-						previousDebugStart = DateTime.Now;
-					}
+					//	previousDebugStart = DateTime.Now;
+					//}
 				}
 			}
 		}

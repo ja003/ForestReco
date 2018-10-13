@@ -108,8 +108,6 @@ namespace ForestReco
 			pointVertices.Add(v6);
 			vertexIndex++;*/
 
-			//Console.WriteLine("branch part " + p + " - " + nextP);
-
 			//create 4-side representation of point
 			obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v4 }));
 			obj.FaceList.Add(new Face(new List<Vertex> { v2, v3, v4 }));
@@ -128,24 +126,11 @@ namespace ForestReco
 				Vector3 p = i == 0 ? pBranch.tree.peak.Center : pBranch.TreePoints[i - 1].Center;
 				//for first point set first point to connect to peak
 				Vector3 nextP = i == 0 ? pBranch.TreePoints[0].Center : pBranch.TreePoints[i].Center;
-
-				//if (obj.Name == "tree_72" && nextP.Y > p.Y) //not considered error anymore
-				//{
-				//	Console.WriteLine(obj.Name + " error " + nextP);
-				//}
-
+				
 				AddLineToObj(ref obj, p, nextP);
 			}
 		}
-
-		/*public static void ExportObjsToExport()
-		{
-			Console.WriteLine("\nExportObjsToExport");
-			DateTime start = DateTime.Now;
-			ExportObjs(CProjectData.objsToExport, CProjectData.saveFileName);
-			Console.WriteLine("Export time = " + (DateTime.Now - start).TotalSeconds + " seconds");
-		}*/
-
+		
 		public static void ExportObj(Obj pObj, string pFileName)
 		{
 			ExportObjs(new List<Obj> { pObj }, pFileName, "");
@@ -172,7 +157,7 @@ namespace ForestReco
 				{
 					if (obj == null)
 					{
-						Console.WriteLine("Error: obj is null...WTF!");
+						CDebug.WriteLine("Error: obj is null...WTF!");
 						continue;
 					}
 					writer.WriteLine("o " + obj.Name);
@@ -196,7 +181,7 @@ namespace ForestReco
 					}
 				}
 			}
-			Console.WriteLine("Exported to " + filePath);
+			CDebug.WriteLine("Exported to " + filePath, true);
 		}
 
 		public static string CreateFolder(string pFileName)
@@ -223,7 +208,7 @@ namespace ForestReco
 			string path = pFolder;
 			if (!Directory.Exists(path))
 			{
-				Console.WriteLine("Given folder does not exist! " + pFolder);
+				CDebug.Error("Given folder does not exist! " + pFolder);
 				path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
 			}
 			

@@ -102,12 +102,10 @@ namespace ForestReco
 		{
 			float overlapVolume = GetOverlapVolume(pOfObject, pWithObject);
 			float ofObjectVolume = pOfObject.Volume;
-			//Console.WriteLine("overlapVolume = " + overlapVolume);
-			//Console.WriteLine("ofObjectVolume = " + ofObjectVolume);
 
 			if (ofObjectVolume == 0)
 			{
-				Console.WriteLine("ERROR: object " + pWithObject + " has no volume");
+				CDebug.Error("object " + pWithObject + " has no volume");
 				return 0;
 			}
 			float ratio = overlapVolume / ofObjectVolume;
@@ -161,7 +159,7 @@ namespace ForestReco
 		{
 			if (lenght % 2 == 0)
 			{
-				Console.WriteLine("Error: CalculateGaussKernel - lenght cant be even. " + lenght);
+				CDebug.Error("CalculateGaussKernel - lenght cant be even. " + lenght);
 			}
 
 			double[,] Kernel = new double[lenght, lenght];

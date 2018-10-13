@@ -36,14 +36,23 @@ namespace ForestReco
 			{
 				Vector3 treePosition = tree.position;
 				List<CTree> possibleTrees = CTreeManager.GetPossibleTreesFor(treePosition, CTreeManager.EPossibleTreesMethos.ClosestHigher);
+
+				if (tree.index == 529)
+				{
+					//CDebug.WriteLine("");
+				}
+
 				if (possibleTrees.Count > 0)
 				{
-					if (possibleTrees.Count > 1)
-					{
-						//todo: handle more trees
-						//Console.WriteLine("Error: more than 1 tree contains checkTree " + tree);
+					foreach(CTree possibleTree in possibleTrees){
+						float distToTree = CUtils.Get2DDistance(treePosition, possibleTree.peak.Center);
+						
+						if (possibleTree.isValid && possibleTree.assignedCheckTree == null && distToTree < CTreeManager.BASE_TREE_EXTENT)
+						{
+							tree.AssignTree(possibleTree);
+							break;
+						}
 					}
-					tree.AssignTree(possibleTrees[0]);
 				}
 			}
 		}
@@ -51,14 +60,13 @@ namespace ForestReco
 		private static void LoadTrees(string pFileName)
 		{
 			DateTime loadTreesStartTime = DateTime.Now;
-			Console.WriteLine("Load check trees: ");
-			Console.WriteLine(" - " + pFileName);
+			CDebug.WriteLine("Load check trees: " + pFileName, true);
 
 			string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
 
 			string[] allLines = File.ReadAllLines(fullFilepath);
 
-			CProjectData.array.WriteBounds();
+			//CProjectData.array.WriteBounds();
 
 			foreach (string line in allLines)
 			{
@@ -68,10 +76,9 @@ namespace ForestReco
 					AddNewTree(parsedLine);
 				}
 			}
-			CCheckTreeTxtParser.Debug();
+			//CCheckTreeTxtParser.Debug();
 
-			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
-			
+			CDebug.Duration("Load check trees", loadTreesStartTime);
 		}
 		
 		private static void AddNewTree(Tuple<int, Vector3> pParsedLine)
@@ -81,7 +88,7 @@ namespace ForestReco
 
 			if (CProjectData.array == null)
 			{
-				Console.WriteLine("Error: array not initialized");
+				CDebug.Error("array not initialized");
 				return;
 			}
 			CProjectData.array.AddCheckTree(ref newTree);

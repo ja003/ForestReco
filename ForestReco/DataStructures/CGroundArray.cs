@@ -143,7 +143,7 @@ namespace ForestReco
 			{
 				array[index.Item1, index.Item2].AddVegePoint(pPoint);
 			}
-			//Console.WriteLine(index + " = " + pPointField);
+			//CDebug.WriteLine(index + " = " + pPointField);
 			coordinatesCount++;
 		}
 
@@ -271,7 +271,7 @@ namespace ForestReco
 			{
 				detectedTreesCount += f.DetectedTrees.Count;
 			}
-			Console.WriteLine("Detected trees count = " + detectedTreesCount);
+			CDebug.Count("Detected trees", detectedTreesCount);
 		}
 
 		/// <summary>
@@ -290,7 +290,7 @@ namespace ForestReco
 					}
 				}
 			}
-			Console.WriteLine("assigned checkTrees count = " + assignedCheckTreesCOunt);
+			CDebug.Count("assigned checkTrees", assignedCheckTreesCOunt);
 		}
 
 		public void AddCheckTree(ref CCheckTree pCheckTree)
@@ -302,14 +302,14 @@ namespace ForestReco
 			}
 			else
 			{
-				//Console.WriteLine(pCheckTree + " is out of bounds. " + WriteBounds());
+				//CDebug.WriteLine(pCheckTree + " is out of bounds. " + WriteBounds());
 			}
 		}
 
 		public string WriteBounds(bool pConsole = true)
 		{
 			string output = "[" + botLeftCorner + "," + topRightCorner + "]";
-			if (pConsole) { Console.WriteLine(output); }
+			if (pConsole) { CDebug.WriteLine(output); }
 			return output;
 		}
 

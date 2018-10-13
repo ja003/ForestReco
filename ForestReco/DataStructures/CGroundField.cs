@@ -324,7 +324,7 @@ namespace ForestReco
 
 			if (x < 0 || x > 1 || z < 0 || z > 1)
 			{
-				Console.WriteLine("Error: field " + this + " interpolation is incorrect! x = " + x + " z = " + z);
+				CDebug.Error("field " + this + " interpolation is incorrect! x = " + x + " z = " + z);
 			}
 
 			//pPoint space coords are X and Z, Y = height
@@ -540,7 +540,7 @@ namespace ForestReco
 
 		public void AddCheckTree(CCheckTree pCheckTree)
 		{
-			//Console.WriteLine("added " + pCheckTree);
+			//CDebug.WriteLine("added " + pCheckTree);
 			CheckTrees.Add(pCheckTree);
 		}
 	}

@@ -49,27 +49,7 @@ namespace ForestReco
 
 			if (pPoint.Y > maxHeight.Y) { maxHeight = pPoint; }
 		}
-
-		/*public void AddPoint(CTreePoint pPoint)
-		{
-			if (CTreeManager.DEBUG)
-				Console.WriteLine("---- add tp " + pPoint + " to " + this);
-
-			if (pPoint.Points.Count > 1000)
-			{
-				Console.WriteLine("1000!");
-			}
-
-			foreach (Vector3 p in pPoint.Points)
-			{
-				AddPoint(p);
-			}
-			//Points.AddRange(pPoint.Points);
-			//Center = (Center + pPoint.Center) / 2;
-			if (CTreeManager.DEBUG)
-				Console.WriteLine("---- new center = " + Center.ToString("#+0.00#;-0.00"));
-		}*/
-
+		
 
 		public Vector3 GetClosestPointTo(Vector3 pPoint)
 		{

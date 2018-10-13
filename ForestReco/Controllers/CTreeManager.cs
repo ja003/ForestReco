@@ -11,6 +11,8 @@ namespace ForestReco
 		public static List<CTree> Trees { get; } = new List<CTree>();
 		public static List<CTree> InvalidTrees { get; } = new List<CTree>();
 
+		public static List<Vector3> invalidVegePoints = new List<Vector3>();
+
 		public const float TREE_POINT_EXTENT = 0.1f;
 
 		public static float TREE_EXTENT_MERGE_MULTIPLY = 2f;
@@ -61,20 +63,22 @@ namespace ForestReco
 
 			if (!CheckPoint(pPoint))
 			{
-				//Console.WriteLine(pPoint + " is not valid");
+				//CDebug.WriteLine(pPoint + " is not valid");
+				invalidVegePoints.Add(pPoint);
 				return;
 			}
+			CProjectData.array.AddPointInField(pPoint, false);
 
 			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint, EPossibleTreesMethos.ClosestHigher);
 
 			float bestAddPointFactor = 0;
 			foreach (CTree t in possibleTrees)
 			{
-				if (DEBUG) { Console.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
+				if (DEBUG) { CDebug.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
 				if (pPointIndex == 6126)
 				{
-					//Console.WriteLine("!");
+					//CDebug.WriteLine("!");
 				}
 
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
@@ -88,7 +92,7 @@ namespace ForestReco
 			{
 				if (DEBUG)
 				{
-					Console.WriteLine(bestAddPointFactor + " SELECTED TREE " +
+					CDebug.WriteLine(bestAddPointFactor + " SELECTED TREE " +
 						selectedTree + " for " + pPointIndex + ": " + pPoint);
 				}
 				selectedTree.AddPoint(pPoint);
@@ -98,19 +102,20 @@ namespace ForestReco
 				bool debugFrequency = false;
 				if (treeIndex < MAX_DEBUG_COUNT || (debugFrequency && treeIndex % MAX_DEBUG_COUNT == 0))
 				{
-					Console.WriteLine("NEW TREE " + treeIndex + ": point[" + pPointIndex + "]: " +
+					CDebug.WriteLine("NEW TREE " + treeIndex + ": point[" + pPointIndex + "]: " +
 									  pPoint + ". Best factor = " + bestAddPointFactor);
 				}
 				if (treeIndex == MAX_DEBUG_COUNT)
 				{
-					Console.WriteLine("....");
+					CDebug.WriteLine("....");
 				}
 				CreateNewTree(pPoint);
 			}
 
-			if (Trees.Count == 1 && pPointIndex != Trees[0].Points.Count - 1)
+			//check if first tree was asigned correct point count
+			if (Trees.Count == 1 && pPointIndex != Trees[0].Points.Count - 1 + invalidVegePoints.Count)
 			{
-				Console.WriteLine(pPointIndex + "Error. Incorrect point count. " + pPoint);
+				CDebug.Error(pPointIndex + " Incorrect point count. " + pPoint);
 			}
 		}
 
@@ -119,7 +124,7 @@ namespace ForestReco
 			float? pointHeight = CProjectData.array.GetPointHeight(pPoint);
 			if (pointHeight == null)
 			{
-				Console.WriteLine("Error: " + pPoint + " ground not defined");
+				CDebug.Error(pPoint + " ground not defined");
 				return true;
 			}
 			return pointHeight < MAX_TREE_HEIGHT;
@@ -138,7 +143,7 @@ namespace ForestReco
 
 			if (newTree.treeIndex == 98)
 			{
-				//Console.WriteLine("!");
+				//CDebug.WriteLine("!");
 			}
 		}
 
@@ -146,14 +151,14 @@ namespace ForestReco
 		{
 			if (!Trees.Contains(pTree))
 			{
-				Console.WriteLine("Error: Trees dont contain " + pTree);
+				CDebug.Error("Trees dont contain " + pTree);
 				return;
 			}
 			CGroundField element = pTree.groundField;
 			Trees.Remove(pTree);
 			if (!element.DetectedTrees.Contains(pTree))
 			{
-				Console.WriteLine("Error: element " + element + " doesnt contain " + pTree);
+				CDebug.Error("element " + element + " doesnt contain " + pTree);
 				return;
 			}
 			element.DetectedTrees.Remove(pTree);
@@ -161,7 +166,7 @@ namespace ForestReco
 
 		private static void DebugPoint(Vector3 pPoint, int pPointIndex)
 		{
-			if (DEBUG) { Console.WriteLine("\n" + pointCounter + " AddPoint " + pPoint); }
+			if (DEBUG) { CDebug.WriteLine("\n" + pointCounter + " AddPoint " + pPoint); }
 
 			Vector3 debugPoint = CObjExporter.GetMovedPoint(pPoint);
 			debugPoint.Z *= -1;
@@ -234,7 +239,7 @@ namespace ForestReco
 
 			if (pMethod == EPossibleTreesMethos.ClosestHigher)
 			{
-				//Console.WriteLine("SELECT FROM " + possibleTrees.Count);
+				//CDebug.WriteLine("SELECT FROM " + possibleTrees.Count);
 
 				List<CTree> closestTrees = new List<CTree>();
 				//no reason to select more. small chance that point would fit better to further tree
@@ -274,7 +279,7 @@ namespace ForestReco
 		public static void TryMergeAllTrees()
 		{
 			DateTime mergeStartTime = DateTime.Now;
-			Console.WriteLine("\nTryMergeAllTrees. Start = " + mergeStartTime);
+			CDebug.WriteLine("TryMergeAllTrees");
 
 			Trees.Sort((x, y) => y.peak.Center.Y.CompareTo(x.peak.Center.Y));
 
@@ -282,21 +287,21 @@ namespace ForestReco
 
 			if (CProjectData.mergeContaingTrees)
 			{
-				//Console.WriteLine("\n MergeContainingTrees");
+				//CDebug.WriteLine("\n MergeContainingTrees");
 				MergeContainingTrees();
 			}
 			if (CProjectData.mergeBelongingTrees)
 			{
-				//Console.WriteLine("\n MergeBelongingTrees");
+				//CDebug.WriteLine("\n MergeBelongingTrees");
 				MergeBelongingTrees();
 			}
 			if (CProjectData.mergeGoodAddFactorTrees)
 			{
-				//Console.WriteLine("\n MergeGoodAddFactorTrees");
+				//CDebug.WriteLine("\n MergeGoodAddFactorTrees");
 				MergeGoodAddFactorTrees();
 			}
-			Console.WriteLine("Trees merged | duration = " + (DateTime.Now - mergeStartTime).TotalSeconds);
-			Console.WriteLine("Number of trees merged = " + (treeCountBeforeMerge - Trees.Count));
+			CDebug.Duration("Trees merge", mergeStartTime);
+			CDebug.Count("Number of trees merged", treeCountBeforeMerge - Trees.Count);
 		}
 
 		/// <summary>
@@ -308,13 +313,13 @@ namespace ForestReco
 			{
 				if (i >= Trees.Count)
 				{
-					//Console.WriteLine("Tree was deleted");
+					//CDebug.WriteLine("Tree was deleted");
 					continue;
 				}
 				CTree tree = Trees[i];
 				if (tree.treeIndex == 48)
 				{
-					Console.WriteLine("__");
+					CDebug.WriteLine("__");
 				}
 
 				//if (CProjectData.mergeOnlyInvalidTrees && tree.isValid) { continue; }
@@ -328,7 +333,7 @@ namespace ForestReco
 					if (CProjectData.mergeOnlyInvalidTrees)
 					{
 						//todo: seems better this way. test
-						if(tree.isValid && t.isValid) { continue; }
+						if (tree.isValid && t.isValid) { continue; }
 					}
 
 					float addPointFactor = t.GetAddPointFactor(pPoint, true);
@@ -351,7 +356,7 @@ namespace ForestReco
 			{
 				if (i >= Trees.Count)
 				{
-					Console.WriteLine("Tree was deleted");
+					CDebug.WriteLine("Tree was deleted");
 					continue;
 				}
 				CTree tree = Trees[i];
@@ -381,7 +386,7 @@ namespace ForestReco
 			{
 				if (i >= Trees.Count)
 				{
-					Console.WriteLine("Tree was deleted");
+					CDebug.WriteLine("Tree was deleted");
 					continue;
 				}
 				CTree tree = Trees[i];
@@ -439,8 +444,8 @@ namespace ForestReco
 			{
 				//if (lowerTree.treeIndex == 666)
 				{
-					Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
-					Console.WriteLine("distBetweenPeaks = " + distBetweenPeaks + ". angle = " + angle);
+					CDebug.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+					CDebug.WriteLine("distBetweenPeaks = " + distBetweenPeaks + ". angle = " + angle);
 				}
 				higherTree.MergeWith(lowerTree);
 				Trees.Remove(lowerTree);
@@ -453,7 +458,7 @@ namespace ForestReco
 			CTree higherTree = pTree1.peak.maxHeight.Y >= pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.maxHeight.Y < pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
 
-			//Console.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+			//CDebug.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
 			higherTree.MergeWith(lowerTree);
 			DeleteTree(lowerTree);
 			//Trees.Remove(lowerTree);
@@ -464,7 +469,7 @@ namespace ForestReco
 
 		public static void ValidateTrees(bool pCathegorize)
 		{
-			Console.WriteLine("\nDetect invalid trees");
+			CDebug.WriteLine("Detect invalid trees", true);
 
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
@@ -483,50 +488,28 @@ namespace ForestReco
 		public static void ProcessAllTrees()
 		{
 			DateTime processTreesStartTime = DateTime.Now;
-			Console.WriteLine("ProcessAllTrees. Start = " + processTreesStartTime); foreach (CTree t in Trees)
+			CDebug.WriteLine("ProcessAllTrees", true);
+			foreach (CTree t in Trees)
 			{
-				bool testTranslate = false;
-				if (testTranslate)
-				{
-					//t.Rotate(-45);
-					t.Scale(2);
-				}
 				t.Process();
 			}
-			Console.WriteLine("Trees processed | duration = " + (DateTime.Now - processTreesStartTime));
+			CDebug.Duration("Trees processed", processTreesStartTime);
 
 		}
-
-		/*public static void ExportTrees()
-		{
-			Console.WriteLine("\nAdd trees to export ");
-			foreach (CTree t in Trees)
-			{
-				//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
-				Obj tObj = t.GetObj("tree_" + t.treeIndex, true, false);
-				CProjectData.objsToExport.Add(tObj);
-			}
-			foreach (CTree t in InvalidTrees)
-			{
-				//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
-				Obj tObj = t.GetObj("invalidTree_" + t.treeIndex, true, false);
-				CProjectData.objsToExport.Add(tObj);
-			}
-		}*/
-
+		
 		public static void DebugTrees()
 		{
-			Console.WriteLine("\n===============\n");
+			CDebug.WriteLine("\n===============\n");
 			foreach (CTree t in Trees)
 			{
-				Console.WriteLine(Trees.IndexOf(t).ToString("00") + ": " + t);
+				CDebug.WriteLine(Trees.IndexOf(t).ToString("00") + ": " + t);
 				if (Trees.IndexOf(t) > MAX_DEBUG_COUNT)
 				{
-					Console.WriteLine("too much to debug...total = " + Trees.Count);
+					CDebug.WriteLine("too much to debug...total = " + Trees.Count);
 					return;
 				}
 			}
-			Console.WriteLine("\n===============\n");
+			CDebug.WriteLine("\n===============\n");
 		}
 
 		public static void CheckAllTrees()

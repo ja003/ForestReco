@@ -51,25 +51,23 @@ namespace ForestReco
 		public static void AssignRefTrees()
 		{
 			DateTime addTreeObjModelsStart = DateTime.Now;
-			Console.WriteLine("\nGet ref tree models");
+			CDebug.WriteLine("Get ref tree models");
 
 			const int debugFrequency = 10;
 
 			DateTime assignRefTreesStart = DateTime.Now;
-			Console.WriteLine("\nAssignRefTrees start = " + assignRefTreesStart);
+			CDebug.WriteLine("AssignRefTrees");
 
 			DateTime previousDebugStart = DateTime.Now;
 
 			int counter = 0;
 			foreach (CTree t in CTreeManager.Trees)
 			{
-				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree"); }
-
 				Tuple<CRefTree, STreeSimilarity> suitableRefTree = GetMostSuitableRefTree(t);
 				CRefTree mostSuitableRefTree = suitableRefTree.Item1;
 				if (mostSuitableRefTree == null)
 				{
-					Console.WriteLine("Error: no reftrees assigned!");
+					CDebug.Error("no reftrees assigned!");
 					continue;
 				}
 
@@ -79,27 +77,27 @@ namespace ForestReco
 				suitableTreeObj.Name += "_" + t.treeIndex;
 				t.mostSuitableRefTreeObj = suitableTreeObj;
 
+				CDebug.Progress(counter, CTreeManager.Trees.Count, debugFrequency, ref previousDebugStart, "Assigned reftree");
+				//if (counter % debugFrequency == 0 && counter > 0)
+				//{
+				//	CDebug.WriteLine("\nAssigned reftree " + counter + " out of " + CTreeManager.Trees.Count);
+				//	double lastAssignmentProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+				//	CDebug.WriteLine("- time of last " + debugFrequency + " trees = " + lastAssignmentProcessTime);
 
-				if (counter % debugFrequency == 0 && counter > 0)
-				{
-					Console.WriteLine("\nAssigned reftree " + counter + " out of " + CTreeManager.Trees.Count);
-					double lastAssignmentProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-					Console.WriteLine("- time of last " + debugFrequency + " trees = " + lastAssignmentProcessTime);
+				//	float remainsRatio = (float)(CTreeManager.Trees.Count - counter) / debugFrequency;
+				//	double totalSeconds = remainsRatio * lastAssignmentProcessTime;
+				//	TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
+				//	string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
+				//	CDebug.WriteLine("- estimated time left = " + timeString);
 
-					float remainsRatio = (float)(CTreeManager.Trees.Count - counter) / debugFrequency;
-					double totalSeconds = remainsRatio * lastAssignmentProcessTime;
-					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
-					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-					Console.WriteLine("- estimated time left = " + timeString);
-
-					previousDebugStart = DateTime.Now;
-				}
+				//	previousDebugStart = DateTime.Now;
+				//}
 				counter++;
 
 
 				//counter++;
 
-				if (DEBUG) { Console.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
+				if (DEBUG) { CDebug.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
 
 				//treeObjs.Add(suitableTree);
 
@@ -118,7 +116,7 @@ namespace ForestReco
 				}*/
 			}
 
-			Console.WriteLine("\nAssign ref tree models time = " + (DateTime.Now - addTreeObjModelsStart).TotalSeconds);
+			CDebug.Duration("Assign ref tree models",addTreeObjModelsStart);
 
 			//return treeObjs;
 		}
@@ -127,10 +125,10 @@ namespace ForestReco
 		private static void LoadTrees(List<string> pFileNames)
 		{
 			DateTime loadTreesStartTime = DateTime.Now;
-			Console.WriteLine("Load ref trees: ");
+			CDebug.WriteLine("Load ref trees: ");
 			foreach (string fileName in pFileNames)
 			{
-				Console.WriteLine(" - " + fileName);
+				CDebug.WriteLine(" - " + fileName);
 			}
 
 			int counter = 0;
@@ -142,28 +140,28 @@ namespace ForestReco
 				refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
 				Trees.Add(refTree);
-				Console.WriteLine("Loaded tree: " + fileName);
+				CDebug.WriteLine("Loaded tree: " + fileName);
 
 				if (CProjectData.exportRefTreePoints)
 				{
-					Console.WriteLine("TODO: exportRefTreePoints not used");
+					CDebug.WriteLine("TODO: exportRefTreePoints not used");
 					//Obj reftreePoints = new Obj(fileName + "_points");
 					//CObjExporter.AddPointsToObj(ref reftreePoints, refTree.Points);
 					//CProjectData.objsToExport.Add(reftreePoints);
 				}
 				counter++;
 			}
-			Console.WriteLine("\nduration = " + (DateTime.Now - loadTreesStartTime).TotalSeconds);
+			CDebug.Duration("Load ref trees" ,loadTreesStartTime);
 
 			DebugRefTrees();
 		}
 
 		private static void DebugRefTrees()
 		{
-			Console.WriteLine("\nLoaded reftrees: ");
+			CDebug.WriteLine("Loaded reftrees: ");
 			foreach (CRefTree refTree in Trees)
 			{
-				Console.WriteLine(refTree);
+				CDebug.WriteLine(refTree.ToString());
 			}
 		}
 
@@ -173,7 +171,7 @@ namespace ForestReco
 		{
 			if (Trees.Count == 0)
 			{
-				Console.WriteLine("Error: no reftrees defined!");
+				CDebug.Error("no reftrees defined!");
 				return null;
 			}
 
@@ -190,7 +188,7 @@ namespace ForestReco
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
 
-			//Console.WriteLine(pTree.treeIndex + " similarities = \n");
+			//CDebug.WriteLine(pTree.treeIndex + " similarities = \n");
 
 			foreach (CRefTree refTree in Trees)
 			{
@@ -204,7 +202,7 @@ namespace ForestReco
 				if (bestSimilarity > 0.9f) { break; }
 			}
 
-			//Console.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
+			//CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
 
 			//Obj suitableTree = bestTree.Obj.Clone();
 			//suitableTree.Name += "_" + counter;
@@ -212,18 +210,7 @@ namespace ForestReco
 
 			return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity);
 		}
-
-		/*public static void ExportTrees()
-		{
-			Console.WriteLine("\nAdd ref trees to export ");
-			foreach (CRefTree t in Trees)
-			{
-				//Obj tObj = t.GetObj("tree_" + Trees.IndexOf(t), true, false);
-				Obj tObj = t.GetObj("refTree_" + t.Obj.Name, true, false);
-				CProjectData.objsToExport.Add(tObj);
-			}
-		}*/
-
+		
 		/// <summary>
 		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
 		/// </summary>
@@ -253,7 +240,7 @@ namespace ForestReco
 
 			if (DEBUG)
 			{
-				Console.WriteLine(pRefTree.treeIndex +
+				CDebug.WriteLine(pRefTree.treeIndex +
 					"[" + pRefTree.Obj.Position + "], " +
 					"[" + pRefTree.Obj.Rotation + "]" +
 					". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);

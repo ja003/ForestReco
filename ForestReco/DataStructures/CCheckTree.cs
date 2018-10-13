@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using ForestReco;
 using ObjParser;
 
 namespace ForestReco
@@ -22,11 +23,13 @@ namespace ForestReco
 		{
 			Obj obj = new Obj("checkTree_" + index);
 			{
-				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * 30, position);
+				float offsetHeight = 30;
 				if (assignedTree != null)
 				{
-					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * 30, assignedTree.peak.Center);
+					offsetHeight = assignedTree.GetTreeHeight() + 1;
+					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, assignedTree.peak.Center);
 				}
+				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, position);
 
 				return obj;
 			}
@@ -34,7 +37,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return treeClass + " : " + position + (assignedTree == null ? "" : "+");
+			return index + " - "+ treeClass + " : " + position + (assignedTree == null ? "" : "+");
 		}
 
 		public enum EClass
@@ -48,7 +51,8 @@ namespace ForestReco
 		public void AssignTree(CTree pTree)
 		{
 			assignedTree = pTree;
-			Console.WriteLine("Assign to " + this);
+			pTree.assignedCheckTree = this;
+			//CDebug.WriteLine("Assign to " + this);
 		}
 	}
 }

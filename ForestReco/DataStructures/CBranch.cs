@@ -83,15 +83,7 @@ namespace ForestReco
 			{
 				bestFactor = refPoint3Factor;
 			}
-
-			//if (Vector3.Distance(pPoint, new Vector3(-10.74f, 3.011f, 9.02f)) < 0.01f)
-			//{
-			//	Console.WriteLine("\nP = " + pPoint);
-			//	Console.WriteLine(refPoint1);
-			//	Console.WriteLine(refPoint2);
-			//	Console.WriteLine(refPoint3);
-			//}
-
+			
 			return bestFactor;
 		}
 
@@ -204,7 +196,7 @@ namespace ForestReco
 		public void AddPoint(Vector3 pPoint)
 		{
 			if (CTreeManager.DEBUG)
-				Console.WriteLine("--- AddPoint " + pPoint.ToString("#+0.00#;-0.00") + " to " + this);
+				CDebug.WriteLine("--- AddPoint " + pPoint.ToString("#+0.00#;-0.00") + " to " + this);
 
 			RefreshFurthestPoint(pPoint);
 			OnAddPoint(pPoint);
@@ -252,7 +244,7 @@ namespace ForestReco
 			//CheckBranch(); //todo: delete, expensive!
 			CheckAddedPoint();
 
-			if (CTreeManager.DEBUG) { Console.WriteLine("---- new point"); }
+			if (CTreeManager.DEBUG) { CDebug.WriteLine("---- new point"); }
 
 		}
 
@@ -265,18 +257,13 @@ namespace ForestReco
 			{
 				if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
 				{
-					Console.WriteLine("-CheckAddedPoint Error tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
+					CDebug.Error("CheckAddedPoint. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 				}
 			}
 		}
 
 		public void CheckBranch()
 		{
-			//if (tree.treeIndex == 72)
-			//{
-			//	Console.WriteLine("Error");
-			//}
-			//foreach (CTreePoint tp in TreePoints)
 			for (int i = 1; i < TreePoints.Count; i++)
 			{
 				CTreePoint previousTp = TreePoints[i - 1];
@@ -286,7 +273,7 @@ namespace ForestReco
 
 					if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
 					{
-						Console.WriteLine("-CheckBranch Error tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
+						CDebug.Error("-CheckBranch. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 					}
 				}
 			}
@@ -294,23 +281,10 @@ namespace ForestReco
 
 		private void RefreshFurthestPoint(Vector3 pPoint)
 		{
-			//if (Vector3.Distance(pPoint, new Vector3(-10.019f,3.113f,9.264f)) < 0.1f)
-			//{
-			//	Console.WriteLine("+++ "+pPoint);
-			//}
-
 			float pointDistToPeak = CUtils.Get2DDistance(pPoint, tree.peak);
 			if (pointDistToPeak > furthestPointDistance)
 			{
 				furthestPoint = pPoint;
-
-				//int indexOfThis = tree.Branches.IndexOf(this);
-				//if (indexOfThis == 4 || indexOfThis == 5 || indexOfThis == 6)
-				//{
-				//	Console.WriteLine(tree.Branches.IndexOf(this) + " furthestPoint = " + furthestPoint+ " | " + pointDistToPeak);
-				//}
-
-				//Console.WriteLine(tree.Branches.IndexOf(this)  + " furthestPoint = " + furthestPoint);
 			}
 		}
 
@@ -379,7 +353,7 @@ namespace ForestReco
 				counter++;
 			}
 
-			if (counter > 20) { Console.WriteLine("warning: GetAproxIndexOfPoint " + pPoint + " = " + counter); }
+			if (counter > 20) { CDebug.Warning("GetAproxIndexOfPoint " + pPoint + " = " + counter); }
 			//float firstLastDiff = TreePoints[fromIndex].Y - TreePoints[toIndex].Y;
 			//float step = firstLastDiff / (toIndex - fromIndex);
 			//float peakPointDiff = tree.peak.Y - pPoint.Y;
@@ -436,10 +410,9 @@ namespace ForestReco
 			}
 			if (similarity - 1 > 0.1f) //similarity can be > 1 due to float imprecision
 			{
-				Console.WriteLine("Error. Similarity rounding error too big.");
+				CDebug.Error("Similarity rounding error too big. " + similarity);
 			}
 			similarity = Math.Min(1, similarity);
-			//Console.WriteLine(ToString() + " = " + similarity);
 			return similarity;
 		}
 
@@ -503,10 +476,6 @@ namespace ForestReco
 				//}
 			}
 
-			//if (tree.treeIndex == 41)
-			//{
-			//	Console.WriteLine("_");
-			//}
 
 			float height = tree.GetTreeHeight();
 			float distLowestToPeak = Vector3.Distance(TreePoints.Last().Center, tree.peak.Center);

@@ -36,6 +36,8 @@ namespace ForestReco
 		//public CRefTree mostSuitableRefTree;
 		public Obj mostSuitableRefTreeObj;
 
+		public CCheckTree assignedCheckTree;
+
 		public bool isValid = true; //valid by default - until Validate is called
 
 		//INIT
@@ -52,7 +54,7 @@ namespace ForestReco
 			treePointExtent = pTreePointExtent;
 			peak = new CPeak(pPoint, treePointExtent);
 
-			if (CTreeManager.DEBUG) { Console.WriteLine("new tree " + pTreeIndex); }
+			if (CTreeManager.DEBUG) { CDebug.WriteLine("new tree " + pTreeIndex); }
 
 			treeIndex = pTreeIndex;
 			for (int i = 0; i < 360; i += BRANCH_ANGLE_STEP)
@@ -91,7 +93,7 @@ namespace ForestReco
 
 		protected virtual void OnProcess()
 		{
-			//Console.WriteLine("OnProcess");
+			//CDebug.WriteLine("OnProcess");
 		}
 
 		/*public bool TryAddPoint(Vector3 pPoint, bool pForce)
@@ -130,12 +132,12 @@ namespace ForestReco
 		{
 			if (CTreeManager.DEBUG || treeIndex == 7058)
 			{
-				Console.WriteLine(this.ToString(EDebug.Peak) + " MergeWith " + pSubTree.ToString(EDebug.Peak));
+				CDebug.WriteLine(this.ToString(EDebug.Peak) + " MergeWith " + pSubTree.ToString(EDebug.Peak));
 			}
 			//todo: make effective
 			if (pSubTree.Equals(this))
 			{
-				Console.WriteLine("Error. cant merge with itself.");
+				CDebug.Error("cant merge with itself.");
 				return;
 			}
 
@@ -239,27 +241,27 @@ namespace ForestReco
 		{
 			if (peak.maxHeight.Y < pPoint.Y)
 			{
-				Console.WriteLine("Error. " + pPoint + " is higher than peak " + peak);
+				CDebug.Error(pPoint + " is higher than peak " + peak);
 			}
 			Vector2 peak2D = new Vector2(peak.X, peak.Z);
 			Vector2 point2D = new Vector2(pPoint.X, pPoint.Z);
 			Vector2 dir = point2D - peak2D;
 			if (dir.Length() < MAX_STEM_POINT_DISTANCE)
 			{
-				if (CTreeManager.DEBUG) Console.WriteLine("- branch = stem");
+				if (CTreeManager.DEBUG) CDebug.WriteLine("- branch = stem");
 				//return branches[branches.Count - 1]; //stem
 				return stem; //stem
 			}
 
 			dir = Vector2.Normalize(dir);
 			float angle = CUtils.GetAngle(Vector2.UnitX, dir);
-			//if (CTreeManager.DEBUG) Console.WriteLine("angle " + peak2D + " - " + point2D + " = " + angle);
+			//if (CTreeManager.DEBUG) CDebug.WriteLine("angle " + peak2D + " - " + point2D + " = " + angle);
 			if (angle < 0)
 			{
 				angle = 360 + angle;
 			}
 			int branchIndex = (int)(angle / BRANCH_ANGLE_STEP);
-			//Console.WriteLine(pPoint + " goes to branch " + branchIndex + ". angle = " + angle);
+			//CDebug.WriteLine(pPoint + " goes to branch " + branchIndex + ". angle = " + angle);
 			return branches[branchIndex];
 		}
 
@@ -319,7 +321,7 @@ namespace ForestReco
 
 		public Obj GetObj(bool pExportBranches, bool pExportBB)
 		{
-			//if (CTreeManager.DEBUG) Console.WriteLine("GetObj " + pName);
+			//if (CTreeManager.DEBUG) CDebug.WriteLine("GetObj " + pName);
 
 			string prefix = isValid ? "tree_" : "invalidTree_";
 
@@ -377,10 +379,6 @@ namespace ForestReco
 		/// </summary>
 		public bool Validate(bool pAllBranchDefined)
 		{
-			if (treeIndex == 33)
-			{
-				Console.WriteLine("5");
-			}
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
 			{
@@ -393,7 +391,7 @@ namespace ForestReco
 				branchDefinedFactor += branchFactor;
 			}
 			float validFactor = branchDefinedFactor / branches.Count;
-			//Console.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
+			//CDebug.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
 			isValid = validFactor > 0.5f;
 			return isValid;
 		}
@@ -429,7 +427,7 @@ namespace ForestReco
 
 			if (dist2D > maxTreeExtent && distToBB > MAX_DIST_TO_TREE_BB)
 			{
-				if (CTreeManager.DEBUG && pDebug) Console.WriteLine("- dist too high " + dist2D + "|" + distToBB);
+				if (CTreeManager.DEBUG && pDebug) CDebug.WriteLine("- dist too high " + dist2D + "|" + distToBB);
 				return false;
 			}
 
@@ -438,7 +436,7 @@ namespace ForestReco
 			float maxBranchAngle = GetMaxBranchAngle(suitablePoint, pPoint);
 			if (angle > maxBranchAngle)
 			{
-				if (CTreeManager.DEBUG && pDebug) Console.WriteLine("- angle too high " + angle + "°/" + maxBranchAngle + "°. dist = " +
+				if (CTreeManager.DEBUG && pDebug) CDebug.WriteLine("- angle too high " + angle + "°/" + maxBranchAngle + "°. dist = " +
 					Vector3.Distance(suitablePoint, pPoint));
 				return false;
 			}
@@ -479,7 +477,7 @@ namespace ForestReco
 			ResetBounds(Points);
 			if (peak.Points.Count > 1)
 			{
-				Console.WriteLine("Cant Rotate after process!");
+				CDebug.Error("Cant Rotate after process!");
 			}
 		}
 
@@ -498,7 +496,7 @@ namespace ForestReco
 			ResetBounds(Points);
 			if (peak.Points.Count > 1)
 			{
-				Console.WriteLine("Cant Scale after process!");
+				CDebug.Error("Cant Scale after process!");
 			}
 			peak = new CPeak(Points[0], treePointExtent);
 		}
@@ -514,7 +512,7 @@ namespace ForestReco
 			ResetBounds(Points);
 			if (peak.Points.Count > 1)
 			{
-				Console.WriteLine("Cant move after process!");
+				CDebug.Error("Cant move after process!");
 			}
 
 			peak.Points[0] += pOffset;
@@ -569,7 +567,7 @@ namespace ForestReco
 
 		public void CheckTree()
 		{
-			//Console.WriteLine("Check tree " + ToString());
+			//CDebug.WriteLine("Check tree " + ToString());
 			foreach (CBranch b in branches)
 			{
 				b.CheckBranch();

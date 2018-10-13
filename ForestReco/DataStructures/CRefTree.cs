@@ -32,9 +32,9 @@ namespace ForestReco
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false, false);
 				AddPointsFromLines(parsedLines);
 				DateTime processStartTime = DateTime.Now;
-				Console.WriteLine("\nProcess. Start = " + processStartTime);
+				CDebug.WriteLine("Process");
 				Process();
-				Console.WriteLine("Processed | duration = " + (DateTime.Now - processStartTime));
+				CDebug.Duration("Processed", processStartTime);
 			}
 		}
 
@@ -52,13 +52,13 @@ namespace ForestReco
 
 				if (!CProjectData.useReducedRefTreeObjs)
 				{
-					Console.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
-					Console.WriteLine("Try reduced file: " + reducedObjFileName);
+					CDebug.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
+					CDebug.WriteLine("Try reduced file: " + reducedObjFileName);
 				}
 				refTreePath = GetRefTreeFilePath(pFileName, reducedObjFileName);
 				if (!File.Exists(refTreePath))
 				{
-					Console.WriteLine("ERROR: No ref tree OBJ found!");
+					CDebug.Error("No ref tree OBJ found!");
 					return;
 				}
 			}
@@ -163,11 +163,11 @@ namespace ForestReco
 		public static CRefTree Deserialize(string pFileName)
 		{
 			string filePath = GetRefTreeFilePath(pFileName, pFileName + ".reftree");
-			Console.WriteLine("\nDeserialize. filePath = " + filePath);
+			CDebug.WriteLine("\nDeserialize. filePath = " + filePath);
 
 			if (!File.Exists(filePath))
 			{
-				Console.WriteLine(".reftree file does not exist.");
+				CDebug.Error(".reftree file does not exist.");
 				return null;
 			}
 
@@ -218,16 +218,16 @@ namespace ForestReco
 		protected override void OnProcess()
 		{
 			string filePath = GetRefTreeFilePath(fileName, fileName + ".reftree");
-			Console.WriteLine("\nfilePath = " + filePath);
+			CDebug.WriteLine("\nfilePath = " + filePath);
 
 			if (File.Exists(filePath))
 			{
-				Console.WriteLine("ERROR: .reftree file already exists");
+				CDebug.Error(".reftree file already exists");
 				return;
 			}
 
 			DateTime processStartTime = DateTime.Now;
-			Console.WriteLine("Serialization");
+			CDebug.WriteLine("Serialization");
 			List<string> serializedTree = Serialize();
 
 			using (StreamWriter file = new StreamWriter(filePath, false))
@@ -237,8 +237,8 @@ namespace ForestReco
 					file.WriteLine(line);
 				}
 			}
-			Console.WriteLine("Serialized | duration = " + (DateTime.Now - processStartTime));
-			Console.WriteLine("saved to: " + filePath);
+			CDebug.Duration("Serialized", processStartTime);
+			CDebug.WriteLine("saved to: " + filePath);
 		}
 
 		//INIT PROCESSING
@@ -357,19 +357,19 @@ namespace ForestReco
 		{
 			if (!File.Exists(refTreeXyzPath))
 			{
-				Console.WriteLine("Ref tree " + refTreeXyzPath + " XYZ does not exist.");
+				CDebug.Error("Ref tree " + refTreeXyzPath + " XYZ does not exist.");
 				return new string[0];
 			}
 
 			string[] lines = File.ReadAllLines(refTreeXyzPath);
-			Console.WriteLine("load: " + refTreeXyzPath);
+			CDebug.WriteLine("load: " + refTreeXyzPath);
 			return lines;
 		}
 
 		private void AddPointsFromLines(List<Tuple<EClass, Vector3>> pParsedLines)
 		{
 			DateTime addStartTime = DateTime.Now;
-			Console.WriteLine("AddPointsFromLines " + pParsedLines.Count + ". Start = " + addStartTime);
+			CDebug.WriteLine("AddPointsFromLines " + pParsedLines.Count);
 			int pointsToAddCount = pParsedLines.Count;
 
 			//lines are sorted. first point is peak for sure
@@ -388,15 +388,17 @@ namespace ForestReco
 				AddPoint(point);
 
 				//TimeSpan duration = DateTime.Now - lineStartTime;
-				//if (duration.Milliseconds > 1) { Console.WriteLine(i + ": " + duration); }
-				if (i % 100000 == 0)
-				{
-					TimeSpan duration = DateTime.Now - lineStartTime;
-					Console.WriteLine("added point: " + i + "/" + pParsedLines.Count + ". time = " + duration.TotalSeconds);
-					lineStartTime = DateTime.Now;
-				}
+				//if (duration.Milliseconds > 1) { CDebug.WriteLine(i + ": " + duration); }
+
+				CDebug.Progress(i, pParsedLines.Count, 100000, ref lineStartTime, "added point:");
+				//if (i % 100000 == 0)
+				//{
+				//	TimeSpan duration = DateTime.Now - lineStartTime;
+				//	CDebug.WriteLine("added point: " + i + "/" + pParsedLines.Count + ". time = " + duration.TotalSeconds);
+				//	lineStartTime = DateTime.Now;
+				//}
 			}
-			Console.WriteLine("All points added | duration = " + (DateTime.Now - addStartTime));
+			CDebug.Duration("All points added", addStartTime);
 		}
 
 		/*public CRefTree Clone(string pNameAppendix)

@@ -1,4 +1,5 @@
-﻿using ObjParser;
+﻿using ForestReco;
+using ObjParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +36,7 @@ namespace ForestReco
 			string podkladyPath = CPlatformManager.GetPodkladyPath();
 			string fullFilePath = podkladyPath + @"\data-small\TXT\" + fileName + @".txt";
 			string[] lines = File.ReadAllLines(fullFilePath);
-			Console.WriteLine("load: " + fullFilePath + "\n");
+			CDebug.Action("load", fullFilePath);
 
 			return lines;
 		}
@@ -62,7 +63,7 @@ namespace ForestReco
 
 			if (lines.Length > CProjectData.maxLinesToLoad / 2)
 			{
-				Console.WriteLine("WARNING: loading " + lines.Length + " lines!");
+				CDebug.Warning("loading " + lines.Length + " lines!");
 			}
 
 			int linesToRead = lines.Length;
@@ -75,8 +76,8 @@ namespace ForestReco
 			List<Tuple<EClass, Vector3>> parsedLines = new List<Tuple<EClass, Vector3>>();
 			if (useDebugData)
 			{
-				parsedLines = CDebug.GetStandartTree();
-				CDebug.DefineArray(true, 0);
+				parsedLines = CDebugData.GetStandartTree();
+				CDebugData.DefineArray(true, 0);
 			}
 			else
 			{
@@ -95,11 +96,10 @@ namespace ForestReco
 				}
 			}
 
-			if (!classesCorect) { Console.WriteLine("classes not correct. using default class"); }
-			Console.WriteLine("parsedLines: " + parsedLines.Count);
+			if (!classesCorect) { CDebug.WriteLine("classes not correct. using default class"); }
+			CDebug.Count("parsedLines", parsedLines.Count);
+
 			parsedLines.Sort((y, x) => x.Item2.Y.CompareTo(y.Item2.Y)); //sort descending by height
-			Console.WriteLine("\n=======sorted========\n");
-			//Console.ReadKey();
 			return parsedLines;
 		}
 
@@ -110,14 +110,9 @@ namespace ForestReco
 			if (CProjectData.exportArray)
 			{
 				CObjPartition.AddArray();
-				//CProjectData.objsToExport.Add(CGroundFieldExporter.
-				//	ExportToObj("array_smooth", EExportStrategy.ZeroAroundDefined, true));
-
-				//CProjectData.objsToExport.Add(CGroundFieldExporter.
-				//	ExportToObj("array_normal", EExportStrategy.ZeroAroundDefined, false));
 			}
 
-			Console.WriteLine("\nTrees = " + CTreeManager.Trees.Count);
+			CDebug.Count("Trees", CTreeManager.Trees.Count);
 
 			CTreeManager.CheckAllTrees();
 
@@ -140,15 +135,8 @@ namespace ForestReco
 				CTreeManager.ValidateTrees(true);
 			}
 
-			Console.WriteLine("Trees = " + CTreeManager.Trees.Count);
-			Console.WriteLine("InvalidTrees = " + CTreeManager.InvalidTrees.Count);
-
-			//todo: deprecated
-			//if (CProjectData.processTrees)
-			//{
-			//	CTreeManager.ProcessAllTrees();
-			//}
-
+			CDebug.Count("Trees", CTreeManager.Trees.Count);
+			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
 
 			if (CProjectData.assignRefTrees)
 			{
@@ -175,9 +163,10 @@ namespace ForestReco
 
 		private static void FillArray()
 		{
+			CDebug.WriteLine("FillArray", true);
 			if (CProjectData.array == null)
 			{
-				Console.WriteLine("Error: no array to export");
+				CDebug.Error("no array to export");
 				return;
 			}
 
@@ -186,15 +175,16 @@ namespace ForestReco
 			{
 				DateTime fillHeightsStart = DateTime.Now;
 
-				Console.WriteLine("\nFillMissingHeights " + counter);
+				CDebug.Count("FillMissingHeights", counter);
 				CProjectData.array.FillMissingHeights(counter);
 				counter++;
 				if (counter > CProjectData.maxFillArrayIterations + 1)
 				{
-					Console.WriteLine("FillMissingHeights ERROR. too many iterations: " + counter);
+					CDebug.Error("FillMissingHeights");
+					CDebug.Count("too many iterations", counter);
 					break;
 				}
-				Console.WriteLine("duration = " + (DateTime.Now - fillHeightsStart).TotalSeconds);
+				CDebug.Duration("FillMissingHeights", fillHeightsStart);
 			}
 		}
 
@@ -205,11 +195,12 @@ namespace ForestReco
 			ClassifyPoints(pParsedLines);
 
 			DateTime processStartTime = DateTime.Now;
-			Console.WriteLine("ProcessParsedLines " + pParsedLines.Count + ". Start = " + processStartTime);
+			CDebug.Count("ProcessParsedLines", pParsedLines.Count);
+			//+ ". Start = " + processStartTime);
 			ProcessGroundPoints();
 			ProcessVegePoints();
 
-			Console.WriteLine("\nAll points added | duration = " + (DateTime.Now - processStartTime).TotalSeconds);
+			CDebug.Duration("All points added", processStartTime);
 		}
 
 		private static void ProcessVegePoints()
@@ -219,7 +210,7 @@ namespace ForestReco
 			const int debugFrequency = 10000;
 
 			DateTime processVegePointsStart = DateTime.Now;
-			Console.WriteLine("\nProcessVegePoints start = " + processVegePointsStart);
+			CDebug.WriteLine("ProcessVegePoints", true);
 
 			DateTime previousDebugStart = DateTime.Now;
 
@@ -227,35 +218,25 @@ namespace ForestReco
 			{
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
-				CProjectData.array.AddPointInField(point, false);
 
-				if (i % debugFrequency == 0 && i > 0)
-				{
-					Console.WriteLine("\nAdded point " + i + " out of " + CProjectData.vegePoints.Count);
-					double lastPointBatchProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-					Console.WriteLine("- time of last " + debugFrequency + " points = " + lastPointBatchProcessTime);
+				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "added point");
+				//if (i % debugFrequency == 0 && i > 0)
+				//{
+				//	CDebug.WriteLine("\nAdded point " + i + " out of " + CProjectData.vegePoints.Count);
+				//	double lastPointBatchProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+				//	CDebug.WriteLine("- time of last " + debugFrequency + " points = " + lastPointBatchProcessTime);
 
-					//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-					float remainsRatio = (float)(CProjectData.vegePoints.Count - i) / debugFrequency;
-					double totalSeconds = remainsRatio * lastPointBatchProcessTime;
-					TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
-					string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-					Console.WriteLine("- estimated time left = " + timeString + "\n");
+				//	//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
+				//	float remainsRatio = (float)(CProjectData.vegePoints.Count - i) / debugFrequency;
+				//	double totalSeconds = remainsRatio * lastPointBatchProcessTime;
+				//	TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
+				//	string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
+				//	CDebug.WriteLine("- estimated time left = " + timeString + "\n");
 
-					previousDebugStart = DateTime.Now;
-				}
+				//	previousDebugStart = DateTime.Now;
+				//}
 			}
-			Console.WriteLine("\nProcessVegePoints time = " + (DateTime.Now - processVegePointsStart));
-
-
-			//moved to CObjpartition - ground export
-			//if (CProjectData.exportPoints)
-			//{
-			//	Obj vegePointsObj = new Obj("vegePoints");
-			//	CObjExporter.AddPointsToObj(ref vegePointsObj, CProjectData.vegePoints);
-			//	CProjectData.objsToExport.Add(vegePointsObj);
-			//	CObjPartition.AddPoints();
-			//}
+			CDebug.Duration("ProcessVegePoints", processVegePointsStart);
 		}
 
 		private static void ProcessGroundPoints()
@@ -268,21 +249,11 @@ namespace ForestReco
 				CProjectData.array?.AddPointInField(point, true);
 			}
 
-			//moved to CObjpartition - ground export
-			/*if (CProjectData.exportPoints)
-			{
-				Obj groundPointsObj = new Obj("groundPoints");
-				CObjExporter.AddPointsToObj(ref groundPointsObj, CProjectData.groundPoints);
-				CProjectData.objsToExport.Add(groundPointsObj);
-			}*/
-
 			if (CProjectData.array == null)
 			{
-				//CDebug.DefineArray(true);
-				//CDebug.DefineArray(true, -12.55f); //todo: this is just to test match between source refTree
-				//CDebug.DefineArray(true, -8.07f);
-				Console.WriteLine("No array defined. setting height to " + CProjectData.lowestHeight);
-				CDebug.DefineArray(true, CProjectData.lowestHeight);
+				CDebug.Error("No array defined");
+				CDebug.WriteLine("setting height to " + CProjectData.lowestHeight);
+				CDebugData.DefineArray(true, CProjectData.lowestHeight);
 			}
 			if (CProjectData.fillArray)
 			{

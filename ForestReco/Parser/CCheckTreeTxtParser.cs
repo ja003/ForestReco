@@ -24,23 +24,11 @@ namespace ForestReco
 		public static Tuple<int, Vector3> ParseLine(string pLine, bool pUseHeader)
 		{
 			string[] split = pLine.Split(null);
-			//if (split.Length < 4 || (split.Length > 0 && split[0].Contains("#")))
-			//{
-			//	Console.WriteLine(pLine + " not valid");
-			//	return null;
-			//}
+
 			//line example: 
 			//ID	X				Y				Z			POZN			TYP	CISLO_
 			//556	756123.256	5489291.262	923.47	*STROM403	11		403
 			//1	756168.829	5489339.169	936.49	rozhrani_plotu	52	
-			if (int.TryParse(split[0], out int id))
-			{
-				if (id == 556)
-				{
-					Console.WriteLine("*");
-				}
-			}
-
 
 			if (!double.TryParse(split[1], out double x)) { return null; }
 			if (!double.TryParse(split[2], out double y)) { return null; }
@@ -73,7 +61,7 @@ namespace ForestReco
 
 		public static void Debug()
 		{
-			Console.WriteLine(minInputX + "," + minInputY + " - " + maxInputX + "," + maxInputY);
+			CDebug.WriteLine(minInputX + "," + minInputY + " - " + maxInputX + "," + maxInputY);
 		}
 	}
 }

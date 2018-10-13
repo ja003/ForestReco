@@ -40,16 +40,16 @@ namespace ForestReco
 					definedSimilarityCount++;
 				}
 			}
-			//Console.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
+			//CDebug.WriteLine("\n---------------\nsimilarity of \n" + pRefTree + "\nwith \n" + pOtherTree);
 
 			if (definedSimilarityCount == 0)
 			{
-				Console.WriteLine("Error. no similarity defined");
+				CDebug.WriteLine("Error. no similarity defined");
 				return new STreeSimilarity(0,0);
 			}
 			similarity /= definedSimilarityCount;
 
-			//Console.WriteLine("similarity = " + similarity + ". defined = " + definedSimilarityCount + "\n--------");
+			//CDebug.WriteLine("similarity = " + similarity + ". defined = " + definedSimilarityCount + "\n--------");
 
 			return new STreeSimilarity(similarity, indexOffset * CTree.BRANCH_ANGLE_STEP);
 		}
@@ -81,11 +81,11 @@ namespace ForestReco
 			int indexOfBestMatch = pRefTree.Branches.IndexOf(bestMatchBranch);
 			int indexOffset = indexOfBestMatch - indexOfMostDefined;
 
-			//Console.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
-			//Console.WriteLine("bestMatchBranch = " + bestMatchBranch);
-			//Console.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
-			//Console.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
-			//Console.WriteLine("indexOffset = " + indexOffset);
+			//CDebug.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
+			//CDebug.WriteLine("bestMatchBranch = " + bestMatchBranch);
+			//CDebug.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
+			//CDebug.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
+			//CDebug.WriteLine("indexOffset = " + indexOffset);
 			return indexOffset;
 		}
 
@@ -98,8 +98,8 @@ namespace ForestReco
 			float scaleRatio = GetScaleRatioTo(pOtherBranch.tree, pRefTree);
 			Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, pRefTree.peak.Center);
 
-			//Console.WriteLine("offsetToRefTree = " + offsetToRefTree);
-			//Console.WriteLine("scaleRatio = " + scaleRatio);
+			//CDebug.WriteLine("offsetToRefTree = " + offsetToRefTree);
+			//CDebug.WriteLine("scaleRatio = " + scaleRatio);
 
 			float bestSimilarity = 0;
 			CBranch bestMatchBranch = pRefTree.Branches[0];
@@ -112,7 +112,7 @@ namespace ForestReco
 					bestMatchBranch = b;
 				}
 			}
-			//Console.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
+			//CDebug.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
 			return bestMatchBranch;
 		}
 
