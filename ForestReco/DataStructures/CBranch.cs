@@ -64,6 +64,13 @@ namespace ForestReco
 		{
 			//Vector3 referencePoint = GetClosestPointTo(pPoint, 5);
 
+			//pUseDistToPeakDiff is used during merging. peak must be already valid
+			//if (!pUseDistToPeakDiff && !IsPeakValidWith(pPoint)){
+			//	//CDebug.Error(pPoint + " is not valid in tree " + tree);
+			//	//tree.isPeakInvalid = true;
+			//	return 0;
+			//}
+
 			Vector3 refPoint1 = furthestPoint;
 			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, pUseDistToPeakDiff);
 			float bestFactor = refPoint1Factor;
@@ -87,6 +94,23 @@ namespace ForestReco
 			return bestFactor;
 		}
 
+
+		/*const float MAX_POINTS_HEIGHT_DIFF = 1;
+		public bool IsPeakValidWith(Vector3 pNewPoint)
+		{
+			//if(TreePoints.Count == 0)
+			//{
+			//	float pointPeakHeightDiff = tree.peak.Y - pNewPoint.Y;
+			//	return pointPeakHeightDiff < MAX_POINTS_HEIGHT_DIFF;
+			//}
+			if (TreePoints.Count < 5)
+			{
+				float newPointLastPointHeightDiff = GetLastPoint().Y - pNewPoint.Y;
+				return newPointLastPointHeightDiff < MAX_POINTS_HEIGHT_DIFF;
+			}
+			return true;
+		}*/
+
 		private CBranch GetNeigbourBranch(int pIndexIncrement)
 		{
 			int indexOfthis = tree.Branches.IndexOf(this);
@@ -107,6 +131,11 @@ namespace ForestReco
 				}
 			}
 			return closestPoint;
+		}
+
+
+		private Vector3 GetLastPoint(){
+			return TreePoints.Count == 0 ? tree.peak.Center : TreePoints.Last().Center;
 		}
 
 		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pIsTreeProcessed)

@@ -30,6 +30,7 @@ namespace ForestReco
 		public Vector3 possibleNewPoint;
 
 		public int treeIndex;
+		//public bool isPeakInvalid;
 
 		public List<Vector3> Points = new List<Vector3>();
 
@@ -95,6 +96,12 @@ namespace ForestReco
 		{
 			//CDebug.WriteLine("OnProcess");
 		}
+
+		//public bool CheckPeak(Vector3 pPoint)
+		//{
+		//	if(GetAddPointFactor)
+		//	return true;
+		//}
 
 		/*public bool TryAddPoint(Vector3 pPoint, bool pForce)
 		{
@@ -168,6 +175,21 @@ namespace ForestReco
 		}
 
 		//GETTERS
+
+
+		public bool isFake;
+		const float MAX_POINTS_HEIGHT_DIFF = 1;
+
+		public bool IsPeakValidWith(Vector3 pNewPoint)
+		{
+			if (peak.Includes(pNewPoint)) { return true; }
+			if(Points.Count - peak.Points.Count > 5){ return true; }
+
+			float newPointLowestPointHeightDiff = minBB.Y - pNewPoint.Y;
+			return newPointLowestPointHeightDiff < MAX_POINTS_HEIGHT_DIFF;
+			//CBranch branch = GetBranchFor(pNewPoint);
+			//return branch.IsPeakValidWith(pNewPoint);
+		}
 
 		/// <summary>
 		/// Returns a branch with biggest number of tree points
@@ -324,6 +346,7 @@ namespace ForestReco
 			//if (CTreeManager.DEBUG) CDebug.WriteLine("GetObj " + pName);
 
 			string prefix = isValid ? "tree_" : "invalidTree_";
+			if (isFake) { prefix = "fake_"; }
 
 			Obj obj = new Obj(prefix + treeIndex);
 			obj.UseMtl = CMaterialManager.GetTreeMaterial(treeIndex);
@@ -379,6 +402,8 @@ namespace ForestReco
 		/// </summary>
 		public bool Validate(bool pAllBranchDefined)
 		{
+			if (isFake) { return false; }
+
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
 			{
@@ -519,6 +544,19 @@ namespace ForestReco
 			peak.ResetBounds(peak.Points[0]);
 		}
 
+		//public bool IsTreeFake()
+		//{
+		//	if (GetTreeHeight() > CTreeManager.MIN_FAKE_TREE_HEIGHT)
+		//	{
+		//		if (GetAllPoints().Count < 5)
+		//		{
+		//			return true;
+		//		}
+		//	}
+		//	return false;
+		//}
+
+
 		public override string ToString()
 		{
 			return ToString(true, true, true, false, true, true, true);
@@ -572,6 +610,11 @@ namespace ForestReco
 			{
 				b.CheckBranch();
 			}
+		}
+
+		public bool Equals(int pIndex)
+		{
+			return treeIndex == pIndex;
 		}
 
 		public override bool Equals(object obj)

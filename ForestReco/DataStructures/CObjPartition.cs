@@ -69,7 +69,7 @@ namespace ForestReco
 			}
 		}
 		
-		public static void AddTrees(bool pValid)
+		public static void AddTrees(bool pValid, bool pFake)
 		{
 			List<Tuple<Tuple<int, int>, CTree>> treesToExport = new List<Tuple<Tuple<int, int>, CTree>>();
 
@@ -80,10 +80,20 @@ namespace ForestReco
 				//f.DetectedTrees.Sort((x, y) => x.treeIndex.CompareTo(y.treeIndex));
 				foreach (CTree t in f.DetectedTrees)
 				{
-					if (t.isValid == pValid)
+					if(t.Equals(13)){
+						CDebug.WriteLine("");
+					}
+
+					if (!pFake)
+					{
+						if (!t.isFake && t.isValid == pValid)
+						{
+							treesToExport.Add(new Tuple<Tuple<int, int>, CTree>(f.indexInField, t));
+						}
+					}
+					else if (t.isFake == pFake)
 					{
 						treesToExport.Add(new Tuple<Tuple<int, int>, CTree>(f.indexInField, t));
-						//AddObj(f.indexInField, t.GetObj(true, false));
 					}
 				}
 			}
@@ -92,6 +102,8 @@ namespace ForestReco
 			{
 				Obj obj = exportTree.Item2.GetObj(true, false);
 				if (!pValid) { obj.UseMtl = CMaterialManager.GetInvalidMaterial();}
+				if (pFake) { obj.UseMtl = CMaterialManager.GetFakeMaterial(); }
+
 				AddObj(exportTree.Item1, obj);
 			}
 		}

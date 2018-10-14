@@ -58,6 +58,11 @@ namespace ForestReco
 			return materials.MaterialList[0].Name;
 		}
 
+		public static string GetFakeMaterial()
+		{
+			return materials.MaterialList[2].Name;
+		}
+
 		public static string GetCheckTreeMaterial()
 		{
 			return materials.MaterialList[1].Name;

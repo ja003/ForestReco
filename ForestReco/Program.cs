@@ -46,7 +46,7 @@ namespace ForestReco
 			CProjectData.exportSimpleTreeModel = false;
 			CProjectData.validateTrees = true;
 			//merge
-			CProjectData.tryMergeTrees = true;
+			CProjectData.tryMergeTrees = false;
 			CProjectData.mergeOnlyInvalidTrees = true;
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
@@ -62,8 +62,8 @@ namespace ForestReco
 			CProjectData.exportRefTrees = true;
 
 			//CHECK TREES
-			CProjectData.loadCheckTrees = true;
-			CProjectData.exportCheckTrees = true;
+			CProjectData.loadCheckTrees = false;
+			CProjectData.exportCheckTrees = false;
 
 			//source xyz-files
 			CProjectData.refTreeFirst = true;

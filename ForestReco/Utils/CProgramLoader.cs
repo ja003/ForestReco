@@ -137,6 +137,7 @@ namespace ForestReco
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
+			CDebug.Count("FakeTrees", CTreeManager.FakeTrees.Count);
 
 			if (CProjectData.assignRefTrees)
 			{
@@ -151,10 +152,12 @@ namespace ForestReco
 			if (CProjectData.exportTrees)
 			{
 				//CTreeManager.ExportTrees();
-				CObjPartition.AddTrees(true);
+				CObjPartition.AddTrees(true, false);
 				if (CProjectData.exportInvalidTrees)
 				{
-					CObjPartition.AddTrees(false);
+					CObjPartition.AddTrees(false, false);
+					//fake trees
+					CObjPartition.AddTrees(false, true);
 				}
 			}
 

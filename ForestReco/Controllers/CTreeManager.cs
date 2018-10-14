@@ -10,6 +10,7 @@ namespace ForestReco
 	{
 		public static List<CTree> Trees { get; } = new List<CTree>();
 		public static List<CTree> InvalidTrees { get; } = new List<CTree>();
+		public static List<CTree> FakeTrees { get; } = new List<CTree>();
 
 		public static List<Vector3> invalidVegePoints = new List<Vector3>();
 
@@ -23,7 +24,7 @@ namespace ForestReco
 		public static int MIN_BRANCH_POINT_COUNT = 5;
 		public static int MIN_TREE_POINT_COUNT = 20;
 
-		public static float MAX_TREE_HEIGHT = 20;
+		public static float MIN_FAKE_TREE_HEIGHT = 20;
 
 
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
@@ -58,39 +59,59 @@ namespace ForestReco
 		{
 			//DebugPoint(pPoint, pPointIndex);
 
+			//if(pPointIndex > 500){ return; }
+
 			pointCounter++;
 			CTree selectedTree = null;
 
-			if (!CheckPoint(pPoint))
+			/*if (!CheckPoint(pPoint))
 			{
 				//CDebug.WriteLine(pPoint + " is not valid");
 				invalidVegePoints.Add(pPoint);
 				return;
-			}
+			}*/
 			CProjectData.array.AddPointInField(pPoint, false);
 
 			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint, EPossibleTreesMethos.ClosestHigher);
+
+			//List<CTree> toDiscardTree = new List<CTree>();
 
 			float bestAddPointFactor = 0;
 			foreach (CTree t in possibleTrees)
 			{
 				if (DEBUG) { CDebug.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
-				if (pPointIndex == 6126)
+				if (pPointIndex == 255)
 				{
-					//CDebug.WriteLine("!");
+					Console.Write("");
 				}
 
 				float addPointFactor = t.GetAddPointFactor(pPoint, false);
-				if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
+				if (addPointFactor > 0.5f)
 				{
-					selectedTree = t;
-					bestAddPointFactor = addPointFactor;
+					if (t.Equals(0))
+					{
+						Console.Write("");
+					}
+					if (t.GetTreeHeight() > MIN_FAKE_TREE_HEIGHT && !t.IsPeakValidWith(pPoint))
+					{
+						//toDiscardTree.Add(t);
+						
+						t.isFake = true;
+						CDebug.WriteLine("FAKE: " + t);
+					}
+					else if (addPointFactor > bestAddPointFactor)
+					{
+						selectedTree = t;
+						bestAddPointFactor = addPointFactor;
+					}
 				}
 			}
+
+
 			if (selectedTree != null)
 			{
-				if (DEBUG)
+				if (selectedTree.Equals(4))
 				{
 					CDebug.WriteLine(bestAddPointFactor + " SELECTED TREE " +
 						selectedTree + " for " + pPointIndex + ": " + pPoint);
@@ -119,7 +140,7 @@ namespace ForestReco
 			}
 		}
 
-		private static bool CheckPoint(Vector3 pPoint)
+		/*private static bool CheckPoint(Vector3 pPoint)
 		{
 			float? pointHeight = CProjectData.array.GetPointHeight(pPoint);
 			if (pointHeight == null)
@@ -128,7 +149,7 @@ namespace ForestReco
 				return true;
 			}
 			return pointHeight < MAX_TREE_HEIGHT;
-		}
+		}*/
 
 		private static void CreateNewTree(Vector3 pPoint)
 		{
@@ -248,6 +269,7 @@ namespace ForestReco
 				foreach (CTree possibleTree in possibleTrees)
 				{
 					if (possibleTree.Equals(pExcludeTree)) { continue; }
+					if (possibleTree.isFake) { continue; }
 					//we dont want trees that are lower than given point
 					if (possibleTree.peak.Center.Y < pPoint.Y) { continue; }
 
@@ -317,7 +339,7 @@ namespace ForestReco
 					continue;
 				}
 				CTree tree = Trees[i];
-				if (tree.treeIndex == 48)
+				if (tree.treeIndex == 406)
 				{
 					CDebug.WriteLine("__");
 				}
@@ -474,12 +496,28 @@ namespace ForestReco
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
 				CTree tree = Trees[i];
+
 				if (!tree.Validate(true))
 				{
+					//if (tree.IsTreeFake())
+					//{
+					//	DiscartedTrees.Add(tree);
+					//	Trees.RemoveAt(i);
+					//	CDebug.WriteLine("Discard tree " + tree);
+					//	continue;
+					//}
+
 					if (pCathegorize)
 					{
-						InvalidTrees.Add(tree);
-						Trees.RemoveAt(i);
+						if (tree.isFake)
+						{
+							FakeTrees.Add(tree);
+						}
+						else
+						{
+							InvalidTrees.Add(tree);
+							Trees.RemoveAt(i);
+						}
 					}
 				}
 			}
@@ -496,7 +534,7 @@ namespace ForestReco
 			CDebug.Duration("Trees processed", processTreesStartTime);
 
 		}
-		
+
 		public static void DebugTrees()
 		{
 			CDebug.WriteLine("\n===============\n");

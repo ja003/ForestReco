@@ -253,7 +253,13 @@ namespace ForestReco
 					List<CTree> detectedTrees = GetElement(x, y)?.DetectedTrees;
 					if (detectedTrees != null)
 					{
-						trees.AddRange(detectedTrees);
+						foreach (CTree tree in detectedTrees)
+						{
+							//if (!tree.isPeakInvalid)
+							{
+								trees.Add(tree);
+							}
+						}
 					}
 				}
 			}
