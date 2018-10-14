@@ -99,7 +99,7 @@ namespace ForestReco
 			if (!classesCorect) { CDebug.WriteLine("classes not correct. using default class"); }
 			CDebug.Count("parsedLines", parsedLines.Count);
 
-			parsedLines.Sort((y, x) => x.Item2.Y.CompareTo(y.Item2.Y)); //sort descending by height
+			//parsedLines.Sort((y, x) => x.Item2.Y.CompareTo(y.Item2.Y)); //sort descending by height
 			return parsedLines;
 		}
 
@@ -201,14 +201,46 @@ namespace ForestReco
 			CDebug.Count("ProcessParsedLines", pParsedLines.Count);
 			//+ ". Start = " + processStartTime);
 			ProcessGroundPoints();
+			FilterVegePoints();
+
 			ProcessVegePoints();
 
 			CDebug.Duration("All points added", processStartTime);
 		}
 
+		/// <summary>
+		/// Assigns all vege points in array and filters fake points.
+		/// </summary>
+		private static void FilterVegePoints()
+		{
+			if (!CProjectData.detectTrees) { return; }
+
+			const int debugFrequency = 10000;
+
+			DateTime processVegePointsStart = DateTime.Now;
+			CDebug.WriteLine("FilterVegePoints", true);
+
+			DateTime previousDebugStart = DateTime.Now;
+
+			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
+			{
+				Vector3 point = CProjectData.vegePoints[i];
+				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.PreProcess);
+				
+				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "preprocessed point");		
+			}
+			CDebug.Duration("FilterVegePoints", processVegePointsStart);
+
+			CProjectData.array.FilterFakeVegePoints();
+		}
+
+
 		private static void ProcessVegePoints()
 		{
 			if (!CProjectData.detectTrees) { return; }
+
+			//todo: check if has to be sorted somewhere else as well
+			CProjectData.vegePoints.Sort((y, x) => x.Y.CompareTo(y.Y)); //sort descending by height
 
 			const int debugFrequency = 10000;
 
@@ -249,7 +281,7 @@ namespace ForestReco
 			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
 				Vector3 point = CProjectData.groundPoints[i];
-				CProjectData.array?.AddPointInField(point, true);
+				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground);
 			}
 
 			if (CProjectData.array == null)

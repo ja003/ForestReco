@@ -128,23 +128,69 @@ namespace ForestReco
 
 		//PUBLIC
 
-		public void AddPointInField(Vector3 pPoint, bool pGround)
+		public enum EPointType
+		{
+			Ground,
+			Vege,
+			PreProcess
+		}
+
+		public void AddPointInField(Vector3 pPoint, EPointType pType)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
-			//if (Equals(index, new Tuple<int, int>(0, 5)))
-			//{
-			//	Tuple<int, int> index2 = GetPositionInField(pPoint);
-			//}
-			if (pGround)
+			switch (pType)
 			{
-				array[index.Item1, index.Item2].AddGroundPoint(pPoint);
+				case EPointType.Ground:
+					array[index.Item1, index.Item2].AddGroundPoint(pPoint);
+					break;
+				case EPointType.Vege:
+					array[index.Item1, index.Item2].AddVegePoint(pPoint);
+					break;
+				case EPointType.PreProcess:
+					array[index.Item1, index.Item2].AddPreProcessVegePoint(pPoint);
+					break;
 			}
-			else
+		}
+
+		/// <summary>
+		/// Filters points, which are fake (unnaturally higher than average vege poins).
+		/// Assigns them in vegePoints and fakePoints
+		/// </summary>
+		public void FilterFakeVegePoints()
+		{
+			CDebug.WriteLine("FilterFakeVegePoints", true);
+			CProjectData.vegePoints.Clear();
+
+			float averageHeight = GetAverageVegeHeight();
+			CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
+
+			foreach (CGroundField field in fields)
 			{
-				array[index.Item1, index.Item2].AddVegePoint(pPoint);
+				field.FilterFakeVegePoints(averageHeight);
 			}
-			//CDebug.WriteLine(index + " = " + pPointField);
-			coordinatesCount++;
+
+			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
+			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
+		}
+
+		/// <summary>
+		/// TODO: count weighted average. areas with no trees affect average height 
+		/// </summary>
+		private float GetAverageVegeHeight()
+		{
+			float sumHeight = 0;
+			int definedCount = 0;
+			foreach (CGroundField field in fields)
+			{
+				float? groundHeight = field.GetHeight();
+				float? preProcessVegeHeight = field.MaxPreProcessVege;
+				if (preProcessVegeHeight != null && groundHeight != null)
+				{
+					sumHeight += (float)preProcessVegeHeight - (float)groundHeight;
+					definedCount++;
+				}
+			}
+			return sumHeight / definedCount;
 		}
 
 		public void SetHeight(float pHeight, int pXindex, int pYindex)

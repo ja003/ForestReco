@@ -22,6 +22,9 @@ namespace ForestReco
 		//public static List<Vector3> allPoints = new List<Vector3>();
 		public static List<Vector3> groundPoints = new List<Vector3>();
 		public static List<Vector3> vegePoints = new List<Vector3>();
+		public static List<Vector3> fakePoints = new List<Vector3>();
+		
+
 		public static CGroundArray array;
 		public static float groundArrayStep;
 

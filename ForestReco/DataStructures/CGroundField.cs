@@ -17,6 +17,10 @@ namespace ForestReco
 
 		public List<Vector3> goundPoints = new List<Vector3>();
 		public List<Vector3> vegePoints = new List<Vector3>();
+		public List<Vector3> fakePoints = new List<Vector3>();
+		public List<Vector3> preProcessPoints = new List<Vector3>();
+
+		public float? MaxPreProcessVege;
 
 		public float? MinGround;
 		public float? MaxGround;
@@ -98,7 +102,7 @@ namespace ForestReco
 			else
 			{
 				return neighbourhood4Defined && Left.Top.IsDefined() && Right.Top.IsDefined() && Left.Bot.IsDefined() &&
-				       Right.Bot.IsDefined();
+					   Right.Bot.IsDefined();
 			}
 		}
 
@@ -134,6 +138,46 @@ namespace ForestReco
 		public void AddVegePoint(Vector3 pPoint)
 		{
 			vegePoints.Add(pPoint);
+		}
+
+		public void AddPreProcessVegePoint(Vector3 pPoint)
+		{
+			preProcessPoints.Add(pPoint);
+			if (MaxPreProcessVege != null)
+			{
+				if (pPoint.Y > MaxPreProcessVege)
+				{
+					MaxPreProcessVege = pPoint.Y;
+				}
+			}
+			else
+			{
+				MaxPreProcessVege = pPoint.Y;
+			}
+		}
+
+		const float MIN_FAKE_POINT_HEIGHT_OFFSET = 3;
+
+		public void FilterFakeVegePoints(float pMaxHeight)
+		{
+			List<Vector3> okPoints = new List<Vector3>();
+			List<Vector3> nokPoints = new List<Vector3>();
+			float? groundHeight = GetHeight();
+
+			foreach (Vector3 point in preProcessPoints)
+			{
+				if (groundHeight != null && point.Y - groundHeight > pMaxHeight + MIN_FAKE_POINT_HEIGHT_OFFSET)
+				{
+					nokPoints.Add(point);
+				}
+				else
+				{
+					okPoints.Add(point);
+				}
+			}
+			fakePoints = nokPoints;
+			CProjectData.vegePoints.AddRange(okPoints);
+			CProjectData.fakePoints.AddRange(nokPoints);
 		}
 
 		public bool IsDefined()
@@ -184,7 +228,7 @@ namespace ForestReco
 		public float? GetAverageHeightFromClosestDefined(int pMaxSteps, bool pDiagonal)
 		{
 			if (IsDefined()) { return GetHeight(); }
-			
+
 			CGroundField closestFirst = null;
 			CGroundField closestSecond = null;
 			CGroundField closestLeft = GetClosestDefined(pDiagonal ? EDirection.LeftTop : EDirection.Left, pMaxSteps);
@@ -319,7 +363,7 @@ namespace ForestReco
 			float a11 = (float)h1.GetHeight() - (float)h2.GetHeight() - (float)h3.GetHeight() + (float)h4.GetHeight();
 
 			float x = pPoint.X - center.X;// + CProjectData.groundArrayStep;
-			//float z = pPoint.Z - center.Z;//+ CProjectData.groundArrayStep;
+										  //float z = pPoint.Z - center.Z;//+ CProjectData.groundArrayStep;
 			float z = CProjectData.groundArrayStep - (center.Z - pPoint.Z);
 
 			if (x < 0 || x > 1 || z < 0 || z > 1)
@@ -400,7 +444,7 @@ namespace ForestReco
 			{
 				for (int y = 0; y < kernelSize; y++)
 				{
-					int xIndex = indexInField.Item1 + x - kernelSize/2;
+					int xIndex = indexInField.Item1 + x - kernelSize / 2;
 					int yIndex = indexInField.Item2 + y - kernelSize / 2;
 					CGroundField el = CProjectData.array.GetElement(xIndex, yIndex);
 					float? elHeight = el?.GetHeight();
@@ -418,7 +462,7 @@ namespace ForestReco
 			//SmoothHeight = heightSum / defined;
 			SmoothHeight = heightSum;
 		}
-		
+
 		public float? MaxGroundFilled;
 
 		public void ApplyFillMissingHeight()
@@ -523,7 +567,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center + 
+			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center +
 				". Trees=" + DetectedTrees.Count + "/" + CheckTrees.Count;
 			//return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}

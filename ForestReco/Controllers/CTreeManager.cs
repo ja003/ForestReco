@@ -70,7 +70,7 @@ namespace ForestReco
 				invalidVegePoints.Add(pPoint);
 				return;
 			}*/
-			CProjectData.array.AddPointInField(pPoint, false);
+			CProjectData.array.AddPointInField(pPoint, CGroundArray.EPointType.Vege);
 
 			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint, EPossibleTreesMethos.ClosestHigher);
 
@@ -93,13 +93,13 @@ namespace ForestReco
 					{
 						Console.Write("");
 					}
-					if (t.GetTreeHeight() > MIN_FAKE_TREE_HEIGHT && !t.IsPeakValidWith(pPoint))
-					{
-						//toDiscardTree.Add(t);
+					//if (t.GetTreeHeight() > MIN_FAKE_TREE_HEIGHT && !t.IsPeakValidWith(pPoint))
+					//{
+					//	//toDiscardTree.Add(t);
 						
-						t.isFake = true;
-						CDebug.WriteLine("FAKE: " + t);
-					}
+					//	t.isFake = true;
+					//	CDebug.WriteLine("FAKE: " + t);
+					//}
 					else if (addPointFactor > bestAddPointFactor)
 					{
 						selectedTree = t;
@@ -111,7 +111,7 @@ namespace ForestReco
 
 			if (selectedTree != null)
 			{
-				if (selectedTree.Equals(4))
+				if (DEBUG)
 				{
 					CDebug.WriteLine(bestAddPointFactor + " SELECTED TREE " +
 						selectedTree + " for " + pPointIndex + ": " + pPoint);

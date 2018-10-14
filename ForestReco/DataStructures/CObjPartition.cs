@@ -45,6 +45,7 @@ namespace ForestReco
 					{
 						List<Vector3> vegePoints = new List<Vector3>();
 						List<Vector3> groundPoints = new List<Vector3>();
+						List<Vector3> fakePoints = new List<Vector3>();
 						for (int _x = x; _x < x + partitionStep; _x++)
 						{
 							for (int _y = y; _y < y+partitionStep; _y++)
@@ -54,16 +55,20 @@ namespace ForestReco
 								{
 									vegePoints.AddRange(element.vegePoints);
 									groundPoints.AddRange(element.goundPoints);
+									fakePoints.AddRange(element.fakePoints);
 								}
 							}
 						}
 						Obj vegePointsObj = new Obj("vegePoints");
 						Obj groundPointsObj = new Obj("groundPoints");
+						Obj fakePointsObj = new Obj("fakePoints");
 						CObjExporter.AddPointsToObj(ref vegePointsObj, vegePoints);
 						CObjExporter.AddPointsToObj(ref groundPointsObj, groundPoints);
+						CObjExporter.AddPointsToObj(ref fakePointsObj, fakePoints);
 
 						AddObj(x, y, vegePointsObj);
 						AddObj(x, y, groundPointsObj);
+						AddObj(x, y, fakePointsObj);
 					}
 				}
 			}
