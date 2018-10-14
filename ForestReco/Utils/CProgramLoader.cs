@@ -116,9 +116,9 @@ namespace ForestReco
 
 			CTreeManager.CheckAllTrees();
 
+			//dont move invalid trees to invalid list yet, some invalid trees will be merged
 			if (CProjectData.validateTrees)
 			{
-				//dont move invalid trees to invalid list yet, some invalid trees will be merged
 				CTreeManager.ValidateTrees(false);
 			}
 
@@ -128,15 +128,17 @@ namespace ForestReco
 			}
 
 			CTreeManager.CheckAllTrees();
-
+			
+			//cathegorize invalid trees
 			if (CProjectData.validateTrees)
 			{
-				//cathegorize invalid trees
 				CTreeManager.ValidateTrees(true);
 			}
+			
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
+			//CProjectData.array.DebugDetectedTrees();
 
 			if (CProjectData.assignRefTrees)
 			{

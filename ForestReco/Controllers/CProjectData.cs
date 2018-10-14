@@ -38,7 +38,7 @@ namespace ForestReco
 		public static bool mergeBelongingTrees; 
 		public static bool mergeGoodAddFactorTrees;
 		public static bool validateTrees;
-		
+
 		public static bool loadRefTrees;
 		public static bool assignRefTrees;
 		public static bool assignRandomRefTree;

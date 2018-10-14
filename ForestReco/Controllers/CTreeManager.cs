@@ -99,7 +99,7 @@ namespace ForestReco
 					//if (t.GetTreeHeight() > MIN_FAKE_TREE_HEIGHT && !t.IsPeakValidWith(pPoint))
 					//{
 					//	//toDiscardTree.Add(t);
-						
+
 					//	t.isFake = true;
 					//	CDebug.WriteLine("FAKE: " + t);
 					//}
@@ -492,6 +492,12 @@ namespace ForestReco
 			return higherTree;
 		}
 
+		public enum EValidation
+		{
+			Scale,
+			BranchDefine
+		}
+
 		public static void ValidateTrees(bool pCathegorize)
 		{
 			CDebug.WriteLine("Detect invalid trees", true);
@@ -500,16 +506,18 @@ namespace ForestReco
 			{
 				CTree tree = Trees[i];
 
-				if (!tree.Validate(true))
-				{
-					//if (tree.IsTreeFake())
-					//{
-					//	DiscartedTrees.Add(tree);
-					//	Trees.RemoveAt(i);
-					//	CDebug.WriteLine("Discard tree " + tree);
-					//	continue;
-					//}
+				//switch(pMethod){
+				//	case EValidation.BranchDefine:
+				//		tree.ValidateBranches();
+				//		break;
+				//	case EValidation.Scale:
+				//		tree.ValidateScale();
+				//		break;
+				//}
+				bool isValid = tree.Validate();
 
+				if (!isValid)
+				{
 					if (pCathegorize)
 					{
 						InvalidTrees.Add(tree);

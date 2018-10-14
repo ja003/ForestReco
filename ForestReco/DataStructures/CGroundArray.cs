@@ -202,7 +202,7 @@ namespace ForestReco
 					}
 					else
 					{
-						CDebug.Warning(field + " = " + vegeHeight);
+						//CDebug.Warning(field + " = " + vegeHeight);
 					}
 				}
 			}
@@ -335,11 +335,20 @@ namespace ForestReco
 		public void DebugDetectedTrees()
 		{
 			int detectedTreesCount = 0;
+			int validTreesCount = 0;
+			int invalidTreesCount = 0;
 			foreach (CGroundField f in fields)
 			{
 				detectedTreesCount += f.DetectedTrees.Count;
+				foreach (CTree tree in f.DetectedTrees)
+				{
+					if (tree.isValid) { validTreesCount++; }
+					else { invalidTreesCount++; }
+				}
 			}
 			CDebug.Count("Detected trees", detectedTreesCount);
+			CDebug.Count("valid trees", validTreesCount);
+			CDebug.Count("invalid trees", invalidTreesCount);
 		}
 
 		/// <summary>

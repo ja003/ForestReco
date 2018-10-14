@@ -28,7 +28,7 @@ namespace ForestReco
 			//Input params
 			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
 			CTreeManager.TREE_EXTENT_MERGE_MULTIPLY = 1.5F;
-			CTreeManager.BASE_TREE_EXTENT = 1.5f;
+			CTreeManager.BASE_TREE_EXTENT = 1f;
 			CTreeManager.MIN_TREE_EXTENT = 0.5f;
 
 			//ARRAY
@@ -82,7 +82,7 @@ namespace ForestReco
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
-			//CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
+			CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
 
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";

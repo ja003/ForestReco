@@ -39,7 +39,10 @@ namespace ForestReco
 
 		public CCheckTree assignedCheckTree;
 
-		public bool isValid = true; //valid by default - until Validate is called
+		//public bool isValid = false; //invalid by default - until Validate is called
+		public bool isValid = false;
+		//public bool isValidScale = false; 
+		//public bool isValidBranches = false; 
 
 		//INIT
 
@@ -54,6 +57,7 @@ namespace ForestReco
 		{
 			treePointExtent = pTreePointExtent;
 			peak = new CPeak(pPoint, treePointExtent);
+			//isValid = false;
 
 			if (CTreeManager.DEBUG) { CDebug.WriteLine("new tree " + pTreeIndex); }
 
@@ -394,31 +398,76 @@ namespace ForestReco
 
 		//BOOLS
 
+		public bool Validate()
+		{
+			isValid = ValidateScale() && ValidateBranches();
+			return isValid;
+		}
+
+		/// <summary>
+		/// Checks if all branches have good scale ration with its opposite branch
+		/// </summary>
+		private bool ValidateScale()
+		{
+			//if (isFake) { return false; }
+			if (Equals(50))
+			{
+				CDebug.WriteLine("");
+			}
+
+			foreach (CBranch b in branches)
+			{
+				if (b.GetPointCount() == 0) { return false; }
+			}
+
+			for (int i = 0; i < Branches.Count / 2; i++)
+			{
+				float br1Scale = Branches[i].furthestPointDistance;
+				CBranch oppositeBranch = Branches[i + Branches.Count / 2];
+				float br2Scale = oppositeBranch.furthestPointDistance;
+				float branchIScaleRatio = br1Scale / br2Scale;
+
+				if (br1Scale > 0.5f && br2Scale > 0.5f)
+				{
+					continue;
+				}
+
+				//ideal scale ratio = 1
+				//if X > Y => scaleRatio > 1
+				float idealScaleOffset = Math.Abs(1 - branchIScaleRatio);
+				if (Math.Abs(idealScaleOffset) > 0.5f)
+				{
+					//isValidScale = false;
+					return false;
+				}
+			}
+			//isValidScale = true;
+			return true;
+		}
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.
 		/// pAllBranchDefined = if one of branches is not defined => tree is not valid.
 		/// All trees touching the boundaries should be eliminated by this
 		/// </summary>
-		public bool Validate(bool pAllBranchDefined)
+		private bool ValidateBranches()
 		{
-			//if (isFake) { return false; }
-
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
 			{
 				float branchFactor = b.GetDefinedFactor();
-				if (pAllBranchDefined && Math.Abs(branchFactor) < 0.1f)
+				if (Math.Abs(branchFactor) < 0.1f)
 				{
-					isValid = false;
+					//isValidBranches = false;
 					return false;
 				}
 				branchDefinedFactor += branchFactor;
 			}
 			float validFactor = branchDefinedFactor / branches.Count;
 			//CDebug.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
-			isValid = validFactor > 0.5f;
-			return isValid;
+			//isValidBranches = validFactor > 0.5f;
+			return validFactor > 0.5f;
+			//return isValid;
 		}
 
 		public override bool Contains(Vector3 pPoint)
