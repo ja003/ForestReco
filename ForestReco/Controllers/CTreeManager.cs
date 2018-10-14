@@ -341,36 +341,37 @@ namespace ForestReco
 					//CDebug.WriteLine("Tree was deleted");
 					continue;
 				}
-				CTree tree = Trees[i];
-				if (tree.treeIndex == 406)
-				{
-					CDebug.WriteLine("__");
-				}
+				CTree treeToMerge = Trees[i];
+				
 
 				//if (CProjectData.mergeOnlyInvalidTrees && tree.isValid) { continue; }
 
-				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.ClosestHigher);
-				Vector3 pPoint = tree.peak.Center;
+				List<CTree> possibleTrees = GetPossibleTreesFor(treeToMerge, EPossibleTreesMethos.ClosestHigher);
+				Vector3 pPoint = treeToMerge.peak.Center;
 				float bestAddPointFactor = 0;
 				CTree selectedTree = null;
-				foreach (CTree t in possibleTrees)
+				foreach (CTree possibleTree in possibleTrees)
 				{
 					if (CProjectData.mergeOnlyInvalidTrees)
 					{
 						//todo: seems better this way. test
-						if (tree.isValid && t.isValid) { continue; }
+						if (treeToMerge.isValid && possibleTree.isValid) { continue; }
+					}
+					if (treeToMerge.treeIndex == 68)
+					{
+						CDebug.WriteLine("__");
 					}
 
-					float addPointFactor = t.GetAddPointFactor(pPoint, true);
+					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true);
 					if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
 					{
-						selectedTree = t;
+						selectedTree = possibleTree;
 						bestAddPointFactor = addPointFactor;
 					}
 				}
 				if (selectedTree != null)
 				{
-					tree = MergeTrees(ref tree, ref selectedTree);
+					treeToMerge = MergeTrees(ref treeToMerge, ref selectedTree);
 				}
 			}
 		}
@@ -498,7 +499,7 @@ namespace ForestReco
 			BranchDefine
 		}
 
-		public static void ValidateTrees(bool pCathegorize)
+		public static void ValidateTrees(bool pCathegorize, bool pRestrictive)
 		{
 			CDebug.WriteLine("Detect invalid trees", true);
 
@@ -514,7 +515,7 @@ namespace ForestReco
 				//		tree.ValidateScale();
 				//		break;
 				//}
-				bool isValid = tree.Validate();
+				bool isValid = tree.Validate(pRestrictive);
 
 				if (!isValid)
 				{

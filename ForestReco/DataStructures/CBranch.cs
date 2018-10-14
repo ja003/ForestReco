@@ -58,9 +58,9 @@ namespace ForestReco
 		/// <summary>
 		/// Calculates factor, showing how much does given point fit to this branch.
 		/// Range = 0-1. 1 = best fit.
-		/// pUseDistToPeakDiff = uses criterium of pUseDistToPeakDiff (viz GetAddPointFactorInRefTo)
+		/// pMerging = uses criterium of pUseDistToPeakDiff (viz GetAddPointFactorInRefTo)
 		/// </summary>
-		public float GetAddPointFactor(Vector3 pPoint, bool pUseDistToPeakDiff)
+		public float GetAddPointFactor(Vector3 pPoint, bool pMerging)
 		{
 			//Vector3 referencePoint = GetClosestPointTo(pPoint, 5);
 
@@ -72,12 +72,12 @@ namespace ForestReco
 			//}
 
 			Vector3 refPoint1 = furthestPoint;
-			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, pUseDistToPeakDiff);
+			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, pMerging);
 			float bestFactor = refPoint1Factor;
 			if (bestFactor > .99f) { return bestFactor; }
 
 			Vector3 refPoint2 = GetNeigbourBranch(1).furthestPoint;
-			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, pUseDistToPeakDiff);
+			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, pMerging);
 			if (refPoint2Factor > bestFactor)
 			{
 				bestFactor = refPoint2Factor;
@@ -85,7 +85,7 @@ namespace ForestReco
 			}
 
 			Vector3 refPoint3 = GetNeigbourBranch(-1).furthestPoint;
-			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, pUseDistToPeakDiff);
+			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, pMerging);
 			if (refPoint3Factor > bestFactor)
 			{
 				bestFactor = refPoint3Factor;
@@ -138,9 +138,10 @@ namespace ForestReco
 			return TreePoints.Count == 0 ? tree.peak.Center : TreePoints.Last().Center;
 		}
 
-		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pIsTreeProcessed)
+		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pMerging)
 		{
-			if (pPoint.Y > pReferencePoint.Y)
+			//during merging it is expected, that added peak will be higher
+			if (!pMerging && pPoint.Y > pReferencePoint.Y)
 			{
 				//points are added in descending order. if true => pPoint belongs to another tree
 				return 0;
@@ -158,11 +159,11 @@ namespace ForestReco
 				return 1;
 			}
 			float distToPeakDiff = pointDistToPeak - refDistToPeak;
-			if (!pIsTreeProcessed && distToPeakDiff < 0.3)
+			if (!pMerging && distToPeakDiff < 0.3)
 			{
 				return 1;
 			}
-			if (!pIsTreeProcessed && distToPeakDiff > 0.5f)
+			if (!pMerging && distToPeakDiff > 0.5f)
 			{
 				float peakRefPointAngle = CUtils.AngleBetweenThreePoints(tree.peak.Center, pReferencePoint, pPoint);
 				//todo: check this criterium
@@ -200,7 +201,7 @@ namespace ForestReco
 
 			//const float unacceptableDistance = CTreeManager.DEFAULT_TREE_EXTENT * 3;
 			float unacceptableDistance = tree.GetTreeExtentFor(pPoint,
-				pIsTreeProcessed ? CTreeManager.TREE_EXTENT_MERGE_MULTIPLY : 1);
+				pMerging ? CTreeManager.TREE_EXTENT_MERGE_MULTIPLY : 1);
 			unacceptableDistance += 0.5f;
 			if (pointDistToPeak > unacceptableDistance) { return 0; }
 			unacceptableDistance += 0.5f;
@@ -208,7 +209,7 @@ namespace ForestReco
 
 			float totalFactor;
 
-			if (pIsTreeProcessed)
+			if (pMerging)
 			{
 				totalFactor = (angleFactor + distFactor + .5f * distToPeakDiffFactor) / 2.5f;
 			}

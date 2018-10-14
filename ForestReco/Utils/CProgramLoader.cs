@@ -119,7 +119,7 @@ namespace ForestReco
 			//dont move invalid trees to invalid list yet, some invalid trees will be merged
 			if (CProjectData.validateTrees)
 			{
-				CTreeManager.ValidateTrees(false);
+				CTreeManager.ValidateTrees(false, false);
 			}
 
 			if (CProjectData.tryMergeTrees)
@@ -132,7 +132,7 @@ namespace ForestReco
 			//cathegorize invalid trees
 			if (CProjectData.validateTrees)
 			{
-				CTreeManager.ValidateTrees(true);
+				CTreeManager.ValidateTrees(true, false);
 			}
 			
 

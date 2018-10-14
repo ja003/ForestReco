@@ -29,7 +29,7 @@ namespace ForestReco
 
 		public Vector3 possibleNewPoint;
 
-		public int treeIndex;
+		public int treeIndex { get; protected set; }
 		//public bool isPeakInvalid;
 
 		public List<Vector3> Points = new List<Vector3>();
@@ -117,11 +117,33 @@ namespace ForestReco
 			return false;
 		}*/
 
-		public float GetAddPointFactor(Vector3 pPoint, bool pUseDistToPeakDiff)
+		/// <summary>
+		/// pMerging is used during merging process
+		/// </summary>
+		public float GetAddPointFactor(Vector3 pPoint, bool pMerging)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
+			if (!pMerging)
+			{
+				//if (GetTreeExtentFor(pPoint, 1) < CUtils.Get2DDistance(pPoint, peak.Center))
+				if (CTreeManager.BASE_TREE_EXTENT < CUtils.Get2DDistance(pPoint, peak.Center))
+				{
+					return 0;
+				}
+			}
+			//float peakPointHeightDiff = peak.Center.Y - pPoint.Y;
+			//if (peakPointHeightDiff < 1)
+			else
+			{
+				float peakPointDist = CUtils.Get2DDistance(pPoint, peak.Center);
+				if (peakPointDist > GetTreeExtentFor(pPoint, 1))
+				{
+					return 0;
+				}
+			}
+
 			CBranch branchForPoint = GetBranchFor(pPoint);
-			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pUseDistToPeakDiff);
+			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pMerging);
 			return branchFactor;
 		}
 
@@ -141,7 +163,8 @@ namespace ForestReco
 
 		public void MergeWith(CTree pSubTree)
 		{
-			if (CTreeManager.DEBUG || treeIndex == 7058)
+			int debugIndex = -1;
+			if (CTreeManager.DEBUG || Equals(debugIndex) || pSubTree.Equals(debugIndex))
 			{
 				CDebug.WriteLine(this.ToString(EDebug.Peak) + " MergeWith " + pSubTree.ToString(EDebug.Peak));
 			}
@@ -398,9 +421,13 @@ namespace ForestReco
 
 		//BOOLS
 
-		public bool Validate()
+		public bool Validate(bool pRestrictive)
 		{
-			isValid = ValidateScale() && ValidateBranches();
+			if (pRestrictive)
+			{ isValid = ValidateScale() && ValidateBranches(); }
+			else
+			{ isValid = ValidateScale() || ValidateBranches(); }
+
 			return isValid;
 		}
 
