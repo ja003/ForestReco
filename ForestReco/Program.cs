@@ -46,7 +46,7 @@ namespace ForestReco
 			CProjectData.exportSimpleTreeModel = false;
 			CProjectData.validateTrees = true;
 			//merge
-			CProjectData.tryMergeTrees = true;
+			CProjectData.tryMergeTrees = false;
 			CProjectData.mergeOnlyInvalidTrees = true;
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
@@ -62,7 +62,7 @@ namespace ForestReco
 			CProjectData.exportRefTrees = true;
 
 			//CHECK TREES
-			CProjectData.loadCheckTrees = true;
+			CProjectData.loadCheckTrees = false;
 			CProjectData.exportCheckTrees = true;
 
 			//source xyz-files
@@ -81,8 +81,8 @@ namespace ForestReco
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
-			CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
+			//CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
+			//CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
 
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";

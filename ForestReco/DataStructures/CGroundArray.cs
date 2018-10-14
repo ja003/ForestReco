@@ -161,7 +161,7 @@ namespace ForestReco
 			CDebug.WriteLine("FilterFakeVegePoints", true);
 			CProjectData.vegePoints.Clear();
 
-			float averageHeight = GetAverageVegeHeight();
+			float averageHeight = GetAveragePreProcessVegeHeight();
 			CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
 
 			foreach (CGroundField field in fields)
@@ -173,10 +173,16 @@ namespace ForestReco
 			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
 		}
 
+		//range of vege height that will be counted in average vege height
+		//reason is to restrict undefined or too outOfNorm values to affect average height
+		const float MIN_PREPROCESS_VEGE_HEIGHT = 10;
+		const float MAX_PREPROCESS_VEGE_HEIGHT = 30;
+		const float PREPROCESS_VEGE_HEIGHT_OFFSET = 1;
+
 		/// <summary>
 		/// TODO: count weighted average. areas with no trees affect average height 
 		/// </summary>
-		private float GetAverageVegeHeight()
+		private float GetAveragePreProcessVegeHeight()
 		{
 			float sumHeight = 0;
 			int definedCount = 0;
@@ -186,8 +192,18 @@ namespace ForestReco
 				float? preProcessVegeHeight = field.MaxPreProcessVege;
 				if (preProcessVegeHeight != null && groundHeight != null)
 				{
-					sumHeight += (float)preProcessVegeHeight - (float)groundHeight;
-					definedCount++;
+					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
+					if (vegeHeight > MIN_PREPROCESS_VEGE_HEIGHT && vegeHeight < MAX_PREPROCESS_VEGE_HEIGHT)
+					//if (vegeHeight > CTreeManager.AVERAGE_MAX_TREE_HEIGHT - PREPROCESS_VEGE_HEIGHT_OFFSET &&
+					//	vegeHeight < CTreeManager.AVERAGE_MAX_TREE_HEIGHT + PREPROCESS_VEGE_HEIGHT_OFFSET)
+					{
+						sumHeight += vegeHeight;
+						definedCount++;
+					}
+					else
+					{
+						CDebug.Warning(field + " = " + vegeHeight);
+					}
 				}
 			}
 			return sumHeight / definedCount;

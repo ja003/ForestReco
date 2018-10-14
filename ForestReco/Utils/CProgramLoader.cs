@@ -137,7 +137,6 @@ namespace ForestReco
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
-			CDebug.Count("FakeTrees", CTreeManager.FakeTrees.Count);
 
 			if (CProjectData.assignRefTrees)
 			{

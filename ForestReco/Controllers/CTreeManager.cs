@@ -10,7 +10,7 @@ namespace ForestReco
 	{
 		public static List<CTree> Trees { get; } = new List<CTree>();
 		public static List<CTree> InvalidTrees { get; } = new List<CTree>();
-		public static List<CTree> FakeTrees { get; } = new List<CTree>();
+		//public static List<CTree> FakeTrees { get; } = new List<CTree>();
 
 		public static List<Vector3> invalidVegePoints = new List<Vector3>();
 
@@ -25,6 +25,9 @@ namespace ForestReco
 		public static int MIN_TREE_POINT_COUNT = 20;
 
 		public static float MIN_FAKE_TREE_HEIGHT = 20;
+
+		public static float AVERAGE_MAX_TREE_HEIGHT = 20;
+
 
 
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
