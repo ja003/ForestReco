@@ -12,18 +12,18 @@ namespace ForestReco
 	{
 		public static List<CCheckTree> Trees = new List<CCheckTree>();
 		public static string checkFileName;
-		
+
 		public static void Init()
 		{
 			if (CProjectData.loadCheckTrees)
 			{
 				LoadTrees(checkFileName);
 			}
-			
+
 			AssignTrees();
 
 			CProjectData.array.DebugCheckTrees();
-			
+
 			if (CProjectData.exportCheckTrees)
 			{
 				CObjPartition.AddCheckTrees(false);
@@ -32,24 +32,36 @@ namespace ForestReco
 
 		public static void AssignTrees()
 		{
-			foreach (CCheckTree tree in Trees)
+			foreach (CCheckTree checkTree in Trees)
 			{
-				Vector3 treePosition = tree.position;
+				Vector3 treePosition = checkTree.position;
 				List<CTree> possibleTrees = CTreeManager.GetPossibleTreesFor(treePosition, CTreeManager.EPossibleTreesMethos.ClosestHigher);
 
-				if (tree.index == 529)
+				if (checkTree.index == 529)
 				{
 					//CDebug.WriteLine("");
 				}
 
 				if (possibleTrees.Count > 0)
 				{
-					foreach(CTree possibleTree in possibleTrees){
+					foreach (CTree possibleTree in possibleTrees)
+					{
 						float distToTree = CUtils.Get2DDistance(treePosition, possibleTree.peak.Center);
-						
-						if (possibleTree.isValid && possibleTree.assignedCheckTree == null && distToTree < CTreeManager.BASE_TREE_EXTENT)
+
+						if (possibleTree.assignedCheckTree != null)
 						{
-							tree.AssignTree(possibleTree);
+							//this checkTree is closer to tree than its current checkTree 
+							if (distToTree < CUtils.Get2DDistance(possibleTree.assignedCheckTree.position, possibleTree.peak.Center))
+							{
+								possibleTree.assignedCheckTree.AssignTree(null);
+								checkTree.AssignTree(possibleTree);
+								break;
+							}
+						}
+
+						else if (possibleTree.isValid  && distToTree < CTreeManager.BASE_TREE_EXTENT)
+						{
+							checkTree.AssignTree(possibleTree);
 							break;
 						}
 					}
@@ -80,7 +92,7 @@ namespace ForestReco
 
 			CDebug.Duration("Load check trees", loadTreesStartTime);
 		}
-		
+
 		private static void AddNewTree(Tuple<int, Vector3> pParsedLine)
 		{
 			CCheckTree newTree = new CCheckTree(pParsedLine.Item1, pParsedLine.Item2, Trees.Count);

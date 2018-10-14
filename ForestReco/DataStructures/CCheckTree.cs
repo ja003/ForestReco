@@ -37,7 +37,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return index + " - "+ treeClass + " : " + position + (assignedTree == null ? "" : "+");
+			return index + " - " + treeClass + " : " + position + (assignedTree == null ? "" : "+");
 		}
 
 		public enum EClass
@@ -51,7 +51,7 @@ namespace ForestReco
 		public void AssignTree(CTree pTree)
 		{
 			assignedTree = pTree;
-			pTree.assignedCheckTree = this;
+			if (pTree != null) { pTree.assignedCheckTree = this; }
 			//CDebug.WriteLine("Assign to " + this);
 		}
 	}

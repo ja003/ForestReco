@@ -331,18 +331,20 @@ namespace ForestReco
 		/// </summary>
 		public void DebugCheckTrees()
 		{
-			int assignedCheckTreesCOunt = 0;
+			int assignedCheckTreesCount = 0;
+			int totalCheckTreesCount = 0;
 			foreach (CGroundField f in fields)
 			{
 				foreach (CCheckTree tree in f.CheckTrees)
 				{
 					if (tree.assignedTree != null)
 					{
-						assignedCheckTreesCOunt++;
+						assignedCheckTreesCount++;
 					}
+					totalCheckTreesCount++;
 				}
 			}
-			CDebug.Count("assigned checkTrees", assignedCheckTreesCOunt);
+			CDebug.Count("assigned checkTrees", assignedCheckTreesCount, totalCheckTreesCount);
 		}
 
 		public void AddCheckTree(ref CCheckTree pCheckTree)

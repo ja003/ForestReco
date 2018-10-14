@@ -269,7 +269,7 @@ namespace ForestReco
 				foreach (CTree possibleTree in possibleTrees)
 				{
 					if (possibleTree.Equals(pExcludeTree)) { continue; }
-					if (possibleTree.isFake) { continue; }
+					//if (possibleTree.isFake) { continue; }
 					//we dont want trees that are lower than given point
 					if (possibleTree.peak.Center.Y < pPoint.Y) { continue; }
 
@@ -509,15 +509,8 @@ namespace ForestReco
 
 					if (pCathegorize)
 					{
-						if (tree.isFake)
-						{
-							FakeTrees.Add(tree);
-						}
-						else
-						{
-							InvalidTrees.Add(tree);
-							Trees.RemoveAt(i);
-						}
+						InvalidTrees.Add(tree);
+						Trees.RemoveAt(i);
 					}
 				}
 			}

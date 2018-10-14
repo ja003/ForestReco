@@ -9,9 +9,9 @@ namespace ForestReco
 	public static class CDebug
 	{
 
-		public static void Count(string pText, int pCount)
+		public static void Count(string pText, int pCount, int pOutOf = -1)
 		{
-			WriteLine(pText + ": " + pCount);
+			WriteLine(pText + ": " + pCount + (pOutOf > 0 ? " out of " + pOutOf : ""));
 		}
 
 

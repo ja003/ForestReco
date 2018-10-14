@@ -22,7 +22,7 @@ namespace ForestReco
 			{
 				for (int y = 0; y < partitionYRange; y++)
 				{
-					objPartition[x,y] = new List<Obj>();
+					objPartition[x, y] = new List<Obj>();
 				}
 			}
 		}
@@ -48,7 +48,7 @@ namespace ForestReco
 						List<Vector3> fakePoints = new List<Vector3>();
 						for (int _x = x; _x < x + partitionStep; _x++)
 						{
-							for (int _y = y; _y < y+partitionStep; _y++)
+							for (int _y = y; _y < y + partitionStep; _y++)
 							{
 								CGroundField element = CProjectData.array.GetElement(_x, _y);
 								if (element != null)
@@ -73,8 +73,8 @@ namespace ForestReco
 				}
 			}
 		}
-		
-		public static void AddTrees(bool pValid, bool pFake)
+
+		public static void AddTrees(bool pValid)//, bool pFake)
 		{
 			List<Tuple<Tuple<int, int>, CTree>> treesToExport = new List<Tuple<Tuple<int, int>, CTree>>();
 
@@ -85,29 +85,23 @@ namespace ForestReco
 				//f.DetectedTrees.Sort((x, y) => x.treeIndex.CompareTo(y.treeIndex));
 				foreach (CTree t in f.DetectedTrees)
 				{
-					if(t.Equals(13)){
+					if (t.Equals(13))
+					{
 						CDebug.WriteLine("");
 					}
 
-					if (!pFake)
-					{
-						if (!t.isFake && t.isValid == pValid)
-						{
-							treesToExport.Add(new Tuple<Tuple<int, int>, CTree>(f.indexInField, t));
-						}
-					}
-					else if (t.isFake == pFake)
+					if (t.isValid == pValid)
 					{
 						treesToExport.Add(new Tuple<Tuple<int, int>, CTree>(f.indexInField, t));
 					}
 				}
 			}
-			treesToExport.Sort((x,y) => x.Item2.treeIndex.CompareTo(y.Item2.treeIndex));
+			treesToExport.Sort((x, y) => x.Item2.treeIndex.CompareTo(y.Item2.treeIndex));
 			foreach (Tuple<Tuple<int, int>, CTree> exportTree in treesToExport)
 			{
 				Obj obj = exportTree.Item2.GetObj(true, false);
-				if (!pValid) { obj.UseMtl = CMaterialManager.GetInvalidMaterial();}
-				if (pFake) { obj.UseMtl = CMaterialManager.GetFakeMaterial(); }
+				if (!pValid) { obj.UseMtl = CMaterialManager.GetInvalidMaterial(); }
+				//if (pFake) { obj.UseMtl = CMaterialManager.GetFakeMaterial(); }
 
 				AddObj(exportTree.Item1, obj);
 			}
@@ -144,7 +138,7 @@ namespace ForestReco
 			{
 				foreach (CCheckTree tree in CCheckTreeManager.Trees)
 				{
-					AddToPartiotion(tree.GetObj(), new Tuple<int, int>(0,0));
+					AddToPartiotion(tree.GetObj(), new Tuple<int, int>(0, 0));
 				}
 			}
 		}

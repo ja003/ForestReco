@@ -177,10 +177,10 @@ namespace ForestReco
 		//GETTERS
 
 
-		public bool isFake;
-		const float MAX_POINTS_HEIGHT_DIFF = 1;
+		//public bool isFake;
+		//const float MAX_POINTS_HEIGHT_DIFF = 1;
 
-		public bool IsPeakValidWith(Vector3 pNewPoint)
+		/*public bool IsPeakValidWith(Vector3 pNewPoint)
 		{
 			if (peak.Includes(pNewPoint)) { return true; }
 			if(Points.Count - peak.Points.Count > 5){ return true; }
@@ -189,7 +189,7 @@ namespace ForestReco
 			return newPointLowestPointHeightDiff < MAX_POINTS_HEIGHT_DIFF;
 			//CBranch branch = GetBranchFor(pNewPoint);
 			//return branch.IsPeakValidWith(pNewPoint);
-		}
+		}*/
 
 		/// <summary>
 		/// Returns a branch with biggest number of tree points
@@ -346,7 +346,7 @@ namespace ForestReco
 			//if (CTreeManager.DEBUG) CDebug.WriteLine("GetObj " + pName);
 
 			string prefix = isValid ? "tree_" : "invalidTree_";
-			if (isFake) { prefix = "fake_"; }
+			//if (isFake) { prefix = "fake_"; }
 
 			Obj obj = new Obj(prefix + treeIndex);
 			obj.UseMtl = CMaterialManager.GetTreeMaterial(treeIndex);
@@ -402,7 +402,7 @@ namespace ForestReco
 		/// </summary>
 		public bool Validate(bool pAllBranchDefined)
 		{
-			if (isFake) { return false; }
+			//if (isFake) { return false; }
 
 			float branchDefinedFactor = 0;
 			foreach (CBranch b in branches)
