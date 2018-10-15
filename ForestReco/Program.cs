@@ -16,9 +16,9 @@ namespace ForestReco
 
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			//CPlatformManager.platform = EPlatform.Notebook;
+			CPlatformManager.platform = EPlatform.Notebook;
 			//CPlatformManager.platform = EPlatform.HomePC;
-			CPlatformManager.platform = EPlatform.Tiarra;
+			//CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
 			CProjectData.useMaxLines = false;
@@ -46,7 +46,7 @@ namespace ForestReco
 			CProjectData.exportSimpleTreeModel = false;
 			CProjectData.validateTrees = true;
 			//merge
-			CProjectData.tryMergeTrees = true;
+			CProjectData.tryMergeTrees = false;
 			CProjectData.mergeOnlyInvalidTrees = true;
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore

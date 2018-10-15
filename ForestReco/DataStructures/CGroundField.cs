@@ -568,7 +568,8 @@ namespace ForestReco
 		public override string ToString()
 		{
 			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center +
-				". Trees=" + DetectedTrees.Count + "/" + CheckTrees.Count;
+				". Trees=" + DetectedTrees.Count + "/" + CheckTrees.Count + 
+				"|" + fakePoints.Count + "/" + preProcessPoints.Count ;
 			//return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}
 

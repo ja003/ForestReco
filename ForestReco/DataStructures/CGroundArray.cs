@@ -164,6 +164,9 @@ namespace ForestReco
 			float averageHeight = GetAveragePreProcessVegeHeight();
 			CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
 
+			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
+			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
+
 			foreach (CGroundField field in fields)
 			{
 				field.FilterFakeVegePoints(averageHeight);
@@ -182,7 +185,7 @@ namespace ForestReco
 		/// <summary>
 		/// TODO: count weighted average. areas with no trees affect average height 
 		/// </summary>
-		private float GetAveragePreProcessVegeHeight()
+		private int GetAveragePreProcessVegeHeight()
 		{
 			float sumHeight = 0;
 			int definedCount = 0;
@@ -206,7 +209,8 @@ namespace ForestReco
 					}
 				}
 			}
-			return sumHeight / definedCount;
+			//round to int so the result is same in most of the situatiuons (problem with float percision)
+			return (int)(sumHeight / definedCount);
 		}
 
 		public void SetHeight(float pHeight, int pXindex, int pYindex)
@@ -223,10 +227,18 @@ namespace ForestReco
 			//FillMissingHeights(CGroundField.EFillMethod.ClosestDefined);
 		}
 
+		//todo: dont use during testing, otherwise result is nondeterministic
+		bool useRandomForGroundSmoothing = false;
+
 		public void SmoothenArray(int pKernelMultiplier)
 		{
 			List<CGroundField> fieldsRandom = fields;
-			fieldsRandom.Shuffle();
+
+			//todo: dont use during testing, otherwise result is nondeterministic
+			if (useRandomForGroundSmoothing)
+			{
+				fieldsRandom.Shuffle();
+			}
 
 			//prepare gauss kernel
 			int kernelSize = KernelSize;
@@ -267,7 +279,11 @@ namespace ForestReco
 		private void FillMissingHeights(CGroundField.EFillMethod pMethod, int pKernelMultiplier)
 		{
 			List<CGroundField> fieldsRandom = fields;
-			fieldsRandom.Shuffle();
+			if (useRandomForGroundSmoothing)
+			{
+				fieldsRandom.Shuffle();
+			}
+
 			foreach (CGroundField el in fieldsRandom)
 			{
 				if (!el.IsDefined())

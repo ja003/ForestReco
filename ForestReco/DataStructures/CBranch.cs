@@ -488,6 +488,8 @@ namespace ForestReco
 
 		public float GetDefinedFactor()
 		{
+			
+
 			if (TreePoints.Count == 0)
 			{
 				return 0;
@@ -509,7 +511,9 @@ namespace ForestReco
 
 			float height = tree.GetTreeHeight();
 			float distLowestToPeak = Vector3.Distance(TreePoints.Last().Center, tree.peak.Center);
-			distLowestToPeak += 5; //first meters from ground is not well defined
+			//distLowestToPeak += 5; //first meters from ground is not well defined
+			distLowestToPeak += GetMinDefinedHeightOffset(height);
+
 			distLowestToPeak = Math.Min(height, distLowestToPeak);
 			float lowestPointRatio = distLowestToPeak / height;
 
@@ -520,6 +524,12 @@ namespace ForestReco
 
 			float factor = (lowestPointRatio + pointCountRatio) / 2;
 			return factor;
+		}
+
+		private float GetMinDefinedHeightOffset(float pTreeHeight)
+		{
+			float offset = 5 + pTreeHeight / CTreeManager.AVERAGE_TREE_HEIGHT;
+			return offset;
 		}
 	}
 }

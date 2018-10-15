@@ -423,10 +423,20 @@ namespace ForestReco
 
 		public bool Validate(bool pRestrictive)
 		{
-			if (pRestrictive)
-			{ isValid = ValidateScale() && ValidateBranches(); }
-			else
-			{ isValid = ValidateScale() || ValidateBranches(); }
+			if (Equals(debugTree))
+			{
+				Console.WriteLine("");
+			}
+			isValid = ValidateBranches(pRestrictive);
+			if (Equals(debugTree))
+			{
+				CDebug.WriteLine(isValid + " Validate " + this);
+			}
+
+			//if (pRestrictive)
+			//{ isValid = ValidateScale() && ValidateBranches(); }
+			//else
+			//{ isValid = ValidateScale() || ValidateBranches(); }
 
 			return isValid;
 		}
@@ -472,25 +482,45 @@ namespace ForestReco
 			return true;
 		}
 
+		private int debugTree = 26;
+
 		/// <summary>
 		/// Determines whether the tree is defined enough.
 		/// pAllBranchDefined = if one of branches is not defined => tree is not valid.
 		/// All trees touching the boundaries should be eliminated by this
 		/// </summary>
-		private bool ValidateBranches()
+		private bool ValidateBranches(bool pAllBranchesDefined)
 		{
+			if (Equals(debugTree))
+			{
+				Console.WriteLine("");
+			}
 			float branchDefinedFactor = 0;
+			int undefinedBranchesCount = 0;
+			
 			foreach (CBranch b in branches)
 			{
 				float branchFactor = b.GetDefinedFactor();
+				if (Equals(debugTree))
+				{
+					CDebug.WriteLine(b + "-- branchFactor " + branchFactor);
+				}
+
 				if (Math.Abs(branchFactor) < 0.1f)
 				{
 					//isValidBranches = false;
-					return false;
+					if (pAllBranchesDefined)
+					{
+						return false;
+					}
+					undefinedBranchesCount++;
+					continue;
 				}
 				branchDefinedFactor += branchFactor;
 			}
-			float validFactor = branchDefinedFactor / branches.Count;
+			if (undefinedBranchesCount > 2) { return false;}
+
+			float validFactor = branchDefinedFactor / (branches.Count - undefinedBranchesCount);
 			//CDebug.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
 			//isValidBranches = validFactor > 0.5f;
 			return validFactor > 0.5f;
@@ -635,7 +665,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return ToString(true, true, true, false, true, true, true);
+			return ToString(EDebug.Index);
 		}
 
 		public string ToString(EDebug pDebug)
@@ -644,6 +674,7 @@ namespace ForestReco
 			{
 				case EDebug.Height: return ToString(true, false, false, false, false, false, true);
 				case EDebug.Peak: return ToString(true, false, true, false, false, false, false);
+				case EDebug.Index: return ToString(true, false, false, false, false, false, false);
 
 			}
 			return ToString();
@@ -652,12 +683,13 @@ namespace ForestReco
 		public enum EDebug
 		{
 			Height,
-			Peak
+			Peak,
+			Index
 		}
 
 		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree, bool pValid, bool pHeight)
 		{
-			string indexS = pIndex ? treeIndex.ToString("000") : "";
+			string indexS = pIndex ? treeIndex.ToString("000")+"-" + groundField.ToStringIndex() : "";
 			string pointsS = pPoints ? (" [" + GetAllPoints().Count.ToString("000") + "]") : "";
 			string validS = pValid ? (isValid ? "|<+>" : "<->") : "";
 			string peakS = pPeak ? "||peak = " + peak : "";

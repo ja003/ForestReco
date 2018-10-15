@@ -73,7 +73,7 @@ namespace ForestReco
 				}
 			}
 		}
-
+		
 		public static void AddTrees(bool pValid)//, bool pFake)
 		{
 			List<Tuple<Tuple<int, int>, CTree>> treesToExport = new List<Tuple<Tuple<int, int>, CTree>>();
@@ -163,7 +163,7 @@ namespace ForestReco
 			objPartition[pIndex.Item1, pIndex.Item2].Add(pObj);
 		}
 
-		public static void ExportPartition()
+		public static void ExportPartition(string pFileSuffix = "")
 		{
 			string folderPath = CObjExporter.CreateFolder(CProjectData.saveFileName);
 			int counter = 0;
@@ -176,7 +176,8 @@ namespace ForestReco
 				for (int y = 0; y < partitionYRange; y++)
 				{
 					counter++;
-					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName + "_[" + x + "," + y + "]", folderPath);
+					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName + 
+						"_[" + x + "," + y + "]" + pFileSuffix, folderPath);
 
 					CDebug.Progress(counter, partsCount, debugFrequency, ref previousDebugStart, "Export of part");
 					//if (counter % debugFrequency == 0 && counter > 0)

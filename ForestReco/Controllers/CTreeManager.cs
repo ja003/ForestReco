@@ -342,7 +342,7 @@ namespace ForestReco
 					continue;
 				}
 				CTree treeToMerge = Trees[i];
-				
+
 
 				//if (CProjectData.mergeOnlyInvalidTrees && tree.isValid) { continue; }
 
@@ -350,12 +350,31 @@ namespace ForestReco
 				Vector3 pPoint = treeToMerge.peak.Center;
 				float bestAddPointFactor = 0;
 				CTree selectedTree = null;
+
+				if (treeToMerge.Equals(112))
+				{
+					Console.WriteLine("");
+				}
+
 				foreach (CTree possibleTree in possibleTrees)
 				{
 					if (CProjectData.mergeOnlyInvalidTrees)
 					{
 						//todo: seems better this way. test
-						if (treeToMerge.isValid && possibleTree.isValid) { continue; }
+						//if (treeToMerge.isValid && possibleTree.isValid)
+						//{
+						//	//const float minPeakHeightDiffForMerge = 2;
+						//	////treeToMerge is always lower
+						//	//if (possibleTree.GetTreeHeight() - treeToMerge.GetTreeHeight() < minPeakHeightDiffForMerge)
+						//	{
+						//		continue;
+						//	}
+						//}
+
+						if (treeToMerge.isValid)
+						{
+							continue;
+						}
 					}
 					if (treeToMerge.treeIndex == 68)
 					{
@@ -484,11 +503,19 @@ namespace ForestReco
 			CTree higherTree = pTree1.peak.maxHeight.Y >= pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.maxHeight.Y < pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
 
-			//CDebug.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+			int index = 112;
+			if (pTree1.Equals(index) || pTree2.Equals(index))
+			{
+				CDebug.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
+
+			}
+
 			higherTree.MergeWith(lowerTree);
 			DeleteTree(lowerTree);
 			//Trees.Remove(lowerTree);
 			//lowerTree = null;
+
+			higherTree.Validate(true);
 
 			return higherTree;
 		}
@@ -560,6 +587,18 @@ namespace ForestReco
 			foreach (CTree t in Trees)
 			{
 				t.CheckTree();
+			}
+		}
+
+		public static void DebugTree(int pIndex)
+		{
+			foreach (CTree tree in Trees)
+			{
+				if (tree.treeIndex == pIndex)
+				{
+					CDebug.WriteLine("DebugTree " + tree);
+					return;
+				}
 			}
 		}
 	}

@@ -119,21 +119,47 @@ namespace ForestReco
 			//dont move invalid trees to invalid list yet, some invalid trees will be merged
 			if (CProjectData.validateTrees)
 			{
-				CTreeManager.ValidateTrees(false, false);
+				CTreeManager.ValidateTrees(false, true);
+			}
+
+			CTreeManager.DebugTree(43);
+			CTreeManager.DebugTree(220);
+
+
+			//export before merge
+			bool exportBeforeMerge = false;
+			if (exportBeforeMerge)
+			{
+				CObjPartition.AddTrees(true);
+				CObjPartition.AddTrees(false);
+				CObjPartition.ExportPartition("_noMerge");
+				CObjPartition.Init();
+				CObjPartition.AddArray();
 			}
 
 			if (CProjectData.tryMergeTrees)
 			{
 				CTreeManager.TryMergeAllTrees();
+
+				//cathegorize invalid trees
+				if (CProjectData.validateTrees)
+				{
+					//validate non-restrictive
+					CTreeManager.ValidateTrees(true, false);
+				}
+			}
+			else
+			{
+				//just during testing so validation doesnt change
+				if (CProjectData.validateTrees)
+				{
+					CTreeManager.ValidateTrees(true, true);
+				}
 			}
 
 			CTreeManager.CheckAllTrees();
 			
-			//cathegorize invalid trees
-			if (CProjectData.validateTrees)
-			{
-				CTreeManager.ValidateTrees(true, false);
-			}
+			
 			
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
