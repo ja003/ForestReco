@@ -80,7 +80,7 @@ namespace ForestReco
 			CProjectData.exportRefTreePoints = false; //to debug reftree shape. WARNING: BIG FILE
 
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
+			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
 			CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
 

@@ -19,7 +19,7 @@ namespace ForestReco
 		public List<Vector3> vegePoints = new List<Vector3>();
 		public List<Vector3> fakePoints = new List<Vector3>();
 		public List<Vector3> validPoints = new List<Vector3>();
-		
+
 		public List<Vector3> preProcessPoints = new List<Vector3>();
 
 		public float? MaxPreProcessVege;
@@ -166,6 +166,48 @@ namespace ForestReco
 		}
 
 		/// <summary>
+		/// Remove points, which were not filtered and dont have any close neighbour defined under them.
+		/// Apply only on a few top points. this criterium would discard the most of the lower valid points
+		/// </summary>
+		public void TryRemoveValidPoints()
+		{
+			bool tryRemoveValidPoints = true;
+			int validBefore = validPoints.Count;
+			validPoints.Sort((a, b) => a.Y.CompareTo(b.Y)); //sort ascending
+			int indexInvalid = -1;
+			if (tryRemoveValidPoints)
+			{
+				int maxRemoveCount = 5;
+				int minIndex = Math.Max(0, validPoints.Count - maxRemoveCount);
+				for (int i = validPoints.Count - 2; i >= minIndex; i--)
+				{
+					Vector3 validPoint = validPoints[i];
+					Vector3 previousValidPoint = validPoints[i + 1];
+					if (Vector3.Distance(validPoint, previousValidPoint) > 1)
+					{
+						indexInvalid = i;
+						break;
+					}
+				}
+			}
+
+			if (indexInvalid > 0)
+			{
+				List<Vector3> removedPoints = validPoints.GetRange(indexInvalid, validPoints.Count - indexInvalid);
+				fakePoints.AddRange(removedPoints);
+
+				validPoints.RemoveRange(indexInvalid, validPoints.Count - indexInvalid);
+			}
+			
+
+			int validAfter = validPoints.Count;
+			if (validAfter != validBefore)
+			{
+				//CDebug.Count(this + " devalidated ", validBefore - validAfter, validBefore);
+			}
+		}
+
+		/// <summary>
 		/// Checks if fake points are close to some valid point.
 		/// If so, the point is considered valid.
 		/// All valid points are added in vegePoints
@@ -201,26 +243,16 @@ namespace ForestReco
 							}
 							if (validated) { break; }
 						}
-						foreach (Vector3 validPoint in neighbour.validPoints)
-						{
-							if (Vector3.Distance(fakePoint, validPoint) < 0.6f)
-							{
-								fakePoints.RemoveAt(i);
-								validPoints.Add(fakePoint);
-								validated = true;
-							}
-							if (validated) { break; }
-						}
 						if (validated) { break; }
 					}
 				}
 			}
-			//int fakeAfter = fakePoints.Count;
-			//if (fakeAfter != fakeBefore)
-			//{
-			//	CDebug.Count(this + " validated ", fakeBefore - fakeAfter, fakeBefore);
-			//}
-			
+			int fakeAfter = fakePoints.Count;
+			if (fakeAfter != fakeBefore)
+			{
+				//CDebug.Count(this + " validated ", fakeBefore - fakeAfter, fakeBefore);
+			}
+
 			CProjectData.vegePoints.AddRange(validPoints);
 			CProjectData.fakePoints.AddRange(fakePoints);
 		}
@@ -235,7 +267,7 @@ namespace ForestReco
 			List<Vector3> okPoints = new List<Vector3>();
 			List<Vector3> nokPoints = new List<Vector3>();
 			float? groundHeight = GetHeight();
-			
+
 			Vector3 maxOkPoint = new Vector3(-666);
 			for (int i = 0; i < preProcessPoints.Count; i++)
 			{
@@ -253,7 +285,7 @@ namespace ForestReco
 					maxOkPoint = point;
 				}
 			}
-			
+
 			fakePoints = nokPoints;
 			validPoints = okPoints;
 			//CProjectData.vegePoints.AddRange(okPoints);

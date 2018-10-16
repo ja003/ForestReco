@@ -172,10 +172,17 @@ namespace ForestReco
 			float averageHeight = GetAveragePreProcessVegeHeight();
 			CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
 
+			//first filter points too much higher that average height
 			foreach (CGroundField field in fields)
 			{
 				field.FilterFakeVegePoints(averageHeight);
 			}
+			//than remove points, which were not filtered and dont have any close neighbour defined under them
+			foreach (CGroundField field in fields)
+			{
+				field.TryRemoveValidPoints();
+			}
+			//finally try add points, which were classified as fake, but are close to some valid point
 			foreach (CGroundField field in fields)
 			{
 				field.TryAddFakePoints();
