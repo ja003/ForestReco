@@ -482,7 +482,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private int debugTree = 178;
+		private int debugTree = 51;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.
@@ -497,7 +497,8 @@ namespace ForestReco
 			}
 			float branchDefinedFactor = 0;
 			int undefinedBranchesCount = 0;
-			
+			int wellDefinedBranchesCount = 0;
+
 			foreach (CBranch b in branches)
 			{
 				float branchFactor = b.GetDefinedFactor();
@@ -516,9 +517,14 @@ namespace ForestReco
 					undefinedBranchesCount++;
 					continue;
 				}
+				if (branchFactor > 0.5f)
+				{
+					wellDefinedBranchesCount++;
+				}
 				branchDefinedFactor += branchFactor;
 			}
 			if (undefinedBranchesCount > 2) { return false;}
+			if (wellDefinedBranchesCount > 2) { return true; }
 
 			float validFactor = branchDefinedFactor / (branches.Count - undefinedBranchesCount);
 			//CDebug.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);

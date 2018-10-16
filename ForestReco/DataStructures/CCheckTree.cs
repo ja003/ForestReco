@@ -29,14 +29,15 @@ namespace ForestReco
 
 			Obj obj = new Obj(name + "_" + index);
 			{
+				int lineWidthMultiply = 3;
 				float offsetHeight = 30;
 				if (assignedTree != null)
 				{
 					offsetHeight = assignedTree.GetTreeHeight() + 1;
-					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, 
-						assignedTree.peak.Center, 10);
+					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight,
+						assignedTree.peak.Center, lineWidthMultiply);
 				}
-				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, position,10);
+				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, position, lineWidthMultiply);
 
 				return obj;
 			}

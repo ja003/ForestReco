@@ -368,10 +368,7 @@ namespace ForestReco
 						//}
 
 
-						if (treeToMerge.Equals(153))
-						{
-							Console.WriteLine("");
-						}
+						
 
 						if (treeToMerge.isValid)
 						{
@@ -387,7 +384,32 @@ namespace ForestReco
 							//continue;
 						}
 					}
-					if (treeToMerge.treeIndex == 68)
+
+					if (treeToMerge.Equals(82))
+					{
+						Console.WriteLine("");
+					}
+
+					if (treeToMerge.isValid)
+					{
+						//const float minPeakHeightDiffForMerge = 4;
+						////treeToMerge is always lower
+						//float possibleTreeHeight = possibleTree.GetTreeHeight();
+						//float treeToMergeHeight = treeToMerge.GetTreeHeight();
+						//if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
+						//{
+						//	continue;
+						//}
+
+						const float maxPeaksDistance = 1;
+						float peaksDist = CUtils.Get2DDistance(treeToMerge.peak, possibleTree.peak);
+						if (peaksDist > maxPeaksDistance)
+						{
+							continue;
+						}
+					}
+
+					if (treeToMerge.treeIndex == 83)
 					{
 						CDebug.WriteLine("__");
 					}
@@ -526,7 +548,7 @@ namespace ForestReco
 			//Trees.Remove(lowerTree);
 			//lowerTree = null;
 
-			higherTree.Validate(true);
+			higherTree.Validate(false);
 
 			return higherTree;
 		}

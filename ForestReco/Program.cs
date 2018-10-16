@@ -23,7 +23,7 @@ namespace ForestReco
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative
 			CProjectData.useMaxLines = false;
 
-			CObjPartition.partitionStep = 40;
+			CObjPartition.partitionStep = 45;
 
 			//Input params
 			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
@@ -46,8 +46,10 @@ namespace ForestReco
 			CProjectData.exportSimpleTreeModel = false;
 			CProjectData.validateTrees = true;
 			//merge
-			CProjectData.tryMergeTrees = true;
-			CProjectData.mergeOnlyInvalidTrees = true;
+			CProjectData.tryMergeTrees = false;
+			//CProjectData.exportBeforeMerge = true;
+			CProjectData.mergeOnlyInvalidTrees = false;
+
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore
 			CProjectData.mergeBelongingTrees = false; //todo: not used anymore
 			CProjectData.mergeGoodAddFactorTrees = true;
@@ -83,6 +85,7 @@ namespace ForestReco
 			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
 			//CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
+			CProgramLoader.fileName = "BK_1000AGL_helpTreeRange_02_32";
 
 			//CProgramLoader.fileName = "BK_1000AGL_classified";
 			//CProgramLoader.fileName = "R7_F_1+2";

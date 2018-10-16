@@ -34,6 +34,9 @@ namespace ForestReco
 		public static bool processTrees;
 		public static bool tryMergeTrees;
 		public static bool mergeOnlyInvalidTrees;
+		public static bool exportBeforeMerge;
+
+
 		public static bool mergeContaingTrees; 
 		public static bool mergeBelongingTrees; 
 		public static bool mergeGoodAddFactorTrees;

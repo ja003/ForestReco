@@ -72,12 +72,12 @@ namespace ForestReco
 			//}
 
 			Vector3 refPoint1 = furthestPoint;
-			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, pMerging);
+			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, true, pMerging);
 			float bestFactor = refPoint1Factor;
 			if (bestFactor > .99f) { return bestFactor; }
 
 			Vector3 refPoint2 = GetNeigbourBranch(1).furthestPoint;
-			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, pMerging);
+			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, false, pMerging);
 			if (refPoint2Factor > bestFactor)
 			{
 				bestFactor = refPoint2Factor;
@@ -85,12 +85,12 @@ namespace ForestReco
 			}
 
 			Vector3 refPoint3 = GetNeigbourBranch(-1).furthestPoint;
-			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, pMerging);
+			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, false, pMerging);
 			if (refPoint3Factor > bestFactor)
 			{
 				bestFactor = refPoint3Factor;
 			}
-			
+
 			return bestFactor;
 		}
 
@@ -119,8 +119,12 @@ namespace ForestReco
 			return tree.Branches[neighbourBranchIndex];
 		}
 
-		private Vector3 GetClosestPointTo(Vector3 pPoint, int pMaxIterationCount)
+		private Vector3 GetClosestPointTo(Vector3 pPoint, int pMaxIterationCount = -1)
 		{
+			if (pMaxIterationCount == -1)
+			{
+				pMaxIterationCount = TreePoints.Count;
+			}
 			Vector3 closestPoint = tree.peak.Center;
 			for (int i = TreePoints.Count - 1; i > TreePoints.Count - pMaxIterationCount; i--)
 			{
@@ -134,11 +138,12 @@ namespace ForestReco
 		}
 
 
-		private Vector3 GetLastPoint(){
+		private Vector3 GetLastPoint()
+		{
 			return TreePoints.Count == 0 ? tree.peak.Center : TreePoints.Last().Center;
 		}
 
-		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pMerging)
+		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pSameBranch, bool pMerging)
 		{
 			//during merging it is expected, that added peak will be higher
 			if (!pMerging && pPoint.Y > pReferencePoint.Y)
@@ -152,11 +157,15 @@ namespace ForestReco
 				return 1;
 			}
 
+
 			float refDistToPeak = CUtils.Get2DDistance(pReferencePoint, tree.peak);
 			float pointDistToPeak = CUtils.Get2DDistance(pPoint, tree.peak);
-			if (pointDistToPeak < refDistToPeak)
+			if (pSameBranch)
 			{
-				return 1;
+				if (pointDistToPeak < refDistToPeak)
+				{
+					return 1;
+				}
 			}
 			float distToPeakDiff = pointDistToPeak - refDistToPeak;
 			if (!pMerging && distToPeakDiff < 0.3)
@@ -185,7 +194,9 @@ namespace ForestReco
 			float refAngleToPoint =
 				CUtils.AngleBetweenThreePoints(pReferencePoint - Vector3.UnitY, pReferencePoint, pPoint);
 
-			Vector3 suitablePeakPoint = tree.peak.GetClosestPointTo(pPoint);
+			//Vector3 suitablePeakPoint = tree.peak.GetClosestPointTo(pPoint);
+			Vector3 suitablePeakPoint = tree.peak.Center;
+
 			float peakAngleToPoint =
 				CUtils.AngleBetweenThreePoints(suitablePeakPoint - Vector3.UnitY, suitablePeakPoint, pPoint);
 			float angle = Math.Min(refAngleToPoint, peakAngleToPoint);
@@ -207,11 +218,21 @@ namespace ForestReco
 			unacceptableDistance += 0.5f;
 			float distFactor = (unacceptableDistance - pointDistToPeak) / unacceptableDistance;
 
+			Vector3 closestPoint = GetClosestPointTo(pPoint);
+			float distFromClosestPoint = Vector3.Distance(pPoint, closestPoint);
+			float maxDistFromClosest = 0.5f;
+			float distToClosestFactor = 2 * (maxDistFromClosest - distFromClosestPoint);
+			distToClosestFactor = Math.Max(0, distToClosestFactor);
+
 			float totalFactor;
 
 			if (pMerging)
 			{
-				totalFactor = (angleFactor + distFactor + .5f * distToPeakDiffFactor) / 2.5f;
+				if (tree.Equals(51))
+				{
+					Console.WriteLine();
+				}
+				totalFactor = (distToClosestFactor + angleFactor + distFactor + .5f * distToPeakDiffFactor) / 3.5f;
 			}
 			else
 			{
@@ -488,8 +509,6 @@ namespace ForestReco
 
 		public float GetDefinedFactor()
 		{
-			
-
 			if (TreePoints.Count == 0)
 			{
 				return 0;
@@ -512,14 +531,16 @@ namespace ForestReco
 			float height = tree.GetTreeHeight();
 			float distLowestToPeak = Vector3.Distance(TreePoints.Last().Center, tree.peak.Center);
 			//distLowestToPeak += 5; //first meters from ground is not well defined
-			distLowestToPeak += GetMinDefinedHeightOffset(height);
 
-			distLowestToPeak = Math.Min(height, distLowestToPeak);
-			float lowestPointRatio = distLowestToPeak / height;
+			//distLowestToPeak += GetMinDefinedHeightOffset(height);
+			//distLowestToPeak = Math.Min(height, distLowestToPeak);
+
+			float lowestPointRatio = (distLowestToPeak + GetMinDefinedHeightOffset(height)) / height;
 
 			int treePointCount = TreePoints.Count;
 			const int minPointsPerMeter = 3;
-			float pointCountRatio = treePointCount / (height * minPointsPerMeter);
+			//float pointCountRatio = treePointCount / (height * minPointsPerMeter);
+			float pointCountRatio = treePointCount / (distLowestToPeak * minPointsPerMeter);
 			pointCountRatio = Math.Min(pointCountRatio, 1);
 
 			float factor = (lowestPointRatio + pointCountRatio) / 2;
