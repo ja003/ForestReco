@@ -368,7 +368,7 @@ namespace ForestReco
 						//}
 
 
-						
+
 
 						if (treeToMerge.isValid)
 						{
@@ -385,40 +385,50 @@ namespace ForestReco
 						}
 					}
 
-					if (treeToMerge.Equals(82))
+					if (treeToMerge.Equals(203))
 					{
 						Console.WriteLine("");
 					}
 
+					bool isFar = false;
+					bool isSimilarHeight = false;
 					if (treeToMerge.isValid)
 					{
-						//const float minPeakHeightDiffForMerge = 4;
-						////treeToMerge is always lower
-						//float possibleTreeHeight = possibleTree.GetTreeHeight();
-						//float treeToMergeHeight = treeToMerge.GetTreeHeight();
-						//if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
-						//{
-						//	continue;
-						//}
-
 						const float maxPeaksDistance = 1;
 						float peaksDist = CUtils.Get2DDistance(treeToMerge.peak, possibleTree.peak);
 						if (peaksDist > maxPeaksDistance)
 						{
-							continue;
+							//continue;
+							isFar = true;
 						}
+
+						const float maxPeakHeightDiff = 1;
+						//treeToMerge is always lower
+						float possibleTreeHeight = possibleTree.GetTreeHeight();
+						float treeToMergeHeight = treeToMerge.GetTreeHeight();
+						if (possibleTreeHeight - treeToMergeHeight < maxPeakHeightDiff)
+						{
+							isSimilarHeight = true;
+						}
+
+
 					}
 
-					if (treeToMerge.treeIndex == 83)
+					if (treeToMerge.treeIndex == 203)
 					{
 						CDebug.WriteLine("__");
 					}
 
 					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true);
-					if (addPointFactor > 0.5f && addPointFactor > bestAddPointFactor)
+					float requiredFactor = 0.5f;
+					if (isFar) { requiredFactor += 0.1f; }
+					if (isSimilarHeight) { requiredFactor += 0.1f; }
+
+					if (addPointFactor > requiredFactor && addPointFactor > bestAddPointFactor)
 					{
 						selectedTree = possibleTree;
 						bestAddPointFactor = addPointFactor;
+						if (bestAddPointFactor > 0.9f) { break; }
 					}
 				}
 				if (selectedTree != null)

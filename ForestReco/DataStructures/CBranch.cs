@@ -137,6 +137,21 @@ namespace ForestReco
 			return closestPoint;
 		}
 
+		public Vector3 GetClosestHigherTo(Vector3 pPoint)
+		{
+			Vector3 closestPoint = tree.peak.Center;
+			for (int i = 0; i < TreePoints.Count; i++)
+			{
+				Vector3 treePoint = TreePoints[i].Center;
+				if(treePoint.Y < pPoint.Y){ break;}
+				if (Vector3.Distance(treePoint, pPoint) < Vector3.Distance(closestPoint, pPoint))
+				{
+					closestPoint = treePoint;
+				}
+			}
+			return closestPoint;
+		}
+
 
 		private Vector3 GetLastPoint()
 		{
@@ -157,10 +172,9 @@ namespace ForestReco
 				return 1;
 			}
 
-
 			float refDistToPeak = CUtils.Get2DDistance(pReferencePoint, tree.peak);
 			float pointDistToPeak = CUtils.Get2DDistance(pPoint, tree.peak);
-			if (pSameBranch)
+			if (!pMerging && pSameBranch)
 			{
 				if (pointDistToPeak < refDistToPeak)
 				{
@@ -221,10 +235,18 @@ namespace ForestReco
 			Vector3 closestPoint = GetClosestPointTo(pPoint);
 			float distFromClosestPoint = Vector3.Distance(pPoint, closestPoint);
 			float maxDistFromClosest = 0.5f;
-			float distToClosestFactor = 2 * (maxDistFromClosest - distFromClosestPoint);
+			float distToClosestFactor = 2 * (maxDistFromClosest + 0.2f - distFromClosestPoint);
 			distToClosestFactor = Math.Max(0, distToClosestFactor);
 
 			float totalFactor;
+
+			if (pMerging)
+			{
+				if (distFromClosestPoint < maxDistFromClosest && distToPeakDiff < maxDistFromClosest)
+				{
+					return 1;
+				}
+			}
 
 			if (pMerging)
 			{
@@ -232,7 +254,15 @@ namespace ForestReco
 				{
 					Console.WriteLine();
 				}
-				totalFactor = (distToClosestFactor + angleFactor + distFactor + .5f * distToPeakDiffFactor) / 3.5f;
+				if (pSameBranch)
+				{
+					totalFactor = (distToClosestFactor + angleFactor + distFactor + distToPeakDiffFactor) / 4;
+				}
+				else
+				{
+					totalFactor = (distToClosestFactor + angleFactor + distFactor + .5f * distToPeakDiffFactor) / 3.5f;
+				}
+
 			}
 			else
 			{

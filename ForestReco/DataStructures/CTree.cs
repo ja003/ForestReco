@@ -123,6 +123,8 @@ namespace ForestReco
 		public float GetAddPointFactor(Vector3 pPoint, bool pMerging)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
+			CBranch branchForPoint = GetBranchFor(pPoint);
+
 			if (!pMerging)
 			{
 				//if (GetTreeExtentFor(pPoint, 1) < CUtils.Get2DDistance(pPoint, peak.Center))
@@ -140,9 +142,17 @@ namespace ForestReco
 				{
 					return 0;
 				}
+				Vector3 closestHigherPoint = branchForPoint.GetClosestHigherTo(pPoint);
+				float distToClosest = Vector3.Distance(pPoint, closestHigherPoint);
+				float distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
+
+				if (distToClosest > 0.5f && distToClosest2D > 0.2f)
+				{
+					return 0;
+				}
+
 			}
 
-			CBranch branchForPoint = GetBranchFor(pPoint);
 			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pMerging);
 			return branchFactor;
 		}
