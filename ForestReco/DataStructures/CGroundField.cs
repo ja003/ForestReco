@@ -18,6 +18,8 @@ namespace ForestReco
 		public List<Vector3> goundPoints = new List<Vector3>();
 		public List<Vector3> vegePoints = new List<Vector3>();
 		public List<Vector3> fakePoints = new List<Vector3>();
+		public List<Vector3> validPoints = new List<Vector3>();
+		
 		public List<Vector3> preProcessPoints = new List<Vector3>();
 
 		public float? MaxPreProcessVege;
@@ -156,28 +158,106 @@ namespace ForestReco
 			}
 		}
 
+
+		public void SortPreProcessPoints()
+		{
+			preProcessPoints.Sort((a, b) => a.Y.CompareTo(b.Y));
+
+		}
+
+		/// <summary>
+		/// Checks if fake points are close to some valid point.
+		/// If so, the point is considered valid.
+		/// All valid points are added in vegePoints
+		/// </summary>
+		public void TryAddFakePoints()
+		{
+			bool tryAddFakePoints = true;
+			int fakeBefore = fakePoints.Count;
+			if (tryAddFakePoints)
+			{
+				//List<CGroundField> neighbours = GetNeighbours();
+				for (int i = fakePoints.Count - 1; i >= 0; i--)
+				{
+					Vector3 fakePoint = fakePoints[i];
+					bool validated = false;
+					foreach (CGroundField neighbour in GetNeighbours())
+					{
+						float lastDistance = int.MaxValue;
+						//validPoints are sorted ascending. start with the highest
+						for (int j = neighbour.validPoints.Count - 1; j >= 0; j--)
+						{
+							Vector3 validPoint = neighbour.validPoints[j];
+							float distance = Vector3.Distance(fakePoint, validPoint);
+							if (distance < 0.6f)
+							{
+								fakePoints.RemoveAt(i);
+								validPoints.Add(fakePoint);
+								validated = true;
+							}
+							else if (distance > lastDistance)
+							{
+								break;
+							}
+							if (validated) { break; }
+						}
+						foreach (Vector3 validPoint in neighbour.validPoints)
+						{
+							if (Vector3.Distance(fakePoint, validPoint) < 0.6f)
+							{
+								fakePoints.RemoveAt(i);
+								validPoints.Add(fakePoint);
+								validated = true;
+							}
+							if (validated) { break; }
+						}
+						if (validated) { break; }
+					}
+				}
+			}
+			//int fakeAfter = fakePoints.Count;
+			//if (fakeAfter != fakeBefore)
+			//{
+			//	CDebug.Count(this + " validated ", fakeBefore - fakeAfter, fakeBefore);
+			//}
+			
+			CProjectData.vegePoints.AddRange(validPoints);
+			CProjectData.fakePoints.AddRange(fakePoints);
+		}
+
 		const float MIN_FAKE_POINT_HEIGHT_OFFSET = 3;
 
+		/// <summary>
+		/// Adds all points higher than pMaxHeight in fakePoints and other in validPoints
+		/// </summary>
 		public void FilterFakeVegePoints(float pMaxHeight)
 		{
 			List<Vector3> okPoints = new List<Vector3>();
 			List<Vector3> nokPoints = new List<Vector3>();
 			float? groundHeight = GetHeight();
-
-			foreach (Vector3 point in preProcessPoints)
+			
+			Vector3 maxOkPoint = new Vector3(-666);
+			for (int i = 0; i < preProcessPoints.Count; i++)
 			{
-				if (groundHeight != null && point.Y - groundHeight > pMaxHeight + MIN_FAKE_POINT_HEIGHT_OFFSET)
+				Vector3 point = preProcessPoints[i];
+				bool isPointTooMuchAboveLimit = point.Y - groundHeight > pMaxHeight + MIN_FAKE_POINT_HEIGHT_OFFSET;
+				//bool isPointTooFarFromMaxOkPoint = point.Y - maxOkPointHeight > 0.3f;
+				bool isPointTooFarFromMaxOkPoint = Vector3.Distance(point, maxOkPoint) > 0.3f;
+				if (groundHeight != null && isPointTooMuchAboveLimit && isPointTooFarFromMaxOkPoint)
 				{
 					nokPoints.Add(point);
 				}
 				else
 				{
 					okPoints.Add(point);
+					maxOkPoint = point;
 				}
 			}
+			
 			fakePoints = nokPoints;
-			CProjectData.vegePoints.AddRange(okPoints);
-			CProjectData.fakePoints.AddRange(nokPoints);
+			validPoints = okPoints;
+			//CProjectData.vegePoints.AddRange(okPoints);
+			//CProjectData.fakePoints.AddRange(nokPoints);
 		}
 
 		public bool IsDefined()
@@ -568,8 +648,8 @@ namespace ForestReco
 		public override string ToString()
 		{
 			return ToStringIndex() + " Ground = " + GetHeight() + ". Center = " + center +
-				". Trees=" + DetectedTrees.Count + "/" + CheckTrees.Count + 
-				"|" + fakePoints.Count + "/" + preProcessPoints.Count ;
+				". Trees=" + DetectedTrees.Count + "/" + CheckTrees.Count +
+				"|" + fakePoints.Count + "/" + preProcessPoints.Count;
 			//return ToStringIndex() + " Tree = " + (Tree?.ToStringIndex() ?? "null");
 		}
 

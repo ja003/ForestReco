@@ -254,6 +254,8 @@ namespace ForestReco
 				
 				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "preprocessed point");		
 			}
+			CProjectData.array.SortPreProcessPoints();
+
 			CDebug.Duration("FilterVegePoints", processVegePointsStart);
 
 			CProjectData.array.FilterFakeVegePoints();

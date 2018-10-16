@@ -351,10 +351,6 @@ namespace ForestReco
 				float bestAddPointFactor = 0;
 				CTree selectedTree = null;
 
-				if (treeToMerge.Equals(112))
-				{
-					Console.WriteLine("");
-				}
 
 				foreach (CTree possibleTree in possibleTrees)
 				{
@@ -371,9 +367,24 @@ namespace ForestReco
 						//	}
 						//}
 
+
+						if (treeToMerge.Equals(153))
+						{
+							Console.WriteLine("");
+						}
+
 						if (treeToMerge.isValid)
 						{
-							continue;
+							const float minPeakHeightDiffForMerge = 4;
+							//treeToMerge is always lower
+							float possibleTreeHeight = possibleTree.GetTreeHeight();
+							float treeToMergeHeight = treeToMerge.GetTreeHeight();
+							if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
+							{
+								continue;
+							}
+
+							//continue;
 						}
 					}
 					if (treeToMerge.treeIndex == 68)

@@ -482,7 +482,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private int debugTree = 26;
+		private int debugTree = 178;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.

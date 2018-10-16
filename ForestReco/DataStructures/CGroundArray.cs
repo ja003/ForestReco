@@ -152,6 +152,14 @@ namespace ForestReco
 			}
 		}
 
+		public void SortPreProcessPoints()
+		{
+			foreach (CGroundField field in fields)
+			{
+				field.SortPreProcessPoints();
+			}
+		}
+
 		/// <summary>
 		/// Filters points, which are fake (unnaturally higher than average vege poins).
 		/// Assigns them in vegePoints and fakePoints
@@ -164,12 +172,13 @@ namespace ForestReco
 			float averageHeight = GetAveragePreProcessVegeHeight();
 			CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
 
-			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
-			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
-
 			foreach (CGroundField field in fields)
 			{
 				field.FilterFakeVegePoints(averageHeight);
+			}
+			foreach (CGroundField field in fields)
+			{
+				field.TryAddFakePoints();
 			}
 
 			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
@@ -178,17 +187,37 @@ namespace ForestReco
 
 		//range of vege height that will be counted in average vege height
 		//reason is to restrict undefined or too outOfNorm values to affect average height
-		const float MIN_PREPROCESS_VEGE_HEIGHT = 10;
+		const float MIN_PREPROCESS_VEGE_HEIGHT = 15;
 		const float MAX_PREPROCESS_VEGE_HEIGHT = 30;
 		const float PREPROCESS_VEGE_HEIGHT_OFFSET = 1;
 
 		/// <summary>
 		/// TODO: count weighted average. areas with no trees affect average height 
 		/// </summary>
-		private int GetAveragePreProcessVegeHeight()
+		private float GetAveragePreProcessVegeHeight()
 		{
 			float sumHeight = 0;
 			int definedCount = 0;
+
+			/*foreach (CGroundField field in fields)
+			{
+				float? groundHeight = field.GetHeight();
+				float? preProcessVegeHeight = field.MaxPreProcessVege;
+				if (preProcessVegeHeight != null && groundHeight != null)
+				{
+					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
+
+					sumHeight += vegeHeight;
+					definedCount++;
+				}
+			}
+
+			float averageHeight = sumHeight / definedCount;
+			CDebug.WriteLine("averageHeight = " + averageHeight, true);
+
+			sumHeight = 0;
+			definedCount = 0;*/
+
 			foreach (CGroundField field in fields)
 			{
 				float? groundHeight = field.GetHeight();
@@ -197,6 +226,7 @@ namespace ForestReco
 				{
 					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
 					if (vegeHeight > MIN_PREPROCESS_VEGE_HEIGHT && vegeHeight < MAX_PREPROCESS_VEGE_HEIGHT)
+					//if (vegeHeight > averageHeight - 1 && vegeHeight < averageHeight + 1)
 					//if (vegeHeight > CTreeManager.AVERAGE_MAX_TREE_HEIGHT - PREPROCESS_VEGE_HEIGHT_OFFSET &&
 					//	vegeHeight < CTreeManager.AVERAGE_MAX_TREE_HEIGHT + PREPROCESS_VEGE_HEIGHT_OFFSET)
 					{
@@ -209,8 +239,12 @@ namespace ForestReco
 					}
 				}
 			}
-			//round to int so the result is same in most of the situatiuons (problem with float percision)
-			return (int)(sumHeight / definedCount);
+			float averageHeight = sumHeight / definedCount;
+			if (averageHeight < MIN_PREPROCESS_VEGE_HEIGHT)
+			{
+				averageHeight = Math.Max(averageHeight, CTreeManager.MIN_FAKE_TREE_HEIGHT);
+			}
+			return averageHeight;
 		}
 
 		public void SetHeight(float pHeight, int pXindex, int pYindex)
