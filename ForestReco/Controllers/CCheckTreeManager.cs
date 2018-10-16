@@ -22,11 +22,21 @@ namespace ForestReco
 
 			AssignTrees();
 
+			ValidateTrees();
+
 			CProjectData.array.DebugCheckTrees();
 
 			if (CProjectData.exportCheckTrees)
 			{
 				CObjPartition.AddCheckTrees(false);
+			}
+		}
+
+		public static void ValidateTrees()
+		{
+			foreach (CCheckTree tree in Trees)
+			{
+				tree.Validate();
 			}
 		}
 

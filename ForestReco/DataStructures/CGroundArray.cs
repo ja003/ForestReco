@@ -414,6 +414,7 @@ namespace ForestReco
 		public void DebugCheckTrees()
 		{
 			int assignedCheckTreesCount = 0;
+			int invalidCheckTreesCount = 0;
 			int totalCheckTreesCount = 0;
 			foreach (CGroundField f in fields)
 			{
@@ -423,10 +424,15 @@ namespace ForestReco
 					{
 						assignedCheckTreesCount++;
 					}
+					else if (tree.isInvalid)
+					{
+						invalidCheckTreesCount++;
+					}
 					totalCheckTreesCount++;
 				}
 			}
 			CDebug.Count("assigned checkTrees", assignedCheckTreesCount, totalCheckTreesCount);
+			CDebug.Count("invalid checkTrees", invalidCheckTreesCount);
 		}
 
 		public void AddCheckTree(ref CCheckTree pCheckTree)

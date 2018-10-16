@@ -86,15 +86,16 @@ namespace ForestReco
 			}
 		}
 
-		public static void AddLineToObj(ref Obj obj, Vector3 pFrom, Vector3 pTo)
+		public static void AddLineToObj(ref Obj obj, Vector3 pFrom, Vector3 pTo, float pWidthMultiply = 1)
 		{
 			MoveToCenter(ref pFrom);
+			float pointOffset = POINT_OFFSET * pWidthMultiply;
 
 			Vertex v1 = new Vertex(pFrom, obj.GetNextVertexIndex());
 			obj.AddVertex(v1);
-			Vertex v2 = new Vertex(pFrom + Vector3.UnitX * POINT_OFFSET, obj.GetNextVertexIndex());
+			Vertex v2 = new Vertex(pFrom + Vector3.UnitX * pointOffset, obj.GetNextVertexIndex());
 			obj.AddVertex(v2);
-			Vertex v3 = new Vertex(pFrom + Vector3.UnitZ * POINT_OFFSET, obj.GetNextVertexIndex());
+			Vertex v3 = new Vertex(pFrom + Vector3.UnitZ * pointOffset, obj.GetNextVertexIndex());
 			obj.AddVertex(v3);
 
 			MoveToCenter(ref pTo);

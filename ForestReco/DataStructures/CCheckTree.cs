@@ -21,15 +21,22 @@ namespace ForestReco
 
 		public Obj GetObj()
 		{
-			Obj obj = new Obj("checkTree_" + index);
+			string name = "checkTree";
+			if (assignedTree == null)
+			{
+				name += isInvalid ? "_[invalid]" : "_[unassigned";
+			}
+
+			Obj obj = new Obj(name + "_" + index);
 			{
 				float offsetHeight = 30;
 				if (assignedTree != null)
 				{
 					offsetHeight = assignedTree.GetTreeHeight() + 1;
-					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, assignedTree.peak.Center);
+					CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, 
+						assignedTree.peak.Center, 10);
 				}
-				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, position);
+				CObjExporter.AddLineToObj(ref obj, position + Vector3.UnitY * offsetHeight, position,10);
 
 				return obj;
 			}
@@ -53,6 +60,51 @@ namespace ForestReco
 			assignedTree = pTree;
 			if (pTree != null) { pTree.assignedCheckTree = this; }
 			//CDebug.WriteLine("Assign to " + this);
+		}
+
+		public CGroundField groundField;
+
+		public bool isInvalid;
+
+		public void Validate()
+		{
+			if (assignedTree != null)
+			{
+				return;
+			}
+
+			//groundField not assigned = checkTree is out of this array 
+			if (groundField == null)
+			{
+				return;
+			}
+
+			if (index == 216)
+			{
+				Console.WriteLine();
+			}
+
+			int count = groundField.vegePoints.Count;
+
+			const int minVegePointsPerField = 10;
+			if (count < minVegePointsPerField)
+			{
+				isInvalid = true;
+				return;
+			}
+
+			foreach (CGroundField neighbour in groundField.GetNeighbours())
+			{
+				int neighbourVegeCount = neighbour.vegePoints.Count;
+				if (neighbourVegeCount < minVegePointsPerField)
+				{
+					isInvalid = true;
+					return;
+				}
+				count += neighbourVegeCount;
+			}
+			int minTotalPointsCount = minVegePointsPerField * groundField.GetNeighbours().Count;
+			isInvalid = count < minTotalPointsCount;
 		}
 	}
 }

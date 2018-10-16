@@ -129,6 +129,8 @@ namespace ForestReco
 				{
 					Obj treeObj = tree.GetObj();
 					if (tree.assignedTree != null) { treeObj.UseMtl = CMaterialManager.GetCheckTreeMaterial(); }
+					else if (tree.isInvalid) { treeObj.UseMtl = CMaterialManager.GetInvalidMaterial(); }
+					else { treeObj.UseMtl = CMaterialManager.GetAlarmMaterial(); }
 					AddObj(f.indexInField, treeObj);
 
 				}

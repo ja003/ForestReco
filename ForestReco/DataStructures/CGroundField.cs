@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+
 // ReSharper disable PossibleInvalidOperationException - resharper doesnt recognise IsDefined functionality
 #pragma warning disable 659
 
@@ -107,9 +109,18 @@ namespace ForestReco
 					   Right.Bot.IsDefined();
 			}
 		}
+		
+		/*public int GetPointCountInNeighbourhood()
+		{
+			int count = vegePoints.Count;
+			foreach (CGroundField neighbour in GetNeighbours())
+			{
+				count += neighbour.vegePoints.Count;
+			}
+			return count;
+		}*/
 
-
-		private List<CGroundField> GetNeighbours()
+		public List<CGroundField> GetNeighbours()
 		{
 			if (neighbours != null) { return this.neighbours; }
 
@@ -177,7 +188,7 @@ namespace ForestReco
 			int indexInvalid = -1;
 			if (tryRemoveValidPoints)
 			{
-				int maxRemoveCount = 5;
+				int maxRemoveCount = 7;
 				int minIndex = Math.Max(0, validPoints.Count - maxRemoveCount);
 				for (int i = validPoints.Count - 2; i >= minIndex; i--)
 				{
@@ -198,7 +209,7 @@ namespace ForestReco
 
 				validPoints.RemoveRange(indexInvalid, validPoints.Count - indexInvalid);
 			}
-			
+
 
 			int validAfter = validPoints.Count;
 			if (validAfter != validBefore)
@@ -613,6 +624,7 @@ namespace ForestReco
 			FromNeighbourhood
 		}
 
+
 		///PRIVATE
 
 		private CGroundField GetClosestDefined(EDirection pDirection, int pMaxSteps)
@@ -699,6 +711,7 @@ namespace ForestReco
 		{
 			//CDebug.WriteLine("added " + pCheckTree);
 			CheckTrees.Add(pCheckTree);
+			pCheckTree.groundField = this;
 		}
 	}
 }

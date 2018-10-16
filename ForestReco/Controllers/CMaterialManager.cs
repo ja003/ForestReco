@@ -16,6 +16,7 @@ namespace ForestReco
 		{
 			materials = new Mtl("colors");
 			AddMaterial("invalid", .3f, EMaterial.Invalid);
+			AddMaterial("alarm", 1, 0, 0, EMaterial.Alarm);
 			AddMaterial("fake", 1, 0, 1, EMaterial.Fake);
 			AddMaterial("checkTree", 0, 0, 1, EMaterial.CheckTree);
 
@@ -82,6 +83,11 @@ namespace ForestReco
 			return materials.MaterialList[materialSet[EMaterial.Fake][0]].Name;
 		}
 
+		public static string GetAlarmMaterial()
+		{
+			return materials.MaterialList[materialSet[EMaterial.Alarm][0]].Name;
+		}
+
 		public static string GetCheckTreeMaterial()
 		{
 			return materials.MaterialList[materialSet[EMaterial.CheckTree][0]].Name;
@@ -95,6 +101,7 @@ namespace ForestReco
 		RefTree,
 		CheckTree,
 		Invalid,
-		Fake
+		Fake,
+		Alarm
 	}
 }
