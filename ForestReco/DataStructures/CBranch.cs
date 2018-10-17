@@ -10,7 +10,7 @@ namespace ForestReco
 	{
 		public List<CTreePoint> TreePoints { get; } = new List<CTreePoint>();
 
-		private Vector3 furthestPoint;
+		public Vector3 furthestPoint;
 		public float furthestPointDistance => CUtils.Get2DDistance(furthestPoint, tree.peak);
 
 		public CTree tree { get; }

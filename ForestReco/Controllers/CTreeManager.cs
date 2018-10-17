@@ -414,7 +414,7 @@ namespace ForestReco
 
 					}
 
-					if (treeToMerge.treeIndex == 203)
+					if (treeToMerge.treeIndex == 74)
 					{
 						CDebug.WriteLine("__");
 					}

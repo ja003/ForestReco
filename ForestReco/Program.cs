@@ -47,7 +47,7 @@ namespace ForestReco
 			CProjectData.validateTrees = true;
 			//merge
 			CProjectData.tryMergeTrees = true;
-			//CProjectData.exportBeforeMerge = true;
+			CProjectData.exportBeforeMerge = true;
 			CProjectData.mergeOnlyInvalidTrees = false;
 
 			CProjectData.mergeContaingTrees = false; //todo: not used anymore

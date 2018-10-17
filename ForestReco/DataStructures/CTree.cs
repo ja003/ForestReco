@@ -137,7 +137,7 @@ namespace ForestReco
 			//if (peakPointHeightDiff < 1)
 			else
 			{
-				if (pTreeToMerge.Equals(188))
+				if (pTreeToMerge.Equals(81))
 				{
 					CDebug.WriteLine("");
 				}
@@ -147,34 +147,55 @@ namespace ForestReco
 				{
 					return 0;
 				}
-				Vector3 closestHigherPoint = branchForPoint.GetClosestHigherTo(pPoint);
-				Vector3 closestHigherPoinNeighbour1 = branchForPoint.GetNeigbourBranch(1).GetClosestHigherTo(pPoint);
-				Vector3 closestHigherPoinNeighbour2 = branchForPoint.GetNeigbourBranch(-1).GetClosestHigherTo(pPoint);
-				
-				//choose closest from neighbours
-				float distToClosest = Vector3.Distance(pPoint, closestHigherPoint);
-				distToClosest = Math.Min(distToClosest,
-					Vector3.Distance(pPoint, closestHigherPoinNeighbour1));
-				distToClosest = Math.Min(distToClosest,
-					Vector3.Distance(pPoint, closestHigherPoinNeighbour2));
-					
+
 				float distToClosest2D = 0;
 				float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
-				//measure only of point is further from peak than the furthest point
-				if (Math.Abs(distToPeak - branchForPoint.furthestPointDistance) > 0.2f)
+				float furthestPointDistance = -int.MaxValue;
+
+				CBranch rightNeighbour = branchForPoint.GetNeigbourBranch(1);
+				CBranch leftNeighbour = branchForPoint.GetNeigbourBranch(-1);
+
+
+				//use this criterium only if furthest point is close
+				const float maxFurthestPointDistance = 1;
+				if (Vector3.Distance(pPoint, branchForPoint.furthestPoint) < maxFurthestPointDistance)
 				{
+					furthestPointDistance = branchForPoint.furthestPointDistance;
+				}
+				if (Vector3.Distance(pPoint, rightNeighbour.furthestPoint) < maxFurthestPointDistance)
+				{
+					furthestPointDistance = Math.Max(furthestPointDistance, rightNeighbour.furthestPointDistance);
+				}
+				if (Vector3.Distance(pPoint, leftNeighbour.furthestPoint) < maxFurthestPointDistance)
+				{
+					furthestPointDistance = Math.Max(furthestPointDistance, leftNeighbour.furthestPointDistance);
+				}
+				
+				//measure only if point is further from peak than the furthest point
+				if (distToPeak - furthestPointDistance > 0.2f)
+				{
+					Vector3 closestHigherPoint = branchForPoint.GetClosestHigherTo(pPoint);
+					Vector3 closestHigherPoinNeighbour1 = rightNeighbour.GetClosestHigherTo(pPoint);
+					Vector3 closestHigherPoinNeighbour2 = leftNeighbour.GetClosestHigherTo(pPoint);
+
+					//choose closest from neighbours
+					float distToClosest = Vector3.Distance(pPoint, closestHigherPoint);
+					distToClosest = Math.Min(distToClosest,
+						Vector3.Distance(pPoint, closestHigherPoinNeighbour1));
+					distToClosest = Math.Min(distToClosest,
+						Vector3.Distance(pPoint, closestHigherPoinNeighbour2));
+
 					distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
 					distToClosest2D = Math.Min(distToClosest2D,
 						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour1));
 					distToClosest2D = Math.Min(distToClosest2D,
 						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour2));
-				}
 
-				if (distToClosest > 0.5f && distToClosest2D > 0.2f)
-				{
-					return 0;
+					if (distToClosest > 0.5f && distToClosest2D > 0.2f)
+					{
+						return 0;
+					}
 				}
-
 			}
 
 			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pMerging);
@@ -557,7 +578,7 @@ namespace ForestReco
 				}
 				branchDefinedFactor += branchFactor;
 			}
-			if (undefinedBranchesCount > 2) { return false;}
+			if (undefinedBranchesCount > 2) { return false; }
 			if (wellDefinedBranchesCount > 2) { return true; }
 
 			float validFactor = branchDefinedFactor / (branches.Count - undefinedBranchesCount);
@@ -729,7 +750,7 @@ namespace ForestReco
 
 		public string ToString(bool pIndex, bool pPoints, bool pPeak, bool pBranches, bool pReftree, bool pValid, bool pHeight)
 		{
-			string indexS = pIndex ? treeIndex.ToString("000")+"-" + groundField.ToStringIndex() : "";
+			string indexS = pIndex ? treeIndex.ToString("000") + "-" + groundField.ToStringIndex() : "";
 			string pointsS = pPoints ? (" [" + GetAllPoints().Count.ToString("000") + "]") : "";
 			string validS = pValid ? (isValid ? "|<+>" : "<->") : "";
 			string peakS = pPeak ? "||peak = " + peak : "";
