@@ -60,24 +60,16 @@ namespace ForestReco
 		/// Range = 0-1. 1 = best fit.
 		/// pMerging = uses criterium of pUseDistToPeakDiff (viz GetAddPointFactorInRefTo)
 		/// </summary>
-		public float GetAddPointFactor(Vector3 pPoint, bool pMerging)
+		public float GetAddPointFactor(Vector3 pPoint, bool pMerging, CTree pTreeToMerge = null)
 		{
-			//Vector3 referencePoint = GetClosestPointTo(pPoint, 5);
-
-			//pUseDistToPeakDiff is used during merging. peak must be already valid
-			//if (!pUseDistToPeakDiff && !IsPeakValidWith(pPoint)){
-			//	//CDebug.Error(pPoint + " is not valid in tree " + tree);
-			//	//tree.isPeakInvalid = true;
-			//	return 0;
-			//}
 
 			Vector3 refPoint1 = furthestPoint;
-			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, true, pMerging);
+			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, true, pMerging, pTreeToMerge);
 			float bestFactor = refPoint1Factor;
 			if (bestFactor > .99f) { return bestFactor; }
 
 			Vector3 refPoint2 = GetNeigbourBranch(1).furthestPoint;
-			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, false, pMerging);
+			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, false, pMerging, pTreeToMerge);
 			if (refPoint2Factor > bestFactor)
 			{
 				bestFactor = refPoint2Factor;
@@ -85,7 +77,7 @@ namespace ForestReco
 			}
 
 			Vector3 refPoint3 = GetNeigbourBranch(-1).furthestPoint;
-			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, false, pMerging);
+			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, false, pMerging, pTreeToMerge);
 			if (refPoint3Factor > bestFactor)
 			{
 				bestFactor = refPoint3Factor;
@@ -158,7 +150,8 @@ namespace ForestReco
 			return TreePoints.Count == 0 ? tree.peak.Center : TreePoints.Last().Center;
 		}
 
-		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, bool pSameBranch, bool pMerging)
+		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, 
+			bool pSameBranch, bool pMerging, CTree pTreeToMerge = null)
 		{
 			//during merging it is expected, that added peak will be higher
 			if (!pMerging && pPoint.Y > pReferencePoint.Y)
@@ -248,7 +241,7 @@ namespace ForestReco
 				}
 			}
 
-			if (pMerging)
+			if (pTreeToMerge != null && pMerging && pTreeToMerge.isValid)
 			{
 				if (tree.Equals(51))
 				{

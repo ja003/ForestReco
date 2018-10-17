@@ -337,6 +337,10 @@ namespace ForestReco
 				float bestAddPointFactor = 0;
 				CTree selectedTree = null;
 
+				if (treeToMerge.Equals(83))
+				{
+					Console.WriteLine("");
+				}
 
 				foreach (CTree possibleTree in possibleTrees)
 				{
@@ -353,7 +357,7 @@ namespace ForestReco
 						{
 							continue;
 						}
-						
+
 						const float maxPeaksDistance = 1;
 						float peaksDist = CUtils.Get2DDistance(treeToMerge.peak, possibleTree.peak);
 						if (peaksDist > maxPeaksDistance)
@@ -368,15 +372,16 @@ namespace ForestReco
 						}
 					}
 
-					if (treeToMerge.Equals(250))
+					if (treeToMerge.Equals(83))
 					{
 						Console.WriteLine("");
 					}
-					
+
 					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true, treeToMerge);
 					float requiredFactor = 0.5f;
 					if (isFar) { requiredFactor += 0.1f; }
 					if (isSimilarHeight) { requiredFactor += 0.1f; }
+					if (pOnlyInvalid) { requiredFactor -= 0.2f; }
 
 					if (addPointFactor > requiredFactor && addPointFactor > bestAddPointFactor)
 					{
@@ -387,12 +392,12 @@ namespace ForestReco
 				}
 				if (selectedTree != null)
 				{
-					treeToMerge = MergeTrees(ref treeToMerge, ref selectedTree);
+					treeToMerge = MergeTrees(ref treeToMerge, ref selectedTree, pOnlyInvalid);
 				}
 			}
 		}
 
-		private static CTree MergeTrees(ref CTree pTree1, ref CTree pTree2)
+		private static CTree MergeTrees(ref CTree pTree1, ref CTree pTree2, bool pValidateRestrictive)
 		{
 			CTree higherTree = pTree1.peak.maxHeight.Y >= pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
 			CTree lowerTree = pTree1.peak.maxHeight.Y < pTree2.peak.maxHeight.Y ? pTree1 : pTree2;
@@ -409,7 +414,7 @@ namespace ForestReco
 			//Trees.Remove(lowerTree);
 			//lowerTree = null;
 
-			higherTree.Validate(false);
+			higherTree.Validate(pValidateRestrictive);
 
 			return higherTree;
 		}

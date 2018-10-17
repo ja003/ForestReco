@@ -138,14 +138,16 @@ namespace ForestReco
 
 			if (CProjectData.tryMergeTrees)
 			{
-				//trry merge all (even valid)
+				//try merge all (even valid)
 				CTreeManager.TryMergeAllTrees(false);
 
-				//cathegorize invalid trees
 				if (CProjectData.validateTrees)
 				{
-					//validate non-restrictive
-					CTreeManager.ValidateTrees(true, true);
+					//validate restrictive
+					// ReSharper disable once ReplaceWithSingleAssignment.False
+					bool cathegorize = false;
+					if (!CProjectData.tryMergeTrees2) { cathegorize = true;}
+					CTreeManager.ValidateTrees(cathegorize, true);
 				}
 
 				if (CProjectData.tryMergeTrees2)
@@ -156,7 +158,8 @@ namespace ForestReco
 					//cathegorize invalid trees
 					if (CProjectData.validateTrees)
 					{
-						//validate non-restrictive
+						//validate restrictive
+						//cathegorize invalid trees
 						CTreeManager.ValidateTrees(true, true);
 					}
 				}

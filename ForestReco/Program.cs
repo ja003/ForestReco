@@ -28,7 +28,7 @@ namespace ForestReco
 			//Input params
 			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
 			CTreeManager.TREE_EXTENT_MERGE_MULTIPLY = 1.5F;
-			CTreeManager.BASE_TREE_EXTENT = 1.5f;
+			CTreeManager.BASE_TREE_EXTENT = 2f;
 			CTreeManager.MIN_TREE_EXTENT = 0.5f;
 
 			//ARRAY
@@ -47,8 +47,8 @@ namespace ForestReco
 			CProjectData.validateTrees = true;
 			//merge
 			CProjectData.tryMergeTrees = true;
-			CProjectData.tryMergeTrees2 = false;
-			CProjectData.exportBeforeMerge = true;
+			CProjectData.tryMergeTrees2 = true;
+			//CProjectData.exportBeforeMerge = true;
 			
 			CProjectData.processTrees = false; //todo: not used anymore
 

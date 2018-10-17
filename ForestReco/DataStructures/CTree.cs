@@ -135,9 +135,9 @@ namespace ForestReco
 			}
 			//float peakPointHeightDiff = peak.Center.Y - pPoint.Y;
 			//if (peakPointHeightDiff < 1)
-			else
+			else if(pTreeToMerge != null && pTreeToMerge.isValid)
 			{
-				if (pTreeToMerge.Equals(164))
+				if (pTreeToMerge.Equals(140))
 				{
 					CDebug.WriteLine("");
 				}
@@ -148,7 +148,6 @@ namespace ForestReco
 					return 0;
 				}
 
-				float distToClosest2D = 0;
 				float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
 				float furthestPointDistance = -int.MaxValue;
 
@@ -185,7 +184,7 @@ namespace ForestReco
 					distToClosest = Math.Min(distToClosest,
 						Vector3.Distance(pPoint, closestHigherPoinNeighbour2));
 
-					distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
+					float distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
 					distToClosest2D = Math.Min(distToClosest2D,
 						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour1));
 					distToClosest2D = Math.Min(distToClosest2D,
@@ -198,7 +197,7 @@ namespace ForestReco
 				}
 			}
 
-			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pMerging);
+			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pMerging, pTreeToMerge);
 			return branchFactor;
 		}
 
