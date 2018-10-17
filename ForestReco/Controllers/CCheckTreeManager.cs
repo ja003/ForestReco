@@ -106,14 +106,17 @@ namespace ForestReco
 		private static void AddNewTree(Tuple<int, Vector3> pParsedLine)
 		{
 			CCheckTree newTree = new CCheckTree(pParsedLine.Item1, pParsedLine.Item2, Trees.Count);
-			Trees.Add(newTree);
 
 			if (CProjectData.array == null)
 			{
 				CDebug.Error("array not initialized");
 				return;
 			}
-			CProjectData.array.AddCheckTree(ref newTree);
+			bool checkTreeAdded = CProjectData.array.AddCheckTree(ref newTree);
+			if (checkTreeAdded)
+			{
+				Trees.Add(newTree);
+			}
 		}
 
 		private static bool IsCheckTree(Tuple<int, Vector3> pParsedLine)

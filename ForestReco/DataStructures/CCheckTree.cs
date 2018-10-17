@@ -77,35 +77,56 @@ namespace ForestReco
 			//groundField not assigned = checkTree is out of this array 
 			if (groundField == null)
 			{
+				CDebug.Error($"{this} has no ground fiedl assigned");
 				return;
 			}
 
-			if (index == 216)
+			if (index == 50)
 			{
 				Console.WriteLine();
 			}
-
-			int count = groundField.vegePoints.Count;
-
+			
 			const int minVegePointsPerField = 10;
-			if (count < minVegePointsPerField)
+			//if (count < minVegePointsPerField)
+			//{
+			//	isInvalid = true;
+			//	return;
+			//}
+
+			int vegePointsCount = 0;
+			int undefinedNeighboursCount = 0;
+			int smallHeightCount = 0;
+			foreach (CGroundField neighbour in groundField.GetNeighbours(true))
+			{
+				int neighbourVegeCount = neighbour.vegePoints.Count;
+				if (neighbourVegeCount < minVegePointsPerField)
+				{
+					undefinedNeighboursCount++;
+				}
+				float? vegeHeight = neighbour.MaxPreProcessVege - neighbour.GetHeight();
+				if (vegeHeight < CTreeManager.AVERAGE_TREE_HEIGHT)
+				{
+					smallHeightCount++;
+				}
+
+				vegePointsCount += neighbourVegeCount;
+			}
+			//if there is a tree, almost all of neighbours should have enough points
+			if (undefinedNeighboursCount > 1)
+			{
+				isInvalid = true;
+				return;
+			}
+			//not many fields ahve height enough for tree to be there
+			if (smallHeightCount > 5)
 			{
 				isInvalid = true;
 				return;
 			}
 
-			foreach (CGroundField neighbour in groundField.GetNeighbours())
-			{
-				int neighbourVegeCount = neighbour.vegePoints.Count;
-				if (neighbourVegeCount < minVegePointsPerField)
-				{
-					isInvalid = true;
-					return;
-				}
-				count += neighbourVegeCount;
-			}
+			//measure minimal required point count
 			int minTotalPointsCount = minVegePointsPerField * groundField.GetNeighbours().Count;
-			isInvalid = count < minTotalPointsCount;
+			isInvalid = vegePointsCount < minTotalPointsCount;
 		}
 	}
 }

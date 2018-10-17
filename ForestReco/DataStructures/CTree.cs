@@ -120,7 +120,7 @@ namespace ForestReco
 		/// <summary>
 		/// pMerging is used during merging process
 		/// </summary>
-		public float GetAddPointFactor(Vector3 pPoint, bool pMerging)
+		public float GetAddPointFactor(Vector3 pPoint, bool pMerging, CTree pTreeToMerge = null)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
 			CBranch branchForPoint = GetBranchFor(pPoint);
@@ -137,14 +137,38 @@ namespace ForestReco
 			//if (peakPointHeightDiff < 1)
 			else
 			{
+				if (pTreeToMerge.Equals(188))
+				{
+					CDebug.WriteLine("");
+				}
+
 				float peakPointDist = CUtils.Get2DDistance(pPoint, peak.Center);
 				if (peakPointDist > GetTreeExtentFor(pPoint, 1))
 				{
 					return 0;
 				}
 				Vector3 closestHigherPoint = branchForPoint.GetClosestHigherTo(pPoint);
+				Vector3 closestHigherPoinNeighbour1 = branchForPoint.GetNeigbourBranch(1).GetClosestHigherTo(pPoint);
+				Vector3 closestHigherPoinNeighbour2 = branchForPoint.GetNeigbourBranch(-1).GetClosestHigherTo(pPoint);
+				
+				//choose closest from neighbours
 				float distToClosest = Vector3.Distance(pPoint, closestHigherPoint);
-				float distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
+				distToClosest = Math.Min(distToClosest,
+					Vector3.Distance(pPoint, closestHigherPoinNeighbour1));
+				distToClosest = Math.Min(distToClosest,
+					Vector3.Distance(pPoint, closestHigherPoinNeighbour2));
+					
+				float distToClosest2D = 0;
+				float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
+				//measure only of point is further from peak than the furthest point
+				if (Math.Abs(distToPeak - branchForPoint.furthestPointDistance) > 0.2f)
+				{
+					distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
+					distToClosest2D = Math.Min(distToClosest2D,
+						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour1));
+					distToClosest2D = Math.Min(distToClosest2D,
+						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour2));
+				}
 
 				if (distToClosest > 0.5f && distToClosest2D > 0.2f)
 				{

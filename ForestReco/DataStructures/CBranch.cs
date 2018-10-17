@@ -111,7 +111,7 @@ namespace ForestReco
 			return true;
 		}*/
 
-		private CBranch GetNeigbourBranch(int pIndexIncrement)
+		public CBranch GetNeigbourBranch(int pIndexIncrement)
 		{
 			int indexOfthis = tree.Branches.IndexOf(this);
 			int neighbourBranchIndex = (indexOfthis + pIndexIncrement) % tree.Branches.Count;
@@ -186,7 +186,7 @@ namespace ForestReco
 			{
 				return 1;
 			}
-			if (!pMerging && distToPeakDiff > 0.5f)
+			if (!pMerging && distToPeakDiff > 0.5f && refDistToPeak > 0.5f)
 			{
 				float peakRefPointAngle = CUtils.AngleBetweenThreePoints(tree.peak.Center, pReferencePoint, pPoint);
 				//todo: check this criterium

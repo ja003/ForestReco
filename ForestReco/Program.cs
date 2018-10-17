@@ -84,7 +84,7 @@ namespace ForestReco
 			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
 			CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
-			//CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
+			CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
 			//CProgramLoader.fileName = "BK_1000AGL_helpTreeRange_02_32";
 
 			//CProgramLoader.fileName = "BK_1000AGL_classified";

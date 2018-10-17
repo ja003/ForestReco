@@ -120,11 +120,16 @@ namespace ForestReco
 			return count;
 		}*/
 
-		public List<CGroundField> GetNeighbours()
+		public List<CGroundField> GetNeighbours(bool pIncludeThis = false)
 		{
 			if (neighbours != null) { return this.neighbours; }
 
 			neighbours = new List<CGroundField>();
+			if (pIncludeThis)
+			{
+				neighbours.Add(this);
+			}
+
 			var directions = Enum.GetValues(typeof(EDirection));
 			foreach (EDirection d in directions)
 			{
@@ -707,11 +712,29 @@ namespace ForestReco
 			return (indexInField.Item1 == e.indexInField.Item1) && (indexInField.Item2 == e.indexInField.Item2);
 		}
 
-		public void AddCheckTree(CCheckTree pCheckTree)
+		public bool AddCheckTree(CCheckTree pCheckTree)
 		{
+			List<CCheckTree> neighbourCheckTrees = new List<CCheckTree>();
+			neighbourCheckTrees.AddRange(CheckTrees);
+			foreach (CGroundField neighbour in GetNeighbours())
+			{
+				neighbourCheckTrees.AddRange(neighbour.CheckTrees);
+			}
+
+			foreach (CCheckTree neighbourCheckTree in neighbourCheckTrees)
+			{
+				const float minCheckTreeDistance = 0.5f;
+				if (CUtils.Get2DDistance(pCheckTree.position, neighbourCheckTree.position) < minCheckTreeDistance)
+				{
+					CDebug.Error($"checktree {pCheckTree} is duplicit with {neighbourCheckTree}");
+					return false;
+				}
+			}
+
 			//CDebug.WriteLine("added " + pCheckTree);
 			CheckTrees.Add(pCheckTree);
 			pCheckTree.groundField = this;
+			return true;
 		}
 	}
 }

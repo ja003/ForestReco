@@ -435,17 +435,18 @@ namespace ForestReco
 			CDebug.Count("invalid checkTrees", invalidCheckTreesCount);
 		}
 
-		public void AddCheckTree(ref CCheckTree pCheckTree)
+		public bool AddCheckTree(ref CCheckTree pCheckTree)
 		{
 			CGroundField el = GetElementContainingPoint(pCheckTree.position);
 			if (el != null)
 			{
-				el.AddCheckTree(pCheckTree);
+				return el.AddCheckTree(pCheckTree);
 			}
 			else
 			{
 				//CDebug.WriteLine(pCheckTree + " is out of bounds. " + WriteBounds());
 			}
+			return false;
 		}
 
 		public string WriteBounds(bool pConsole = true)

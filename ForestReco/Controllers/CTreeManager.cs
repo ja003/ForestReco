@@ -84,7 +84,7 @@ namespace ForestReco
 			{
 				if (DEBUG) { CDebug.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
-				if (pPointIndex == 255)
+				if (pPointIndex == 3262)
 				{
 					Console.Write("");
 				}
@@ -165,9 +165,9 @@ namespace ForestReco
 
 			newTree.groundField = element;
 
-			if (newTree.treeIndex == 98)
+			if (newTree.treeIndex == 102)
 			{
-				//CDebug.WriteLine("!");
+				CDebug.WriteLine("");
 			}
 		}
 
@@ -385,7 +385,7 @@ namespace ForestReco
 						}
 					}
 
-					if (treeToMerge.Equals(203))
+					if (treeToMerge.Equals(250))
 					{
 						Console.WriteLine("");
 					}
@@ -419,7 +419,7 @@ namespace ForestReco
 						CDebug.WriteLine("__");
 					}
 
-					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true);
+					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true, treeToMerge);
 					float requiredFactor = 0.5f;
 					if (isFar) { requiredFactor += 0.1f; }
 					if (isSimilarHeight) { requiredFactor += 0.1f; }
