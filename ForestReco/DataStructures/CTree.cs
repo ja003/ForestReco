@@ -137,13 +137,13 @@ namespace ForestReco
 			//if (peakPointHeightDiff < 1)
 			else
 			{
-				if (pTreeToMerge.Equals(81))
+				if (pTreeToMerge.Equals(164))
 				{
 					CDebug.WriteLine("");
 				}
 
 				float peakPointDist = CUtils.Get2DDistance(pPoint, peak.Center);
-				if (peakPointDist > GetTreeExtentFor(pPoint, 1))
+				if (peakPointDist > GetTreeExtentFor(pPoint, CTreeManager.TREE_EXTENT_MERGE_MULTIPLY))
 				{
 					return 0;
 				}
@@ -537,7 +537,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private int debugTree = 51;
+		private int debugTree = 2;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.
@@ -546,7 +546,7 @@ namespace ForestReco
 		/// </summary>
 		private bool ValidateBranches(bool pAllBranchesDefined)
 		{
-			if (Equals(debugTree))
+			if (Equals(debugTree) && pAllBranchesDefined)
 			{
 				Console.WriteLine("");
 			}
@@ -565,10 +565,10 @@ namespace ForestReco
 				if (Math.Abs(branchFactor) < 0.1f)
 				{
 					//isValidBranches = false;
-					if (pAllBranchesDefined)
-					{
-						return false;
-					}
+					//if (pAllBranchesDefined)
+					//{
+					//	return false;
+					//}
 					undefinedBranchesCount++;
 					continue;
 				}
@@ -578,6 +578,11 @@ namespace ForestReco
 				}
 				branchDefinedFactor += branchFactor;
 			}
+			if (pAllBranchesDefined)
+			{
+				if (undefinedBranchesCount > 1) { return false; }
+			}
+
 			if (undefinedBranchesCount > 2) { return false; }
 			if (wellDefinedBranchesCount > 2) { return true; }
 

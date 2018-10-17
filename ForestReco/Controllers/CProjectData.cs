@@ -33,13 +33,10 @@ namespace ForestReco
 		public static bool detectTrees;
 		public static bool processTrees;
 		public static bool tryMergeTrees;
+		public static bool tryMergeTrees2;
 		public static bool mergeOnlyInvalidTrees;
 		public static bool exportBeforeMerge;
-
-
-		public static bool mergeContaingTrees; 
-		public static bool mergeBelongingTrees; 
-		public static bool mergeGoodAddFactorTrees;
+		
 		public static bool validateTrees;
 
 		public static bool loadRefTrees;

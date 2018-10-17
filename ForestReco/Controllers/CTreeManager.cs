@@ -301,7 +301,7 @@ namespace ForestReco
 
 		//MERGE
 
-		public static void TryMergeAllTrees()
+		public static void TryMergeAllTrees(bool pOnlyInvalid)
 		{
 			DateTime mergeStartTime = DateTime.Now;
 			CDebug.WriteLine("TryMergeAllTrees");
@@ -310,21 +310,8 @@ namespace ForestReco
 
 			int treeCountBeforeMerge = Trees.Count;
 
-			if (CProjectData.mergeContaingTrees)
-			{
-				//CDebug.WriteLine("\n MergeContainingTrees");
-				MergeContainingTrees();
-			}
-			if (CProjectData.mergeBelongingTrees)
-			{
-				//CDebug.WriteLine("\n MergeBelongingTrees");
-				MergeBelongingTrees();
-			}
-			if (CProjectData.mergeGoodAddFactorTrees)
-			{
-				//CDebug.WriteLine("\n MergeGoodAddFactorTrees");
-				MergeGoodAddFactorTrees();
-			}
+			MergeGoodAddFactorTrees(pOnlyInvalid);
+
 			CDebug.Duration("Trees merge", mergeStartTime);
 			CDebug.Count("Number of trees merged", treeCountBeforeMerge - Trees.Count);
 		}
@@ -332,7 +319,7 @@ namespace ForestReco
 		/// <summary>
 		/// Merges all trees, whose peak has good AddFactor to another tree
 		/// </summary>
-		private static void MergeGoodAddFactorTrees()
+		private static void MergeGoodAddFactorTrees(bool pOnlyInvalid)
 		{
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
@@ -343,8 +330,7 @@ namespace ForestReco
 				}
 				CTree treeToMerge = Trees[i];
 
-
-				//if (CProjectData.mergeOnlyInvalidTrees && tree.isValid) { continue; }
+				if (pOnlyInvalid && treeToMerge.isValid) { continue; }
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(treeToMerge, EPossibleTreesMethos.ClosestHigher);
 				Vector3 pPoint = treeToMerge.peak.Center;
@@ -354,34 +340,31 @@ namespace ForestReco
 
 				foreach (CTree possibleTree in possibleTrees)
 				{
-					if (CProjectData.mergeOnlyInvalidTrees)
+					bool isFar = false;
+					bool isSimilarHeight = false;
+
+					if (treeToMerge.isValid)
 					{
-						//todo: seems better this way. test
-						//if (treeToMerge.isValid && possibleTree.isValid)
-						//{
-						//	//const float minPeakHeightDiffForMerge = 2;
-						//	////treeToMerge is always lower
-						//	//if (possibleTree.GetTreeHeight() - treeToMerge.GetTreeHeight() < minPeakHeightDiffForMerge)
-						//	{
-						//		continue;
-						//	}
-						//}
-
-
-
-
-						if (treeToMerge.isValid)
+						const float minPeakHeightDiffForMerge = 4;
+						//treeToMerge is always lower
+						float possibleTreeHeight = possibleTree.GetTreeHeight();
+						float treeToMergeHeight = treeToMerge.GetTreeHeight();
+						if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
 						{
-							const float minPeakHeightDiffForMerge = 4;
-							//treeToMerge is always lower
-							float possibleTreeHeight = possibleTree.GetTreeHeight();
-							float treeToMergeHeight = treeToMerge.GetTreeHeight();
-							if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
-							{
-								continue;
-							}
+							continue;
+						}
+						
+						const float maxPeaksDistance = 1;
+						float peaksDist = CUtils.Get2DDistance(treeToMerge.peak, possibleTree.peak);
+						if (peaksDist > maxPeaksDistance)
+						{
+							isFar = true;
+						}
 
-							//continue;
+						const float maxPeakHeightDiff = 1;
+						if (possibleTreeHeight - treeToMergeHeight < maxPeakHeightDiff)
+						{
+							isSimilarHeight = true;
 						}
 					}
 
@@ -389,36 +372,7 @@ namespace ForestReco
 					{
 						Console.WriteLine("");
 					}
-
-					bool isFar = false;
-					bool isSimilarHeight = false;
-					if (treeToMerge.isValid)
-					{
-						const float maxPeaksDistance = 1;
-						float peaksDist = CUtils.Get2DDistance(treeToMerge.peak, possibleTree.peak);
-						if (peaksDist > maxPeaksDistance)
-						{
-							//continue;
-							isFar = true;
-						}
-
-						const float maxPeakHeightDiff = 1;
-						//treeToMerge is always lower
-						float possibleTreeHeight = possibleTree.GetTreeHeight();
-						float treeToMergeHeight = treeToMerge.GetTreeHeight();
-						if (possibleTreeHeight - treeToMergeHeight < maxPeakHeightDiff)
-						{
-							isSimilarHeight = true;
-						}
-
-
-					}
-
-					if (treeToMerge.treeIndex == 74)
-					{
-						CDebug.WriteLine("__");
-					}
-
+					
 					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true, treeToMerge);
 					float requiredFactor = 0.5f;
 					if (isFar) { requiredFactor += 0.1f; }
@@ -436,109 +390,6 @@ namespace ForestReco
 					treeToMerge = MergeTrees(ref treeToMerge, ref selectedTree);
 				}
 			}
-		}
-
-		private static void MergeBelongingTrees()
-		{
-			for (int i = Trees.Count - 1; i >= 0; i--)
-			{
-				if (i >= Trees.Count)
-				{
-					CDebug.WriteLine("Tree was deleted");
-					continue;
-				}
-				CTree tree = Trees[i];
-
-				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Belongs);
-
-				//foreach (CTree t in possibleTrees)
-				for (int j = possibleTrees.Count - 1; j >= 0; j--)
-				{
-					CTree t = possibleTrees[j];
-
-					if (!Equals(tree, t))
-					{
-						tree = MergeTrees(ref tree, ref t);
-						//tree = TryMergeTrees(tree, t);
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Merges trees, that overlaps and are close to each¨other
-		/// </summary>
-		private static void MergeContainingTrees()
-		{
-			for (int i = Trees.Count - 1; i >= 0; i--)
-			{
-				if (i >= Trees.Count)
-				{
-					CDebug.WriteLine("Tree was deleted");
-					continue;
-				}
-				CTree tree = Trees[i];
-
-				List<CTree> possibleTrees = GetPossibleTreesFor(tree, EPossibleTreesMethos.Contains);
-
-				//foreach (CTree t in possibleTrees)
-				for (int j = possibleTrees.Count - 1; j >= 0; j--)
-				{
-					CTree t = possibleTrees[j];
-					if (!Equals(tree, t))
-					{
-						float peaksDist = CUtils.Get2DDistance(tree.peak, t.peak);
-						float minPeakDistance = GetMinPeakDistance(tree, t);
-
-						//CTree higherTree = tree.peak.Y >= t.peak.Y ? tree : t;
-						//CTree lowerTree = tree.peak.Y < t.peak.Y ? tree : t;
-
-						if (peaksDist < minPeakDistance)
-						//if (higherTree.GetAddPointFactor(lowerTree.peak.Center) > 0.5f)
-						{
-							tree = MergeTrees(ref tree, ref t);
-						}
-					}
-				}
-			}
-		}
-
-		private static CTree TryMergeTrees(CTree pTree1, CTree pTree2)
-		{
-			CTree higherTree = pTree1.peak.Y >= pTree2.peak.Y ? pTree1 : pTree2;
-			CTree lowerTree = pTree1.peak.Y < pTree2.peak.Y ? pTree1 : pTree2;
-
-			Vector3 lowerTreePeak = lowerTree.peak.Center;
-			//Vector3 higherTreePeak = higherTree.peak.GetClosestPointTo(lowerTreePeak);
-			Vector3 higherTreePeak = higherTree.peak.Center;
-			float angle = CUtils.AngleBetweenThreePoints(higherTreePeak - Vector3.UnitY, higherTree.peak.Center, lowerTreePeak);
-
-			float maxBranchAngle = CTree.GetMaxBranchAngle(higherTreePeak, lowerTreePeak);
-			float distBetweenPeaks = CUtils.Get2DDistance(pTree1.peak.Center, pTree2.peak.Center);
-
-			//tree peaks must be close to each other and lower peak must be in appropriate angle with higher peak
-			//bool distOK = distBetweenPeaks < GetMinPeakDistance(1.5f); //todo: zlepšit toto kritérium
-			bool distOK = distBetweenPeaks < GetMinPeakDistance(higherTree, lowerTree);
-			bool angleOK = angle < maxBranchAngle;
-			//bool lowerPeakIsInsideHigherTree = higherTree.Contains(lowerTreePeak);
-
-			//measure how much does lower tree overlap with higher tree
-			float overlapRatio = CUtils.GetOverlapRatio(lowerTree, higherTree);
-			bool overlapRatioOK = overlapRatio > 0.5f;
-			//todo: using overlapRatio results in too much merging...doladit
-			overlapRatioOK = false;
-
-			if ((distOK && angleOK) || overlapRatioOK)
-			{
-				//if (lowerTree.treeIndex == 666)
-				{
-					CDebug.WriteLine("\nMerge " + higherTree + " with " + lowerTree);
-					CDebug.WriteLine("distBetweenPeaks = " + distBetweenPeaks + ". angle = " + angle);
-				}
-				higherTree.MergeWith(lowerTree);
-				Trees.Remove(lowerTree);
-			}
-			return higherTree;
 		}
 
 		private static CTree MergeTrees(ref CTree pTree1, ref CTree pTree2)

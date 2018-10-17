@@ -138,14 +138,29 @@ namespace ForestReco
 
 			if (CProjectData.tryMergeTrees)
 			{
-				CTreeManager.TryMergeAllTrees();
+				//trry merge all (even valid)
+				CTreeManager.TryMergeAllTrees(false);
 
 				//cathegorize invalid trees
 				if (CProjectData.validateTrees)
 				{
 					//validate non-restrictive
-					CTreeManager.ValidateTrees(true, false);
+					CTreeManager.ValidateTrees(true, true);
 				}
+
+				if (CProjectData.tryMergeTrees2)
+				{
+					//merge only invalid
+					CTreeManager.TryMergeAllTrees(true);
+
+					//cathegorize invalid trees
+					if (CProjectData.validateTrees)
+					{
+						//validate non-restrictive
+						CTreeManager.ValidateTrees(true, true);
+					}
+				}
+
 			}
 			/*else
 			{
