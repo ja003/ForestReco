@@ -115,6 +115,15 @@ namespace ForestReco
 				{
 					if (t.isValid)
 					{
+						if (t.mostSuitableRefTreeObj == null)
+						{
+							//not error if reftrees were not loaded
+							if (CRefTreeManager.Trees.Count > 0)
+							{
+								CDebug.Error($"{t} has no ref tree assigned");
+							}
+							return;
+						}
 						AddObj(f.indexInField, t.mostSuitableRefTreeObj);
 					}
 				}

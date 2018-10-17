@@ -50,6 +50,12 @@ namespace ForestReco
 		/// </summary>
 		public static void AssignRefTrees()
 		{
+			if (Trees.Count == 0)
+			{
+				CDebug.Error("no reftrees loaded");
+				return;
+			}
+
 			DateTime addTreeObjModelsStart = DateTime.Now;
 			CDebug.WriteLine("Get ref tree models");
 

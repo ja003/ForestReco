@@ -556,10 +556,10 @@ namespace ForestReco
 			foreach (CBranch b in branches)
 			{
 				float branchFactor = b.GetDefinedFactor();
-				if (Equals(debugTree))
-				{
-					CDebug.WriteLine(b + "-- branchFactor " + branchFactor);
-				}
+				//if (Equals(debugTree))
+				//{
+				//	CDebug.WriteLine(b + "-- branchFactor " + branchFactor);
+				//}
 
 				if (Math.Abs(branchFactor) < 0.1f)
 				{

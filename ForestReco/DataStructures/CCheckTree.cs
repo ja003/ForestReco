@@ -77,7 +77,7 @@ namespace ForestReco
 			//groundField not assigned = checkTree is out of this array 
 			if (groundField == null)
 			{
-				CDebug.Error($"{this} has no ground fiedl assigned");
+				CDebug.Error($"{this} has no ground field assigned");
 				return;
 			}
 

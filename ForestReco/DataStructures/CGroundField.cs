@@ -726,7 +726,7 @@ namespace ForestReco
 				const float minCheckTreeDistance = 0.5f;
 				if (CUtils.Get2DDistance(pCheckTree.position, neighbourCheckTree.position) < minCheckTreeDistance)
 				{
-					CDebug.Error($"checktree {pCheckTree} is duplicit with {neighbourCheckTree}");
+					CDebug.Warning($"checktree {pCheckTree} is duplicit with {neighbourCheckTree}");
 					return false;
 				}
 			}

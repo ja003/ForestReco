@@ -70,7 +70,8 @@ namespace ForestReco
 
 		public static string GetRefTreeMaterial(int pIndex)
 		{
-			return materials.MaterialList[materialSet[EMaterial.RefTree][0]].Name;
+			return GetTreeMaterial(pIndex); //todo: select reftree material based on reftree type?
+			//return materials.MaterialList[materialSet[EMaterial.RefTree][0]].Name;
 		}
 
 		public static string GetInvalidMaterial()
