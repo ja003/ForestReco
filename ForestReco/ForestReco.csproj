@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Controllers\CMaterialManager.cs" />
     <Compile Include="Controllers\CCheckTreeManager.cs" />
+    <Compile Include="DataStructures\CAnalytics.cs" />
     <Compile Include="DataStructures\CCheckTree.cs" />
     <Compile Include="DataStructures\CObjPartition.cs" />
     <Compile Include="Controllers\CPlatformManager.cs" />

@@ -509,5 +509,10 @@ namespace ForestReco
 				}
 			}
 		}
+
+		public static int GetInvalidTreesAtBorderCount()
+		{
+			return InvalidTrees.Count(tree => tree.IsAtBorder());
+		}
 	}
 }

@@ -36,13 +36,13 @@ namespace ForestReco
 			topRightCorner = CProjectData.header.TopRightCorner;
 			topLeftCorner = new Vector3(botLeftCorner.X, 0, topRightCorner.Z);
 
-			float w = topRightCorner.X - botLeftCorner.X;
-			float h = topRightCorner.Z - botLeftCorner.Z;
+			float width = topRightCorner.X - botLeftCorner.X;
+			float height = topRightCorner.Z - botLeftCorner.Z;
 
 			//TODO: if not +2, GetPositionInField is OOR
 			//todo: 2 is incorrect, all array was shifted
-			arrayXRange = (int)(w / stepSize) + 1;
-			arrayYRange = (int)(h / stepSize) + 1;
+			arrayXRange = (int)(width / stepSize) + 1;
+			arrayYRange = (int)(height / stepSize) + 1;
 
 			CenterOffset = new Vector3(arrayXRange / 2f * stepSize, 0, arrayYRange / 2f * stepSize);
 			CenterOffset += new Vector3(-stepSize / 2, 0, -stepSize / 2); //better visualization
@@ -84,6 +84,9 @@ namespace ForestReco
 					}
 				}
 			}
+
+			CAnalytics.arrayWidth = width;
+			CAnalytics.arrayHeight = height;
 
 		}
 

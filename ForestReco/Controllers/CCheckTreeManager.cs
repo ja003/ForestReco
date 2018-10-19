@@ -30,6 +30,10 @@ namespace ForestReco
 			{
 				CObjPartition.AddCheckTrees(false);
 			}
+
+			CAnalytics.loadedCheckTrees = Trees.Count;
+			CAnalytics.assignedCheckTrees = GetAssignedTreesCount();
+			CAnalytics.invalidCheckTrees = GetInvalidTreesCount();
 		}
 
 		public static void ValidateTrees()
@@ -129,6 +133,16 @@ namespace ForestReco
 					return true;
 			}
 			return false;
+		}
+
+		private static int GetAssignedTreesCount()
+		{
+			return Trees.Count(tree => tree.assignedTree != null);
+		}
+
+		private static int GetInvalidTreesCount()
+		{
+			return Trees.Count(tree => tree.isInvalid);
 		}
 
 	}

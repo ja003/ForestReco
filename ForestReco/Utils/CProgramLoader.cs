@@ -105,6 +105,7 @@ namespace ForestReco
 
 		public static void ProcessParsedLines(List<Tuple<EClass, Vector3>> parsedLines)
 		{
+			CAnalytics.loadedPoints = parsedLines.Count;
 			AddPointsFromLines(parsedLines);
 
 			if (CProjectData.exportArray)
@@ -175,9 +176,10 @@ namespace ForestReco
 			}*/
 
 			CTreeManager.CheckAllTrees();
-			
-			
-			
+
+			CAnalytics.detectedTrees = CTreeManager.Trees.Count;
+			CAnalytics.invalidTrees = CTreeManager.InvalidTrees.Count;
+			CAnalytics.invalidTreesAtBorder = CTreeManager.GetInvalidTreesAtBorderCount();
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
@@ -244,6 +246,10 @@ namespace ForestReco
 			//+ ". Start = " + processStartTime);
 			ProcessGroundPoints();
 			FilterVegePoints();
+
+			CAnalytics.vegePoints = CProjectData.vegePoints.Count;
+			CAnalytics.groundPoints = CProjectData.groundPoints.Count;
+			CAnalytics.filteredPoints = CProjectData.fakePoints.Count;
 
 			ProcessVegePoints();
 

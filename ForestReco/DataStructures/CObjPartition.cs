@@ -174,9 +174,11 @@ namespace ForestReco
 			objPartition[pIndex.Item1, pIndex.Item2].Add(pObj);
 		}
 
+		public static string folderPath;
+
 		public static void ExportPartition(string pFileSuffix = "")
 		{
-			string folderPath = CObjExporter.CreateFolder(CProjectData.saveFileName);
+			folderPath = CObjExporter.CreateFolder(CProjectData.saveFileName);
 			int counter = 0;
 			DateTime previousDebugStart = DateTime.Now;
 			int partsCount = partitionXRange * partitionYRange;
