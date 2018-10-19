@@ -91,7 +91,7 @@ namespace ForestReco
 		/// <summary>
 		/// All points but those at edge should have assigned neigbours
 		/// </summary>
-		private bool HasAllNeighbours()
+		public bool HasAllNeighbours()
 		{
 			return Left != null && Right != null && Top != null && Bot != null;
 		}

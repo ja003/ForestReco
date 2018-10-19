@@ -16,8 +16,8 @@ namespace ForestReco
 
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			CPlatformManager.platform = EPlatform.Notebook;
-			//CPlatformManager.platform = EPlatform.HomePC;
+			//CPlatformManager.platform = EPlatform.Notebook;
+			CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 
 			CProjectData.maxLinesToLoad = 3000000; //for now just informative

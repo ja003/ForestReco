@@ -135,7 +135,7 @@ namespace ForestReco
 			}
 			//float peakPointHeightDiff = peak.Center.Y - pPoint.Y;
 			//if (peakPointHeightDiff < 1)
-			else if(pTreeToMerge != null && pTreeToMerge.isValid)
+			else if (pTreeToMerge != null && pTreeToMerge.isValid)
 			{
 				if (pTreeToMerge.Equals(140))
 				{
@@ -169,7 +169,7 @@ namespace ForestReco
 				{
 					furthestPointDistance = Math.Max(furthestPointDistance, leftNeighbour.furthestPointDistance);
 				}
-				
+
 				//measure only if point is further from peak than the furthest point
 				if (distToPeak - furthestPointDistance > 0.2f)
 				{
@@ -799,5 +799,19 @@ namespace ForestReco
 			return treeIndex == t.treeIndex;
 		}
 
+		public bool IsAtBorder()
+		{
+			float distanceToBorder = CProjectData.array.GetDistanceToBorderFrom(this.peak.Center);
+			float borderDistExtentDiff = distanceToBorder - Math.Min(Extent.X, Extent.Z);
+
+			return borderDistExtentDiff < 0;
+
+			/*bool isCornerAtBorder = !CProjectData.array.GetElementContainingPoint(b000).HasAllNeighbours();
+			if (isCornerAtBorder) { return true; }
+			isCornerAtBorder = !CProjectData.array.GetElementContainingPoint(b111).HasAllNeighbours();
+			if (isCornerAtBorder) { return true; }
+
+			return false;*/
+		}
 	}
 }

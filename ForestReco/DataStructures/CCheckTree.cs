@@ -73,11 +73,21 @@ namespace ForestReco
 			{
 				return;
 			}
+			if (index == 16)
+			{
+				Console.Write("");
+			}
 
 			//groundField not assigned = checkTree is out of this array 
 			if (groundField == null)
 			{
 				CDebug.Error($"{this} has no ground field assigned");
+				return;
+			}
+			if (!groundField.HasAllNeighbours())
+			{
+				//CDebug.Error($"{this} is at the border");
+				isInvalid = true;
 				return;
 			}
 

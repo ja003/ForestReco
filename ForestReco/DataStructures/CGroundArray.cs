@@ -462,5 +462,19 @@ namespace ForestReco
 			if (groundHeight == null) { return null; }
 			return pPoint.Y - groundHeight;
 		}
+
+		public float GetDistanceToBorderFrom(Vector3 pPoint)
+		{
+			float xDistToRight = topRightCorner.X - pPoint.X;
+			float xDistToLeft = pPoint.X - botLeftCorner.X;
+			float xDist = Math.Min(xDistToLeft, xDistToRight);
+
+			float zDistToTop = topRightCorner.Z - pPoint.Z;
+			float zDistToBot = pPoint.Z - botLeftCorner.Z;
+			float zDist = Math.Min(zDistToBot, zDistToTop);
+
+			float dist = Math.Min(xDist, zDist);
+			return dist;
+		}
 	}
 }

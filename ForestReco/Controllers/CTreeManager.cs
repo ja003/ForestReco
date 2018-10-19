@@ -84,7 +84,7 @@ namespace ForestReco
 			{
 				if (DEBUG) { CDebug.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
-				if (pPointIndex == 3262)
+				if (pPointIndex == 11141)
 				{
 					Console.Write("");
 				}
@@ -165,7 +165,7 @@ namespace ForestReco
 
 			newTree.groundField = element;
 
-			if (newTree.treeIndex == 102)
+			if (newTree.treeIndex == 224)
 			{
 				CDebug.WriteLine("");
 			}
@@ -330,17 +330,26 @@ namespace ForestReco
 				}
 				CTree treeToMerge = Trees[i];
 
+				if (treeToMerge.Equals(54))
+				{
+					Console.WriteLine("");
+				}
+
 				if (pOnlyInvalid && treeToMerge.isValid) { continue; }
+
+				if (pOnlyInvalid && treeToMerge.IsAtBorder())
+				{
+					CDebug.Warning(treeToMerge + " is at border");
+					continue;
+				}
+
 
 				List<CTree> possibleTrees = GetPossibleTreesFor(treeToMerge, EPossibleTreesMethos.ClosestHigher);
 				Vector3 pPoint = treeToMerge.peak.Center;
 				float bestAddPointFactor = 0;
 				CTree selectedTree = null;
 
-				if (treeToMerge.Equals(83))
-				{
-					Console.WriteLine("");
-				}
+				
 
 				foreach (CTree possibleTree in possibleTrees)
 				{
@@ -349,7 +358,7 @@ namespace ForestReco
 
 					if (treeToMerge.isValid)
 					{
-						const float minPeakHeightDiffForMerge = 4;
+						const float minPeakHeightDiffForMerge = 2;
 						//treeToMerge is always lower
 						float possibleTreeHeight = possibleTree.GetTreeHeight();
 						float treeToMergeHeight = treeToMerge.GetTreeHeight();
