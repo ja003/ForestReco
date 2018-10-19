@@ -431,13 +431,7 @@ namespace ForestReco
 
 			Obj obj = new Obj(prefix + treeIndex);
 			obj.UseMtl = CMaterialManager.GetTreeMaterial(treeIndex);
-
-			if (CProjectData.exportSimpleTreeModel)
-			{
-				CObjExporter.AddLineToObj(ref obj, peak.Center, GetGroundPosition());
-				return obj;
-			}
-
+			
 			List<CTreePoint> allTreePoints = GetAllPoints();
 
 			//display all peak points

@@ -254,14 +254,24 @@ namespace ForestReco
 		}
 
 
-		private static bool refTreeFirst => CProjectData.refTreeFirst;
-		private static bool refTreeLast => CProjectData.refTreeLast;
+		//private static bool refTreeFirst => CProjectData.refTreeFirst;
+		//private static bool refTreeLast => CProjectData.refTreeLast;
 
-		private static bool refTreeFront => CProjectData.refTreeFront;
-		private static bool refTreeBack => CProjectData.refTreeBack;
+		//private static bool refTreeFront => CProjectData.refTreeFront;
+		//private static bool refTreeBack => CProjectData.refTreeBack;
 
-		private static bool refTreeJehlici => CProjectData.refTreeJehlici;
-		private static bool refTreeKmeny => CProjectData.refTreeKmeny;
+		//private static bool refTreeJehlici => CProjectData.refTreeJehlici;
+		//private static bool refTreeKmeny => CProjectData.refTreeKmeny;
+
+		//use all by default
+		private static bool refTreeFirst = true;
+		private static bool refTreeLast = true;
+
+		private static bool refTreeFront = true;
+		private static bool refTreeBack = true;
+
+		private static bool refTreeJehlici = true;
+		private static bool refTreeKmeny = true;
 
 
 		private static string GetXyzFileName(string pFileName, bool pFirst, bool pFront, bool pJehlici)

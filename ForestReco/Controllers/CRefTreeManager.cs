@@ -147,14 +147,7 @@ namespace ForestReco
 
 				Trees.Add(refTree);
 				CDebug.WriteLine("Loaded tree: " + fileName);
-
-				if (CProjectData.exportRefTreePoints)
-				{
-					CDebug.WriteLine("TODO: exportRefTreePoints not used");
-					//Obj reftreePoints = new Obj(fileName + "_points");
-					//CObjExporter.AddPointsToObj(ref reftreePoints, refTree.Points);
-					//CProjectData.objsToExport.Add(reftreePoints);
-				}
+				
 				counter++;
 			}
 			CDebug.Duration("Load ref trees" ,loadTreesStartTime);

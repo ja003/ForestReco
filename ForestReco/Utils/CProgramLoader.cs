@@ -61,16 +61,9 @@ namespace ForestReco
 			const int DEFAULT_START_LINE = 19;
 			int startLine = pUseHeader && CProjectData.header != null ? DEFAULT_START_LINE : 0;
 
-			if (lines.Length > CProjectData.maxLinesToLoad / 2)
-			{
-				CDebug.Warning("loading " + lines.Length + " lines!");
-			}
+			CDebug.Warning("loading " + lines.Length + " lines!");
 
 			int linesToRead = lines.Length;
-			if (CProjectData.useMaxLines)
-			{
-				linesToRead = Math.Min(CProjectData.maxLinesToLoad, lines.Length);
-			}
 
 			bool classesCorect = true;
 			List<Tuple<EClass, Vector3>> parsedLines = new List<Tuple<EClass, Vector3>>();
@@ -108,20 +101,15 @@ namespace ForestReco
 			CAnalytics.loadedPoints = parsedLines.Count;
 			AddPointsFromLines(parsedLines);
 
-			if (CProjectData.exportArray)
-			{
-				CObjPartition.AddArray();
-			}
+			CObjPartition.AddArray();
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
 
 			CTreeManager.CheckAllTrees();
 
 			//dont move invalid trees to invalid list yet, some invalid trees will be merged
-			if (CProjectData.validateTrees)
-			{
-				CTreeManager.ValidateTrees(false, false);
-			}
+			CTreeManager.ValidateTrees(false, false);
+
 
 			CTreeManager.DebugTree(43);
 			CTreeManager.DebugTree(220);
@@ -137,44 +125,28 @@ namespace ForestReco
 				CObjPartition.AddArray();
 			}
 
-			if (CProjectData.tryMergeTrees)
+
+			//try merge all (even valid)
+			CTreeManager.TryMergeAllTrees(false);
+
+
+			//validate restrictive
+			// ReSharper disable once ReplaceWithSingleAssignment.False
+			bool cathegorize = false;
+			if (!CProjectData.tryMergeTrees2) { cathegorize = true; }
+			CTreeManager.ValidateTrees(cathegorize, true);
+
+
+			if (CProjectData.tryMergeTrees2)
 			{
-				//try merge all (even valid)
-				CTreeManager.TryMergeAllTrees(false);
+				//merge only invalid
+				CTreeManager.TryMergeAllTrees(true);
 
-				if (CProjectData.validateTrees)
-				{
-					//validate restrictive
-					// ReSharper disable once ReplaceWithSingleAssignment.False
-					bool cathegorize = false;
-					if (!CProjectData.tryMergeTrees2) { cathegorize = true;}
-					CTreeManager.ValidateTrees(cathegorize, true);
-				}
-
-				if (CProjectData.tryMergeTrees2)
-				{
-					//merge only invalid
-					CTreeManager.TryMergeAllTrees(true);
-
-					//cathegorize invalid trees
-					if (CProjectData.validateTrees)
-					{
-						//validate restrictive
-						//cathegorize invalid trees
-						CTreeManager.ValidateTrees(true, true);
-					}
-				}
-
+				//validate restrictive
+				//cathegorize invalid trees
+				CTreeManager.ValidateTrees(true, true);
 			}
-			/*else
-			{
-				//just during testing so validation doesnt change
-				if (CProjectData.validateTrees)
-				{
-					CTreeManager.ValidateTrees(true, false);
-				}
-			}*/
-
+			
 			CTreeManager.CheckAllTrees();
 
 			CAnalytics.detectedTrees = CTreeManager.Trees.Count;
@@ -185,8 +157,7 @@ namespace ForestReco
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
 			//CProjectData.array.DebugDetectedTrees();
 
-			if (CProjectData.assignRefTrees)
-			{
+			
 				CRefTreeManager.AssignRefTrees();
 				//CProjectData.objsToExport.AddRange(trees);
 				if (CProjectData.exportRefTrees) //no reason to export when no refTrees were assigned
@@ -194,7 +165,7 @@ namespace ForestReco
 					//CRefTreeManager.ExportTrees();
 					CObjPartition.AddRefTrees();
 				}
-			}
+			
 			if (CProjectData.exportTrees)
 			{
 				//CTreeManager.ExportTrees();
@@ -225,7 +196,8 @@ namespace ForestReco
 				CDebug.Count("FillMissingHeights", counter);
 				CProjectData.array.FillMissingHeights(counter);
 				counter++;
-				if (counter > CProjectData.maxFillArrayIterations + 1)
+				const int maxFillArrayIterations = 5;
+				if (counter > maxFillArrayIterations + 1)
 				{
 					CDebug.Error("FillMissingHeights");
 					CDebug.Count("too many iterations", counter);
@@ -237,8 +209,6 @@ namespace ForestReco
 
 		private static void AddPointsFromLines(List<Tuple<EClass, Vector3>> pParsedLines)
 		{
-			if (!CProjectData.detectTrees && !CProjectData.setArray && !CProjectData.exportPoints) { return; }
-
 			ClassifyPoints(pParsedLines);
 
 			DateTime processStartTime = DateTime.Now;
@@ -261,8 +231,6 @@ namespace ForestReco
 		/// </summary>
 		private static void FilterVegePoints()
 		{
-			if (!CProjectData.detectTrees) { return; }
-
 			const int debugFrequency = 10000;
 
 			DateTime processVegePointsStart = DateTime.Now;
@@ -274,8 +242,8 @@ namespace ForestReco
 			{
 				Vector3 point = CProjectData.vegePoints[i];
 				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.PreProcess);
-				
-				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "preprocessed point");		
+
+				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "preprocessed point");
 			}
 			CProjectData.array.SortPreProcessPoints();
 
@@ -287,8 +255,6 @@ namespace ForestReco
 
 		private static void ProcessVegePoints()
 		{
-			if (!CProjectData.detectTrees) { return; }
-
 			//todo: check if has to be sorted somewhere else as well
 			CProjectData.vegePoints.Sort((y, x) => x.Y.CompareTo(y.Y)); //sort descending by height
 
@@ -326,8 +292,6 @@ namespace ForestReco
 
 		private static void ProcessGroundPoints()
 		{
-			if (!CProjectData.setArray) { return; }
-
 			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
 				Vector3 point = CProjectData.groundPoints[i];
@@ -340,10 +304,9 @@ namespace ForestReco
 				CDebug.WriteLine("setting height to " + CProjectData.lowestHeight);
 				CDebugData.DefineArray(true, CProjectData.lowestHeight);
 			}
-			if (CProjectData.fillArray)
-			{
+			
 				FillArray();
-			}
+			
 			if (CProjectData.smoothArray)
 			{
 				CProjectData.array?.SmoothenArray(1);

@@ -15,8 +15,8 @@ namespace ForestReco
 	{
 		public static string saveFileName;
 
-		public static int maxLinesToLoad;
-		public static bool useMaxLines;
+		//public static int maxLinesToLoad;
+		//public static bool useMaxLines;
 
 		//during one session is always processed one array file
 		//public static List<Vector3> allPoints = new List<Vector3>();
@@ -30,17 +30,15 @@ namespace ForestReco
 
 		public static CHeaderInfo header;
 
-		public static bool detectTrees;
-		public static bool processTrees;
-		public static bool tryMergeTrees;
-		public static bool tryMergeTrees2;
-		public static bool mergeOnlyInvalidTrees;
+		public static bool tryMergeTrees = true; //automatically true, user dont choose
+		public static bool tryMergeTrees2 = true;//automatically true, user dont choose
+		//public static bool mergeOnlyInvalidTrees;
 		public static bool exportBeforeMerge;
 		
-		public static bool validateTrees;
+		//public static bool validateTrees;
 
 		public static bool loadRefTrees;
-		public static bool assignRefTrees;
+		//public static bool assignRefTrees;
 		public static bool assignRandomRefTree;
 		public static bool useReducedRefTreeObjs;
 		public static bool exportRefTrees;
@@ -48,26 +46,26 @@ namespace ForestReco
 		public static bool loadCheckTrees;
 		public static bool exportCheckTrees;
 		
-		public static bool refTreeFirst = true;
-		public static bool refTreeLast = true;
-		public static bool refTreeFront = true;
-		public static bool refTreeBack = true;
-		public static bool refTreeJehlici = true;
-		public static bool refTreeKmeny = true;
+		//public static bool refTreeFirst = true;
+		//public static bool refTreeLast = true;
+		//public static bool refTreeFront = true;
+		//public static bool refTreeBack = true;
+		//public static bool refTreeJehlici = true;
+		//public static bool refTreeKmeny = true;
 		
 
-		public static bool setArray;
-		public static bool exportArray;
-		public static bool fillArray;
+		//public static bool setArray;
+		//public static bool exportArray;
+		//public static bool fillArray;
 		public static bool smoothArray;
-		public static int maxFillArrayIterations;
+		//public static int maxFillArrayIterations;
 
 		public static bool exportPoints;
 		public static bool useMaterial;
-		public static bool exportRefTreePoints; 
+		//public static bool exportRefTreePoints; 
 		public static bool exportTrees;
 		public static bool exportInvalidTrees;
-		public static bool exportSimpleTreeModel;
+		//public static bool exportSimpleTreeModel;
 
 		public static float lowestHeight = int.MaxValue;
 		public static float highestHeight = int.MinValue;
