@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Controllers\CMaterialManager.cs" />
     <Compile Include="Controllers\CCheckTreeManager.cs" />
+    <Compile Include="Controllers\CParameterSetter.cs" />
     <Compile Include="Controllers\CProgramStarter.cs" />
     <Compile Include="DataStructures\CAnalytics.cs" />
     <Compile Include="DataStructures\CCheckTree.cs" />
