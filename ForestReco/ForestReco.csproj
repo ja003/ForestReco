@@ -95,9 +95,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utils\CConsole.cs" />
     <Compile Include="Utils\CDebug.cs" />
     <Compile Include="Utils\CDebugData.cs" />
-    <Compile Include="Utils\CProgramLoader.cs" />
+    <Compile Include="Controllers\CProgramLoader.cs" />
     <Compile Include="Utils\CTreeMath.cs" />
     <Compile Include="Utils\CUtils.cs" />
   </ItemGroup>

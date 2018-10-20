@@ -20,6 +20,7 @@ namespace ForestReco
 		public ProgressBar progressBar;
 		public TextBox textProgress;
 		private Button btnAbort;
+		private Button button1;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -86,6 +87,7 @@ namespace ForestReco
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.textProgress = new System.Windows.Forms.TextBox();
 			this.btnAbort = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// btnSellectForrest
@@ -102,7 +104,7 @@ namespace ForestReco
 			// 
 			this.textForrestFilePath.Location = new System.Drawing.Point(122, 15);
 			this.textForrestFilePath.Name = "textForrestFilePath";
-			this.textForrestFilePath.Size = new System.Drawing.Size(341, 20);
+			this.textForrestFilePath.Size = new System.Drawing.Size(475, 20);
 			this.textForrestFilePath.TabIndex = 1;
 			this.textForrestFilePath.TextChanged += new System.EventHandler(this.textForrestFilePath_TextChanged);
 			// 
@@ -120,14 +122,14 @@ namespace ForestReco
 			// 
 			this.textReftreeFolder.Location = new System.Drawing.Point(122, 52);
 			this.textReftreeFolder.Name = "textReftreeFolder";
-			this.textReftreeFolder.Size = new System.Drawing.Size(341, 20);
+			this.textReftreeFolder.Size = new System.Drawing.Size(475, 20);
 			this.textReftreeFolder.TabIndex = 4;
 			// 
 			// btnStart
 			// 
 			this.btnStart.Location = new System.Drawing.Point(8, 213);
 			this.btnStart.Name = "btnStart";
-			this.btnStart.Size = new System.Drawing.Size(384, 50);
+			this.btnStart.Size = new System.Drawing.Size(471, 50);
 			this.btnStart.TabIndex = 5;
 			this.btnStart.Text = "START";
 			this.btnStart.UseVisualStyleBackColor = true;
@@ -137,7 +139,7 @@ namespace ForestReco
 			// 
 			this.textOutputFolder.Location = new System.Drawing.Point(122, 89);
 			this.textOutputFolder.Name = "textOutputFolder";
-			this.textOutputFolder.Size = new System.Drawing.Size(341, 20);
+			this.textOutputFolder.Size = new System.Drawing.Size(475, 20);
 			this.textOutputFolder.TabIndex = 7;
 			// 
 			// btnOutputFolder
@@ -154,7 +156,7 @@ namespace ForestReco
 			// 
 			this.progressBar.Location = new System.Drawing.Point(8, 320);
 			this.progressBar.Name = "progressBar";
-			this.progressBar.Size = new System.Drawing.Size(455, 23);
+			this.progressBar.Size = new System.Drawing.Size(589, 23);
 			this.progressBar.TabIndex = 9;
 			// 
 			// textProgress
@@ -162,22 +164,33 @@ namespace ForestReco
 			this.textProgress.Location = new System.Drawing.Point(8, 269);
 			this.textProgress.Multiline = true;
 			this.textProgress.Name = "textProgress";
-			this.textProgress.Size = new System.Drawing.Size(455, 45);
+			this.textProgress.Size = new System.Drawing.Size(589, 45);
 			this.textProgress.TabIndex = 10;
 			// 
 			// btnAbort
 			// 
-			this.btnAbort.Location = new System.Drawing.Point(398, 213);
+			this.btnAbort.Location = new System.Drawing.Point(487, 213);
 			this.btnAbort.Name = "btnAbort";
-			this.btnAbort.Size = new System.Drawing.Size(65, 50);
+			this.btnAbort.Size = new System.Drawing.Size(110, 50);
 			this.btnAbort.TabIndex = 11;
 			this.btnAbort.Text = "ABORT";
 			this.btnAbort.UseVisualStyleBackColor = true;
 			this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
 			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(488, 175);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(109, 32);
+			this.button1.TabIndex = 12;
+			this.button1.Text = "toggle console";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.btnToggleConsole_Click);
+			// 
 			// CMainForm
 			// 
-			this.ClientSize = new System.Drawing.Size(475, 352);
+			this.ClientSize = new System.Drawing.Size(609, 352);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.btnAbort);
 			this.Controls.Add(this.textProgress);
 			this.Controls.Add(this.progressBar);
@@ -199,6 +212,14 @@ namespace ForestReco
 		private void btnAbort_Click(object sender, EventArgs e)
 		{
 			CProgramStarter.Abort();
+		}
+
+
+		
+
+		private void btnToggleConsole_Click(object sender, EventArgs e)
+		{
+			CParameterSetter.ToggleConsoleVisibility();
 		}
 	}
 }

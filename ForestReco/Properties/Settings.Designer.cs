@@ -58,5 +58,17 @@ namespace ForestReco.Properties {
                 this["outputFolderPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool consoleVisible {
+            get {
+                return ((bool)(this["consoleVisible"]));
+            }
+            set {
+                this["consoleVisible"] = value;
+            }
+        }
     }
 }

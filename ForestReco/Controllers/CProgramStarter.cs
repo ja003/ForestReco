@@ -133,6 +133,9 @@ namespace ForestReco
 			CObjPartition.ExportPartition();
 
 			CAnalytics.Write();
+
+			CDebug.Step(EProgramStep.Done);
+
 		}
 
 		public static void Abort()

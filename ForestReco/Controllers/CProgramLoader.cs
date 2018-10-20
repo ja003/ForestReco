@@ -272,6 +272,8 @@ namespace ForestReco
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
+				if (CProgramStarter.abort) { return; }
+
 				Vector3 point = CProjectData.vegePoints[i];
 				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.PreProcess);
 

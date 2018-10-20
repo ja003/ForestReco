@@ -12,16 +12,26 @@ namespace ForestReco
 		public static string reftreeFolderPath;
 		public static string outputFolderPath;
 
+		public static bool consoleVisible;
+
+
 
 		public const string forrestFilePathKey = "forrestFilePath";
 		public const string reftreeFolderPathKey = "reftreeFolderPath";
 		public const string outputFolderPathKey = "outputFolderPath";
+		public const string consoleVisibleKey = "consoleVisible";
 
 		public static void Init()
 		{
 			forrestFilePath = (string)GetSettings(forrestFilePathKey);
 			reftreeFolderPath = (string)GetSettings(reftreeFolderPathKey);
 			outputFolderPath = (string)GetSettings(outputFolderPathKey);
+			consoleVisible = (bool)GetSettings(consoleVisibleKey);
+			if (!consoleVisible)
+			{
+				IntPtr handle = CConsole.GetConsoleWindow();
+				CConsole.ShowWindow(handle, SW_HIDE);
+			}
 		}
 
 		private static object GetSettings(string pKey)
@@ -29,22 +39,30 @@ namespace ForestReco
 			return Properties.Settings.Default[pKey];
 		}
 
-		private static string SetParameter(string pParamKey, string pArg)
+		private static void SetParameter(string pParamKey, object pArg)
 		{
 			switch (pParamKey)
 			{
 				case forrestFilePathKey:
-					forrestFilePath = pArg;
+					forrestFilePath = (string)pArg;
 
 					break;
 				case reftreeFolderPathKey:
-					reftreeFolderPath = pArg;
+					reftreeFolderPath = (string)pArg;
+					break;
+
+				case outputFolderPathKey:
+					outputFolderPath = (string)pArg;
+					break;
+
+				case consoleVisibleKey:
+					consoleVisible = (bool)pArg;
 					break;
 			}
 
 			Properties.Settings.Default[pParamKey] = pArg;
 			Properties.Settings.Default.Save();
-			return pArg;
+			//return pArg;
 		}
 
 		public static string SelectFolder(string pParamKey)
@@ -53,12 +71,13 @@ namespace ForestReco
 			DialogResult dr = fbd.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				return SetParameter(pParamKey, fbd.SelectedPath);
+				SetParameter(pParamKey, fbd.SelectedPath);
+				return fbd.SelectedPath;
 			}
 
 			return "";
 		}
-		
+
 		public static string SelectForrestFile()
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -70,7 +89,8 @@ namespace ForestReco
 			DialogResult dr = ofd.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				return SetParameter(forrestFilePathKey, ofd.FileName);
+				SetParameter(forrestFilePathKey, ofd.FileName);
+				return ofd.FileName;
 
 				/*foreach (String file in ofd.FileNames)
 				{
@@ -102,6 +122,18 @@ namespace ForestReco
 				}*/
 			}
 			return "";
+		}
+
+
+		const int SW_HIDE = 0;
+		const int SW_SHOW = 5;
+		public static void ToggleConsoleVisibility()
+		{
+			IntPtr handle = CConsole.GetConsoleWindow();
+			CConsole.ShowWindow(handle, consoleVisible ? SW_HIDE : SW_SHOW);
+
+			CDebug.WriteLine("ToggleConsoleVisibility " + !consoleVisible);
+			SetParameter(consoleVisibleKey, !consoleVisible);
 		}
 	}
 }

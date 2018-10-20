@@ -183,6 +183,9 @@ namespace ForestReco
 				case EProgramStep.Export:
 					text = "exporting";
 					break;
+				case EProgramStep.Done:
+					text = "DONE";
+					break;
 
 				default:
 					text = "comment not specified";
@@ -211,6 +214,7 @@ namespace ForestReco
 		AssignCheckTrees,
 		Export,
 		Aborting,
-		Aborted
+		Aborted,
+		Done
 	}
 }
