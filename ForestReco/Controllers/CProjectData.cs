@@ -15,6 +15,7 @@ namespace ForestReco
 	{
 		public static string saveFileName;
 
+		public static CMainForm mainForm;
 		//public static int maxLinesToLoad;
 		//public static bool useMaxLines;
 

@@ -29,7 +29,7 @@ namespace ForestReco
 				string[] lines = GetFileLines(pFileName);
 				LoadObj(pFileName);
 
-				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, false, false);
+				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, false, false);
 				AddPointsFromLines(parsedLines);
 				DateTime processStartTime = DateTime.Now;
 				CDebug.WriteLine("Process");
@@ -383,6 +383,7 @@ namespace ForestReco
 			CDebug.WriteLine("AddPointsFromLines " + pParsedLines.Count);
 			int pointsToAddCount = pParsedLines.Count;
 
+			pParsedLines.Sort((a, b) => b.Item2.Y.CompareTo(a.Item2.Y));
 			//lines are sorted. first point is peak for sure
 			Init(pParsedLines[0].Item2, treeIndex, treePointExtent);
 

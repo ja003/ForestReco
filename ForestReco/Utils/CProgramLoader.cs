@@ -31,6 +31,8 @@ namespace ForestReco
 
 		public static string[] GetFileLines()
 		{
+			CDebug.Step(EProgramStep.LoadLines);
+
 			CProjectData.saveFileName = GetFileName(forrestFullFilePath);
 			//string saveFileName = "BK_1000AGL_";
 
@@ -63,8 +65,10 @@ namespace ForestReco
 		/// Reads parsed lines and loads class and point list.
 		/// Result is sorted in descending order.
 		/// </summary>
-		public static List<Tuple<EClass, Vector3>> LoadParsedLines(string[] lines, bool pArray, bool pUseHeader)
+		public static List<Tuple<EClass, Vector3>> ParseLines(string[] lines, bool pArray, bool pUseHeader)
 		{
+			CDebug.Step(EProgramStep.ParseLines);
+
 			//float stepSize = .4f; //in meters
 			if (pArray)
 			{
@@ -116,6 +120,7 @@ namespace ForestReco
 
 		public static void ProcessParsedLines(List<Tuple<EClass, Vector3>> parsedLines)
 		{
+
 			CAnalytics.loadedPoints = parsedLines.Count;
 			AddPointsFromLines(parsedLines);
 
@@ -125,12 +130,10 @@ namespace ForestReco
 
 			CTreeManager.CheckAllTrees();
 
+
+			CDebug.Step(EProgramStep.ValidateTrees1);
 			//dont move invalid trees to invalid list yet, some invalid trees will be merged
 			CTreeManager.ValidateTrees(false, false);
-
-
-			CTreeManager.DebugTree(43);
-			CTreeManager.DebugTree(220);
 
 
 			//export before merge
@@ -144,6 +147,7 @@ namespace ForestReco
 			}
 
 
+			CDebug.Step(EProgramStep.MergeTrees1);
 			//try merge all (even valid)
 			CTreeManager.TryMergeAllTrees(false);
 
@@ -152,19 +156,22 @@ namespace ForestReco
 			// ReSharper disable once ReplaceWithSingleAssignment.False
 			bool cathegorize = false;
 			if (!CProjectData.tryMergeTrees2) { cathegorize = true; }
-			CTreeManager.ValidateTrees(cathegorize, true);
 
+			CDebug.Step(EProgramStep.ValidateTrees2);
+			CTreeManager.ValidateTrees(cathegorize, true);
 
 			if (CProjectData.tryMergeTrees2)
 			{
 				//merge only invalid
+				CDebug.Step(EProgramStep.MergeTrees2);
 				CTreeManager.TryMergeAllTrees(true);
 
+				CDebug.Step(EProgramStep.ValidateTrees3);
 				//validate restrictive
 				//cathegorize invalid trees
 				CTreeManager.ValidateTrees(true, true);
 			}
-			
+
 			CTreeManager.CheckAllTrees();
 
 			CAnalytics.detectedTrees = CTreeManager.Trees.Count;
@@ -175,15 +182,16 @@ namespace ForestReco
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
 			//CProjectData.array.DebugDetectedTrees();
 
-			
-				CRefTreeManager.AssignRefTrees();
-				//CProjectData.objsToExport.AddRange(trees);
-				if (CProjectData.exportRefTrees) //no reason to export when no refTrees were assigned
-				{
-					//CRefTreeManager.ExportTrees();
-					CObjPartition.AddRefTrees();
-				}
-			
+
+			CDebug.Step(EProgramStep.AssignReftrees);
+			CRefTreeManager.AssignRefTrees();
+			//CProjectData.objsToExport.AddRange(trees);
+			if (CProjectData.exportRefTrees) //no reason to export when no refTrees were assigned
+			{
+				//CRefTreeManager.ExportTrees();
+				CObjPartition.AddRefTrees();
+			}
+
 			if (CProjectData.exportTrees)
 			{
 				//CTreeManager.ExportTrees();
@@ -232,13 +240,17 @@ namespace ForestReco
 			DateTime processStartTime = DateTime.Now;
 			CDebug.Count("ProcessParsedLines", pParsedLines.Count);
 			//+ ". Start = " + processStartTime);
+
+			CDebug.Step(EProgramStep.ProcessGroundPoints);
 			ProcessGroundPoints();
+			CDebug.Step(EProgramStep.FilterVegePoints);
 			FilterVegePoints();
 
 			CAnalytics.vegePoints = CProjectData.vegePoints.Count;
 			CAnalytics.groundPoints = CProjectData.groundPoints.Count;
 			CAnalytics.filteredPoints = CProjectData.fakePoints.Count;
 
+			CDebug.Step(EProgramStep.ProcessVegePoints);
 			ProcessVegePoints();
 
 			CDebug.Duration("All points added", processStartTime);
@@ -322,9 +334,9 @@ namespace ForestReco
 				CDebug.WriteLine("setting height to " + CProjectData.lowestHeight);
 				CDebugData.DefineArray(true, CProjectData.lowestHeight);
 			}
-			
-				FillArray();
-			
+
+			FillArray();
+
 			if (CProjectData.smoothArray)
 			{
 				CProjectData.array?.SmoothenArray(1);

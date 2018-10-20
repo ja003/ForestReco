@@ -28,10 +28,10 @@ namespace ForestReco
 				"R7",
 				//"R8",
 				//"R9",
-				//"R10",
+				"R10",
 				//"R11",
 				//"R12",
-				//"R13",
+				"R13",
 				//"R14",
 				//"R15",
 
@@ -130,6 +130,8 @@ namespace ForestReco
 
 		private static void LoadTrees(List<string> pFileNames)
 		{
+			CDebug.Step(EProgramStep.LoadReftrees);
+
 			DateTime loadTreesStartTime = DateTime.Now;
 			CDebug.WriteLine("Load ref trees: ");
 			foreach (string fileName in pFileNames)
@@ -138,16 +140,20 @@ namespace ForestReco
 			}
 
 			int counter = 0;
-			foreach (string fileName in pFileNames)
+			for (int i = 0; i < pFileNames.Count; i++)
 			{
+				string fileName = pFileNames[i];
+				CDebug.Progress(i, pFileNames.Count, 1, ref loadTreesStartTime, "load reftree");
+
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
-				CRefTree refTree = deserializedRefTree ?? new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
+				CRefTree refTree = deserializedRefTree ??
+				                   new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
 
 				refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
 				Trees.Add(refTree);
 				CDebug.WriteLine("Loaded tree: " + fileName);
-				
+
 				counter++;
 			}
 			CDebug.Duration("Load ref trees" ,loadTreesStartTime);

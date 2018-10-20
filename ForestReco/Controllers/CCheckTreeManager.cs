@@ -17,9 +17,11 @@ namespace ForestReco
 		{
 			if (CProjectData.loadCheckTrees)
 			{
+				CDebug.Step(EProgramStep.LoadCheckTrees);
 				LoadTrees(checkFileName);
 			}
 
+			CDebug.Step(EProgramStep.AssignCheckTrees);
 			AssignTrees();
 
 			ValidateTrees();

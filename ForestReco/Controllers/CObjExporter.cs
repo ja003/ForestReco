@@ -195,7 +195,7 @@ namespace ForestReco
 			string chosenFolderName = path + "\\" + pFileName + "_" + folderIndex;
 			while (Directory.Exists(chosenFolderName))
 			{
-				chosenFolderName = path + pFileName + "_" + folderIndex;
+				chosenFolderName = path + "\\" + pFileName + "_" + folderIndex;
 				folderIndex++;
 			}
 			Directory.CreateDirectory(chosenFolderName);

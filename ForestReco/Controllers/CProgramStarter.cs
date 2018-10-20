@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace ForestReco
 {
@@ -12,7 +13,7 @@ namespace ForestReco
 		public static void Start()
 		{
 			DateTime start = DateTime.Now;
-
+		
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
 			//CPlatformManager.platform = EPlatform.Notebook;
@@ -76,6 +77,7 @@ namespace ForestReco
 
 			CMaterialManager.Init();
 
+
 			string[] lines = CProgramLoader.GetFileLines();
 
 			if (CHeaderInfo.HasHeader(lines[0]))
@@ -90,7 +92,7 @@ namespace ForestReco
 			CRefTreeManager.Init();
 
 
-			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.LoadParsedLines(lines, CProjectData.header != null, true);
+			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
 			//has to be called after array initialization
@@ -99,6 +101,7 @@ namespace ForestReco
 			CTreeManager.DebugTrees();
 
 			//CObjExporter.ExportObjsToExport();
+			CDebug.Step(EProgramStep.Export);
 			CObjPartition.ExportPartition();
 
 			CAnalytics.Write();
