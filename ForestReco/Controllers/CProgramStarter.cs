@@ -9,11 +9,16 @@ namespace ForestReco
 {
 	public static class CProgramStarter
 	{
-
+		public static bool abort;
+		
 		public static void Start()
 		{
 			DateTime start = DateTime.Now;
-		
+			abort = false;
+			CProjectData.Init();
+			CDebug.Init();
+			CTreeManager.Init();
+
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
 			//CPlatformManager.platform = EPlatform.Notebook;
@@ -80,6 +85,12 @@ namespace ForestReco
 
 			string[] lines = CProgramLoader.GetFileLines();
 
+			if (abort)
+			{
+				OnAborted();
+				return;
+			}
+
 			if (CHeaderInfo.HasHeader(lines[0]))
 			{
 				CProjectData.header = new CHeaderInfo(lines);
@@ -91,12 +102,29 @@ namespace ForestReco
 
 			CRefTreeManager.Init();
 
+			if (abort)
+			{
+				OnAborted();
+				return;
+			}
 
 			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
+			if (abort)
+			{
+				OnAborted();
+				return;
+			}
+
 			//has to be called after array initialization
 			CCheckTreeManager.Init();
+
+			if (abort)
+			{
+				OnAborted();
+				return;
+			}
 
 			CTreeManager.DebugTrees();
 
@@ -105,10 +133,19 @@ namespace ForestReco
 			CObjPartition.ExportPartition();
 
 			CAnalytics.Write();
+		}
 
-			CDebug.WriteLine("\n==============\n");
-			CDebug.Duration("Press any key to exit. Complete time = ", start);
-			Console.ReadKey();
+		public static void Abort()
+		{
+			CDebug.Warning("ABORT");
+			if(abort){ return;}
+			abort = true;
+			CDebug.Step(EProgramStep.Aborting);
+		}
+
+		public static void OnAborted()
+		{
+			CDebug.Step(EProgramStep.Aborted);
 		}
 	}
 }

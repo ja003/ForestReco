@@ -10,10 +10,12 @@ namespace ForestReco
 	{
 		public static Mtl materials;
 
-		private static Dictionary<EMaterial, List<int>> materialSet = new Dictionary<EMaterial, List<int>>();
+		private static Dictionary<EMaterial, List<int>> materialSet;
 
 		public static void Init()
 		{
+			materialSet = new Dictionary<EMaterial, List<int>>();
+
 			materials = new Mtl("colors");
 			AddMaterial("invalid", .3f, EMaterial.Invalid);
 			AddMaterial("alarm", 1, 0, 0, EMaterial.Alarm);

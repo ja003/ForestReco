@@ -19,6 +19,7 @@ namespace ForestReco
 		private Button btnOutputFolder;
 		public ProgressBar progressBar;
 		public TextBox textProgress;
+		private Button btnAbort;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -84,6 +85,7 @@ namespace ForestReco
 			this.btnOutputFolder = new System.Windows.Forms.Button();
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.textProgress = new System.Windows.Forms.TextBox();
+			this.btnAbort = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// btnSellectForrest
@@ -125,7 +127,7 @@ namespace ForestReco
 			// 
 			this.btnStart.Location = new System.Drawing.Point(8, 213);
 			this.btnStart.Name = "btnStart";
-			this.btnStart.Size = new System.Drawing.Size(455, 50);
+			this.btnStart.Size = new System.Drawing.Size(384, 50);
 			this.btnStart.TabIndex = 5;
 			this.btnStart.Text = "START";
 			this.btnStart.UseVisualStyleBackColor = true;
@@ -163,9 +165,20 @@ namespace ForestReco
 			this.textProgress.Size = new System.Drawing.Size(455, 45);
 			this.textProgress.TabIndex = 10;
 			// 
+			// btnAbort
+			// 
+			this.btnAbort.Location = new System.Drawing.Point(398, 213);
+			this.btnAbort.Name = "btnAbort";
+			this.btnAbort.Size = new System.Drawing.Size(65, 50);
+			this.btnAbort.TabIndex = 11;
+			this.btnAbort.Text = "ABORT";
+			this.btnAbort.UseVisualStyleBackColor = true;
+			this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(475, 352);
+			this.Controls.Add(this.btnAbort);
 			this.Controls.Add(this.textProgress);
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.textOutputFolder);
@@ -181,6 +194,11 @@ namespace ForestReco
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
+		}
+
+		private void btnAbort_Click(object sender, EventArgs e)
+		{
+			CProgramStarter.Abort();
 		}
 	}
 }

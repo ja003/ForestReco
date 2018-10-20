@@ -217,6 +217,8 @@ namespace ForestReco
 			int counter = 1;
 			while (!CProjectData.array.IsAllDefined())
 			{
+				if (CProgramStarter.abort) { return; }
+
 				DateTime fillHeightsStart = DateTime.Now;
 
 				CDebug.Count("FillMissingHeights", counter);
@@ -297,25 +299,12 @@ namespace ForestReco
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
+				if (CProgramStarter.abort) { return; }
+
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
 
 				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "added point");
-				//if (i % debugFrequency == 0 && i > 0)
-				//{
-				//	CDebug.WriteLine("\nAdded point " + i + " out of " + CProjectData.vegePoints.Count);
-				//	double lastPointBatchProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-				//	CDebug.WriteLine("- time of last " + debugFrequency + " points = " + lastPointBatchProcessTime);
-
-				//	//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-				//	float remainsRatio = (float)(CProjectData.vegePoints.Count - i) / debugFrequency;
-				//	double totalSeconds = remainsRatio * lastPointBatchProcessTime;
-				//	TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
-				//	string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-				//	CDebug.WriteLine("- estimated time left = " + timeString + "\n");
-
-				//	previousDebugStart = DateTime.Now;
-				//}
 			}
 			CDebug.Duration("ProcessVegePoints", processVegePointsStart);
 		}
@@ -324,6 +313,8 @@ namespace ForestReco
 		{
 			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
+				if (CProgramStarter.abort) { return; }
+
 				Vector3 point = CProjectData.groundPoints[i];
 				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground);
 			}

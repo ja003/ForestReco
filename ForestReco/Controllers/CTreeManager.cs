@@ -8,11 +8,10 @@ namespace ForestReco
 {
 	public static class CTreeManager
 	{
-		public static List<CTree> Trees { get; } = new List<CTree>();
-		public static List<CTree> InvalidTrees { get; } = new List<CTree>();
-		//public static List<CTree> FakeTrees { get; } = new List<CTree>();
+		public static List<CTree> Trees { get; private set; }
+		public static List<CTree> InvalidTrees { get; private set; }
 
-		public static List<Vector3> invalidVegePoints = new List<Vector3>();
+		public static List<Vector3> invalidVegePoints;
 
 		public const float TREE_POINT_EXTENT = 0.1f;
 
@@ -28,7 +27,12 @@ namespace ForestReco
 
 		public static float AVERAGE_MAX_TREE_HEIGHT = 20;
 
-
+		public static void Init()
+		{
+			Trees = new List<CTree>();
+			InvalidTrees = new List<CTree>();
+			invalidVegePoints = new List<Vector3>();
+		}
 
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
 		public static float GetMinPeakDistance(float pMultiply)
@@ -323,6 +327,8 @@ namespace ForestReco
 		{
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
+				if (CProgramStarter.abort) { return; }
+
 				if (i >= Trees.Count)
 				{
 					//CDebug.WriteLine("Tree was deleted");

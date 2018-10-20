@@ -10,6 +10,12 @@ namespace ForestReco
 {
 	public static class CDebug
 	{
+		private static int stepCallCount;
+
+		public static void Init()
+		{
+			stepCallCount = 0;
+		}
 
 		public static void Count(string pText, int pCount, int pOutOf = -1)
 		{
@@ -113,13 +119,22 @@ namespace ForestReco
 			Thread.Sleep(100);
 		}
 
-		private static int stepCallCount;
 
 		private static string GetStepText(EProgramStep pStep)
 		{
+			if (pStep == EProgramStep.Aborting)
+			{
+				return "ABORTING! please wait.";
+			}
+			if (pStep == EProgramStep.Aborted)
+			{
+				return "ABORTED";
+			}
+
 			stepCallCount++;
 			string progress = stepCallCount + "/" +
-				Enum.GetNames(typeof(EProgramStep)).Length + ": ";
+				(Enum.GetNames(typeof(EProgramStep)).Length - 2) + ": "; 
+				//-2 for abort states
 			string text;
 			switch (pStep)
 			{
@@ -195,5 +210,7 @@ namespace ForestReco
 		LoadCheckTrees,
 		AssignCheckTrees,
 		Export,
+		Aborting,
+		Aborted
 	}
 }

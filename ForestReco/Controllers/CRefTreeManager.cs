@@ -9,13 +9,14 @@ namespace ForestReco
 {
 	public static class CRefTreeManager
 	{
-		public static List<CRefTree> Trees = new List<CRefTree>();
+		public static List<CRefTree> Trees;
 		private const float TREE_POINT_EXTENT = 0.2f;
 
 		public static bool DEBUG = false;
 
 		public static void Init()
 		{
+			Trees = new List<CRefTree>();
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
@@ -122,7 +123,7 @@ namespace ForestReco
 				}*/
 			}
 
-			CDebug.Duration("Assign ref tree models",addTreeObjModelsStart);
+			CDebug.Duration("Assign ref tree models", addTreeObjModelsStart);
 
 			//return treeObjs;
 		}
@@ -142,12 +143,14 @@ namespace ForestReco
 			int counter = 0;
 			for (int i = 0; i < pFileNames.Count; i++)
 			{
+				if (CProgramStarter.abort) { return; }
+
 				string fileName = pFileNames[i];
 				CDebug.Progress(i, pFileNames.Count, 1, ref loadTreesStartTime, "load reftree");
 
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
 				CRefTree refTree = deserializedRefTree ??
-				                   new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
+										 new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
 
 				refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
@@ -156,7 +159,7 @@ namespace ForestReco
 
 				counter++;
 			}
-			CDebug.Duration("Load ref trees" ,loadTreesStartTime);
+			CDebug.Duration("Load ref trees", loadTreesStartTime);
 
 			DebugRefTrees();
 		}
@@ -215,7 +218,7 @@ namespace ForestReco
 
 			return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity);
 		}
-		
+
 		/// <summary>
 		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
 		/// </summary>
@@ -223,7 +226,7 @@ namespace ForestReco
 		{
 			Vector3 arrayCenter = CProjectData.GetArrayCenter();
 			float minHeight = CProjectData.GetMinHeight();
-			
+
 			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
 			float treeHeight = pTargetTree.GetTreeHeight();
 			float heightRatio = treeHeight / pRefTree.GetTreeHeight();

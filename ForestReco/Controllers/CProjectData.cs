@@ -71,6 +71,19 @@ namespace ForestReco
 		public static float lowestHeight = int.MaxValue;
 		public static float highestHeight = int.MinValue;
 
+		public static void Init()
+		{
+			array = null;
+			header = null;
+
+			vegePoints.Clear();
+			groundPoints.Clear();
+			fakePoints.Clear();
+
+			lowestHeight = int.MaxValue;
+			highestHeight = int.MinValue;
+		}
+
 		public static Vector3 GetOffset()
 		{
 			return header?.Offset ?? Vector3.Zero;

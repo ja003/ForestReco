@@ -1,5 +1,6 @@
 ﻿namespace ForestReco
 {
+	//todo: zrušit
 	public static class CPlatformManager
 	{
 		public static EPlatform platform;

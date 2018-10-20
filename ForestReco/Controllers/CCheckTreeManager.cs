@@ -10,11 +10,12 @@ namespace ForestReco
 {
 	public static class CCheckTreeManager
 	{
-		public static List<CCheckTree> Trees = new List<CCheckTree>();
+		public static List<CCheckTree> Trees { get; private set; }
 		public static string checkFileName;
 
 		public static void Init()
 		{
+			Trees = new List<CCheckTree>();
 			if (CProjectData.loadCheckTrees)
 			{
 				CDebug.Step(EProgramStep.LoadCheckTrees);
