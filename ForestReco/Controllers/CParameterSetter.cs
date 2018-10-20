@@ -10,16 +10,10 @@ namespace ForestReco
 	{
 		public static string forrestFilePath;
 
-
-
 		public static void Init()
 		{
-			bool containsForrestPathKey = Properties.Settings.Default.SettingsKey.Contains("forrestFilePath");
-			if (containsForrestPathKey)
-			{
-				object forrestFilePathSettings = Properties.Settings.Default["forrestFilePath"];
-				forrestFilePath = (string)forrestFilePathSettings;
-			}
+			object forrestFilePathSettings = Properties.Settings.Default["forrestFilePath"];
+			forrestFilePath = (string)forrestFilePathSettings;
 		}
 
 		private static string SetForrestFilePath(string pPath)
