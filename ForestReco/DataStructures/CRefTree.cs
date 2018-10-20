@@ -250,7 +250,8 @@ namespace ForestReco
 
 		private static string GetRefTreeFolder(string pSubfolder)
 		{
-			return CPlatformManager.GetPodkladyPath() + "\\tree_models\\reftrees\\" + pSubfolder;
+			return CParameterSetter.reftreeFolderPath + "\\" + pSubfolder;
+			//return CPlatformManager.GetPodkladyPath() + "\\tree_models\\reftrees\\" + pSubfolder;
 		}
 
 
@@ -413,7 +414,7 @@ namespace ForestReco
 
 		/*public CRefTree Clone(string pNameAppendix)
 		{
-			CRefTree cloneTree = new CRefTree(fileName + pNameAppendix, treeIndex, false);
+			CRefTree cloneTree = new CRefTree(forrestFullFilePath + pNameAppendix, treeIndex, false);
 			cloneTree.Obj = Obj.Clone();
 			cloneTree.peak = peak.Clone();
 

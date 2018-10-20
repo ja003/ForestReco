@@ -14,31 +14,49 @@ namespace ForestReco
 	{
 		public static bool useDebugData = false;
 
-		public static string fileName;
+		public static string forrestFullFilePath;
 
 		//@"BK_1000AGL_classified";
 		//@"BK_1000AGL_cl_split_s_mezerou";
 		//@"BK_1000AGL_classified_0007559_0182972";
 		//@"BK_1000AGL_classified_0007559_0182972_0037797";
-		//fileName = "debug_tree_04";
+		//forrestFullFilePath = "debug_tree_04";
 		//"debug_tree_03";
 		//"debug_tree_06";
 		//"BK_1000AGL_59_72_97_x90_y62";
 		//"R2-F-1-j_fix";
-		//fileName = "debug_tree_05";
+		//forrestFullFilePath = "debug_tree_05";
+
+
 
 		public static string[] GetFileLines()
 		{
-			CProjectData.saveFileName = fileName;
+			CProjectData.saveFileName = GetFileName(forrestFullFilePath);
 			//string saveFileName = "BK_1000AGL_";
 
 
-			string podkladyPath = CPlatformManager.GetPodkladyPath();
-			string fullFilePath = podkladyPath + @"\data-small\TXT\" + fileName + @".txt";
+			//string podkladyPath = CPlatformManager.GetPodkladyPath();
+			//string fullFilePath = podkladyPath + @"\data-small\TXT\" + forrestFullFilePath + @".txt";
+			string fullFilePath = CParameterSetter.forrestFilePath;
+
 			string[] lines = File.ReadAllLines(fullFilePath);
 			CDebug.Action("load", fullFilePath);
 
 			return lines;
+		}
+
+		private static string GetFileName(string pFullFilePath)
+		{
+			string[] filePathSplit = pFullFilePath.Split('\\');
+			if (filePathSplit.Length < 3)
+			{
+				CDebug.Error($"Wrong file path format: {pFullFilePath}");
+				return "";
+			}
+			string fileNameAndType = filePathSplit[filePathSplit.Length - 1];
+			string fileName = fileNameAndType.Split('.')[0];
+
+			return fileName;
 		}
 
 		/// <summary>

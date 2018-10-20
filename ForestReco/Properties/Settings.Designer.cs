@@ -34,5 +34,29 @@ namespace ForestReco.Properties {
                 this["forrestFilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string reftreeFolderPath {
+            get {
+                return ((string)(this["reftreeFolderPath"]));
+            }
+            set {
+                this["reftreeFolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string outputFolderPath {
+            get {
+                return ((string)(this["outputFolderPath"]));
+            }
+            set {
+                this["outputFolderPath"] = value;
+            }
+        }
     }
 }

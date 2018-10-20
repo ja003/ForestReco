@@ -9,21 +9,56 @@ namespace ForestReco
 	public static class CParameterSetter
 	{
 		public static string forrestFilePath;
+		public static string reftreeFolderPath;
+		public static string outputFolderPath;
+
+
+		public const string forrestFilePathKey = "forrestFilePath";
+		public const string reftreeFolderPathKey = "reftreeFolderPath";
+		public const string outputFolderPathKey = "outputFolderPath";
 
 		public static void Init()
 		{
-			object forrestFilePathSettings = Properties.Settings.Default["forrestFilePath"];
-			forrestFilePath = (string)forrestFilePathSettings;
+			forrestFilePath = (string)GetSettings(forrestFilePathKey);
+			reftreeFolderPath = (string)GetSettings(reftreeFolderPathKey);
+			outputFolderPath = (string)GetSettings(outputFolderPathKey);
 		}
 
-		private static string SetForrestFilePath(string pPath)
+		private static object GetSettings(string pKey)
 		{
-			forrestFilePath = pPath;
-			Properties.Settings.Default["forrestFilePath"] = pPath;
-			Properties.Settings.Default.Save();
-			return pPath;
+			return Properties.Settings.Default[pKey];
 		}
 
+		private static string SetParameter(string pParamKey, string pArg)
+		{
+			switch (pParamKey)
+			{
+				case forrestFilePathKey:
+					forrestFilePath = pArg;
+
+					break;
+				case reftreeFolderPathKey:
+					reftreeFolderPath = pArg;
+					break;
+			}
+
+			Properties.Settings.Default[pParamKey] = pArg;
+			Properties.Settings.Default.Save();
+			return pArg;
+		}
+
+		public static string SelectFolder(string pParamKey)
+		{
+			FolderBrowserDialog fbd = new FolderBrowserDialog();
+			DialogResult dr = fbd.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				return SetParameter(pParamKey, fbd.SelectedPath);
+			}
+
+			return "";
+		}
+		
 		public static string SelectForrestFile()
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -35,7 +70,7 @@ namespace ForestReco
 			DialogResult dr = ofd.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				return SetForrestFilePath(ofd.FileName);
+				return SetParameter(forrestFilePathKey, ofd.FileName);
 
 				/*foreach (String file in ofd.FileNames)
 				{

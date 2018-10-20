@@ -187,11 +187,12 @@ namespace ForestReco
 
 		public static string CreateFolder(string pFileName)
 		{
-			string path = Path.GetDirectoryName(
-				              System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+			//string path = Path.GetDirectoryName(
+			//	              System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
+			string path = CParameterSetter.outputFolderPath;
 
 			int folderIndex = 0;
-			string chosenFolderName = path + pFileName + "_" + folderIndex;
+			string chosenFolderName = path + "\\" + pFileName + "_" + folderIndex;
 			while (Directory.Exists(chosenFolderName))
 			{
 				chosenFolderName = path + pFileName + "_" + folderIndex;

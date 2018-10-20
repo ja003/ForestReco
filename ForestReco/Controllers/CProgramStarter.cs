@@ -43,8 +43,8 @@ namespace ForestReco
 			//CProjectData.exportBeforeMerge = true;
 
 			//REF TREES
-			CProjectData.loadRefTrees = false;
-			CProjectData.assignRandomRefTree = false;
+			CProjectData.loadRefTrees = true;
+			CProjectData.assignRandomRefTree = true;
 			CProjectData.useReducedRefTreeObjs = true;
 			CProjectData.exportRefTrees = true;
 
@@ -57,17 +57,19 @@ namespace ForestReco
 			CProjectData.exportPoints = true;
 			CObjExporter.simplePointsObj = false;
 
-			CProgramLoader.fileName = "BK_1000AGL_59_72_97_x90_y62";
-			//CProgramLoader.fileName = "BK_1000AGL_7559_182972_37797";
-			//CProgramLoader.fileName = "BK_1000AGL_range_for_checktrees";
-			//CProgramLoader.fileName = "BK_1000AGL_checktreesPart1";
-			//CProgramLoader.fileName = "BK_1000AGL_helpTreeRange_02_32";
+			CProgramLoader.forrestFullFilePath = "BK_1000AGL_59_72_97_x90_y62";
+			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_7559_182972_37797";
+			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_range_for_checktrees";
+			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_checktreesPart1";
+			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_helpTreeRange_02_32";
 
-			//CProgramLoader.fileName = "BK_1000AGL_classified";
-			//CProgramLoader.fileName = "R7_F_1+2";
-			//CProgramLoader.fileName = "R7";
-			//CProgramLoader.fileName = "R7_test";
-			//CProgramLoader.fileName = "R2_F_1+2";
+			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_classified";
+			//CProgramLoader.forrestFullFilePath = "R7_F_1+2";
+			//CProgramLoader.forrestFullFilePath = "R7";
+			//CProgramLoader.forrestFullFilePath = "R7_test";
+			//CProgramLoader.forrestFullFilePath = "R2_F_1+2";
+
+			CProgramLoader.forrestFullFilePath = CParameterSetter.forrestFilePath;
 
 			CCheckTreeManager.checkFileName = "vysledek_export_UTM33N";
 
