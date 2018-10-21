@@ -13,13 +13,14 @@ namespace ForestReco
 		public static string outputFolderPath;
 
 		public static bool consoleVisible;
-
-
+		
+		public static int partitionStep;
 
 		public const string forrestFilePathKey = "forrestFilePath";
 		public const string reftreeFolderPathKey = "reftreeFolderPath";
 		public const string outputFolderPathKey = "outputFolderPath";
 		public const string consoleVisibleKey = "consoleVisible";
+		public const string partitionStepKey = "partitionStep";
 
 		public static void Init()
 		{
@@ -27,6 +28,7 @@ namespace ForestReco
 			reftreeFolderPath = (string)GetSettings(reftreeFolderPathKey);
 			outputFolderPath = (string)GetSettings(outputFolderPathKey);
 			consoleVisible = (bool)GetSettings(consoleVisibleKey);
+			partitionStep = (int)GetSettings(partitionStepKey);
 			if (!consoleVisible)
 			{
 				IntPtr handle = CConsole.GetConsoleWindow();
@@ -39,7 +41,7 @@ namespace ForestReco
 			return Properties.Settings.Default[pKey];
 		}
 
-		private static void SetParameter(string pParamKey, object pArg)
+		public static void SetParameter(string pParamKey, object pArg)
 		{
 			switch (pParamKey)
 			{
@@ -65,13 +67,13 @@ namespace ForestReco
 			//return pArg;
 		}
 
-		public static string SelectFolder(string pParamKey)
+		//public static string SelectFolder(string pParamKey)
+		public static string SelectFolder()
 		{
 			FolderBrowserDialog fbd = new FolderBrowserDialog();
 			DialogResult dr = fbd.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				SetParameter(pParamKey, fbd.SelectedPath);
 				return fbd.SelectedPath;
 			}
 
@@ -89,37 +91,7 @@ namespace ForestReco
 			DialogResult dr = ofd.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				SetParameter(forrestFilePathKey, ofd.FileName);
 				return ofd.FileName;
-
-				/*foreach (String file in ofd.FileNames)
-				{
-					try
-					{
-						if ())
-						{
-							
-						}
-						else
-						{
-							MessageBox.Show("selected file: " + file.ToString() + " is not an image!");
-						}
-
-					}
-					catch (SecurityException ex)
-					{
-						// The user lacks appropriate permissions to read files, discover paths, etc.
-						MessageBox.Show("Security error. \n\n" + "Error message: " + ex.Message + "\n\n" + ex.StackTrace
-						);
-					}
-					catch (Exception ex)
-					{
-						// Could not load the image - probably related to Windows file system permissions.
-						MessageBox.Show("Cannot load the image: " + file.Substring(file.LastIndexOf('\\'))
-							 + ". You may not have permission to read the file, or " +
-							 "it may be corrupt.\n\nReported error: " + ex.Message);
-					}
-				}*/
 			}
 			return "";
 		}

@@ -24,10 +24,7 @@ namespace ForestReco
 			//CPlatformManager.platform = EPlatform.Notebook;
 			CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
-
-
-			CObjPartition.partitionStep = 45;
-
+			
 			//Input params
 			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
 			CTreeManager.TREE_EXTENT_MERGE_MULTIPLY = 1.5F; //good: 1.5 - 2 

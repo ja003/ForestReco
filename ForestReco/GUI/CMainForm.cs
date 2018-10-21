@@ -21,6 +21,10 @@ namespace ForestReco
 		public TextBox textProgress;
 		private Button btnAbort;
 		private Button button1;
+		private Button btnHintPartition;
+		private Label labelPartition;
+		private TextBox textPartition;
+		private TrackBar trackBarPartition;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -35,6 +39,9 @@ namespace ForestReco
 			textForrestFilePath.Text = CParameterSetter.forrestFilePath;
 			textReftreeFolder.Text = CParameterSetter.reftreeFolderPath;
 			textOutputFolder.Text = CParameterSetter.outputFolderPath;
+			
+			textPartition.Text = CParameterSetter.partitionStep + " m";
+			trackBarPartition.Value = CParameterSetter.partitionStep;
 		}
 
 
@@ -43,36 +50,36 @@ namespace ForestReco
 
 		}
 
-		private void btnSellectForrest_Click(object sender, EventArgs e)
-		{
-			string path = CParameterSetter.SelectForrestFile();
-			textForrestFilePath.Clear();
-			textForrestFilePath.Text = path;
-		}
 
-		private void textForrestFilePath_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void btnSellectReftreeFodlers_Click(object sender, EventArgs e)
-		{
-			string folder = CParameterSetter.SelectFolder(CParameterSetter.reftreeFolderPathKey);
-			textReftreeFolder.Clear();
-			textReftreeFolder.Text = folder;
-		}
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
 			CProgramStarter.Start();
 		}
 
-		private void btnOutputFolder_Click(object sender, EventArgs e)
+		
+
+
+		private void btnAbort_Click(object sender, EventArgs e)
 		{
-			string folder = CParameterSetter.SelectFolder(CParameterSetter.outputFolderPathKey);
-			textOutputFolder.Clear();
-			textOutputFolder.Text = folder;
+			CProgramStarter.Abort();
 		}
+
+
+		
+
+		private void btnToggleConsole_Click(object sender, EventArgs e)
+		{
+			CParameterSetter.ToggleConsoleVisibility();
+		}
+
+
+		private void trackBarPartition_Scroll(object sender, EventArgs e)
+		{
+			textPartition.Text = trackBarPartition.Value + " m";
+			CParameterSetter.SetParameter("partitionStep", trackBarPartition.Value);
+		}
+
 
 
 		private void InitializeComponent()
@@ -88,13 +95,18 @@ namespace ForestReco
 			this.textProgress = new System.Windows.Forms.TextBox();
 			this.btnAbort = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
+			this.btnHintPartition = new System.Windows.Forms.Button();
+			this.labelPartition = new System.Windows.Forms.Label();
+			this.textPartition = new System.Windows.Forms.TextBox();
+			this.trackBarPartition = new System.Windows.Forms.TrackBar();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnSellectForrest
 			// 
 			this.btnSellectForrest.Location = new System.Drawing.Point(8, 9);
 			this.btnSellectForrest.Name = "btnSellectForrest";
-			this.btnSellectForrest.Size = new System.Drawing.Size(108, 31);
+			this.btnSellectForrest.Size = new System.Drawing.Size(120, 31);
 			this.btnSellectForrest.TabIndex = 0;
 			this.btnSellectForrest.Text = "select forrest file";
 			this.btnSellectForrest.UseVisualStyleBackColor = true;
@@ -102,17 +114,18 @@ namespace ForestReco
 			// 
 			// textForrestFilePath
 			// 
-			this.textForrestFilePath.Location = new System.Drawing.Point(122, 15);
+			this.textForrestFilePath.Location = new System.Drawing.Point(134, 15);
 			this.textForrestFilePath.Name = "textForrestFilePath";
-			this.textForrestFilePath.Size = new System.Drawing.Size(475, 20);
+			this.textForrestFilePath.Size = new System.Drawing.Size(463, 20);
 			this.textForrestFilePath.TabIndex = 1;
 			this.textForrestFilePath.TextChanged += new System.EventHandler(this.textForrestFilePath_TextChanged);
 			// 
 			// btnSellectReftreeFodlers
 			// 
+			this.btnSellectReftreeFodlers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btnSellectReftreeFodlers.Location = new System.Drawing.Point(8, 46);
 			this.btnSellectReftreeFodlers.Name = "btnSellectReftreeFodlers";
-			this.btnSellectReftreeFodlers.Size = new System.Drawing.Size(108, 31);
+			this.btnSellectReftreeFodlers.Size = new System.Drawing.Size(120, 31);
 			this.btnSellectReftreeFodlers.TabIndex = 2;
 			this.btnSellectReftreeFodlers.Text = "select reftree folders";
 			this.btnSellectReftreeFodlers.UseVisualStyleBackColor = true;
@@ -120,10 +133,11 @@ namespace ForestReco
 			// 
 			// textReftreeFolder
 			// 
-			this.textReftreeFolder.Location = new System.Drawing.Point(122, 52);
+			this.textReftreeFolder.Location = new System.Drawing.Point(134, 52);
 			this.textReftreeFolder.Name = "textReftreeFolder";
-			this.textReftreeFolder.Size = new System.Drawing.Size(475, 20);
+			this.textReftreeFolder.Size = new System.Drawing.Size(463, 20);
 			this.textReftreeFolder.TabIndex = 4;
+			this.textReftreeFolder.TextChanged += new System.EventHandler(this.textReftreeFolder_TextChanged);
 			// 
 			// btnStart
 			// 
@@ -137,16 +151,17 @@ namespace ForestReco
 			// 
 			// textOutputFolder
 			// 
-			this.textOutputFolder.Location = new System.Drawing.Point(122, 89);
+			this.textOutputFolder.Location = new System.Drawing.Point(134, 89);
 			this.textOutputFolder.Name = "textOutputFolder";
-			this.textOutputFolder.Size = new System.Drawing.Size(475, 20);
+			this.textOutputFolder.Size = new System.Drawing.Size(463, 20);
 			this.textOutputFolder.TabIndex = 7;
+			this.textOutputFolder.TextChanged += new System.EventHandler(this.textOutputFolder_TextChanged);
 			// 
 			// btnOutputFolder
 			// 
 			this.btnOutputFolder.Location = new System.Drawing.Point(8, 83);
 			this.btnOutputFolder.Name = "btnOutputFolder";
-			this.btnOutputFolder.Size = new System.Drawing.Size(108, 31);
+			this.btnOutputFolder.Size = new System.Drawing.Size(120, 31);
 			this.btnOutputFolder.TabIndex = 6;
 			this.btnOutputFolder.Text = "select output folder";
 			this.btnOutputFolder.UseVisualStyleBackColor = true;
@@ -187,9 +202,54 @@ namespace ForestReco
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.btnToggleConsole_Click);
 			// 
+			// btnHintPartition
+			// 
+			this.btnHintPartition.Location = new System.Drawing.Point(8, 121);
+			this.btnHintPartition.Name = "btnHintPartition";
+			this.btnHintPartition.Size = new System.Drawing.Size(37, 29);
+			this.btnHintPartition.TabIndex = 13;
+			this.btnHintPartition.Text = "?";
+			this.btnHintPartition.UseVisualStyleBackColor = true;
+			this.btnHintPartition.Click += new System.EventHandler(this.btnHintPartition_Click);
+			// 
+			// labelPartition
+			// 
+			this.labelPartition.AutoSize = true;
+			this.labelPartition.Location = new System.Drawing.Point(51, 129);
+			this.labelPartition.Name = "labelPartition";
+			this.labelPartition.Size = new System.Drawing.Size(67, 13);
+			this.labelPartition.TabIndex = 14;
+			this.labelPartition.Text = "partition step";
+			// 
+			// textPartition
+			// 
+			this.textPartition.Location = new System.Drawing.Point(124, 126);
+			this.textPartition.Name = "textPartition";
+			this.textPartition.ReadOnly = true;
+			this.textPartition.Size = new System.Drawing.Size(34, 20);
+			this.textPartition.TabIndex = 16;
+			// 
+			// trackBarPartition
+			// 
+			this.trackBarPartition.AutoSize = false;
+			this.trackBarPartition.LargeChange = 10;
+			this.trackBarPartition.Location = new System.Drawing.Point(8, 156);
+			this.trackBarPartition.Maximum = 200;
+			this.trackBarPartition.Minimum = 10;
+			this.trackBarPartition.Name = "trackBarPartition";
+			this.trackBarPartition.Size = new System.Drawing.Size(150, 30);
+			this.trackBarPartition.TabIndex = 19;
+			this.trackBarPartition.TickFrequency = 5;
+			this.trackBarPartition.Value = 30;
+			this.trackBarPartition.Scroll += new System.EventHandler(this.trackBarPartition_Scroll);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(609, 352);
+			this.Controls.Add(this.trackBarPartition);
+			this.Controls.Add(this.textPartition);
+			this.Controls.Add(this.labelPartition);
+			this.Controls.Add(this.btnHintPartition);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.btnAbort);
 			this.Controls.Add(this.textProgress);
@@ -204,22 +264,73 @@ namespace ForestReco
 			this.Name = "CMainForm";
 			this.Text = "ForrestReco";
 			this.Load += new System.EventHandler(this.MainForm_Load);
+			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
 
-		private void btnAbort_Click(object sender, EventArgs e)
+		private void textOutputFolder_TextChanged(object sender, EventArgs e)
 		{
-			CProgramStarter.Abort();
+			CDebug.Warning("txt change " + textOutputFolder.Text);
+			CParameterSetter.SetParameter(
+				CParameterSetter.outputFolderPathKey, textOutputFolder.Text);
+		}
+
+		private void btnOutputFolder_Click(object sender, EventArgs e)
+		{
+			string folder = CParameterSetter.SelectFolder();
+			if (folder.Length == 0)
+			{
+				CDebug.Warning("no folder selected");
+				return;
+			}
+			textOutputFolder.Clear();
+			textOutputFolder.Text = folder;
 		}
 
 
+		private void btnSellectReftreeFodlers_Click(object sender, EventArgs e)
+		{
+			string folder = CParameterSetter.SelectFolder();
+			if (folder.Length == 0)
+			{
+				CDebug.Warning("no folder selected");
+				return;
+			}
+			textReftreeFolder.Clear();
+			textReftreeFolder.Text = folder;
+		}
+
+		private void textReftreeFolder_TextChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(
+				CParameterSetter.reftreeFolderPathKey, textReftreeFolder.Text);
+		}
+
+
+		private void btnSellectForrest_Click(object sender, EventArgs e)
+		{
+			string path = CParameterSetter.SelectForrestFile();
+			if (path.Length == 0)
+			{
+				CDebug.Warning("no path selected");
+				return;
+			}
+			textForrestFilePath.Clear();
+			textForrestFilePath.Text = path;
+		}
 		
 
-		private void btnToggleConsole_Click(object sender, EventArgs e)
+		private void textForrestFilePath_TextChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.ToggleConsoleVisibility();
+			CParameterSetter.SetParameter(
+				CParameterSetter.forrestFilePathKey, textForrestFilePath.Text);
+		}
+
+		private void btnHintPartition_Click(object sender, EventArgs e)
+		{
+			CHintManager.ShowHint(EHint.PartitionStep);
 		}
 	}
 }

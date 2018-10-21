@@ -70,5 +70,17 @@ namespace ForestReco.Properties {
                 this["consoleVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int partitionStep {
+            get {
+                return ((int)(this["partitionStep"]));
+            }
+            set {
+                this["partitionStep"] = value;
+            }
+        }
     }
 }
