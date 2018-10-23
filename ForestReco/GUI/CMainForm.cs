@@ -51,8 +51,12 @@ namespace ForestReco
 
 		public CMainForm()
 		{
+			CProjectData.mainForm = this;
+
 			InitializeComponent();
 			InitializeValues();
+
+			//CProgramStarter.Start();
 		}
 
 		private void InitializeValues()
@@ -96,6 +100,8 @@ namespace ForestReco
 			checkBoxReducedReftrees.Checked = CParameterSetter.useReducedReftreeModels;
 
 			SetTooltips();
+
+
 		}
 
 		private void SetTooltips()
@@ -297,6 +303,7 @@ namespace ForestReco
 			this.trackBarPartition.Minimum = 10;
 			this.trackBarPartition.Name = "trackBarPartition";
 			this.trackBarPartition.Size = new System.Drawing.Size(129, 30);
+			this.trackBarPartition.SmallChange = 5;
 			this.trackBarPartition.TabIndex = 19;
 			this.trackBarPartition.TickFrequency = 5;
 			this.trackBarPartition.Value = 30;
@@ -663,6 +670,17 @@ namespace ForestReco
 
 		private void trackBarPartition_Scroll(object sender, EventArgs e)
 		{
+			if (blockRecursion) { return; }
+			trackValue = trackBarPartition.Value;
+			if (trackValue % smallChangeValue != 0)
+			{
+				trackValue = trackValue / smallChangeValue * smallChangeValue;
+
+				blockRecursion = true;
+				trackBarPartition.Value = trackValue;
+				blockRecursion = false;
+			}
+
 			textPartition.Text = trackBarPartition.Value + " m";
 			CParameterSetter.SetParameter(
 				ParamInfo.Name(()=> CParameterSetter.partitionStep), trackBarPartition.Value);

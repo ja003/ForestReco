@@ -76,6 +76,10 @@ namespace ForestReco
 
 		private static void WriteProgress(int pIteration, int pMaxIteration)
 		{
+			if (CProjectData.mainForm == null)
+			{
+				return;
+			}
 			CProjectData.mainForm.progressBar.Minimum = 0;
 			CProjectData.mainForm.progressBar.Maximum = pMaxIteration;
 			CProjectData.mainForm.progressBar.Value = pIteration;
@@ -113,7 +117,12 @@ namespace ForestReco
 		}*/
 		public static void Step(EProgramStep pStep)
 		{
-			lastTextProgress = GetStepText(pStep); CProjectData.mainForm.textProgress.Text = lastTextProgress;
+			if (CProjectData.mainForm == null)
+			{
+				return;
+			}
+			lastTextProgress = GetStepText(pStep); 
+			CProjectData.mainForm.textProgress.Text = lastTextProgress;
 
 			Application.DoEvents();
 			Thread.Sleep(100);

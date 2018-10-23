@@ -34,7 +34,7 @@ namespace ForestReco
 
 		public readonly Tuple<int, int> indexInField;
 
-		private Vector3 center;
+		public Vector3 center;
 
 
 		//--------------------------------------------------------------
@@ -144,6 +144,11 @@ namespace ForestReco
 
 		public void AddGroundPoint(Vector3 pPoint)
 		{
+			if (IsPointOutOfField(pPoint))
+			{
+				CDebug.Error($"point {pPoint} is too far from center {center}");
+			}
+
 			float height = pPoint.Y;
 
 			goundPoints.Add(pPoint);
@@ -153,8 +158,18 @@ namespace ForestReco
 			if (height < MinGround || MinGround == null) { MinGround = height; }
 		}
 
+		public bool IsPointOutOfField(Vector3 pPoint)
+		{
+			return Math.Abs(pPoint.X - center.X) > CParameterSetter.groundArrayStep / 2 ||
+							Math.Abs(pPoint.Z - center.Z) > CParameterSetter.groundArrayStep / 2;
+		}
+
 		public void AddVegePoint(Vector3 pPoint)
 		{
+			if (IsPointOutOfField(pPoint))
+			{
+				CDebug.Error($"point {pPoint} is too far from center {center}");
+			}
 			vegePoints.Add(pPoint);
 		}
 
@@ -490,9 +505,18 @@ namespace ForestReco
 			float a01 = (float)h3.GetHeight() - (float)h1.GetHeight();
 			float a11 = (float)h1.GetHeight() - (float)h2.GetHeight() - (float)h3.GetHeight() + (float)h4.GetHeight();
 
-			float x = pPoint.X - center.X;// + CProjectData.groundArrayStep;
-										  //float z = pPoint.Z - center.Z;//+ CProjectData.groundArrayStep;
-			float z = CParameterSetter.groundArrayStep - (center.Z - pPoint.Z);
+			//sračka
+			//float x = pPoint.X - center.X;/
+			//float z = CParameterSetter.groundArrayStep - (center.Z - pPoint.Z);
+			float step = CParameterSetter.groundArrayStep;
+
+			float x = pPoint.X - center.X;
+			x += step / 2;
+			x = x/step ;
+			//float z = 1 - (center.Z - pPoint.Z );
+			float z = center.Z - pPoint.Z;
+			z += step / 2;
+			z = z/step;
 
 			if (x < 0 || x > 1 || z < 0 || z > 1)
 			{

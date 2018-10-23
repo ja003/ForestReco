@@ -15,8 +15,8 @@ namespace ForestReco
 		static void Main(string[] args)
 		{
 			CMainForm mainForm = new CMainForm();
-			CProjectData.mainForm = mainForm;
 			Application.Run(mainForm);
+
 
 			Console.ReadKey();
 		}

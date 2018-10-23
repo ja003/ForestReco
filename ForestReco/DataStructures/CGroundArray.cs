@@ -54,7 +54,9 @@ namespace ForestReco
 				for (int y = 0; y < arrayYRange; y++)
 				{
 					CGroundField newGroundField = new CGroundField(new Tuple<int, int>(x, y),
-						new Vector3(topLeftCorner.X + x * stepSize, 0, topLeftCorner.Z - y * stepSize));
+						new Vector3(
+							topLeftCorner.X + x * stepSize + stepSize/2, 0,
+							topLeftCorner.Z - y * stepSize - stepSize/2));
 					array[x, y] = newGroundField;
 					fields.Add(newGroundField);
 				}
@@ -121,10 +123,21 @@ namespace ForestReco
 
 		private Tuple<int, int> GetPositionInField(Vector3 pPoint)
 		{
-			int xPos = (int)((pPoint.X - topLeftCorner.X) / stepSize);
+			//int xPos = (int) ((pPoint.X - topLeftCorner.X + stepSize / 2) / stepSize);
+			int xPos = (int)Math.Floor((pPoint.X - topLeftCorner.X) / stepSize);
 			//due to array orientation
 			//int yPos = arrayYRange - (int)((pPoint.Z - botLeftCorner.Z) / stepSize) - 1;
-			int yPos = (int)((topLeftCorner.Z - pPoint.Z) / stepSize);
+			//int yPos = (int)((topLeftCorner.Z - pPoint.Z) / stepSize);
+			int yPos = (int)Math.Floor((topLeftCorner.Z - pPoint.Z) / stepSize);
+
+			//todo: delete this check, it has to be correct for realease!
+			CGroundField el = GetElement(xPos, yPos);
+			if (el != null && el.IsPointOutOfField(pPoint))
+			{
+				CDebug.Error($"point {pPoint} is too far from center {el.center}");
+			}
+
+
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
