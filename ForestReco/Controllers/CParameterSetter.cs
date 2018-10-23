@@ -16,12 +16,20 @@ namespace ForestReco
 		public static bool consoleVisible;
 		
 		public static int partitionStep;
+		public static float groundArrayStep;
+		public static float treeExtent;
+		public static float treeExtentMultiply;
 
 		public const string forrestFilePathKey = "forrestFilePath";
 		public const string reftreeFolderPathKey = "reftreeFolderPath";
 		public const string outputFolderPathKey = "outputFolderPath";
 		public const string consoleVisibleKey = "consoleVisible";
 		public const string partitionStepKey = "partitionStep";
+		public const string groundArrayStepKey = "groundArrayStep";
+		public const string treeExtentKey = "treeExtent";
+		public const string treeExtentMultiplyKey = "treeExtentMultiply";
+
+
 		public const string checkTreeFilePathKey = "checkTreeFilePath";
 		
 		public static void Init()
@@ -32,6 +40,10 @@ namespace ForestReco
 			checkTreeFilePath = (string)GetSettings(checkTreeFilePathKey);
 			consoleVisible = (bool)GetSettings(consoleVisibleKey);
 			partitionStep = (int)GetSettings(partitionStepKey);
+			groundArrayStep = (float)GetSettings(groundArrayStepKey);
+			treeExtent = (float)GetSettings(treeExtentKey);
+			treeExtentMultiply = (float)GetSettings(treeExtentMultiplyKey);
+
 			if (!consoleVisible)
 			{
 				IntPtr handle = CConsole.GetConsoleWindow();
@@ -67,6 +79,25 @@ namespace ForestReco
 				case checkTreeFilePathKey:
 					checkTreeFilePath = (string)pArg;
 					break;
+
+				case groundArrayStepKey:
+					groundArrayStep = (float)pArg;
+					break;
+
+				case partitionStepKey:
+					partitionStep = (int)pArg;
+					break;
+
+				case treeExtentKey:
+					treeExtent = (float)pArg;
+					break;
+				case treeExtentMultiplyKey:
+					treeExtentMultiply = (float)pArg;
+					break;
+
+				default:
+				CDebug.Error($"key {pParamKey} not set");
+				break;
 			}
 
 			Properties.Settings.Default[pParamKey] = pArg;

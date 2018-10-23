@@ -94,5 +94,41 @@ namespace ForestReco.Properties {
                 this["checkTreeFilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public float groundArrayStep {
+            get {
+                return ((float)(this["groundArrayStep"]));
+            }
+            set {
+                this["groundArrayStep"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public float treeExtent {
+            get {
+                return ((float)(this["treeExtent"]));
+            }
+            set {
+                this["treeExtent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.5")]
+        public float treeExtentMultiply {
+            get {
+                return ((float)(this["treeExtentMultiply"]));
+            }
+            set {
+                this["treeExtentMultiply"] = value;
+            }
+        }
     }
 }

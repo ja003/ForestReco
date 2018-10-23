@@ -20,5 +20,14 @@
     <Setting Name="checkTreeFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="groundArrayStep" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="treeExtent" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="treeExtentMultiply" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1.5</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -30,7 +30,7 @@ namespace ForestReco
 
 		public CGroundArray()
 		{
-			stepSize = CProjectData.groundArrayStep;
+			stepSize = CParameterSetter.groundArrayStep;
 
 			botLeftCorner = CProjectData.header.BotLeftCorner;
 			topRightCorner = CProjectData.header.TopRightCorner;
@@ -308,7 +308,7 @@ namespace ForestReco
 
 		private const float DEFAULT_KERNEL_SIZE = 5; //IN METERS
 
-		public static int KernelSize => (int)(DEFAULT_KERNEL_SIZE / CProjectData.groundArrayStep);
+		public static int KernelSize => (int)(DEFAULT_KERNEL_SIZE / CParameterSetter.groundArrayStep);
 
 		///PRIVATE
 

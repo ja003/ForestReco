@@ -15,9 +15,10 @@ namespace ForestReco
 
 		public const float TREE_POINT_EXTENT = 0.1f;
 
-		public static float TREE_EXTENT_MERGE_MULTIPLY = 2f;
-		public static float BASE_TREE_EXTENT = 1f;
-		public static float MIN_TREE_EXTENT = 0.5f;
+		//public static float TREE_EXTENT_MERGE_MULTIPLY = 2f;
+		//public static float BASE_TREE_EXTENT = 1f;
+
+		public const float MIN_TREE_EXTENT = 0.5f;
 		//public const float DEFAULT_TREE_EXTENT = 1f;
 		public static float AVERAGE_TREE_HEIGHT = 10;
 		public static int MIN_BRANCH_POINT_COUNT = 5;
@@ -37,7 +38,7 @@ namespace ForestReco
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
 		public static float GetMinPeakDistance(float pMultiply)
 		{
-			return BASE_TREE_EXTENT * pMultiply;
+			return CParameterSetter.treeExtent * pMultiply;
 		}
 
 		/// <summary>
@@ -47,7 +48,7 @@ namespace ForestReco
 		{
 			float treeHeight = Math.Max(pTree1.GetTreeHeight(), pTree2.GetTreeHeight());
 			float ratio = treeHeight / AVERAGE_TREE_HEIGHT;
-			if (ratio < 1) { return BASE_TREE_EXTENT; }
+			if (ratio < 1) { return CParameterSetter.treeExtent; }
 			const float EXTENT_VALUE_STEP = 1.5f;
 
 			return GetMinPeakDistance(1) + (ratio - 1) * EXTENT_VALUE_STEP;

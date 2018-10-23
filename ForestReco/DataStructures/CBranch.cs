@@ -219,7 +219,7 @@ namespace ForestReco
 
 			//const float unacceptableDistance = CTreeManager.DEFAULT_TREE_EXTENT * 3;
 			float unacceptableDistance = tree.GetTreeExtentFor(pPoint,
-				pMerging ? CTreeManager.TREE_EXTENT_MERGE_MULTIPLY : 1);
+				pMerging ? CParameterSetter.treeExtentMultiply : 1);
 			unacceptableDistance += 0.5f;
 			if (pointDistToPeak > unacceptableDistance) { return 0; }
 			unacceptableDistance += 0.5f;

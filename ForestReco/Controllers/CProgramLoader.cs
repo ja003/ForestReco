@@ -330,10 +330,8 @@ namespace ForestReco
 
 			FillArray();
 
-			if (CProjectData.smoothArray)
-			{
-				CProjectData.array?.SmoothenArray(1);
-			}
+			CProjectData.array?.SmoothenArray(1);
+			
 		}
 
 		private static void ClassifyPoints(List<Tuple<EClass, Vector3>> pParsedLines)

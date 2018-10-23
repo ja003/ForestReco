@@ -27,6 +27,18 @@ namespace ForestReco
 		private TrackBar trackBarPartition;
 		private TextBox textCheckTreePath;
 		private Button btnSelectCheckTree;
+		private TrackBar trackBarGroundArrayStep;
+		private TextBox textGroundArrayStep;
+		private Label labelGroundArrayStep;
+		private Button btnHintGroundArraySTep;
+		private TrackBar trackBarTreeExtent;
+		private TextBox textTreeExtent;
+		private Label labelTreeExtent;
+		private Button button2;
+		private TrackBar trackBarTreeExtentMultiply;
+		private TextBox textTreeExtentMultiply;
+		private Label labelTreeExtentMultiply;
+		private Button button3;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -34,7 +46,7 @@ namespace ForestReco
 			InitializeComponent();
 			InitializeValues();
 		}
-		
+
 		private void InitializeValues()
 		{
 			CParameterSetter.Init();
@@ -43,8 +55,26 @@ namespace ForestReco
 			textOutputFolder.Text = CParameterSetter.outputFolderPath;
 			textCheckTreePath.Text = CParameterSetter.checkTreeFilePath;
 
+			//partition
 			textPartition.Text = CParameterSetter.partitionStep + " m";
 			trackBarPartition.Value = CParameterSetter.partitionStep;
+
+			//gorund array step
+			trackBarGroundArrayStep.Value = (int)(CParameterSetter.groundArrayStep * 10f);
+			textGroundArrayStep.Text =
+				CParameterSetter.groundArrayStep.ToString("0.00") + " m";
+
+			//tree extent
+			trackBarTreeExtent.Value = (int)(CParameterSetter.treeExtent * 10f);
+			textTreeExtent.Text =
+				CParameterSetter.treeExtent.ToString("0.00") + " m";
+
+			//tree extent multiply
+			trackBarTreeExtentMultiply.Value = (int)(CParameterSetter.treeExtentMultiply * 10f);
+			textTreeExtentMultiply.Text =
+				CParameterSetter.treeExtentMultiply.ToString("0.00");
+
+
 		}
 
 
@@ -60,7 +90,7 @@ namespace ForestReco
 			CProgramStarter.Start();
 		}
 
-		
+
 
 
 		private void btnAbort_Click(object sender, EventArgs e)
@@ -69,7 +99,7 @@ namespace ForestReco
 		}
 
 
-		
+
 
 		private void btnToggleConsole_Click(object sender, EventArgs e)
 		{
@@ -77,11 +107,7 @@ namespace ForestReco
 		}
 
 
-		private void trackBarPartition_Scroll(object sender, EventArgs e)
-		{
-			textPartition.Text = trackBarPartition.Value + " m";
-			CParameterSetter.SetParameter("partitionStep", trackBarPartition.Value);
-		}
+
 
 
 
@@ -104,7 +130,22 @@ namespace ForestReco
 			this.trackBarPartition = new System.Windows.Forms.TrackBar();
 			this.textCheckTreePath = new System.Windows.Forms.TextBox();
 			this.btnSelectCheckTree = new System.Windows.Forms.Button();
+			this.trackBarGroundArrayStep = new System.Windows.Forms.TrackBar();
+			this.textGroundArrayStep = new System.Windows.Forms.TextBox();
+			this.labelGroundArrayStep = new System.Windows.Forms.Label();
+			this.btnHintGroundArraySTep = new System.Windows.Forms.Button();
+			this.trackBarTreeExtent = new System.Windows.Forms.TrackBar();
+			this.textTreeExtent = new System.Windows.Forms.TextBox();
+			this.labelTreeExtent = new System.Windows.Forms.Label();
+			this.button2 = new System.Windows.Forms.Button();
+			this.trackBarTreeExtentMultiply = new System.Windows.Forms.TrackBar();
+			this.textTreeExtentMultiply = new System.Windows.Forms.TextBox();
+			this.labelTreeExtentMultiply = new System.Windows.Forms.Label();
+			this.button3 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtentMultiply)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnSellectForrest
@@ -228,7 +269,7 @@ namespace ForestReco
 			// 
 			// textPartition
 			// 
-			this.textPartition.Location = new System.Drawing.Point(128, 224);
+			this.textPartition.Location = new System.Drawing.Point(143, 224);
 			this.textPartition.Name = "textPartition";
 			this.textPartition.ReadOnly = true;
 			this.textPartition.Size = new System.Drawing.Size(34, 22);
@@ -242,7 +283,7 @@ namespace ForestReco
 			this.trackBarPartition.Maximum = 200;
 			this.trackBarPartition.Minimum = 10;
 			this.trackBarPartition.Name = "trackBarPartition";
-			this.trackBarPartition.Size = new System.Drawing.Size(150, 30);
+			this.trackBarPartition.Size = new System.Drawing.Size(165, 30);
 			this.trackBarPartition.TabIndex = 19;
 			this.trackBarPartition.TickFrequency = 5;
 			this.trackBarPartition.Value = 30;
@@ -266,9 +307,141 @@ namespace ForestReco
 			this.btnSelectCheckTree.UseVisualStyleBackColor = true;
 			this.btnSelectCheckTree.Click += new System.EventHandler(this.btnSelectCheckTree_Click);
 			// 
+			// trackBarGroundArrayStep
+			// 
+			this.trackBarGroundArrayStep.AutoSize = false;
+			this.trackBarGroundArrayStep.LargeChange = 10;
+			this.trackBarGroundArrayStep.Location = new System.Drawing.Point(192, 256);
+			this.trackBarGroundArrayStep.Maximum = 100;
+			this.trackBarGroundArrayStep.Minimum = 5;
+			this.trackBarGroundArrayStep.Name = "trackBarGroundArrayStep";
+			this.trackBarGroundArrayStep.Size = new System.Drawing.Size(195, 30);
+			this.trackBarGroundArrayStep.TabIndex = 25;
+			this.trackBarGroundArrayStep.TickFrequency = 5;
+			this.trackBarGroundArrayStep.Value = 10;
+			this.trackBarGroundArrayStep.Scroll += new System.EventHandler(this.trackBarGroundArrayStep_Scroll);
+			// 
+			// textGroundArrayStep
+			// 
+			this.textGroundArrayStep.Location = new System.Drawing.Point(353, 226);
+			this.textGroundArrayStep.Name = "textGroundArrayStep";
+			this.textGroundArrayStep.ReadOnly = true;
+			this.textGroundArrayStep.Size = new System.Drawing.Size(34, 22);
+			this.textGroundArrayStep.TabIndex = 24;
+			// 
+			// labelGroundArrayStep
+			// 
+			this.labelGroundArrayStep.AutoSize = true;
+			this.labelGroundArrayStep.Location = new System.Drawing.Point(235, 229);
+			this.labelGroundArrayStep.Name = "labelGroundArrayStep";
+			this.labelGroundArrayStep.Size = new System.Drawing.Size(121, 17);
+			this.labelGroundArrayStep.TabIndex = 23;
+			this.labelGroundArrayStep.Text = "ground array step";
+			// 
+			// btnHintGroundArraySTep
+			// 
+			this.btnHintGroundArraySTep.Location = new System.Drawing.Point(192, 221);
+			this.btnHintGroundArraySTep.Name = "btnHintGroundArraySTep";
+			this.btnHintGroundArraySTep.Size = new System.Drawing.Size(37, 29);
+			this.btnHintGroundArraySTep.TabIndex = 22;
+			this.btnHintGroundArraySTep.Text = "?";
+			this.btnHintGroundArraySTep.UseVisualStyleBackColor = true;
+			// 
+			// trackBarTreeExtent
+			// 
+			this.trackBarTreeExtent.AutoSize = false;
+			this.trackBarTreeExtent.LargeChange = 10;
+			this.trackBarTreeExtent.Location = new System.Drawing.Point(406, 255);
+			this.trackBarTreeExtent.Maximum = 30;
+			this.trackBarTreeExtent.Minimum = 5;
+			this.trackBarTreeExtent.Name = "trackBarTreeExtent";
+			this.trackBarTreeExtent.Size = new System.Drawing.Size(195, 30);
+			this.trackBarTreeExtent.TabIndex = 29;
+			this.trackBarTreeExtent.TickFrequency = 5;
+			this.trackBarTreeExtent.Value = 10;
+			this.trackBarTreeExtent.Scroll += new System.EventHandler(this.trackBarTreeExtent_Scroll);
+			// 
+			// textTreeExtent
+			// 
+			this.textTreeExtent.Location = new System.Drawing.Point(567, 225);
+			this.textTreeExtent.Name = "textTreeExtent";
+			this.textTreeExtent.ReadOnly = true;
+			this.textTreeExtent.Size = new System.Drawing.Size(34, 22);
+			this.textTreeExtent.TabIndex = 28;
+			// 
+			// labelTreeExtent
+			// 
+			this.labelTreeExtent.AutoSize = true;
+			this.labelTreeExtent.Location = new System.Drawing.Point(449, 228);
+			this.labelTreeExtent.Name = "labelTreeExtent";
+			this.labelTreeExtent.Size = new System.Drawing.Size(110, 17);
+			this.labelTreeExtent.TabIndex = 27;
+			this.labelTreeExtent.Text = "base tree extent";
+			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(406, 220);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(37, 29);
+			this.button2.TabIndex = 26;
+			this.button2.Text = "?";
+			this.button2.UseVisualStyleBackColor = true;
+			// 
+			// trackBarTreeExtentMultiply
+			// 
+			this.trackBarTreeExtentMultiply.AutoSize = false;
+			this.trackBarTreeExtentMultiply.LargeChange = 10;
+			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(613, 259);
+			this.trackBarTreeExtentMultiply.Maximum = 30;
+			this.trackBarTreeExtentMultiply.Minimum = 10;
+			this.trackBarTreeExtentMultiply.Name = "trackBarTreeExtentMultiply";
+			this.trackBarTreeExtentMultiply.Size = new System.Drawing.Size(195, 30);
+			this.trackBarTreeExtentMultiply.TabIndex = 33;
+			this.trackBarTreeExtentMultiply.TickFrequency = 5;
+			this.trackBarTreeExtentMultiply.Value = 10;
+			this.trackBarTreeExtentMultiply.Scroll += new System.EventHandler(this.trackBarTreeExtentMultiply_Scroll);
+			// 
+			// textTreeExtentMultiply
+			// 
+			this.textTreeExtentMultiply.Location = new System.Drawing.Point(774, 229);
+			this.textTreeExtentMultiply.Name = "textTreeExtentMultiply";
+			this.textTreeExtentMultiply.ReadOnly = true;
+			this.textTreeExtentMultiply.Size = new System.Drawing.Size(34, 22);
+			this.textTreeExtentMultiply.TabIndex = 32;
+			// 
+			// labelTreeExtentMultiply
+			// 
+			this.labelTreeExtentMultiply.AutoSize = true;
+			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(656, 232);
+			this.labelTreeExtentMultiply.Name = "labelTreeExtentMultiply";
+			this.labelTreeExtentMultiply.Size = new System.Drawing.Size(126, 17);
+			this.labelTreeExtentMultiply.TabIndex = 31;
+			this.labelTreeExtentMultiply.Text = "tree extent multiply";
+			// 
+			// button3
+			// 
+			this.button3.Location = new System.Drawing.Point(613, 224);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(37, 29);
+			this.button3.TabIndex = 30;
+			this.button3.Text = "?";
+			this.button3.UseVisualStyleBackColor = true;
+			// 
 			// CMainForm
 			// 
-			this.ClientSize = new System.Drawing.Size(750, 449);
+			this.ClientSize = new System.Drawing.Size(815, 449);
+			this.Controls.Add(this.trackBarTreeExtentMultiply);
+			this.Controls.Add(this.textTreeExtentMultiply);
+			this.Controls.Add(this.labelTreeExtentMultiply);
+			this.Controls.Add(this.button3);
+			this.Controls.Add(this.trackBarTreeExtent);
+			this.Controls.Add(this.textTreeExtent);
+			this.Controls.Add(this.labelTreeExtent);
+			this.Controls.Add(this.button2);
+			this.Controls.Add(this.trackBarGroundArrayStep);
+			this.Controls.Add(this.textGroundArrayStep);
+			this.Controls.Add(this.labelGroundArrayStep);
+			this.Controls.Add(this.btnHintGroundArraySTep);
 			this.Controls.Add(this.textCheckTreePath);
 			this.Controls.Add(this.btnSelectCheckTree);
 			this.Controls.Add(this.trackBarPartition);
@@ -290,6 +463,9 @@ namespace ForestReco
 			this.Text = "ForrestReco";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtentMultiply)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -345,7 +521,7 @@ namespace ForestReco
 			textForrestFilePath.Clear();
 			textForrestFilePath.Text = path;
 		}
-		
+
 
 		private void textForrestFilePath_TextChanged(object sender, EventArgs e)
 		{
@@ -374,6 +550,34 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(
 				CParameterSetter.checkTreeFilePathKey, textCheckTreePath.Text);
+		}
+
+		private void trackBarPartition_Scroll(object sender, EventArgs e)
+		{
+			textPartition.Text = trackBarPartition.Value + " m";
+			CParameterSetter.SetParameter(
+				CParameterSetter.partitionStepKey, trackBarPartition.Value);
+		}
+
+		private void trackBarGroundArrayStep_Scroll(object sender, EventArgs e)
+		{
+			float value = trackBarGroundArrayStep.Value / 10f;
+			textGroundArrayStep.Text = value.ToString("0.0") + " m";
+			CParameterSetter.SetParameter(CParameterSetter.groundArrayStepKey, value);
+		}
+
+		private void trackBarTreeExtent_Scroll(object sender, EventArgs e)
+		{
+			float value = trackBarTreeExtent.Value / 10f;
+			textTreeExtent.Text = value.ToString("0.0") + " m";
+			CParameterSetter.SetParameter(CParameterSetter.treeExtentKey, value);
+		}
+
+		private void trackBarTreeExtentMultiply_Scroll(object sender, EventArgs e)
+		{
+			float value = trackBarTreeExtentMultiply.Value / 10f;
+			textTreeExtentMultiply.Text = value.ToString("0.0");
+			CParameterSetter.SetParameter(CParameterSetter.treeExtentMultiplyKey, value);
 		}
 	}
 }

@@ -128,7 +128,7 @@ namespace ForestReco
 			if (!pMerging)
 			{
 				//if (GetTreeExtentFor(pPoint, 1) < CUtils.Get2DDistance(pPoint, peak.Center))
-				if (CTreeManager.BASE_TREE_EXTENT < CUtils.Get2DDistance(pPoint, peak.Center))
+				if (CParameterSetter.treeExtent < CUtils.Get2DDistance(pPoint, peak.Center))
 				{
 					return 0;
 				}
@@ -143,7 +143,7 @@ namespace ForestReco
 				}
 
 				float peakPointDist = CUtils.Get2DDistance(pPoint, peak.Center);
-				if (peakPointDist > GetTreeExtentFor(pPoint, CTreeManager.TREE_EXTENT_MERGE_MULTIPLY))
+				if (peakPointDist > GetTreeExtentFor(pPoint, CParameterSetter.treeExtentMultiply))
 				{
 					return 0;
 				}
@@ -641,7 +641,7 @@ namespace ForestReco
 		{
 			float treeHeight = GetTreeHeight();
 			float ratio = treeHeight / CTreeManager.AVERAGE_TREE_HEIGHT;
-			float maxExtent = Math.Max(CTreeManager.BASE_TREE_EXTENT, ratio * CTreeManager.BASE_TREE_EXTENT);
+			float maxExtent = Math.Max(CParameterSetter.treeExtent, ratio * CParameterSetter.treeExtent);
 			maxExtent *= pMaxExtentMultiplier;
 			float yDiff = peak.Center.Y - pNewPoint.Y;
 			//const float MIN_TREE_EXTENT = .5f;

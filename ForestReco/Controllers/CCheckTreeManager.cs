@@ -76,7 +76,7 @@ namespace ForestReco
 							}
 						}
 
-						else if (possibleTree.isValid  && distToTree < CTreeManager.BASE_TREE_EXTENT)
+						else if (possibleTree.isValid  && distToTree < CParameterSetter.treeExtent)
 						{
 							checkTree.AssignTree(possibleTree);
 							break;

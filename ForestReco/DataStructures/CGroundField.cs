@@ -492,7 +492,7 @@ namespace ForestReco
 
 			float x = pPoint.X - center.X;// + CProjectData.groundArrayStep;
 										  //float z = pPoint.Z - center.Z;//+ CProjectData.groundArrayStep;
-			float z = CProjectData.groundArrayStep - (center.Z - pPoint.Z);
+			float z = CParameterSetter.groundArrayStep - (center.Z - pPoint.Z);
 
 			if (x < 0 || x > 1 || z < 0 || z > 1)
 			{
