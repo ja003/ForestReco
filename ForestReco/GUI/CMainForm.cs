@@ -21,7 +21,6 @@ namespace ForestReco
 		public TextBox textProgress;
 		private Button btnAbort;
 		private Button button1;
-		private Button btnHintPartition;
 		private Label labelPartition;
 		private TextBox textPartition;
 		private TrackBar trackBarPartition;
@@ -30,15 +29,19 @@ namespace ForestReco
 		private TrackBar trackBarGroundArrayStep;
 		private TextBox textGroundArrayStep;
 		private Label labelGroundArrayStep;
-		private Button btnHintGroundArraySTep;
 		private TrackBar trackBarTreeExtent;
 		private TextBox textTreeExtent;
 		private Label labelTreeExtent;
-		private Button button2;
 		private TrackBar trackBarTreeExtentMultiply;
 		private TextBox textTreeExtentMultiply;
 		private Label labelTreeExtentMultiply;
-		private Button button3;
+		private TrackBar trackBarAvgTreeHeight;
+		private TextBox textAvgTreeHeight;
+		private Label labelAvgTreeHeight;
+		private CheckBox checkBoxExportTreeStructures;
+		private ToolTip myToolTip;
+		private System.ComponentModel.IContainer components;
+		private CheckBox checkBoxExportInvalidTrees;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -62,21 +65,34 @@ namespace ForestReco
 			//gorund array step
 			trackBarGroundArrayStep.Value = (int)(CParameterSetter.groundArrayStep * 10f);
 			textGroundArrayStep.Text =
-				CParameterSetter.groundArrayStep.ToString("0.00") + " m";
+				CParameterSetter.groundArrayStep.ToString("0.0") + " m";
 
 			//tree extent
 			trackBarTreeExtent.Value = (int)(CParameterSetter.treeExtent * 10f);
 			textTreeExtent.Text =
-				CParameterSetter.treeExtent.ToString("0.00") + " m";
+				CParameterSetter.treeExtent.ToString("0.0") + " m";
 
 			//tree extent multiply
 			trackBarTreeExtentMultiply.Value = (int)(CParameterSetter.treeExtentMultiply * 10f);
 			textTreeExtentMultiply.Text =
-				CParameterSetter.treeExtentMultiply.ToString("0.00");
+				CParameterSetter.treeExtentMultiply.ToString("0.0");
 
+			//average tree height
+			textAvgTreeHeight.Text = CParameterSetter.avgTreeHeigh + " m";
+			trackBarAvgTreeHeight.Value = CParameterSetter.avgTreeHeigh;
 
+			//bools
+			//export tree structures
+			checkBoxExportTreeStructures.Checked = CParameterSetter.exportTreeStructures;
+
+			SetTooltips();
 		}
 
+		private void SetTooltips()
+		{
+			myToolTip.SetToolTip(checkBoxExportTreeStructures, 
+				"Include tree detection structures in final export");
+		}
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -113,6 +129,7 @@ namespace ForestReco
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.btnSellectForrest = new System.Windows.Forms.Button();
 			this.textForrestFilePath = new System.Windows.Forms.TextBox();
 			this.btnSellectReftreeFodlers = new System.Windows.Forms.Button();
@@ -124,7 +141,6 @@ namespace ForestReco
 			this.textProgress = new System.Windows.Forms.TextBox();
 			this.btnAbort = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
-			this.btnHintPartition = new System.Windows.Forms.Button();
 			this.labelPartition = new System.Windows.Forms.Label();
 			this.textPartition = new System.Windows.Forms.TextBox();
 			this.trackBarPartition = new System.Windows.Forms.TrackBar();
@@ -133,19 +149,23 @@ namespace ForestReco
 			this.trackBarGroundArrayStep = new System.Windows.Forms.TrackBar();
 			this.textGroundArrayStep = new System.Windows.Forms.TextBox();
 			this.labelGroundArrayStep = new System.Windows.Forms.Label();
-			this.btnHintGroundArraySTep = new System.Windows.Forms.Button();
 			this.trackBarTreeExtent = new System.Windows.Forms.TrackBar();
 			this.textTreeExtent = new System.Windows.Forms.TextBox();
 			this.labelTreeExtent = new System.Windows.Forms.Label();
-			this.button2 = new System.Windows.Forms.Button();
 			this.trackBarTreeExtentMultiply = new System.Windows.Forms.TrackBar();
 			this.textTreeExtentMultiply = new System.Windows.Forms.TextBox();
 			this.labelTreeExtentMultiply = new System.Windows.Forms.Label();
-			this.button3 = new System.Windows.Forms.Button();
+			this.trackBarAvgTreeHeight = new System.Windows.Forms.TrackBar();
+			this.textAvgTreeHeight = new System.Windows.Forms.TextBox();
+			this.labelAvgTreeHeight = new System.Windows.Forms.Label();
+			this.checkBoxExportTreeStructures = new System.Windows.Forms.CheckBox();
+			this.myToolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.checkBoxExportInvalidTrees = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtentMultiply)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnSellectForrest
@@ -187,7 +207,7 @@ namespace ForestReco
 			// 
 			// btnStart
 			// 
-			this.btnStart.Location = new System.Drawing.Point(12, 311);
+			this.btnStart.Location = new System.Drawing.Point(12, 418);
 			this.btnStart.Name = "btnStart";
 			this.btnStart.Size = new System.Drawing.Size(589, 50);
 			this.btnStart.TabIndex = 5;
@@ -215,14 +235,14 @@ namespace ForestReco
 			// 
 			// progressBar
 			// 
-			this.progressBar.Location = new System.Drawing.Point(12, 418);
+			this.progressBar.Location = new System.Drawing.Point(12, 525);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(589, 23);
 			this.progressBar.TabIndex = 9;
 			// 
 			// textProgress
 			// 
-			this.textProgress.Location = new System.Drawing.Point(12, 367);
+			this.textProgress.Location = new System.Drawing.Point(12, 474);
 			this.textProgress.Multiline = true;
 			this.textProgress.Name = "textProgress";
 			this.textProgress.Size = new System.Drawing.Size(589, 45);
@@ -230,7 +250,7 @@ namespace ForestReco
 			// 
 			// btnAbort
 			// 
-			this.btnAbort.Location = new System.Drawing.Point(628, 391);
+			this.btnAbort.Location = new System.Drawing.Point(628, 498);
 			this.btnAbort.Name = "btnAbort";
 			this.btnAbort.Size = new System.Drawing.Size(110, 50);
 			this.btnAbort.TabIndex = 11;
@@ -240,7 +260,7 @@ namespace ForestReco
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(629, 353);
+			this.button1.Location = new System.Drawing.Point(629, 460);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(109, 32);
 			this.button1.TabIndex = 12;
@@ -248,20 +268,10 @@ namespace ForestReco
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.btnToggleConsole_Click);
 			// 
-			// btnHintPartition
-			// 
-			this.btnHintPartition.Location = new System.Drawing.Point(12, 219);
-			this.btnHintPartition.Name = "btnHintPartition";
-			this.btnHintPartition.Size = new System.Drawing.Size(37, 29);
-			this.btnHintPartition.TabIndex = 13;
-			this.btnHintPartition.Text = "?";
-			this.btnHintPartition.UseVisualStyleBackColor = true;
-			this.btnHintPartition.Click += new System.EventHandler(this.btnHintPartition_Click);
-			// 
 			// labelPartition
 			// 
 			this.labelPartition.AutoSize = true;
-			this.labelPartition.Location = new System.Drawing.Point(55, 227);
+			this.labelPartition.Location = new System.Drawing.Point(19, 169);
 			this.labelPartition.Name = "labelPartition";
 			this.labelPartition.Size = new System.Drawing.Size(90, 17);
 			this.labelPartition.TabIndex = 14;
@@ -269,7 +279,7 @@ namespace ForestReco
 			// 
 			// textPartition
 			// 
-			this.textPartition.Location = new System.Drawing.Point(143, 224);
+			this.textPartition.Location = new System.Drawing.Point(107, 166);
 			this.textPartition.Name = "textPartition";
 			this.textPartition.ReadOnly = true;
 			this.textPartition.Size = new System.Drawing.Size(34, 22);
@@ -279,11 +289,11 @@ namespace ForestReco
 			// 
 			this.trackBarPartition.AutoSize = false;
 			this.trackBarPartition.LargeChange = 10;
-			this.trackBarPartition.Location = new System.Drawing.Point(12, 254);
+			this.trackBarPartition.Location = new System.Drawing.Point(12, 198);
 			this.trackBarPartition.Maximum = 200;
 			this.trackBarPartition.Minimum = 10;
 			this.trackBarPartition.Name = "trackBarPartition";
-			this.trackBarPartition.Size = new System.Drawing.Size(165, 30);
+			this.trackBarPartition.Size = new System.Drawing.Size(129, 30);
 			this.trackBarPartition.TabIndex = 19;
 			this.trackBarPartition.TickFrequency = 5;
 			this.trackBarPartition.Value = 30;
@@ -311,11 +321,12 @@ namespace ForestReco
 			// 
 			this.trackBarGroundArrayStep.AutoSize = false;
 			this.trackBarGroundArrayStep.LargeChange = 10;
-			this.trackBarGroundArrayStep.Location = new System.Drawing.Point(192, 256);
+			this.trackBarGroundArrayStep.Location = new System.Drawing.Point(156, 198);
 			this.trackBarGroundArrayStep.Maximum = 100;
 			this.trackBarGroundArrayStep.Minimum = 5;
 			this.trackBarGroundArrayStep.Name = "trackBarGroundArrayStep";
-			this.trackBarGroundArrayStep.Size = new System.Drawing.Size(195, 30);
+			this.trackBarGroundArrayStep.Size = new System.Drawing.Size(159, 30);
+			this.trackBarGroundArrayStep.SmallChange = 5;
 			this.trackBarGroundArrayStep.TabIndex = 25;
 			this.trackBarGroundArrayStep.TickFrequency = 5;
 			this.trackBarGroundArrayStep.Value = 10;
@@ -323,7 +334,7 @@ namespace ForestReco
 			// 
 			// textGroundArrayStep
 			// 
-			this.textGroundArrayStep.Location = new System.Drawing.Point(353, 226);
+			this.textGroundArrayStep.Location = new System.Drawing.Point(281, 166);
 			this.textGroundArrayStep.Name = "textGroundArrayStep";
 			this.textGroundArrayStep.ReadOnly = true;
 			this.textGroundArrayStep.Size = new System.Drawing.Size(34, 22);
@@ -332,30 +343,21 @@ namespace ForestReco
 			// labelGroundArrayStep
 			// 
 			this.labelGroundArrayStep.AutoSize = true;
-			this.labelGroundArrayStep.Location = new System.Drawing.Point(235, 229);
+			this.labelGroundArrayStep.Location = new System.Drawing.Point(163, 169);
 			this.labelGroundArrayStep.Name = "labelGroundArrayStep";
 			this.labelGroundArrayStep.Size = new System.Drawing.Size(121, 17);
 			this.labelGroundArrayStep.TabIndex = 23;
 			this.labelGroundArrayStep.Text = "ground array step";
 			// 
-			// btnHintGroundArraySTep
-			// 
-			this.btnHintGroundArraySTep.Location = new System.Drawing.Point(192, 221);
-			this.btnHintGroundArraySTep.Name = "btnHintGroundArraySTep";
-			this.btnHintGroundArraySTep.Size = new System.Drawing.Size(37, 29);
-			this.btnHintGroundArraySTep.TabIndex = 22;
-			this.btnHintGroundArraySTep.Text = "?";
-			this.btnHintGroundArraySTep.UseVisualStyleBackColor = true;
-			// 
 			// trackBarTreeExtent
 			// 
 			this.trackBarTreeExtent.AutoSize = false;
 			this.trackBarTreeExtent.LargeChange = 10;
-			this.trackBarTreeExtent.Location = new System.Drawing.Point(406, 255);
+			this.trackBarTreeExtent.Location = new System.Drawing.Point(321, 198);
 			this.trackBarTreeExtent.Maximum = 30;
 			this.trackBarTreeExtent.Minimum = 5;
 			this.trackBarTreeExtent.Name = "trackBarTreeExtent";
-			this.trackBarTreeExtent.Size = new System.Drawing.Size(195, 30);
+			this.trackBarTreeExtent.Size = new System.Drawing.Size(159, 30);
 			this.trackBarTreeExtent.TabIndex = 29;
 			this.trackBarTreeExtent.TickFrequency = 5;
 			this.trackBarTreeExtent.Value = 10;
@@ -363,7 +365,7 @@ namespace ForestReco
 			// 
 			// textTreeExtent
 			// 
-			this.textTreeExtent.Location = new System.Drawing.Point(567, 225);
+			this.textTreeExtent.Location = new System.Drawing.Point(446, 166);
 			this.textTreeExtent.Name = "textTreeExtent";
 			this.textTreeExtent.ReadOnly = true;
 			this.textTreeExtent.Size = new System.Drawing.Size(34, 22);
@@ -372,30 +374,21 @@ namespace ForestReco
 			// labelTreeExtent
 			// 
 			this.labelTreeExtent.AutoSize = true;
-			this.labelTreeExtent.Location = new System.Drawing.Point(449, 228);
+			this.labelTreeExtent.Location = new System.Drawing.Point(328, 169);
 			this.labelTreeExtent.Name = "labelTreeExtent";
 			this.labelTreeExtent.Size = new System.Drawing.Size(110, 17);
 			this.labelTreeExtent.TabIndex = 27;
 			this.labelTreeExtent.Text = "base tree extent";
 			// 
-			// button2
-			// 
-			this.button2.Location = new System.Drawing.Point(406, 220);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(37, 29);
-			this.button2.TabIndex = 26;
-			this.button2.Text = "?";
-			this.button2.UseVisualStyleBackColor = true;
-			// 
 			// trackBarTreeExtentMultiply
 			// 
 			this.trackBarTreeExtentMultiply.AutoSize = false;
 			this.trackBarTreeExtentMultiply.LargeChange = 10;
-			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(613, 259);
+			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(684, 195);
 			this.trackBarTreeExtentMultiply.Maximum = 30;
 			this.trackBarTreeExtentMultiply.Minimum = 10;
 			this.trackBarTreeExtentMultiply.Name = "trackBarTreeExtentMultiply";
-			this.trackBarTreeExtentMultiply.Size = new System.Drawing.Size(195, 30);
+			this.trackBarTreeExtentMultiply.Size = new System.Drawing.Size(159, 30);
 			this.trackBarTreeExtentMultiply.TabIndex = 33;
 			this.trackBarTreeExtentMultiply.TickFrequency = 5;
 			this.trackBarTreeExtentMultiply.Value = 10;
@@ -403,7 +396,7 @@ namespace ForestReco
 			// 
 			// textTreeExtentMultiply
 			// 
-			this.textTreeExtentMultiply.Location = new System.Drawing.Point(774, 229);
+			this.textTreeExtentMultiply.Location = new System.Drawing.Point(809, 166);
 			this.textTreeExtentMultiply.Name = "textTreeExtentMultiply";
 			this.textTreeExtentMultiply.ReadOnly = true;
 			this.textTreeExtentMultiply.Size = new System.Drawing.Size(34, 22);
@@ -412,42 +405,89 @@ namespace ForestReco
 			// labelTreeExtentMultiply
 			// 
 			this.labelTreeExtentMultiply.AutoSize = true;
-			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(656, 232);
+			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(691, 169);
 			this.labelTreeExtentMultiply.Name = "labelTreeExtentMultiply";
 			this.labelTreeExtentMultiply.Size = new System.Drawing.Size(126, 17);
 			this.labelTreeExtentMultiply.TabIndex = 31;
 			this.labelTreeExtentMultiply.Text = "tree extent multiply";
 			// 
-			// button3
+			// trackBarAvgTreeHeight
 			// 
-			this.button3.Location = new System.Drawing.Point(613, 224);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(37, 29);
-			this.button3.TabIndex = 30;
-			this.button3.Text = "?";
-			this.button3.UseVisualStyleBackColor = true;
+			this.trackBarAvgTreeHeight.AutoSize = false;
+			this.trackBarAvgTreeHeight.LargeChange = 10;
+			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(495, 197);
+			this.trackBarAvgTreeHeight.Maximum = 30;
+			this.trackBarAvgTreeHeight.Minimum = 5;
+			this.trackBarAvgTreeHeight.Name = "trackBarAvgTreeHeight";
+			this.trackBarAvgTreeHeight.Size = new System.Drawing.Size(178, 30);
+			this.trackBarAvgTreeHeight.TabIndex = 37;
+			this.trackBarAvgTreeHeight.TickFrequency = 5;
+			this.trackBarAvgTreeHeight.Value = 15;
+			this.trackBarAvgTreeHeight.Scroll += new System.EventHandler(this.trackBarAvgTreeHeight_Scroll);
+			// 
+			// textAvgTreeHeight
+			// 
+			this.textAvgTreeHeight.Location = new System.Drawing.Point(639, 169);
+			this.textAvgTreeHeight.Name = "textAvgTreeHeight";
+			this.textAvgTreeHeight.ReadOnly = true;
+			this.textAvgTreeHeight.Size = new System.Drawing.Size(34, 22);
+			this.textAvgTreeHeight.TabIndex = 36;
+			// 
+			// labelAvgTreeHeight
+			// 
+			this.labelAvgTreeHeight.AutoSize = true;
+			this.labelAvgTreeHeight.Location = new System.Drawing.Point(502, 171);
+			this.labelAvgTreeHeight.Name = "labelAvgTreeHeight";
+			this.labelAvgTreeHeight.Size = new System.Drawing.Size(132, 17);
+			this.labelAvgTreeHeight.TabIndex = 35;
+			this.labelAvgTreeHeight.Text = "average tree height";
+			// 
+			// checkBoxExportTreeStructures
+			// 
+			this.checkBoxExportTreeStructures.AutoSize = true;
+			this.checkBoxExportTreeStructures.Location = new System.Drawing.Point(22, 244);
+			this.checkBoxExportTreeStructures.Name = "checkBoxExportTreeStructures";
+			this.checkBoxExportTreeStructures.Size = new System.Drawing.Size(165, 21);
+			this.checkBoxExportTreeStructures.TabIndex = 38;
+			this.checkBoxExportTreeStructures.Text = "export tree structures";
+			this.myToolTip.SetToolTip(this.checkBoxExportTreeStructures, "hh");
+			this.checkBoxExportTreeStructures.UseVisualStyleBackColor = true;
+			this.checkBoxExportTreeStructures.CheckedChanged += new System.EventHandler(this.checkBoxExportTreeStructures_CheckedChanged);
+			// 
+			// checkBoxExportInvalidTrees
+			// 
+			this.checkBoxExportInvalidTrees.AutoSize = true;
+			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(22, 271);
+			this.checkBoxExportInvalidTrees.Name = "checkBoxExportInvalidTrees";
+			this.checkBoxExportInvalidTrees.Size = new System.Drawing.Size(149, 21);
+			this.checkBoxExportInvalidTrees.TabIndex = 39;
+			this.checkBoxExportInvalidTrees.Text = "export invalid trees";
+			this.myToolTip.SetToolTip(this.checkBoxExportInvalidTrees, "hh");
+			this.checkBoxExportInvalidTrees.UseVisualStyleBackColor = true;
+			this.checkBoxExportInvalidTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportInvalidTrees_CheckedChanged);
 			// 
 			// CMainForm
 			// 
-			this.ClientSize = new System.Drawing.Size(815, 449);
+			this.ClientSize = new System.Drawing.Size(855, 557);
+			this.Controls.Add(this.checkBoxExportInvalidTrees);
+			this.Controls.Add(this.checkBoxExportTreeStructures);
+			this.Controls.Add(this.trackBarAvgTreeHeight);
+			this.Controls.Add(this.textAvgTreeHeight);
+			this.Controls.Add(this.labelAvgTreeHeight);
 			this.Controls.Add(this.trackBarTreeExtentMultiply);
 			this.Controls.Add(this.textTreeExtentMultiply);
 			this.Controls.Add(this.labelTreeExtentMultiply);
-			this.Controls.Add(this.button3);
 			this.Controls.Add(this.trackBarTreeExtent);
 			this.Controls.Add(this.textTreeExtent);
 			this.Controls.Add(this.labelTreeExtent);
-			this.Controls.Add(this.button2);
 			this.Controls.Add(this.trackBarGroundArrayStep);
 			this.Controls.Add(this.textGroundArrayStep);
 			this.Controls.Add(this.labelGroundArrayStep);
-			this.Controls.Add(this.btnHintGroundArraySTep);
 			this.Controls.Add(this.textCheckTreePath);
 			this.Controls.Add(this.btnSelectCheckTree);
 			this.Controls.Add(this.trackBarPartition);
 			this.Controls.Add(this.textPartition);
 			this.Controls.Add(this.labelPartition);
-			this.Controls.Add(this.btnHintPartition);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.btnAbort);
 			this.Controls.Add(this.textProgress);
@@ -466,6 +506,7 @@ namespace ForestReco
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtentMultiply)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -475,7 +516,7 @@ namespace ForestReco
 		{
 			CDebug.Warning("txt change " + textOutputFolder.Text);
 			CParameterSetter.SetParameter(
-				CParameterSetter.outputFolderPathKey, textOutputFolder.Text);
+				ParamInfo.Name(() => CParameterSetter.outputFolderPath), textOutputFolder.Text);
 		}
 
 		private void btnOutputFolder_Click(object sender, EventArgs e)
@@ -506,7 +547,7 @@ namespace ForestReco
 		private void textReftreeFolder_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				CParameterSetter.reftreeFolderPathKey, textReftreeFolder.Text);
+				ParamInfo.Name(() => CParameterSetter.reftreeFolderPath), textReftreeFolder.Text);
 		}
 
 
@@ -526,7 +567,7 @@ namespace ForestReco
 		private void textForrestFilePath_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				CParameterSetter.forrestFilePathKey, textForrestFilePath.Text);
+				ParamInfo.Name(() => CParameterSetter.forrestFilePath), textForrestFilePath.Text);
 		}
 
 		private void btnHintPartition_Click(object sender, EventArgs e)
@@ -549,35 +590,54 @@ namespace ForestReco
 		private void textCheckTreePath_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				CParameterSetter.checkTreeFilePathKey, textCheckTreePath.Text);
+				ParamInfo.Name(() => CParameterSetter.checkTreeFilePath), textCheckTreePath.Text);
 		}
 
 		private void trackBarPartition_Scroll(object sender, EventArgs e)
 		{
 			textPartition.Text = trackBarPartition.Value + " m";
 			CParameterSetter.SetParameter(
-				CParameterSetter.partitionStepKey, trackBarPartition.Value);
+				ParamInfo.Name(()=> CParameterSetter.partitionStep), trackBarPartition.Value);
 		}
 
 		private void trackBarGroundArrayStep_Scroll(object sender, EventArgs e)
 		{
 			float value = trackBarGroundArrayStep.Value / 10f;
 			textGroundArrayStep.Text = value.ToString("0.0") + " m";
-			CParameterSetter.SetParameter(CParameterSetter.groundArrayStepKey, value);
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.groundArrayStep), value);
 		}
 
 		private void trackBarTreeExtent_Scroll(object sender, EventArgs e)
 		{
 			float value = trackBarTreeExtent.Value / 10f;
 			textTreeExtent.Text = value.ToString("0.0") + " m";
-			CParameterSetter.SetParameter(CParameterSetter.treeExtentKey, value);
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.treeExtent), value);
 		}
 
 		private void trackBarTreeExtentMultiply_Scroll(object sender, EventArgs e)
 		{
 			float value = trackBarTreeExtentMultiply.Value / 10f;
 			textTreeExtentMultiply.Text = value.ToString("0.0");
-			CParameterSetter.SetParameter(CParameterSetter.treeExtentMultiplyKey, value);
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.treeExtentMultiply), value);
+		}
+
+		private void trackBarAvgTreeHeight_Scroll(object sender, EventArgs e)
+		{
+			textAvgTreeHeight.Text = trackBarAvgTreeHeight.Value + " m";
+			CParameterSetter.SetParameter(
+				ParamInfo.Name(() => CParameterSetter.avgTreeHeigh), trackBarAvgTreeHeight.Value);
+		}
+
+		private void checkBoxExportTreeStructures_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportTreeStructures),
+				checkBoxExportTreeStructures.Checked);
+		}
+
+		private void checkBoxExportInvalidTrees_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportInvalidTrees),
+				checkBoxExportInvalidTrees.Checked);
 		}
 	}
 }

@@ -192,11 +192,11 @@ namespace ForestReco
 				CObjPartition.AddRefTrees();
 			}
 
-			if (CProjectData.exportTrees)
+			if (CParameterSetter.exportTreeStructures)
 			{
 				//CTreeManager.ExportTrees();
 				CObjPartition.AddTrees(true);
-				if (CProjectData.exportInvalidTrees)
+				if (CParameterSetter.exportInvalidTrees)
 				{
 					CObjPartition.AddTrees(false);
 				}
@@ -330,7 +330,10 @@ namespace ForestReco
 
 			FillArray();
 
+			//todo: fail při array step = 1.1
 			CProjectData.array?.SmoothenArray(1);
+
+			Console.WriteLine("");
 			
 		}
 

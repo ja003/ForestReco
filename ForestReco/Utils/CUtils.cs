@@ -196,8 +196,9 @@ namespace ForestReco
 			{
 				for (int x = 0; x < lenght; x++)
 				{
-					Kernel[y, x] = Kernel[y, x] *
-					               (1.0 / sumTotal);
+					double finalVal = Kernel[y, x] * (1.0 / sumTotal);
+					//CDebug.WriteLine(finalVal.ToString("0.00000"));
+					Kernel[y, x] = finalVal;
 				}
 			}
 

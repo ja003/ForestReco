@@ -50,8 +50,8 @@ namespace ForestReco
 		public static bool exportPoints;
 		public static bool useMaterial;
 		//public static bool exportRefTreePoints; 
-		public static bool exportTrees;
-		public static bool exportInvalidTrees;
+		//public static bool exportTrees;
+		//public static bool exportInvalidTrees;
 		//public static bool exportSimpleTreeModel;
 
 		public static float lowestHeight = int.MaxValue;

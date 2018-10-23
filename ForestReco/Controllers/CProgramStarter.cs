@@ -33,8 +33,8 @@ namespace ForestReco
 			//CTreeManager.MIN_TREE_EXTENT = 0.5f;
 			
 			//TREES
-			CProjectData.exportTrees = true;
-			CProjectData.exportInvalidTrees = true;
+			//CProjectData.exportTrees = true;
+			//CProjectData.exportInvalidTrees = true;
 			//merge
 			//CProjectData.exportBeforeMerge = true;
 
@@ -42,7 +42,7 @@ namespace ForestReco
 			CProjectData.loadRefTrees = true;
 			CProjectData.assignRandomRefTree = true;
 			CProjectData.useReducedRefTreeObjs = true;
-			CProjectData.exportRefTrees = true;
+			CProjectData.exportRefTrees = false;
 
 			//CHECK TREES
 			CProjectData.loadCheckTrees = true;

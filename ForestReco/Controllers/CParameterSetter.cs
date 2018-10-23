@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Security;
 using System.Windows.Forms;
 
@@ -16,33 +18,33 @@ namespace ForestReco
 		public static bool consoleVisible;
 		
 		public static int partitionStep;
+		public static int avgTreeHeigh;
 		public static float groundArrayStep;
 		public static float treeExtent;
 		public static float treeExtentMultiply;
 
-		public const string forrestFilePathKey = "forrestFilePath";
-		public const string reftreeFolderPathKey = "reftreeFolderPath";
-		public const string outputFolderPathKey = "outputFolderPath";
-		public const string consoleVisibleKey = "consoleVisible";
-		public const string partitionStepKey = "partitionStep";
-		public const string groundArrayStepKey = "groundArrayStep";
-		public const string treeExtentKey = "treeExtent";
-		public const string treeExtentMultiplyKey = "treeExtentMultiply";
-
-
-		public const string checkTreeFilePathKey = "checkTreeFilePath";
+		//bools
+		public static bool exportTreeStructures;
+		public static bool exportInvalidTrees;
 		
+
 		public static void Init()
 		{
-			forrestFilePath = (string)GetSettings(forrestFilePathKey);
-			reftreeFolderPath = (string)GetSettings(reftreeFolderPathKey);
-			outputFolderPath = (string)GetSettings(outputFolderPathKey);
-			checkTreeFilePath = (string)GetSettings(checkTreeFilePathKey);
-			consoleVisible = (bool)GetSettings(consoleVisibleKey);
-			partitionStep = (int)GetSettings(partitionStepKey);
-			groundArrayStep = (float)GetSettings(groundArrayStepKey);
-			treeExtent = (float)GetSettings(treeExtentKey);
-			treeExtentMultiply = (float)GetSettings(treeExtentMultiplyKey);
+			forrestFilePath = (string)GetSettings(ParamInfo.Name(()=>forrestFilePath));
+			reftreeFolderPath = (string)GetSettings(ParamInfo.Name(()=>reftreeFolderPath));
+			outputFolderPath = (string)GetSettings(ParamInfo.Name(()=>outputFolderPath));
+			checkTreeFilePath = (string)GetSettings(ParamInfo.Name(()=>checkTreeFilePath));
+			consoleVisible = (bool)GetSettings(ParamInfo.Name(()=>consoleVisible));
+			partitionStep = (int)GetSettings(ParamInfo.Name(()=>partitionStep));
+
+			avgTreeHeigh = (int)GetSettings(ParamInfo.Name(()=>avgTreeHeigh));
+			groundArrayStep = (float)GetSettings(ParamInfo.Name(()=>groundArrayStep));
+			treeExtent = (float)GetSettings(ParamInfo.Name(()=>treeExtent));
+			treeExtentMultiply = (float)GetSettings(ParamInfo.Name(()=>treeExtentMultiply));
+
+			//bools
+			exportTreeStructures = (bool)GetSettings(ParamInfo.Name(()=>exportTreeStructures));
+			exportInvalidTrees = (bool)GetSettings(ParamInfo.Name(()=> exportInvalidTrees));
 
 			if (!consoleVisible)
 			{
@@ -51,56 +53,76 @@ namespace ForestReco
 			}
 		}
 
+
+		
+
+
+		/*private static string GetKey<T>(Expression<Func<T>> pAttribute)
+		{
+			return MemberInfoGetting.GetMemberName(() => pAttribute);
+		}*/
+
 		private static object GetSettings(string pKey)
 		{
 			return Properties.Settings.Default[pKey];
 		}
 
-		public static void SetParameter(string pParamKey, object pArg)
+		public static void SetParameter(string paramKey, object pArg)
 		{
-			switch (pParamKey)
+			if (paramKey == ParamInfo.Name(()=>forrestFilePath))
 			{
-				case forrestFilePathKey:
-					forrestFilePath = (string)pArg;
-
-					break;
-				case reftreeFolderPathKey:
-					reftreeFolderPath = (string)pArg;
-					break;
-
-				case outputFolderPathKey:
-					outputFolderPath = (string)pArg;
-					break;
-
-				case consoleVisibleKey:
-					consoleVisible = (bool)pArg;
-					break;
-
-				case checkTreeFilePathKey:
-					checkTreeFilePath = (string)pArg;
-					break;
-
-				case groundArrayStepKey:
-					groundArrayStep = (float)pArg;
-					break;
-
-				case partitionStepKey:
-					partitionStep = (int)pArg;
-					break;
-
-				case treeExtentKey:
-					treeExtent = (float)pArg;
-					break;
-				case treeExtentMultiplyKey:
-					treeExtentMultiply = (float)pArg;
-					break;
-
-				default:
-				CDebug.Error($"key {pParamKey} not set");
-				break;
+				forrestFilePath = (string)pArg;
 			}
-
-			Properties.Settings.Default[pParamKey] = pArg;
+			else if (paramKey == ParamInfo.Name(()=>reftreeFolderPath))
+			{
+				reftreeFolderPath = (string)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>partitionStep))
+			{
+				partitionStep = (int)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>treeExtent))
+			{
+				treeExtent = (float)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>groundArrayStep))
+			{
+				groundArrayStep = (float)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>consoleVisible))
+			{
+				consoleVisible = (bool)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>outputFolderPath))
+			{
+				outputFolderPath = (string)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>checkTreeFilePath))
+			{
+				checkTreeFilePath = (string)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>treeExtentMultiply))
+			{
+				treeExtentMultiply = (float)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>avgTreeHeigh))
+			{
+				avgTreeHeigh = (int)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(()=>exportTreeStructures))
+			{
+				exportTreeStructures = (bool)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(() => exportInvalidTrees))
+			{
+				exportInvalidTrees = (bool)pArg;
+			}
+			else
+			{
+				CDebug.Error($"key {paramKey} not set");
+			}
+			
+			Properties.Settings.Default[paramKey] = pArg;
 			Properties.Settings.Default.Save();
 			//return pArg;
 		}
@@ -135,13 +157,23 @@ namespace ForestReco
 
 		const int SW_HIDE = 0;
 		const int SW_SHOW = 5;
+
 		public static void ToggleConsoleVisibility()
 		{
 			IntPtr handle = CConsole.GetConsoleWindow();
 			CConsole.ShowWindow(handle, consoleVisible ? SW_HIDE : SW_SHOW);
 
 			CDebug.WriteLine("ToggleConsoleVisibility " + !consoleVisible);
-			SetParameter(consoleVisibleKey, !consoleVisible);
+			SetParameter(ParamInfo.Name(() => consoleVisible), !consoleVisible);
+		}
+	}
+
+	public static class ParamInfo
+	{
+		public static string Name<T>(Expression<Func<T>> memberExpression)
+		{
+			MemberExpression expressionBody = (MemberExpression)memberExpression.Body;
+			return expressionBody.Member.Name;
 		}
 	}
 }

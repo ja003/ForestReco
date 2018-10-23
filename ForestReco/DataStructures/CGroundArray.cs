@@ -285,7 +285,7 @@ namespace ForestReco
 			}
 
 			//prepare gauss kernel
-			int kernelSize = KernelSize;
+			int kernelSize = GetKernelSize();
 			kernelSize *= pKernelMultiplier;
 			//cant work with even sized kernel
 			if (kernelSize % 2 == 0) { kernelSize++; }
@@ -308,7 +308,15 @@ namespace ForestReco
 
 		private const float DEFAULT_KERNEL_SIZE = 5; //IN METERS
 
-		public static int KernelSize => (int)(DEFAULT_KERNEL_SIZE / CParameterSetter.groundArrayStep);
+		//public static int KernelSize => (int)(DEFAULT_KERNEL_SIZE / CParameterSetter.groundArrayStep);
+
+		public static int GetKernelSize()
+		{
+			int size = (int)(DEFAULT_KERNEL_SIZE / CParameterSetter.groundArrayStep);
+			if (size % 2 == 0) { size++; }
+			return size;
+		}
+
 
 		///PRIVATE
 

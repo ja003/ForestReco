@@ -29,5 +29,14 @@
     <Setting Name="treeExtentMultiply" Type="System.Single" Scope="User">
       <Value Profile="(Default)">1.5</Value>
     </Setting>
+    <Setting Name="avgTreeHeigh" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="exportTreeStructures" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="exportInvalidTrees" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -130,5 +130,41 @@ namespace ForestReco.Properties {
                 this["treeExtentMultiply"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int avgTreeHeigh {
+            get {
+                return ((int)(this["avgTreeHeigh"]));
+            }
+            set {
+                this["avgTreeHeigh"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool exportTreeStructures {
+            get {
+                return ((bool)(this["exportTreeStructures"]));
+            }
+            set {
+                this["exportTreeStructures"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool exportInvalidTrees {
+            get {
+                return ((bool)(this["exportInvalidTrees"]));
+            }
+            set {
+                this["exportInvalidTrees"] = value;
+            }
+        }
     }
 }

@@ -315,7 +315,7 @@ namespace ForestReco
 
 		public float? GetAverageHeightFromNeighbourhood(int pKernelSizeMultiplier)
 		{
-			int pKernelSize = CGroundArray.KernelSize;
+			int pKernelSize = CGroundArray.GetKernelSize();
 			pKernelSize *= pKernelSizeMultiplier;
 
 			int defined = 0;
@@ -566,8 +566,9 @@ namespace ForestReco
 			//double[,] gaussKernel = CUtils.CalculateGaussKernel(kernelSize, 1);
 			float midHeight = (float)GetHeight();
 
-			int kernelSize = CGroundArray.KernelSize;
+			int kernelSize = CGroundArray.GetKernelSize();
 
+			float gaussWeightSum = 0;
 			for (int x = 0; x < kernelSize; x++)
 			{
 				for (int y = 0; y < kernelSize; y++)
@@ -583,11 +584,14 @@ namespace ForestReco
 					{
 						definedHeight = (float)elHeight;
 					}
-					heightSum += definedHeight * (float)pGaussKernel[x, y];
+					float gaussWeight = (float)pGaussKernel[x, y];
+					gaussWeightSum += gaussWeight;
+					//CDebug.WriteLine($"definedHeight = {definedHeight}, gaussWeight = {gaussWeight}");
+					heightSum += definedHeight * gaussWeight;
 				}
 			}
-			//if (defined == 0) { return; }
-			//SmoothHeight = heightSum / defined;
+			//CDebug.WriteLine($"gaussWeightSum = {gaussWeightSum}");
+
 			SmoothHeight = heightSum;
 		}
 
