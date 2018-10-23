@@ -44,13 +44,13 @@ namespace ForestReco
 
 			string refTreePath = GetRefTreeFilePath(pFileName, pFileName + ".obj");
 
-			if (CProjectData.useReducedRefTreeObjs || !File.Exists(refTreePath))
+			if (CParameterSetter.useReducedReftreeModels || !File.Exists(refTreePath))
 			{
 				Obj.Name += "_reduced";
 
 				string reducedObjFileName = pFileName + "_reduced.obj";
 
-				if (!CProjectData.useReducedRefTreeObjs)
+				if (!CParameterSetter.useReducedReftreeModels)
 				{
 					CDebug.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
 					CDebug.WriteLine("Try reduced file: " + reducedObjFileName);

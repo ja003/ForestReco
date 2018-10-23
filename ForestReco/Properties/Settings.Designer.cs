@@ -166,5 +166,65 @@ namespace ForestReco.Properties {
                 this["exportInvalidTrees"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool exportRefTrees {
+            get {
+                return ((bool)(this["exportRefTrees"]));
+            }
+            set {
+                this["exportRefTrees"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool assignRefTreesRandom {
+            get {
+                return ((bool)(this["assignRefTreesRandom"]));
+            }
+            set {
+                this["assignRefTreesRandom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool useCheckTreeFile {
+            get {
+                return ((bool)(this["useCheckTreeFile"]));
+            }
+            set {
+                this["useCheckTreeFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool exportCheckTrees {
+            get {
+                return ((bool)(this["exportCheckTrees"]));
+            }
+            set {
+                this["exportCheckTrees"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool useReducedReftreeModels {
+            get {
+                return ((bool)(this["useReducedReftreeModels"]));
+            }
+            set {
+                this["useReducedReftreeModels"] = value;
+            }
+        }
     }
 }

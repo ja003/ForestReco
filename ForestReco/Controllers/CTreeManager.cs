@@ -346,7 +346,7 @@ namespace ForestReco
 
 				if (pOnlyInvalid && treeToMerge.IsAtBorder())
 				{
-					CDebug.Warning(treeToMerge + " is at border");
+					//CDebug.Warning(treeToMerge + " is at border");
 					continue;
 				}
 

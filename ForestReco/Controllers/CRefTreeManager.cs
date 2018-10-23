@@ -40,7 +40,8 @@ namespace ForestReco
 				//"R7_test"
 			};
 
-			if (CProjectData.loadRefTrees)
+			//todo: dont load if not specified
+			//if (CProjectData.loadRefTrees)
 			{
 				LoadTrees(treeFileNames);
 			}
@@ -190,7 +191,7 @@ namespace ForestReco
 			{
 				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity); ;
 			}
-			if (CProjectData.assignRandomRefTree)
+			if (CParameterSetter.assignRefTreesRandom)
 			{
 				int random = new Random().Next(0, Trees.Count);
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);

@@ -39,10 +39,10 @@ namespace ForestReco
 			//CProjectData.exportBeforeMerge = true;
 
 			//REF TREES
-			CProjectData.loadRefTrees = true;
-			CProjectData.assignRandomRefTree = true;
-			CProjectData.useReducedRefTreeObjs = true;
-			CProjectData.exportRefTrees = false;
+			//CProjectData.loadRefTrees = true;
+			//CProjectData.assignRandomRefTree = true;
+			//CProjectData.useReducedRefTreeObjs = true;
+			//CProjectData.exportRefTrees = false;
 
 			//CHECK TREES
 			CProjectData.loadCheckTrees = true;

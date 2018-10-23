@@ -26,7 +26,12 @@ namespace ForestReco
 		//bools
 		public static bool exportTreeStructures;
 		public static bool exportInvalidTrees;
-		
+		public static bool exportRefTrees;
+		public static bool assignRefTreesRandom;
+		public static bool useReducedReftreeModels;
+		public static bool useCheckTreeFile;
+		public static bool exportCheckTrees;
+
 
 		public static void Init()
 		{
@@ -45,6 +50,11 @@ namespace ForestReco
 			//bools
 			exportTreeStructures = (bool)GetSettings(ParamInfo.Name(()=>exportTreeStructures));
 			exportInvalidTrees = (bool)GetSettings(ParamInfo.Name(()=> exportInvalidTrees));
+			exportRefTrees = (bool)GetSettings(ParamInfo.Name(()=> exportRefTrees));
+			assignRefTreesRandom = (bool)GetSettings(ParamInfo.Name(()=> assignRefTreesRandom));
+			useReducedReftreeModels = (bool)GetSettings(ParamInfo.Name(()=> useReducedReftreeModels));
+			useCheckTreeFile = (bool)GetSettings(ParamInfo.Name(()=> useCheckTreeFile));
+			exportCheckTrees = (bool)GetSettings(ParamInfo.Name(()=> exportCheckTrees));
 
 			if (!consoleVisible)
 			{
@@ -52,15 +62,6 @@ namespace ForestReco
 				CConsole.ShowWindow(handle, SW_HIDE);
 			}
 		}
-
-
-		
-
-
-		/*private static string GetKey<T>(Expression<Func<T>> pAttribute)
-		{
-			return MemberInfoGetting.GetMemberName(() => pAttribute);
-		}*/
 
 		private static object GetSettings(string pKey)
 		{
@@ -109,6 +110,8 @@ namespace ForestReco
 			{
 				avgTreeHeigh = (int)pArg;
 			}
+
+			//bools
 			else if (paramKey == ParamInfo.Name(()=>exportTreeStructures))
 			{
 				exportTreeStructures = (bool)pArg;
@@ -117,6 +120,27 @@ namespace ForestReco
 			{
 				exportInvalidTrees = (bool)pArg;
 			}
+			else if (paramKey == ParamInfo.Name(() => exportRefTrees))
+			{
+				exportRefTrees = (bool)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(() => assignRefTreesRandom))
+			{
+				assignRefTreesRandom = (bool)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(() => useReducedReftreeModels))
+			{
+				useReducedReftreeModels = (bool)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(() => useCheckTreeFile))
+			{
+				useCheckTreeFile = (bool)pArg;
+			}
+			else if (paramKey == ParamInfo.Name(() => exportCheckTrees))
+			{
+				exportCheckTrees = (bool)pArg;
+			}
+
 			else
 			{
 				CDebug.Error($"key {paramKey} not set");

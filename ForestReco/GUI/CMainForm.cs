@@ -42,6 +42,11 @@ namespace ForestReco
 		private ToolTip myToolTip;
 		private System.ComponentModel.IContainer components;
 		private CheckBox checkBoxExportInvalidTrees;
+		private CheckBox checkBoxExportRefTrees;
+		private CheckBox checkBoxAssignRefTreesRandom;
+		private CheckBox checkBoxUseCheckTree;
+		private CheckBox checkBoxExportCheckTrees;
+		private CheckBox checkBoxReducedReftrees;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -82,8 +87,13 @@ namespace ForestReco
 			trackBarAvgTreeHeight.Value = CParameterSetter.avgTreeHeigh;
 
 			//bools
-			//export tree structures
 			checkBoxExportTreeStructures.Checked = CParameterSetter.exportTreeStructures;
+			checkBoxExportInvalidTrees.Checked = CParameterSetter.exportInvalidTrees;
+			checkBoxExportRefTrees.Checked = CParameterSetter.exportRefTrees;
+			checkBoxAssignRefTreesRandom.Checked = CParameterSetter.assignRefTreesRandom;
+			checkBoxUseCheckTree.Checked = CParameterSetter.useCheckTreeFile;
+			checkBoxExportCheckTrees.Checked = CParameterSetter.exportCheckTrees;
+			checkBoxReducedReftrees.Checked = CParameterSetter.useReducedReftreeModels;
 
 			SetTooltips();
 		}
@@ -99,32 +109,20 @@ namespace ForestReco
 
 		}
 
-
-
 		private void btnStart_Click(object sender, EventArgs e)
 		{
 			CProgramStarter.Start();
 		}
-
-
-
 
 		private void btnAbort_Click(object sender, EventArgs e)
 		{
 			CProgramStarter.Abort();
 		}
 
-
-
-
 		private void btnToggleConsole_Click(object sender, EventArgs e)
 		{
 			CParameterSetter.ToggleConsoleVisibility();
 		}
-
-
-
-
 
 
 		private void InitializeComponent()
@@ -161,6 +159,11 @@ namespace ForestReco
 			this.checkBoxExportTreeStructures = new System.Windows.Forms.CheckBox();
 			this.myToolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.checkBoxExportInvalidTrees = new System.Windows.Forms.CheckBox();
+			this.checkBoxExportRefTrees = new System.Windows.Forms.CheckBox();
+			this.checkBoxAssignRefTreesRandom = new System.Windows.Forms.CheckBox();
+			this.checkBoxUseCheckTree = new System.Windows.Forms.CheckBox();
+			this.checkBoxExportCheckTrees = new System.Windows.Forms.CheckBox();
+			this.checkBoxReducedReftrees = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -182,7 +185,7 @@ namespace ForestReco
 			// 
 			this.textForrestFilePath.Location = new System.Drawing.Point(146, 12);
 			this.textForrestFilePath.Name = "textForrestFilePath";
-			this.textForrestFilePath.Size = new System.Drawing.Size(592, 22);
+			this.textForrestFilePath.Size = new System.Drawing.Size(675, 22);
 			this.textForrestFilePath.TabIndex = 1;
 			this.textForrestFilePath.TextChanged += new System.EventHandler(this.textForrestFilePath_TextChanged);
 			// 
@@ -201,15 +204,15 @@ namespace ForestReco
 			// 
 			this.textReftreeFolder.Location = new System.Drawing.Point(146, 49);
 			this.textReftreeFolder.Name = "textReftreeFolder";
-			this.textReftreeFolder.Size = new System.Drawing.Size(592, 22);
+			this.textReftreeFolder.Size = new System.Drawing.Size(675, 22);
 			this.textReftreeFolder.TabIndex = 4;
 			this.textReftreeFolder.TextChanged += new System.EventHandler(this.textReftreeFolder_TextChanged);
 			// 
 			// btnStart
 			// 
-			this.btnStart.Location = new System.Drawing.Point(12, 418);
+			this.btnStart.Location = new System.Drawing.Point(234, 244);
 			this.btnStart.Name = "btnStart";
-			this.btnStart.Size = new System.Drawing.Size(589, 50);
+			this.btnStart.Size = new System.Drawing.Size(460, 48);
 			this.btnStart.TabIndex = 5;
 			this.btnStart.Text = "START";
 			this.btnStart.UseVisualStyleBackColor = true;
@@ -219,7 +222,7 @@ namespace ForestReco
 			// 
 			this.textOutputFolder.Location = new System.Drawing.Point(146, 86);
 			this.textOutputFolder.Name = "textOutputFolder";
-			this.textOutputFolder.Size = new System.Drawing.Size(592, 22);
+			this.textOutputFolder.Size = new System.Drawing.Size(675, 22);
 			this.textOutputFolder.TabIndex = 7;
 			this.textOutputFolder.TextChanged += new System.EventHandler(this.textOutputFolder_TextChanged);
 			// 
@@ -242,17 +245,17 @@ namespace ForestReco
 			// 
 			// textProgress
 			// 
-			this.textProgress.Location = new System.Drawing.Point(12, 474);
+			this.textProgress.Location = new System.Drawing.Point(234, 300);
 			this.textProgress.Multiline = true;
 			this.textProgress.Name = "textProgress";
-			this.textProgress.Size = new System.Drawing.Size(589, 45);
+			this.textProgress.Size = new System.Drawing.Size(460, 100);
 			this.textProgress.TabIndex = 10;
 			// 
 			// btnAbort
 			// 
-			this.btnAbort.Location = new System.Drawing.Point(628, 498);
+			this.btnAbort.Location = new System.Drawing.Point(711, 300);
 			this.btnAbort.Name = "btnAbort";
-			this.btnAbort.Size = new System.Drawing.Size(110, 50);
+			this.btnAbort.Size = new System.Drawing.Size(110, 100);
 			this.btnAbort.TabIndex = 11;
 			this.btnAbort.Text = "ABORT";
 			this.btnAbort.UseVisualStyleBackColor = true;
@@ -260,7 +263,7 @@ namespace ForestReco
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(629, 460);
+			this.button1.Location = new System.Drawing.Point(715, 252);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(109, 32);
 			this.button1.TabIndex = 12;
@@ -303,7 +306,7 @@ namespace ForestReco
 			// 
 			this.textCheckTreePath.Location = new System.Drawing.Point(146, 123);
 			this.textCheckTreePath.Name = "textCheckTreePath";
-			this.textCheckTreePath.Size = new System.Drawing.Size(592, 22);
+			this.textCheckTreePath.Size = new System.Drawing.Size(675, 22);
 			this.textCheckTreePath.TabIndex = 21;
 			this.textCheckTreePath.TextChanged += new System.EventHandler(this.textCheckTreePath_TextChanged);
 			// 
@@ -384,7 +387,7 @@ namespace ForestReco
 			// 
 			this.trackBarTreeExtentMultiply.AutoSize = false;
 			this.trackBarTreeExtentMultiply.LargeChange = 10;
-			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(684, 195);
+			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(485, 197);
 			this.trackBarTreeExtentMultiply.Maximum = 30;
 			this.trackBarTreeExtentMultiply.Minimum = 10;
 			this.trackBarTreeExtentMultiply.Name = "trackBarTreeExtentMultiply";
@@ -396,7 +399,7 @@ namespace ForestReco
 			// 
 			// textTreeExtentMultiply
 			// 
-			this.textTreeExtentMultiply.Location = new System.Drawing.Point(809, 166);
+			this.textTreeExtentMultiply.Location = new System.Drawing.Point(610, 168);
 			this.textTreeExtentMultiply.Name = "textTreeExtentMultiply";
 			this.textTreeExtentMultiply.ReadOnly = true;
 			this.textTreeExtentMultiply.Size = new System.Drawing.Size(34, 22);
@@ -405,7 +408,7 @@ namespace ForestReco
 			// labelTreeExtentMultiply
 			// 
 			this.labelTreeExtentMultiply.AutoSize = true;
-			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(691, 169);
+			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(492, 171);
 			this.labelTreeExtentMultiply.Name = "labelTreeExtentMultiply";
 			this.labelTreeExtentMultiply.Size = new System.Drawing.Size(126, 17);
 			this.labelTreeExtentMultiply.TabIndex = 31;
@@ -415,7 +418,7 @@ namespace ForestReco
 			// 
 			this.trackBarAvgTreeHeight.AutoSize = false;
 			this.trackBarAvgTreeHeight.LargeChange = 10;
-			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(495, 197);
+			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(643, 199);
 			this.trackBarAvgTreeHeight.Maximum = 30;
 			this.trackBarAvgTreeHeight.Minimum = 5;
 			this.trackBarAvgTreeHeight.Name = "trackBarAvgTreeHeight";
@@ -427,7 +430,7 @@ namespace ForestReco
 			// 
 			// textAvgTreeHeight
 			// 
-			this.textAvgTreeHeight.Location = new System.Drawing.Point(639, 169);
+			this.textAvgTreeHeight.Location = new System.Drawing.Point(787, 171);
 			this.textAvgTreeHeight.Name = "textAvgTreeHeight";
 			this.textAvgTreeHeight.ReadOnly = true;
 			this.textAvgTreeHeight.Size = new System.Drawing.Size(34, 22);
@@ -436,7 +439,7 @@ namespace ForestReco
 			// labelAvgTreeHeight
 			// 
 			this.labelAvgTreeHeight.AutoSize = true;
-			this.labelAvgTreeHeight.Location = new System.Drawing.Point(502, 171);
+			this.labelAvgTreeHeight.Location = new System.Drawing.Point(650, 173);
 			this.labelAvgTreeHeight.Name = "labelAvgTreeHeight";
 			this.labelAvgTreeHeight.Size = new System.Drawing.Size(132, 17);
 			this.labelAvgTreeHeight.TabIndex = 35;
@@ -466,9 +469,74 @@ namespace ForestReco
 			this.checkBoxExportInvalidTrees.UseVisualStyleBackColor = true;
 			this.checkBoxExportInvalidTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportInvalidTrees_CheckedChanged);
 			// 
+			// checkBoxExportRefTrees
+			// 
+			this.checkBoxExportRefTrees.AutoSize = true;
+			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(22, 298);
+			this.checkBoxExportRefTrees.Name = "checkBoxExportRefTrees";
+			this.checkBoxExportRefTrees.Size = new System.Drawing.Size(122, 21);
+			this.checkBoxExportRefTrees.TabIndex = 40;
+			this.checkBoxExportRefTrees.Text = "export reftrees";
+			this.myToolTip.SetToolTip(this.checkBoxExportRefTrees, "hh");
+			this.checkBoxExportRefTrees.UseVisualStyleBackColor = true;
+			this.checkBoxExportRefTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportRefTrees_CheckedChanged);
+			// 
+			// checkBoxAssignRefTreesRandom
+			// 
+			this.checkBoxAssignRefTreesRandom.AutoSize = true;
+			this.checkBoxAssignRefTreesRandom.Location = new System.Drawing.Point(22, 325);
+			this.checkBoxAssignRefTreesRandom.Name = "checkBoxAssignRefTreesRandom";
+			this.checkBoxAssignRefTreesRandom.Size = new System.Drawing.Size(176, 21);
+			this.checkBoxAssignRefTreesRandom.TabIndex = 41;
+			this.checkBoxAssignRefTreesRandom.Text = "assign reftrees random";
+			this.myToolTip.SetToolTip(this.checkBoxAssignRefTreesRandom, "hh");
+			this.checkBoxAssignRefTreesRandom.UseVisualStyleBackColor = true;
+			this.checkBoxAssignRefTreesRandom.CheckedChanged += new System.EventHandler(this.checkBoxAssignRefTreesRandom_CheckedChanged);
+			// 
+			// checkBoxUseCheckTree
+			// 
+			this.checkBoxUseCheckTree.AutoSize = true;
+			this.checkBoxUseCheckTree.Location = new System.Drawing.Point(22, 378);
+			this.checkBoxUseCheckTree.Name = "checkBoxUseCheckTree";
+			this.checkBoxUseCheckTree.Size = new System.Drawing.Size(141, 21);
+			this.checkBoxUseCheckTree.TabIndex = 42;
+			this.checkBoxUseCheckTree.Text = "use checktree file";
+			this.myToolTip.SetToolTip(this.checkBoxUseCheckTree, "hh");
+			this.checkBoxUseCheckTree.UseVisualStyleBackColor = true;
+			this.checkBoxUseCheckTree.CheckedChanged += new System.EventHandler(this.checkBoxUseCheckTree_CheckedChanged);
+			// 
+			// checkBoxExportCheckTrees
+			// 
+			this.checkBoxExportCheckTrees.AutoSize = true;
+			this.checkBoxExportCheckTrees.Location = new System.Drawing.Point(22, 405);
+			this.checkBoxExportCheckTrees.Name = "checkBoxExportCheckTrees";
+			this.checkBoxExportCheckTrees.Size = new System.Drawing.Size(142, 21);
+			this.checkBoxExportCheckTrees.TabIndex = 43;
+			this.checkBoxExportCheckTrees.Text = "export checktrees";
+			this.myToolTip.SetToolTip(this.checkBoxExportCheckTrees, "hh");
+			this.checkBoxExportCheckTrees.UseVisualStyleBackColor = true;
+			this.checkBoxExportCheckTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportCheckTrees_CheckedChanged);
+			// 
+			// checkBoxReducedReftrees
+			// 
+			this.checkBoxReducedReftrees.AutoSize = true;
+			this.checkBoxReducedReftrees.Location = new System.Drawing.Point(22, 352);
+			this.checkBoxReducedReftrees.Name = "checkBoxReducedReftrees";
+			this.checkBoxReducedReftrees.Size = new System.Drawing.Size(204, 21);
+			this.checkBoxReducedReftrees.TabIndex = 44;
+			this.checkBoxReducedReftrees.Text = "use reduced reftree models";
+			this.myToolTip.SetToolTip(this.checkBoxReducedReftrees, "hh");
+			this.checkBoxReducedReftrees.UseVisualStyleBackColor = true;
+			this.checkBoxReducedReftrees.CheckedChanged += new System.EventHandler(this.checkBoxReducedReftrees_CheckedChanged);
+			// 
 			// CMainForm
 			// 
-			this.ClientSize = new System.Drawing.Size(855, 557);
+			this.ClientSize = new System.Drawing.Size(836, 448);
+			this.Controls.Add(this.checkBoxReducedReftrees);
+			this.Controls.Add(this.checkBoxExportCheckTrees);
+			this.Controls.Add(this.checkBoxUseCheckTree);
+			this.Controls.Add(this.checkBoxAssignRefTreesRandom);
+			this.Controls.Add(this.checkBoxExportRefTrees);
 			this.Controls.Add(this.checkBoxExportInvalidTrees);
 			this.Controls.Add(this.checkBoxExportTreeStructures);
 			this.Controls.Add(this.trackBarAvgTreeHeight);
@@ -600,9 +668,25 @@ namespace ForestReco
 				ParamInfo.Name(()=> CParameterSetter.partitionStep), trackBarPartition.Value);
 		}
 
+		//snap to multiply of 5 implementation
+		private bool blockRecursion;
+		private int smallChangeValue = 5;
+		private int trackValue;
 		private void trackBarGroundArrayStep_Scroll(object sender, EventArgs e)
 		{
+			if (blockRecursion) {return;}
+			trackValue = trackBarGroundArrayStep.Value;
+			if (trackValue % smallChangeValue != 0)
+			{
+				trackValue = trackValue / smallChangeValue * smallChangeValue;
+
+				blockRecursion = true;
+				trackBarGroundArrayStep.Value = trackValue;
+				blockRecursion = false;
+			}
+
 			float value = trackBarGroundArrayStep.Value / 10f;
+			
 			textGroundArrayStep.Text = value.ToString("0.0") + " m";
 			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.groundArrayStep), value);
 		}
@@ -638,6 +722,36 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportInvalidTrees),
 				checkBoxExportInvalidTrees.Checked);
+		}
+
+		private void checkBoxExportRefTrees_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportRefTrees),
+				checkBoxExportRefTrees.Checked);
+		}
+
+		private void checkBoxExportCheckTrees_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportCheckTrees),
+				checkBoxExportCheckTrees.Checked);
+		}
+
+		private void checkBoxUseCheckTree_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.useCheckTreeFile),
+				checkBoxUseCheckTree.Checked);
+		}
+
+		private void checkBoxAssignRefTreesRandom_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.assignRefTreesRandom),
+				checkBoxAssignRefTreesRandom.Checked);
+		}
+
+		private void checkBoxReducedReftrees_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.useReducedReftreeModels),
+				checkBoxReducedReftrees.Checked);
 		}
 	}
 }

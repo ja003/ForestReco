@@ -186,7 +186,7 @@ namespace ForestReco
 			CDebug.Step(EProgramStep.AssignReftrees);
 			CRefTreeManager.AssignRefTrees();
 			//CProjectData.objsToExport.AddRange(trees);
-			if (CProjectData.exportRefTrees) //no reason to export when no refTrees were assigned
+			if (CParameterSetter.exportRefTrees) //no reason to export when no refTrees were assigned
 			{
 				//CRefTreeManager.ExportTrees();
 				CObjPartition.AddRefTrees();
