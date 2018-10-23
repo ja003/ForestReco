@@ -91,7 +91,8 @@ namespace ForestReco
 			DateTime loadTreesStartTime = DateTime.Now;
 			CDebug.WriteLine("Load check trees: " + pFileName, true);
 
-			string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
+			//string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
+			string fullFilepath = CParameterSetter.checkTreeFilePath;
 
 			string[] allLines = File.ReadAllLines(fullFilepath);
 

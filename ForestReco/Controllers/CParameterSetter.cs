@@ -11,6 +11,7 @@ namespace ForestReco
 		public static string forrestFilePath;
 		public static string reftreeFolderPath;
 		public static string outputFolderPath;
+		public static string checkTreeFilePath;
 
 		public static bool consoleVisible;
 		
@@ -21,12 +22,14 @@ namespace ForestReco
 		public const string outputFolderPathKey = "outputFolderPath";
 		public const string consoleVisibleKey = "consoleVisible";
 		public const string partitionStepKey = "partitionStep";
-
+		public const string checkTreeFilePathKey = "checkTreeFilePath";
+		
 		public static void Init()
 		{
 			forrestFilePath = (string)GetSettings(forrestFilePathKey);
 			reftreeFolderPath = (string)GetSettings(reftreeFolderPathKey);
 			outputFolderPath = (string)GetSettings(outputFolderPathKey);
+			checkTreeFilePath = (string)GetSettings(checkTreeFilePathKey);
 			consoleVisible = (bool)GetSettings(consoleVisibleKey);
 			partitionStep = (int)GetSettings(partitionStepKey);
 			if (!consoleVisible)
@@ -60,6 +63,10 @@ namespace ForestReco
 				case consoleVisibleKey:
 					consoleVisible = (bool)pArg;
 					break;
+
+				case checkTreeFilePathKey:
+					checkTreeFilePath = (string)pArg;
+					break;
 			}
 
 			Properties.Settings.Default[pParamKey] = pArg;
@@ -80,13 +87,11 @@ namespace ForestReco
 			return "";
 		}
 
-		public static string SelectForrestFile()
+		public static string SelectFile(string pTitle)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			//ofd.Multiselect = true;
-			//ofd.InitialDirectory = Environment.CurrentDirectory;
 			ofd.RestoreDirectory = true;
-			ofd.Title = "Open forrest file";
+			ofd.Title = pTitle;
 			ofd.ShowHelp = true;
 			DialogResult dr = ofd.ShowDialog();
 			if (dr == DialogResult.OK)

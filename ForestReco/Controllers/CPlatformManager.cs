@@ -3,6 +3,7 @@
 	//todo: zrušit
 	public static class CPlatformManager
 	{
+		//todo: zrušit
 		public static EPlatform platform;
 
 		public static string GetPodkladyPath()

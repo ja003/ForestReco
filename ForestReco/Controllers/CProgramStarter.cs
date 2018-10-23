@@ -21,8 +21,9 @@ namespace ForestReco
 
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en"); ;
 
-			//CPlatformManager.platform = EPlatform.Notebook;
-			CPlatformManager.platform = EPlatform.HomePC;
+			//todo: zrušit
+			CPlatformManager.platform = EPlatform.Notebook;
+			//CPlatformManager.platform = EPlatform.HomePC;
 			//CPlatformManager.platform = EPlatform.Tiarra;
 			
 			//Input params
@@ -125,10 +126,12 @@ namespace ForestReco
 
 			CTreeManager.DebugTrees();
 
+
 			//CObjExporter.ExportObjsToExport();
 			CDebug.Step(EProgramStep.Export);
 			CObjPartition.ExportPartition();
 
+			//has to be called after ExportPartition where final folder location is determined
 			CAnalytics.Write();
 
 			CDebug.Step(EProgramStep.Done);
