@@ -149,7 +149,10 @@ namespace ForestReco
 
 			CDebug.Step(EProgramStep.MergeTrees1);
 			//try merge all (even valid)
-			CTreeManager.TryMergeAllTrees(false);
+			if (CProjectData.tryMergeTrees)
+			{
+				CTreeManager.TryMergeAllTrees(false);
+			}
 
 
 			//validate restrictive
@@ -177,6 +180,10 @@ namespace ForestReco
 			CAnalytics.detectedTrees = CTreeManager.Trees.Count;
 			CAnalytics.invalidTrees = CTreeManager.InvalidTrees.Count;
 			CAnalytics.invalidTreesAtBorder = CTreeManager.GetInvalidTreesAtBorderCount();
+
+			CAnalytics.averageTreeHeight = CTreeManager.GetAverageTreeHeight();
+			CAnalytics.maxTreeHeight = CTreeManager.GetMaxTreeHeight();
+			CAnalytics.minTreeHeight = CTreeManager.GetMinTreeHeight();
 
 			CDebug.Count("Trees", CTreeManager.Trees.Count);
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
@@ -282,7 +289,10 @@ namespace ForestReco
 
 			CDebug.Duration("FilterVegePoints", processVegePointsStart);
 
-			CProjectData.array.FilterFakeVegePoints();
+			if (CParameterSetter.GetBoolSettings(ESettings.filterPoints))
+			{
+				CProjectData.array.FilterFakeVegePoints();
+			}
 		}
 
 

@@ -47,6 +47,7 @@ namespace ForestReco
 		private CheckBox checkBoxUseCheckTree;
 		private CheckBox checkBoxExportCheckTrees;
 		private CheckBox checkBoxReducedReftrees;
+		private CheckBox checkBoxFilterPoints;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -56,7 +57,7 @@ namespace ForestReco
 			InitializeComponent();
 			InitializeValues();
 
-			//CProgramStarter.Start();
+			CProgramStarter.Start();
 		}
 
 		private void InitializeValues()
@@ -177,6 +178,7 @@ namespace ForestReco
 			this.checkBoxUseCheckTree = new System.Windows.Forms.CheckBox();
 			this.checkBoxExportCheckTrees = new System.Windows.Forms.CheckBox();
 			this.checkBoxReducedReftrees = new System.Windows.Forms.CheckBox();
+			this.checkBoxFilterPoints = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -371,7 +373,7 @@ namespace ForestReco
 			this.trackBarTreeExtent.AutoSize = false;
 			this.trackBarTreeExtent.LargeChange = 10;
 			this.trackBarTreeExtent.Location = new System.Drawing.Point(321, 198);
-			this.trackBarTreeExtent.Maximum = 30;
+			this.trackBarTreeExtent.Maximum = 50;
 			this.trackBarTreeExtent.Minimum = 5;
 			this.trackBarTreeExtent.Name = "trackBarTreeExtent";
 			this.trackBarTreeExtent.Size = new System.Drawing.Size(159, 30);
@@ -433,7 +435,7 @@ namespace ForestReco
 			this.trackBarAvgTreeHeight.AutoSize = false;
 			this.trackBarAvgTreeHeight.LargeChange = 10;
 			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(643, 199);
-			this.trackBarAvgTreeHeight.Maximum = 30;
+			this.trackBarAvgTreeHeight.Maximum = 50;
 			this.trackBarAvgTreeHeight.Minimum = 5;
 			this.trackBarAvgTreeHeight.Name = "trackBarAvgTreeHeight";
 			this.trackBarAvgTreeHeight.Size = new System.Drawing.Size(178, 30);
@@ -543,9 +545,22 @@ namespace ForestReco
 			this.checkBoxReducedReftrees.UseVisualStyleBackColor = true;
 			this.checkBoxReducedReftrees.CheckedChanged += new System.EventHandler(this.checkBoxReducedReftrees_CheckedChanged);
 			// 
+			// checkBoxFilterPoints
+			// 
+			this.checkBoxFilterPoints.AutoSize = true;
+			this.checkBoxFilterPoints.Location = new System.Drawing.Point(22, 432);
+			this.checkBoxFilterPoints.Name = "checkBoxFilterPoints";
+			this.checkBoxFilterPoints.Size = new System.Drawing.Size(99, 21);
+			this.checkBoxFilterPoints.TabIndex = 45;
+			this.checkBoxFilterPoints.Text = "filter points";
+			this.myToolTip.SetToolTip(this.checkBoxFilterPoints, "hh");
+			this.checkBoxFilterPoints.UseVisualStyleBackColor = true;
+			this.checkBoxFilterPoints.CheckedChanged += new System.EventHandler(this.checkBoxFilterPoints_CheckedChanged);
+			// 
 			// CMainForm
 			// 
-			this.ClientSize = new System.Drawing.Size(836, 448);
+			this.ClientSize = new System.Drawing.Size(836, 491);
+			this.Controls.Add(this.checkBoxFilterPoints);
 			this.Controls.Add(this.checkBoxReducedReftrees);
 			this.Controls.Add(this.checkBoxExportCheckTrees);
 			this.Controls.Add(this.checkBoxUseCheckTree);
@@ -776,6 +791,12 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(ESettings.useReducedReftreeModels,
 				checkBoxReducedReftrees.Checked);
+		}
+
+		private void checkBoxFilterPoints_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ESettings.filterPoints,
+				checkBoxFilterPoints.Checked);
 		}
 	}
 }

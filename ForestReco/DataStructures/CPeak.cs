@@ -39,10 +39,16 @@ namespace ForestReco
 			float distance2D = CUtils.Get2DDistance(Center, pPointCenter);
 			float yDiff = Math.Abs(Center.Y - pPointCenter.Y);
 			//return distance2D < CTreeManager.GetMinPeakDistance(1) && yDiff < 0.25f;
-			return distance2D < MAX_PEAK_EXTENT && yDiff < MAX_PEAK_Y_DIFF;
+			return distance2D < GetMaxPeakExtent() && yDiff < MAX_PEAK_Y_DIFF;
 		}
 
-		private const float MAX_PEAK_EXTENT = 1;
+		private float GetMaxPeakExtent()
+		{
+			float extent = CParameterSetter.treeExtent;
+			return extent;
+		}
+
+		//private const float MAX_PEAK_EXTENT = 1;
 
 		public new CPeak Clone()
 		{

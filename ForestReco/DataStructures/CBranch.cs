@@ -275,6 +275,16 @@ namespace ForestReco
 			RefreshFurthestPoint(pPoint);
 			OnAddPoint(pPoint);
 
+			if (tree.treeIndex == 27 && tree.Branches.IndexOf(this) == 0)
+			{
+				Console.Write("");
+				if (TreePoints.Count == 8)
+				{
+					Console.Write("");
+
+				}
+			}
+
 			int insertAtIndex = 0;
 			//find appropriate insert at index
 			if (TreePoints.Count > 0)
@@ -292,8 +302,17 @@ namespace ForestReco
 						pointOnBranch.AddPoint(pPoint);
 						return;
 					}
-					//add point at correct position
 					if (pPoint.Y < pointOnBranch.Y)
+					{
+						if (i == TreePoints.Count - 1 || TreePoints[i + 1].Y <= pPoint.Y)
+						{
+							break;
+						}
+					}
+
+					//todo: maybe bullshit
+					//add point at correct position
+					/*if (pPoint.Y < pointOnBranch.Y)
 					{
 						//points doesnt have to neccessarily Y-ordered. check close points for possible candidate
 						int higherPointIndex = Math.Min(TreePoints.Count - 1, insertAtIndex);
@@ -308,7 +327,7 @@ namespace ForestReco
 							}
 						}
 						break;
-					}
+					}*/
 				}
 			}
 
@@ -324,31 +343,44 @@ namespace ForestReco
 
 		private void CheckAddedPoint()
 		{
+			if (TreePoints[0].Y > tree.peak.Y)
+			{
+				CDebug.Error($"CheckAddedPoint. tree {tree.treeIndex} : first point {TreePoints[0]} is higher than peak {tree.peak}");
+			}
+
 			if (TreePoints.Count < 2) { return; }
 			CTreePoint previousTp = TreePoints[TreePoints.Count - 2];
 			CTreePoint tp = TreePoints[TreePoints.Count - 1];
 			if (tp.Y > previousTp.Y)
 			{
-				if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
+				CDebug.Error("CheckAddedPoint. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
+				/*if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
 				{
 					CDebug.Error("CheckAddedPoint. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
-				}
+				}*/
 			}
 		}
 
 		public void CheckBranch()
 		{
+			if (tree.treeIndex == 236)
+			{
+				Console.WriteLine();
+			}
+
+
 			for (int i = 1; i < TreePoints.Count; i++)
 			{
 				CTreePoint previousTp = TreePoints[i - 1];
 				CTreePoint tp = TreePoints[i];
 				if (tp.Y > previousTp.Y)
 				{
+					CDebug.Error("-CheckBranch. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 
-					if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
+					/*if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
 					{
 						CDebug.Error("-CheckBranch. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
-					}
+					}*/
 				}
 			}
 		}

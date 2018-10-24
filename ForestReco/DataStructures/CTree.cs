@@ -123,6 +123,7 @@ namespace ForestReco
 		public float GetAddPointFactor(Vector3 pPoint, bool pMerging, CTree pTreeToMerge = null)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
+
 			CBranch branchForPoint = GetBranchFor(pPoint);
 
 			if (!pMerging)
@@ -203,7 +204,8 @@ namespace ForestReco
 
 		public void AddPoint(Vector3 pPoint)
 		{
-			if (peak.Includes(pPoint))
+			//if (peak.Includes(pPoint))
+			if (peak.Includes(pPoint) || pPoint.Y > peak.minBB.Y) //todo: test if doesnt screw up
 			{
 				peak.AddPoint(pPoint);
 			}
@@ -530,7 +532,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private int debugTree = 2;
+		private int debugTree = 54;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.
@@ -772,6 +774,11 @@ namespace ForestReco
 
 		public void CheckTree()
 		{
+
+			if (treeIndex == 236)
+			{
+				Console.WriteLine();
+			}
 			//CDebug.WriteLine("Check tree " + ToString());
 			foreach (CBranch b in branches)
 			{

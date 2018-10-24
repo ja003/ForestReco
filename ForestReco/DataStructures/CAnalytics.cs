@@ -15,6 +15,9 @@ namespace ForestReco
 		public static int detectedTrees;
 		public static int invalidTrees;
 		public static int invalidTreesAtBorder;
+		public static float averageTreeHeight;
+		public static float maxTreeHeight;
+		public static float minTreeHeight;
 
 		public static int loadedCheckTrees;
 		public static int assignedCheckTrees;
@@ -34,6 +37,10 @@ namespace ForestReco
 			output += $"detectedTrees = {detectedTrees} \n";
 			output += $"trees density = 1 per {GetTreesDensity():0.00} m\xB2 \n";
 			output += $"invalidTrees = {invalidTrees} ({invalidTreesAtBorder} of them at border)\n\n";
+
+			output += $"averageTreeHeight = {averageTreeHeight} \n";
+			output += $"maxTreeHeight = {maxTreeHeight} \n";
+			output += $"minTreeHeight = {minTreeHeight} \n\n";
 
 			output += $"loadedCheckTrees = {loadedCheckTrees} \n";
 			output += $"assignedCheckTrees = {assignedCheckTrees} \n";

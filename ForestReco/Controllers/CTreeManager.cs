@@ -20,13 +20,13 @@ namespace ForestReco
 
 		public const float MIN_TREE_EXTENT = 0.5f;
 		//public const float DEFAULT_TREE_EXTENT = 1f;
-		public static float AVERAGE_TREE_HEIGHT = 10;
+		public static float AVERAGE_TREE_HEIGHT => CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
 		public static int MIN_BRANCH_POINT_COUNT = 5;
 		public static int MIN_TREE_POINT_COUNT = 20;
 
 		public static float MIN_FAKE_TREE_HEIGHT = 20;
 
-		public static float AVERAGE_MAX_TREE_HEIGHT = 20;
+		public static float AVERAGE_MAX_TREE_HEIGHT = 40;
 
 		public static void Init()
 		{
@@ -89,7 +89,7 @@ namespace ForestReco
 			{
 				if (DEBUG) { CDebug.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
-				if (pPointIndex == 11141)
+				if (pPointIndex == 707)
 				{
 					Console.Write("");
 				}
@@ -170,7 +170,7 @@ namespace ForestReco
 
 			newTree.groundField = element;
 
-			if (newTree.treeIndex == 224)
+			if (newTree.treeIndex == 66)
 			{
 				CDebug.WriteLine("");
 			}
@@ -337,7 +337,7 @@ namespace ForestReco
 				}
 				CTree treeToMerge = Trees[i];
 
-				if (treeToMerge.Equals(54))
+				if (treeToMerge.Equals(206))
 				{
 					Console.WriteLine("");
 				}
@@ -356,7 +356,7 @@ namespace ForestReco
 				float bestAddPointFactor = 0;
 				CTree selectedTree = null;
 
-				
+
 
 				foreach (CTree possibleTree in possibleTrees)
 				{
@@ -369,10 +369,17 @@ namespace ForestReco
 						//treeToMerge is always lower
 						float possibleTreeHeight = possibleTree.GetTreeHeight();
 						float treeToMergeHeight = treeToMerge.GetTreeHeight();
-						if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
+
+						//todo: maybe good for smthing
+						//float possibleTreePeakMin = possibleTree.peak.minBB.Y;
+						//float treeToMergePeakMax = treeToMerge.peak.maxBB.Y;
+						//if (possibleTreePeakMin - treeToMergePeakMax < minPeakHeightDiffForMerge)
+
+						//todo: fucks up
+						/*if (possibleTreeHeight - treeToMergeHeight < minPeakHeightDiffForMerge)
 						{
 							continue;
-						}
+						}*/
 
 						const float maxPeaksDistance = 1;
 						float peaksDist = CUtils.Get2DDistance(treeToMerge.peak, possibleTree.peak);
@@ -520,6 +527,42 @@ namespace ForestReco
 		public static int GetInvalidTreesAtBorderCount()
 		{
 			return InvalidTrees.Count(tree => tree.IsAtBorder());
+		}
+
+		public static float GetAverageTreeHeight()
+		{
+			float sum = 0;
+			foreach (CTree tree in Trees)
+			{
+				sum += tree.GetTreeHeight();
+			}
+			return sum / Trees.Count;
+		}
+
+		public static float GetMinTreeHeight()
+		{
+			float min = 666;
+			foreach (CTree tree in Trees)
+			{
+				if (tree.GetTreeHeight() < min)
+				{
+					min = tree.GetTreeHeight();
+				}
+			}
+			return min;
+		}
+
+		public static float GetMaxTreeHeight()
+		{
+			float max = 0;
+			foreach (CTree tree in Trees)
+			{
+				if (tree.GetTreeHeight() > max)
+				{
+					max = tree.GetTreeHeight();
+				}
+			}
+			return max;
 		}
 	}
 }

@@ -226,5 +226,17 @@ namespace ForestReco.Properties {
                 this["useReducedReftreeModels"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool filterPoints {
+            get {
+                return ((bool)(this["filterPoints"]));
+            }
+            set {
+                this["filterPoints"] = value;
+            }
+        }
     }
 }

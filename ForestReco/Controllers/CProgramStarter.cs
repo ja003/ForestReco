@@ -27,7 +27,7 @@ namespace ForestReco
 			//CPlatformManager.platform = EPlatform.Tiarra;
 			
 			//Input params
-			CTreeManager.AVERAGE_TREE_HEIGHT = 15;
+			//CTreeManager.AVERAGE_TREE_HEIGHT = 15;
 			//CTreeManager.TREE_EXTENT_MERGE_MULTIPLY = 1.5F; //good: 1.5 - 2 
 			//CTreeManager.BASE_TREE_EXTENT = 1.5f; //good: 1.5 - 2 
 			//CTreeManager.MIN_TREE_EXTENT = 0.5f;

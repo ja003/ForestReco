@@ -24,6 +24,7 @@ namespace ForestReco
 		public CTreePoint(Vector3 pPoint, float pTreePointExtent) : base(pPoint)
 		{
 			treePointExtent = pTreePointExtent;
+			maxHeight = pPoint;
 			AddPoint(pPoint);
 		}
 

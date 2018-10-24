@@ -185,15 +185,21 @@ namespace ForestReco
 			CDebug.WriteLine("FilterFakeVegePoints", true);
 			CProjectData.vegePoints.Clear();
 
-			float averageHeight = GetAveragePreProcessVegeHeight();
-			CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
+			//float averageHeight = GetAveragePreProcessVegeHeight();
+			float maxHeight = GetMaxPreProcessVegeHeight();
+
+
+			//CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
+			CDebug.WriteLine("Max vege height = " + maxHeight, true, true);
 
 			//first filter points too much higher that average height
 			foreach (CGroundField field in fields)
 			{
-				field.FilterFakeVegePoints(averageHeight);
+				field.FilterFakeVegePoints(maxHeight, true);
 			}
-			//than remove points, which were not filtered and dont have any close neighbour defined under them
+			int fakePointsCount = GetFakePointsCount();
+
+			//then remove points, which were not filtered and dont have any close neighbour defined under them
 			foreach (CGroundField field in fields)
 			{
 				field.TryRemoveValidPoints();
@@ -206,6 +212,16 @@ namespace ForestReco
 
 			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
 			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
+		}
+
+		private int GetFakePointsCount()
+		{
+			int count = 0;
+			foreach (CGroundField f in fields)
+			{
+				count += f.fakePoints.Count;
+			}
+			return count;
 		}
 
 		//range of vege height that will be counted in average vege height
@@ -268,6 +284,66 @@ namespace ForestReco
 				averageHeight = Math.Max(averageHeight, CTreeManager.MIN_FAKE_TREE_HEIGHT);
 			}
 			return averageHeight;
+		}
+
+		private float GetMaxPreProcessVegeHeight()
+		{
+			List<Vector3> heights = new List<Vector3>();
+
+			foreach (CGroundField field in fields)
+			{
+				float? groundHeight = field.GetHeight();
+				float? preProcessVegeHeight = field.MaxPreProcessVege;
+				if (preProcessVegeHeight != null && groundHeight != null)
+				{
+					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
+					if(vegeHeight > CTreeManager.AVERAGE_MAX_TREE_HEIGHT){ continue;}
+					Vector3 fieldCenter = field.center;
+					fieldCenter.Y = vegeHeight;
+					heights.Add(fieldCenter);
+				}
+			}
+			heights.Sort((a,b)=> b.Y.CompareTo(a.Y));
+			Vector3 selectedPoint = heights[0];
+			int okHeightsInRow = 0;
+			int estimatedFakePointsCount = GetEstimatedFakePointsCount();
+			const int minDistBetweenFakeAndOkPoint = 1;
+
+			for (int i = 0; i < heights.Count; i++)
+			{
+				Vector3 currentPoint = heights[i];
+				float dist = Vector3.Distance(currentPoint, selectedPoint);
+				if(dist < CParameterSetter.groundArrayStep + 0.5f)
+				{
+					selectedPoint = currentPoint;
+					continue;
+				}
+				float heightDiff = selectedPoint.Y - currentPoint.Y;
+				if (heightDiff > minDistBetweenFakeAndOkPoint)
+				{
+					okHeightsInRow = 0;
+				}
+				else
+				{
+					okHeightsInRow++;
+				}
+				selectedPoint = currentPoint;
+
+				if (okHeightsInRow > estimatedFakePointsCount)
+				{
+					break;
+				}
+			}
+			
+			return selectedPoint.Y;
+		}
+
+		public int GetEstimatedFakePointsCount()
+		{
+			int area = arrayXRange * arrayYRange;
+			int count = (int)(area / 1000f);
+			count = Math.Max(3, count);
+			return count;
 		}
 
 		public void SetHeight(float pHeight, int pXindex, int pYindex)

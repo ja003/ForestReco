@@ -202,7 +202,7 @@ namespace ForestReco
 		/// </summary>
 		public void TryRemoveValidPoints()
 		{
-			bool tryRemoveValidPoints = true;
+			bool tryRemoveValidPoints = false;
 			int validBefore = validPoints.Count;
 			validPoints.Sort((a, b) => a.Y.CompareTo(b.Y)); //sort ascending
 			int indexInvalid = -1;
@@ -293,7 +293,7 @@ namespace ForestReco
 		/// <summary>
 		/// Adds all points higher than pMaxHeight in fakePoints and other in validPoints
 		/// </summary>
-		public void FilterFakeVegePoints(float pMaxHeight)
+		public void FilterFakeVegePoints(float pMaxHeight, bool pStrickFilter)
 		{
 			List<Vector3> okPoints = new List<Vector3>();
 			List<Vector3> nokPoints = new List<Vector3>();
@@ -303,8 +303,26 @@ namespace ForestReco
 			for (int i = 0; i < preProcessPoints.Count; i++)
 			{
 				Vector3 point = preProcessPoints[i];
-				bool isPointTooMuchAboveLimit = point.Y - groundHeight > pMaxHeight + MIN_FAKE_POINT_HEIGHT_OFFSET;
+				float? height = point.Y - groundHeight;
+				if (height == null)
+				{
+					Console.Write("");
+
+				}
+
+				bool isPointTooMuchAboveLimit = height > pMaxHeight + MIN_FAKE_POINT_HEIGHT_OFFSET;
 				//bool isPointTooFarFromMaxOkPoint = point.Y - maxOkPointHeight > 0.3f;
+				if (height != null && height > pMaxHeight)
+				{
+					if (pStrickFilter && height - pMaxHeight > 0.5f)
+					{
+						nokPoints.Add(point);
+						continue;
+					}
+
+					Console.Write("");
+				}
+
 				bool isPointTooFarFromMaxOkPoint = Vector3.Distance(point, maxOkPoint) > 0.3f;
 				if (groundHeight != null && isPointTooMuchAboveLimit && isPointTooFarFromMaxOkPoint)
 				{
