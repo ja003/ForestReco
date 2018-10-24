@@ -48,7 +48,7 @@ namespace ForestReco
 			WriteLine(pText + " | duration = " + (DateTime.Now - pStartTime).TotalSeconds);
 		}
 
-		public static void Progress(int pIteration, int pMaxIteration, int pDebugFrequency, ref DateTime pPreviousDebugStart, string pText)
+		public static void Progress(int pIteration, int pMaxIteration, int pDebugFrequency, ref DateTime pPreviousDebugStart, DateTime pStart, string pText)
 		{
 			if (pIteration % pDebugFrequency == 0 && pIteration > 0)
 			{
@@ -59,10 +59,13 @@ namespace ForestReco
 				double lastIterationBatchTime = (DateTime.Now - pPreviousDebugStart).TotalSeconds;
 				WriteLine("- time of last " + pDebugFrequency + " = " + lastIterationBatchTime);
 
+				double timeFromStart = (DateTime.Now - pStart).TotalSeconds;
+				WriteLine($"- total time = {timeFromStart}");
+
 				//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-				float remainsRatio = (float)(pMaxIteration - pIteration) / pDebugFrequency;
-				double totalSeconds = remainsRatio * lastIterationBatchTime;
-				WriteExtimatedTimeLeft(totalSeconds, comment);
+				float remainsRatio = ((float)pMaxIteration / pIteration);
+				double estimatedTotalSeconds = remainsRatio * timeFromStart;
+				WriteExtimatedTimeLeft(estimatedTotalSeconds - timeFromStart, comment);
 				pPreviousDebugStart = DateTime.Now;
 			}
 

@@ -403,7 +403,7 @@ namespace ForestReco
 				//TimeSpan duration = DateTime.Now - lineStartTime;
 				//if (duration.Milliseconds > 1) { CDebug.WriteLine(i + ": " + duration); }
 
-				CDebug.Progress(i, pParsedLines.Count, 100000, ref lineStartTime, "added point:");
+				CDebug.Progress(i, pParsedLines.Count, 100000, ref lineStartTime, addStartTime, "added point:");
 				//if (i % 100000 == 0)
 				//{
 				//	TimeSpan duration = DateTime.Now - lineStartTime;

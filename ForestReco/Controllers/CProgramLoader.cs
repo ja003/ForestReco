@@ -266,6 +266,7 @@ namespace ForestReco
 			DateTime processVegePointsStart = DateTime.Now;
 			CDebug.WriteLine("FilterVegePoints", true);
 
+			DateTime filterVegePointsStart = DateTime.Now;
 			DateTime previousDebugStart = DateTime.Now;
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
@@ -275,7 +276,7 @@ namespace ForestReco
 				Vector3 point = CProjectData.vegePoints[i];
 				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.PreProcess);
 
-				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "preprocessed point");
+				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, filterVegePointsStart, "preprocessed point");
 			}
 			CProjectData.array.SortPreProcessPoints();
 
@@ -304,7 +305,7 @@ namespace ForestReco
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
 
-				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, "added point");
+				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, processVegePointsStart, "added point");
 			}
 			CDebug.Duration("ProcessVegePoints", processVegePointsStart);
 		}

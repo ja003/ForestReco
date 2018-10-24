@@ -85,7 +85,7 @@ namespace ForestReco
 				suitableTreeObj.Name += "_" + t.treeIndex;
 				t.mostSuitableRefTreeObj = suitableTreeObj;
 
-				CDebug.Progress(counter, CTreeManager.Trees.Count, debugFrequency, ref previousDebugStart, "Assigned reftree");
+				CDebug.Progress(counter, CTreeManager.Trees.Count, debugFrequency, ref previousDebugStart, assignRefTreesStart, "Assigned reftree");
 				//if (counter % debugFrequency == 0 && counter > 0)
 				//{
 				//	CDebug.WriteLine("\nAssigned reftree " + counter + " out of " + CTreeManager.Trees.Count);
@@ -135,6 +135,8 @@ namespace ForestReco
 			CDebug.Step(EProgramStep.LoadReftrees);
 
 			DateTime loadTreesStartTime = DateTime.Now;
+			DateTime lastDebugTime = DateTime.Now;
+
 			CDebug.WriteLine("Load ref trees: ");
 			foreach (string fileName in pFileNames)
 			{
@@ -147,7 +149,7 @@ namespace ForestReco
 				if (CProgramStarter.abort) { return; }
 
 				string fileName = pFileNames[i];
-				CDebug.Progress(i, pFileNames.Count, 1, ref loadTreesStartTime, "load reftree");
+				CDebug.Progress(i, pFileNames.Count, 1, ref lastDebugTime, loadTreesStartTime, "load reftree");
 
 				CRefTree deserializedRefTree = CRefTree.Deserialize(fileName);
 				CRefTree refTree = deserializedRefTree ??
@@ -160,7 +162,7 @@ namespace ForestReco
 
 				counter++;
 			}
-			CDebug.Duration("Load ref trees", loadTreesStartTime);
+			CDebug.Duration("Load ref trees", lastDebugTime);
 
 			DebugRefTrees();
 		}

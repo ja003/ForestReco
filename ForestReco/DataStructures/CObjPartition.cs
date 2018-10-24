@@ -182,6 +182,7 @@ namespace ForestReco
 		{
 			folderPath = CObjExporter.CreateFolder(CProjectData.saveFileName);
 			int counter = 0;
+			DateTime exportPartitionStart = DateTime.Now;
 			DateTime previousDebugStart = DateTime.Now;
 			int partsCount = partitionXRange * partitionYRange;
 
@@ -196,7 +197,7 @@ namespace ForestReco
 					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName +
 						"_[" + x + "," + y + "]" + pFileSuffix, folderPath);
 
-					CDebug.Progress(counter, partsCount, debugFrequency, ref previousDebugStart, "Export of part");
+					CDebug.Progress(counter, partsCount, debugFrequency, ref previousDebugStart, exportPartitionStart, "Export of part");
 					//if (counter % debugFrequency == 0 && counter > 0)
 					//{
 					//	CDebug.WriteLine("\nExport of part " + counter + " out of " + partsCount);
