@@ -191,7 +191,7 @@ namespace ForestReco
 			{
 				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity); ;
 			}
-			if (CParameterSetter.assignRefTreesRandom)
+			if (CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom))
 			{
 				int random = new Random().Next(0, Trees.Count);
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);

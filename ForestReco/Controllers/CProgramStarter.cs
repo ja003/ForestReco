@@ -65,7 +65,7 @@ namespace ForestReco
 			//CProgramLoader.forrestFullFilePath = "R7_test";
 			//CProgramLoader.forrestFullFilePath = "R2_F_1+2";
 
-			CProgramLoader.forrestFullFilePath = CParameterSetter.forrestFilePath;
+			CProgramLoader.forrestFullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
 
 			CCheckTreeManager.checkFileName = "vysledek_export_UTM33N";
 

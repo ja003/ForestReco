@@ -92,7 +92,7 @@ namespace ForestReco
 			CDebug.WriteLine("Load check trees: " + pFileName, true);
 
 			//string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
-			string fullFilepath = CParameterSetter.checkTreeFilePath;
+			string fullFilepath = CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath);
 
 			string[] allLines = File.ReadAllLines(fullFilepath);
 

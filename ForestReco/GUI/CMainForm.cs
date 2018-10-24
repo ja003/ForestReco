@@ -62,42 +62,49 @@ namespace ForestReco
 		private void InitializeValues()
 		{
 			CParameterSetter.Init();
-			textForrestFilePath.Text = CParameterSetter.forrestFilePath;
-			textReftreeFolder.Text = CParameterSetter.reftreeFolderPath;
-			textOutputFolder.Text = CParameterSetter.outputFolderPath;
-			textCheckTreePath.Text = CParameterSetter.checkTreeFilePath;
+			textForrestFilePath.Text = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			textReftreeFolder.Text = CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath);
+			textOutputFolder.Text = CParameterSetter.GetStringSettings(ESettings.outputFolderPath);
+			textCheckTreePath.Text = CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath);
 
 			//partition
-			textPartition.Text = CParameterSetter.partitionStep + " m";
-			trackBarPartition.Value = CParameterSetter.partitionStep;
+			textPartition.Text = CParameterSetter.GetIntSettings(ESettings.partitionStep) + " m";
+			trackBarPartition.Value = CParameterSetter.GetIntSettings(ESettings.partitionStep);
 
 			//gorund array step
-			trackBarGroundArrayStep.Value = (int)(CParameterSetter.groundArrayStep * 10f);
-			textGroundArrayStep.Text =
-				CParameterSetter.groundArrayStep.ToString("0.0") + " m";
+			float groundArrayStep = CParameterSetter.GetFloatSettings(ESettings.groundArrayStep);
+			trackBarGroundArrayStep.Value = (int)(groundArrayStep * 10f);
+			textGroundArrayStep.Text = groundArrayStep.ToString("0.0") + " m";
 
 			//tree extent
-			trackBarTreeExtent.Value = (int)(CParameterSetter.treeExtent * 10f);
-			textTreeExtent.Text =
-				CParameterSetter.treeExtent.ToString("0.0") + " m";
+			float treeExtent = CParameterSetter.GetFloatSettings(ESettings.treeExtent);
+			trackBarTreeExtent.Value = (int)(treeExtent * 10f);
+			textTreeExtent.Text = treeExtent.ToString("0.0") + " m";
 
 			//tree extent multiply
-			trackBarTreeExtentMultiply.Value = (int)(CParameterSetter.treeExtentMultiply * 10f);
-			textTreeExtentMultiply.Text =
-				CParameterSetter.treeExtentMultiply.ToString("0.0");
+			float treeExtentMultiply = CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply);
+			trackBarTreeExtentMultiply.Value = (int)(treeExtentMultiply * 10f);
+			textTreeExtentMultiply.Text = treeExtentMultiply.ToString("0.0");
 
 			//average tree height
-			textAvgTreeHeight.Text = CParameterSetter.avgTreeHeigh + " m";
-			trackBarAvgTreeHeight.Value = CParameterSetter.avgTreeHeigh;
+			textAvgTreeHeight.Text = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh) + " m";
+			trackBarAvgTreeHeight.Value = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
 
 			//bools
-			checkBoxExportTreeStructures.Checked = CParameterSetter.exportTreeStructures;
-			checkBoxExportInvalidTrees.Checked = CParameterSetter.exportInvalidTrees;
-			checkBoxExportRefTrees.Checked = CParameterSetter.exportRefTrees;
-			checkBoxAssignRefTreesRandom.Checked = CParameterSetter.assignRefTreesRandom;
-			checkBoxUseCheckTree.Checked = CParameterSetter.useCheckTreeFile;
-			checkBoxExportCheckTrees.Checked = CParameterSetter.exportCheckTrees;
-			checkBoxReducedReftrees.Checked = CParameterSetter.useReducedReftreeModels;
+			checkBoxExportTreeStructures.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
+			checkBoxExportInvalidTrees.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportInvalidTrees);
+			checkBoxExportRefTrees.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportRefTrees);
+			checkBoxAssignRefTreesRandom.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom);
+			checkBoxUseCheckTree.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile);
+			checkBoxExportCheckTrees.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportCheckTrees);
+			checkBoxReducedReftrees.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.useReducedReftreeModels);
 
 			SetTooltips();
 
@@ -106,7 +113,7 @@ namespace ForestReco
 
 		private void SetTooltips()
 		{
-			myToolTip.SetToolTip(checkBoxExportTreeStructures, 
+			myToolTip.SetToolTip(checkBoxExportTreeStructures,
 				"Include tree detection structures in final export");
 		}
 
@@ -591,7 +598,7 @@ namespace ForestReco
 		{
 			CDebug.Warning("txt change " + textOutputFolder.Text);
 			CParameterSetter.SetParameter(
-				ParamInfo.Name(() => CParameterSetter.outputFolderPath), textOutputFolder.Text);
+				ESettings.outputFolderPath, textOutputFolder.Text);
 		}
 
 		private void btnOutputFolder_Click(object sender, EventArgs e)
@@ -622,7 +629,7 @@ namespace ForestReco
 		private void textReftreeFolder_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				ParamInfo.Name(() => CParameterSetter.reftreeFolderPath), textReftreeFolder.Text);
+				ESettings.reftreeFolderPath, textReftreeFolder.Text);
 		}
 
 
@@ -642,7 +649,7 @@ namespace ForestReco
 		private void textForrestFilePath_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				ParamInfo.Name(() => CParameterSetter.forrestFilePath), textForrestFilePath.Text);
+				ESettings.forrestFilePath, textForrestFilePath.Text);
 		}
 
 		private void btnHintPartition_Click(object sender, EventArgs e)
@@ -665,7 +672,7 @@ namespace ForestReco
 		private void textCheckTreePath_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				ParamInfo.Name(() => CParameterSetter.checkTreeFilePath), textCheckTreePath.Text);
+				ESettings.checkTreeFilePath, textCheckTreePath.Text);
 		}
 
 		private void trackBarPartition_Scroll(object sender, EventArgs e)
@@ -682,8 +689,7 @@ namespace ForestReco
 			}
 
 			textPartition.Text = trackBarPartition.Value + " m";
-			CParameterSetter.SetParameter(
-				ParamInfo.Name(()=> CParameterSetter.partitionStep), trackBarPartition.Value);
+			CParameterSetter.SetParameter(ESettings.partitionStep, trackBarPartition.Value);
 		}
 
 		//snap to multiply of 5 implementation
@@ -692,7 +698,7 @@ namespace ForestReco
 		private int trackValue;
 		private void trackBarGroundArrayStep_Scroll(object sender, EventArgs e)
 		{
-			if (blockRecursion) {return;}
+			if (blockRecursion) { return; }
 			trackValue = trackBarGroundArrayStep.Value;
 			if (trackValue % smallChangeValue != 0)
 			{
@@ -704,71 +710,71 @@ namespace ForestReco
 			}
 
 			float value = trackBarGroundArrayStep.Value / 10f;
-			
+
 			textGroundArrayStep.Text = value.ToString("0.0") + " m";
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.groundArrayStep), value);
+			CParameterSetter.SetParameter(ESettings.groundArrayStep, value);
 		}
 
 		private void trackBarTreeExtent_Scroll(object sender, EventArgs e)
 		{
 			float value = trackBarTreeExtent.Value / 10f;
 			textTreeExtent.Text = value.ToString("0.0") + " m";
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.treeExtent), value);
+			CParameterSetter.SetParameter(ESettings.treeExtent, value);
 		}
 
 		private void trackBarTreeExtentMultiply_Scroll(object sender, EventArgs e)
 		{
 			float value = trackBarTreeExtentMultiply.Value / 10f;
 			textTreeExtentMultiply.Text = value.ToString("0.0");
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.treeExtentMultiply), value);
+			CParameterSetter.SetParameter(ESettings.treeExtentMultiply, value);
 		}
 
 		private void trackBarAvgTreeHeight_Scroll(object sender, EventArgs e)
 		{
 			textAvgTreeHeight.Text = trackBarAvgTreeHeight.Value + " m";
 			CParameterSetter.SetParameter(
-				ParamInfo.Name(() => CParameterSetter.avgTreeHeigh), trackBarAvgTreeHeight.Value);
+				ESettings.avgTreeHeigh, trackBarAvgTreeHeight.Value);
 		}
 
 		private void checkBoxExportTreeStructures_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportTreeStructures),
+			CParameterSetter.SetParameter(ESettings.exportTreeStructures,
 				checkBoxExportTreeStructures.Checked);
 		}
 
 		private void checkBoxExportInvalidTrees_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportInvalidTrees),
+			CParameterSetter.SetParameter(ESettings.exportInvalidTrees,
 				checkBoxExportInvalidTrees.Checked);
 		}
 
 		private void checkBoxExportRefTrees_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportRefTrees),
+			CParameterSetter.SetParameter(ESettings.exportRefTrees,
 				checkBoxExportRefTrees.Checked);
 		}
 
 		private void checkBoxExportCheckTrees_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.exportCheckTrees),
+			CParameterSetter.SetParameter(ESettings.exportCheckTrees,
 				checkBoxExportCheckTrees.Checked);
 		}
 
 		private void checkBoxUseCheckTree_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.useCheckTreeFile),
+			CParameterSetter.SetParameter(ESettings.useCheckTreeFile,
 				checkBoxUseCheckTree.Checked);
 		}
 
 		private void checkBoxAssignRefTreesRandom_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.assignRefTreesRandom),
+			CParameterSetter.SetParameter(ESettings.assignRefTreesRandom,
 				checkBoxAssignRefTreesRandom.Checked);
 		}
 
 		private void checkBoxReducedReftrees_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ParamInfo.Name(() => CParameterSetter.useReducedReftreeModels),
+			CParameterSetter.SetParameter(ESettings.useReducedReftreeModels,
 				checkBoxReducedReftrees.Checked);
 		}
 	}

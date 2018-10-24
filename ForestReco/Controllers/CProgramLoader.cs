@@ -39,7 +39,7 @@ namespace ForestReco
 
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			//string fullFilePath = podkladyPath + @"\data-small\TXT\" + forrestFullFilePath + @".txt";
-			string fullFilePath = CParameterSetter.forrestFilePath;
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
 
 			string[] lines = File.ReadAllLines(fullFilePath);
 			CDebug.Action("load", fullFilePath);
@@ -186,23 +186,21 @@ namespace ForestReco
 			CDebug.Step(EProgramStep.AssignReftrees);
 			CRefTreeManager.AssignRefTrees();
 			//CProjectData.objsToExport.AddRange(trees);
-			if (CParameterSetter.exportRefTrees) //no reason to export when no refTrees were assigned
+			if (CParameterSetter.GetBoolSettings(ESettings.exportRefTrees)) //no reason to export when no refTrees were assigned
 			{
 				//CRefTreeManager.ExportTrees();
 				CObjPartition.AddRefTrees();
 			}
 
-			if (CParameterSetter.exportTreeStructures)
+			if (CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures))
 			{
 				//CTreeManager.ExportTrees();
 				CObjPartition.AddTrees(true);
-				if (CParameterSetter.exportInvalidTrees)
+				if (CParameterSetter.GetBoolSettings(ESettings.exportInvalidTrees))
 				{
 					CObjPartition.AddTrees(false);
 				}
 			}
-
-
 		}
 
 		private static void FillArray()

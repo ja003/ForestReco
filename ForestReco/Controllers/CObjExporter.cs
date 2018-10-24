@@ -191,7 +191,7 @@ namespace ForestReco
 		{
 			//string path = Path.GetDirectoryName(
 			//	              System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
-			string path = CParameterSetter.outputFolderPath;
+			string path = CParameterSetter.GetStringSettings(ESettings.outputFolderPath);
 
 			int folderIndex = 0;
 			string chosenFolderName = path + "\\" + pFileName + "_" + folderIndex;

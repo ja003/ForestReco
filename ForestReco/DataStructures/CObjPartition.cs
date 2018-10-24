@@ -13,7 +13,7 @@ namespace ForestReco
 
 		//public static int partitionStep = 10;
 
-		public static int partitionStep => CParameterSetter.partitionStep;
+		public static int partitionStep => CParameterSetter.GetIntSettings(ESettings.partitionStep);
 
 		public static void Init()
 		{
