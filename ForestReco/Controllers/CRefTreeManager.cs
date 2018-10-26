@@ -20,9 +20,9 @@ namespace ForestReco
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = new List<string>()
 			{
-				//"R1",
+				"R1",
 				"R2",
-				//"R3",
+				"R3",
 				//"R4",
 				//"R5",
 				//"R6",

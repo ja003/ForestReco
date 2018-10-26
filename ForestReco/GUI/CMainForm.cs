@@ -452,6 +452,7 @@ namespace ForestReco
 			// trackBarAvgTreeHeight
 			// 
 			this.trackBarAvgTreeHeight.AutoSize = false;
+			this.trackBarAvgTreeHeight.BackColor = System.Drawing.SystemColors.Control;
 			this.trackBarAvgTreeHeight.LargeChange = 10;
 			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(643, 199);
 			this.trackBarAvgTreeHeight.Maximum = 50;
@@ -869,7 +870,11 @@ namespace ForestReco
 
 		private void checkBoxAutoTreeHeight_CheckedChanged(object sender, EventArgs e)
 		{
+			CParameterSetter.SetParameter(ESettings.autoAverageTreeHeight, checkBoxAutoTreeHeight.Checked);
 
+			trackBarAvgTreeHeight.Enabled = !checkBoxAutoTreeHeight.Checked;
+			trackBarAvgTreeHeight.BackColor = checkBoxAutoTreeHeight.Checked ?
+				System.Drawing.Color.Gray : trackBarPartition.BackColor; //dont know color code of 'enabled color'
 		}
 	}
 }

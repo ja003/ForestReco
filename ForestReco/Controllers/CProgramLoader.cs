@@ -172,7 +172,7 @@ namespace ForestReco
 				CDebug.Step(EProgramStep.ValidateTrees3);
 				//validate restrictive
 				//cathegorize invalid trees
-				CTreeManager.ValidateTrees(true, true);
+				CTreeManager.ValidateTrees(true, true, true);
 			}
 
 			CTreeManager.CheckAllTrees();

@@ -95,7 +95,7 @@ namespace ForestReco
 					Console.Write("");
 				}
 
-				float addPointFactor = t.GetAddPointFactor(pPoint, false);
+				float addPointFactor = t.GetAddPointFactor(pPoint);
 				if (addPointFactor > 0.5f)
 				{
 					if (t.Equals(0))
@@ -343,7 +343,6 @@ namespace ForestReco
 					Console.WriteLine("");
 				}
 
-				if (pOnlyInvalid && treeToMerge.isValid) { continue; }
 
 				if (pOnlyInvalid && treeToMerge.IsAtBorder())
 				{
@@ -363,6 +362,9 @@ namespace ForestReco
 				{
 					bool isFar = false;
 					bool isSimilarHeight = false;
+
+					if (pOnlyInvalid && possibleTree.isValid && treeToMerge.isValid) { continue; }
+
 
 					if (treeToMerge.isValid)
 					{
@@ -396,12 +398,12 @@ namespace ForestReco
 						}
 					}
 
-					if (treeToMerge.Equals(83))
+					if (treeToMerge.Equals(19))
 					{
 						Console.WriteLine("");
 					}
 
-					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, true, treeToMerge);
+					float addPointFactor = possibleTree.GetAddPointFactor(pPoint, treeToMerge);
 					float requiredFactor = 0.5f;
 					if (isFar) { requiredFactor += 0.1f; }
 					if (isSimilarHeight) { requiredFactor += 0.1f; }
@@ -449,7 +451,7 @@ namespace ForestReco
 			BranchDefine
 		}
 
-		public static void ValidateTrees(bool pCathegorize, bool pRestrictive)
+		public static void ValidateTrees(bool pCathegorize, bool pRestrictive, bool pFinal = false)
 		{
 			CDebug.WriteLine("Detect invalid trees", true);
 
@@ -465,7 +467,7 @@ namespace ForestReco
 				//		tree.ValidateScale();
 				//		break;
 				//}
-				bool isValid = tree.Validate(pRestrictive);
+				bool isValid = tree.Validate(pRestrictive, pFinal);
 
 				if (!isValid)
 				{

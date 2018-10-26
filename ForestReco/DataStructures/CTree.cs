@@ -120,22 +120,23 @@ namespace ForestReco
 		/// <summary>
 		/// pMerging is used during merging process
 		/// </summary>
-		public float GetAddPointFactor(Vector3 pPoint, bool pMerging, CTree pTreeToMerge = null)
+		public float GetAddPointFactor(Vector3 pPoint, CTree pTreeToMerge = null)
 		{
 			if (IsNewPeak(pPoint)) { return 1; }
+			bool merging = pTreeToMerge != null;
 
 			CBranch branchForPoint = GetBranchFor(pPoint);
 
-			if (!pMerging)
+			float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
+			if (!merging)
 			{
 				//if (GetTreeExtentFor(pPoint, 1) < CUtils.Get2DDistance(pPoint, peak.Center))
-				if (CParameterSetter.treeExtent < CUtils.Get2DDistance(pPoint, peak.Center))
+				if (CParameterSetter.treeExtent < distToPeak)
 				{
 					return 0;
 				}
 			}
-			//float peakPointHeightDiff = peak.Center.Y - pPoint.Y;
-			//if (peakPointHeightDiff < 1)
+
 			else if (pTreeToMerge != null && pTreeToMerge.isValid)
 			{
 				if (pTreeToMerge.Equals(140))
@@ -149,7 +150,6 @@ namespace ForestReco
 					return 0;
 				}
 
-				float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
 				float furthestPointDistance = -int.MaxValue;
 
 				CBranch rightNeighbour = branchForPoint.GetNeigbourBranch(1);
@@ -171,8 +171,9 @@ namespace ForestReco
 					furthestPointDistance = Math.Max(furthestPointDistance, leftNeighbour.furthestPointDistance);
 				}
 
+				//todo: was not very efficient, produced some buggy results
 				//measure only if point is further from peak than the furthest point
-				if (distToPeak - furthestPointDistance > 0.2f)
+				/*if (distToPeak - furthestPointDistance > 0.2f)
 				{
 					Vector3 closestHigherPoint = branchForPoint.GetClosestHigherTo(pPoint);
 					Vector3 closestHigherPoinNeighbour1 = rightNeighbour.GetClosestHigherTo(pPoint);
@@ -195,7 +196,7 @@ namespace ForestReco
 					{
 						return 0;
 					}
-				}
+				}*/
 			}
 
 			float bestFactor = 0;
@@ -484,13 +485,21 @@ namespace ForestReco
 
 		//BOOLS
 
-		public bool Validate(bool pRestrictive)
+		public bool Validate(bool pRestrictive, bool pFinal = false)
 		{
 			if (Equals(debugTree))
 			{
 				Console.WriteLine("");
 			}
 			isValid = ValidateBranches(pRestrictive);
+
+			if (pFinal && !isValid && !IsAtBorder())
+			{
+				isValid = ValidatePoints();
+			}
+
+
+
 			if (Equals(debugTree))
 			{
 				CDebug.WriteLine(isValid + " Validate " + this);
@@ -503,6 +512,23 @@ namespace ForestReco
 
 			return isValid;
 		}
+
+		private bool ValidatePoints()
+		{
+			if (Equals(debugTree))
+			{
+				Console.WriteLine("");
+			}
+			int totalPointCount = GetBranchesPointCount();
+			//float definedHeight = GetTreeHeight() / 2;
+			float definedHeight = Extent.Y;
+			if (definedHeight < 1) { return false; }
+
+			int requiredPointsPerMeter = 3;
+			int requiredPointCount = (int)definedHeight * requiredPointsPerMeter;
+			return totalPointCount > requiredPointCount;
+		}
+
 
 		/// <summary>
 		/// Checks if all branches have good scale ration with its opposite branch
