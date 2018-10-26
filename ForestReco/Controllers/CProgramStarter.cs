@@ -50,10 +50,10 @@ namespace ForestReco
 
 			//GENERAL
 			CProjectData.useMaterial = true;
-			CProjectData.exportPoints = true;
+			//CProjectData.exportPoints = true;
 			CObjExporter.simplePointsObj = false;
 
-			CProgramLoader.forrestFullFilePath = "BK_1000AGL_59_72_97_x90_y62";
+			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_59_72_97_x90_y62";
 			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_7559_182972_37797";
 			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_range_for_checktrees";
 			//CProgramLoader.forrestFullFilePath = "BK_1000AGL_checktreesPart1";

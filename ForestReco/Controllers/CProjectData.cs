@@ -47,7 +47,7 @@ namespace ForestReco
 		//public static bool loadCheckTrees;
 		//public static bool exportCheckTrees;
 		
-		public static bool exportPoints;
+		//public static bool exportPoints;
 		public static bool useMaterial;
 		//public static bool exportRefTreePoints; 
 		//public static bool exportTrees;

@@ -48,6 +48,7 @@ namespace ForestReco
 		private CheckBox checkBoxExportCheckTrees;
 		private CheckBox checkBoxReducedReftrees;
 		private CheckBox checkBoxFilterPoints;
+		private CheckBox checkBoxExportPoints;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -106,6 +107,10 @@ namespace ForestReco
 				CParameterSetter.GetBoolSettings(ESettings.exportCheckTrees);
 			checkBoxReducedReftrees.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.useReducedReftreeModels);
+			checkBoxFilterPoints.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.filterPoints);
+			checkBoxExportPoints.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportPoints);
 
 			SetTooltips();
 
@@ -185,6 +190,7 @@ namespace ForestReco
 			this.checkBoxExportCheckTrees = new System.Windows.Forms.CheckBox();
 			this.checkBoxReducedReftrees = new System.Windows.Forms.CheckBox();
 			this.checkBoxFilterPoints = new System.Windows.Forms.CheckBox();
+			this.checkBoxExportPoints = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -563,9 +569,22 @@ namespace ForestReco
 			this.checkBoxFilterPoints.UseVisualStyleBackColor = true;
 			this.checkBoxFilterPoints.CheckedChanged += new System.EventHandler(this.checkBoxFilterPoints_CheckedChanged);
 			// 
+			// checkBoxExportPoints
+			// 
+			this.checkBoxExportPoints.AutoSize = true;
+			this.checkBoxExportPoints.Location = new System.Drawing.Point(22, 458);
+			this.checkBoxExportPoints.Name = "checkBoxExportPoints";
+			this.checkBoxExportPoints.Size = new System.Drawing.Size(111, 21);
+			this.checkBoxExportPoints.TabIndex = 46;
+			this.checkBoxExportPoints.Text = "export points";
+			this.myToolTip.SetToolTip(this.checkBoxExportPoints, "include all points into final export file");
+			this.checkBoxExportPoints.UseVisualStyleBackColor = true;
+			this.checkBoxExportPoints.CheckedChanged += new System.EventHandler(this.checkBoxExportPoints_CheckedChanged);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(836, 491);
+			this.Controls.Add(this.checkBoxExportPoints);
 			this.Controls.Add(this.checkBoxFilterPoints);
 			this.Controls.Add(this.checkBoxReducedReftrees);
 			this.Controls.Add(this.checkBoxExportCheckTrees);
@@ -803,6 +822,11 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(ESettings.filterPoints,
 				checkBoxFilterPoints.Checked);
+		}
+
+		private void checkBoxExportPoints_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ESettings.exportPoints, checkBoxExportPoints.Checked);
 		}
 	}
 }

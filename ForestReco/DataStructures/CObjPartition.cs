@@ -43,7 +43,7 @@ namespace ForestReco
 					//int partitionIndexY = y / partitionStep;
 					AddObj(x, y, groundArrayPartObj);
 
-					if (CProjectData.exportPoints)
+					if (CParameterSetter.GetBoolSettings(ESettings.exportPoints))
 					{
 						List<Vector3> vegePoints = new List<Vector3>();
 						List<Vector3> groundPoints = new List<Vector3>();

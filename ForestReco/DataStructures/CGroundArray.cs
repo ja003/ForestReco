@@ -18,7 +18,7 @@ namespace ForestReco
 		public int arrayXRange { get; }
 		public int arrayYRange { get; }
 		// ReSharper disable once NotAccessedField.Local
-		private int coordinatesCount;
+		//private int coordinatesCount;
 
 		Vector3 botLeftCorner;
 		Vector3 topRightCorner;

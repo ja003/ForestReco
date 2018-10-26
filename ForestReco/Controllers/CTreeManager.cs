@@ -365,7 +365,7 @@ namespace ForestReco
 
 					if (treeToMerge.isValid)
 					{
-						const float minPeakHeightDiffForMerge = 2;
+						//const float minPeakHeightDiffForMerge = 2;
 						//treeToMerge is always lower
 						float possibleTreeHeight = possibleTree.GetTreeHeight();
 						float treeToMergeHeight = treeToMerge.GetTreeHeight();

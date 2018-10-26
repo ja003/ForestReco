@@ -137,6 +137,7 @@ namespace ForestReco
 		useCheckTreeFile,
 		exportCheckTrees,
 		consoleVisible,
-		filterPoints
+		filterPoints,
+		exportPoints
 	}
 }
