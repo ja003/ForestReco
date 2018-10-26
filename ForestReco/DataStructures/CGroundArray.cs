@@ -186,6 +186,8 @@ namespace ForestReco
 			CProjectData.vegePoints.Clear();
 
 			//float averageHeight = GetAveragePreProcessVegeHeight();
+
+			
 			float maxHeight = GetMaxPreProcessVegeHeight();
 
 
@@ -227,13 +229,13 @@ namespace ForestReco
 		//range of vege height that will be counted in average vege height
 		//reason is to restrict undefined or too outOfNorm values to affect average height
 		const float MIN_PREPROCESS_VEGE_HEIGHT = 15;
-		const float MAX_PREPROCESS_VEGE_HEIGHT = 30;
+		const float MAX_PREPROCESS_VEGE_HEIGHT = 35;
 		const float PREPROCESS_VEGE_HEIGHT_OFFSET = 1;
 
 		/// <summary>
 		/// TODO: count weighted average. areas with no trees affect average height 
 		/// </summary>
-		private float GetAveragePreProcessVegeHeight()
+		public float GetAveragePreProcessVegeHeight()
 		{
 			float sumHeight = 0;
 			int definedCount = 0;

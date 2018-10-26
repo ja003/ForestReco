@@ -250,5 +250,17 @@ namespace ForestReco.Properties {
                 this["exportPoints"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoAverageTreeHeight {
+            get {
+                return ((bool)(this["autoAverageTreeHeight"]));
+            }
+            set {
+                this["autoAverageTreeHeight"] = value;
+            }
+        }
     }
 }

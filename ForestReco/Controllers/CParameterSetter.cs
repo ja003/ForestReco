@@ -138,6 +138,7 @@ namespace ForestReco
 		exportCheckTrees,
 		consoleVisible,
 		filterPoints,
-		exportPoints
+		exportPoints,
+		autoAverageTreeHeight
 	}
 }

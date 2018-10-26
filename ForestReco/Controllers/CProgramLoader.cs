@@ -270,7 +270,7 @@ namespace ForestReco
 		{
 			const int debugFrequency = 10000;
 
-			DateTime processVegePointsStart = DateTime.Now;
+			DateTime FilterVegePointsStart = DateTime.Now;
 			CDebug.WriteLine("FilterVegePoints", true);
 
 			DateTime filterVegePointsStart = DateTime.Now;
@@ -287,8 +287,19 @@ namespace ForestReco
 			}
 			CProjectData.array.SortPreProcessPoints();
 
-			CDebug.Duration("FilterVegePoints", processVegePointsStart);
+			CDebug.Duration("FilterVegePoints", FilterVegePointsStart);
 
+			//determine average tree height
+			if (CParameterSetter.GetBoolSettings(ESettings.autoAverageTreeHeight))
+			{
+				CTreeManager.AVERAGE_TREE_HEIGHT = CProjectData.array.GetAveragePreProcessVegeHeight();
+			}
+			else
+			{
+				CTreeManager.AVERAGE_TREE_HEIGHT = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
+			}
+
+			Console.WriteLine("");
 			if (CParameterSetter.GetBoolSettings(ESettings.filterPoints))
 			{
 				CProjectData.array.FilterFakeVegePoints();
@@ -342,8 +353,8 @@ namespace ForestReco
 			//todo: fail při array step = 1.1
 			CProjectData.array?.SmoothenArray(1);
 
-			Console.WriteLine("");
-			
+
+
 		}
 
 		private static void ClassifyPoints(List<Tuple<EClass, Vector3>> pParsedLines)

@@ -20,7 +20,8 @@ namespace ForestReco
 
 		public const float MIN_TREE_EXTENT = 0.5f;
 		//public const float DEFAULT_TREE_EXTENT = 1f;
-		public static float AVERAGE_TREE_HEIGHT => CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
+		//public static float AVERAGE_TREE_HEIGHT => CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
+		public static float AVERAGE_TREE_HEIGHT;
 		public static int MIN_BRANCH_POINT_COUNT = 5;
 		public static int MIN_TREE_POINT_COUNT = 20;
 

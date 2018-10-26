@@ -51,6 +51,7 @@ namespace ForestReco
 		private CheckBox checkBoxFilterPoints;
 		private CheckBox checkBoxExportPoints;
 		private Button btnOpenResult;
+		private CheckBox checkBoxAutoTreeHeight;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -113,6 +114,8 @@ namespace ForestReco
 				CParameterSetter.GetBoolSettings(ESettings.filterPoints);
 			checkBoxExportPoints.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.exportPoints);
+			checkBoxAutoTreeHeight.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.autoAverageTreeHeight);
 
 			SetTooltips();
 
@@ -194,6 +197,7 @@ namespace ForestReco
 			this.checkBoxFilterPoints = new System.Windows.Forms.CheckBox();
 			this.checkBoxExportPoints = new System.Windows.Forms.CheckBox();
 			this.btnOpenResult = new System.Windows.Forms.Button();
+			this.checkBoxAutoTreeHeight = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -594,9 +598,22 @@ namespace ForestReco
 			this.btnOpenResult.UseVisualStyleBackColor = true;
 			this.btnOpenResult.Click += new System.EventHandler(this.btnOpenResult_Click);
 			// 
+			// checkBoxAutoTreeHeight
+			// 
+			this.checkBoxAutoTreeHeight.AutoSize = true;
+			this.checkBoxAutoTreeHeight.Location = new System.Drawing.Point(217, 458);
+			this.checkBoxAutoTreeHeight.Name = "checkBoxAutoTreeHeight";
+			this.checkBoxAutoTreeHeight.Size = new System.Drawing.Size(219, 21);
+			this.checkBoxAutoTreeHeight.TabIndex = 48;
+			this.checkBoxAutoTreeHeight.Text = "automatic average tree height";
+			this.myToolTip.SetToolTip(this.checkBoxAutoTreeHeight, "include all points into final export file");
+			this.checkBoxAutoTreeHeight.UseVisualStyleBackColor = true;
+			this.checkBoxAutoTreeHeight.CheckedChanged += new System.EventHandler(this.checkBoxAutoTreeHeight_CheckedChanged);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(836, 491);
+			this.Controls.Add(this.checkBoxAutoTreeHeight);
 			this.Controls.Add(this.btnOpenResult);
 			this.Controls.Add(this.checkBoxExportPoints);
 			this.Controls.Add(this.checkBoxFilterPoints);
@@ -848,6 +865,11 @@ namespace ForestReco
 			string folderPath = CObjPartition.folderPath;
 			if(string.IsNullOrEmpty(folderPath)){ return; }
 			System.Diagnostics.Process.Start(folderPath);
+		}
+
+		private void checkBoxAutoTreeHeight_CheckedChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
