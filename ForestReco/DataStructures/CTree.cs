@@ -198,8 +198,21 @@ namespace ForestReco
 				}
 			}
 
-			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, pMerging, pTreeToMerge);
-			return branchFactor;
+			float bestFactor = 0;
+
+			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, true, pTreeToMerge);
+			if(branchFactor > bestFactor){ bestFactor = branchFactor; }
+			if(bestFactor > 0.9f){ return bestFactor; }
+
+			branchFactor = branchForPoint.GetNeigbourBranch(1).GetAddPointFactor(pPoint, false, pTreeToMerge);
+			if (branchFactor > bestFactor) { bestFactor = branchFactor; }
+			if (bestFactor > 0.9f) { return bestFactor; }
+
+			branchFactor = branchForPoint.GetNeigbourBranch(-1).GetAddPointFactor(pPoint, false, pTreeToMerge);
+			if (branchFactor > bestFactor) { bestFactor = branchFactor; }
+			if (bestFactor > 0.9f) { return bestFactor; }
+			
+			return bestFactor;
 		}
 
 		public void AddPoint(Vector3 pPoint)

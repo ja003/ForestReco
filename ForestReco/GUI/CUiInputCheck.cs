@@ -46,12 +46,14 @@ namespace ForestReco
 		{
 			Reset();
 			CheckPath("Forrest", CParameterSetter.GetStringSettings(ESettings.forrestFilePath), true);
-			CheckPath("Reftree",CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath), false);
+			CheckPath("Reftree", CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath), false);
 			CheckPath("Output", CParameterSetter.GetStringSettings(ESettings.outputFolderPath), false);
 			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
 				CheckPath("Checktree", CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath), true);
 			}
+
+			CheckExportTrees();
 
 			bool hasProblems = problems.Count > 0;
 			if (hasProblems)
@@ -59,6 +61,16 @@ namespace ForestReco
 				CDebug.WriteProblems(problems);
 			}
 			return !hasProblems;
+		}
+
+		private static void CheckExportTrees()
+		{
+			bool exportTreeStructures = CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
+			bool exportReftrees = CParameterSetter.GetBoolSettings(ESettings.exportRefTrees);
+			if (!exportTreeStructures && !exportTreeStructures)
+			{
+				problems.Add($"No reason to process when both exportReftrees and exportTreeStructures are false. Result will be empty.");
+			}
 		}
 	}
 }

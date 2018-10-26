@@ -60,27 +60,41 @@ namespace ForestReco
 		/// Range = 0-1. 1 = best fit.
 		/// pMerging = uses criterium of pUseDistToPeakDiff (viz GetAddPointFactorInRefTo)
 		/// </summary>
-		public float GetAddPointFactor(Vector3 pPoint, bool pMerging, CTree pTreeToMerge = null)
+		public float GetAddPointFactor(Vector3 pPoint, bool pSameBranch, CTree pTreeToMerge = null)
 		{
+			float bestFactor = 0;
+			bool merging = pTreeToMerge != null;
 
-			Vector3 refPoint1 = furthestPoint;
-			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, true, pMerging, pTreeToMerge);
-			float bestFactor = refPoint1Factor;
-			if (bestFactor > .99f) { return bestFactor; }
-
-			Vector3 refPoint2 = GetNeigbourBranch(1).furthestPoint;
-			float refPoint2Factor = GetAddPointFactorInRefTo(pPoint, refPoint2, false, pMerging, pTreeToMerge);
-			if (refPoint2Factor > bestFactor)
+			if (merging && pTreeToMerge.treeIndex == 66)
 			{
-				bestFactor = refPoint2Factor;
-				if (bestFactor > .99f) { return bestFactor; }
+				Console.Write("");
 			}
 
-			Vector3 refPoint3 = GetNeigbourBranch(-1).furthestPoint;
-			float refPoint3Factor = GetAddPointFactorInRefTo(pPoint, refPoint3, false, pMerging, pTreeToMerge);
-			if (refPoint3Factor > bestFactor)
+			Vector3 refPoint1 = furthestPoint;
+			float refPoint1Factor = GetAddPointFactorInRefTo(pPoint, refPoint1, pSameBranch, merging, pTreeToMerge);
+			bestFactor = refPoint1Factor;
+			if (bestFactor > .99f) { return bestFactor; }
+
+			if (merging)
 			{
-				bestFactor = refPoint3Factor;
+				Vector3 closestHigher = GetClosestHigherTo(pTreeToMerge.peak.Center);
+				float distToHigher = Vector3.Distance(pPoint, closestHigher);
+				const float maxDistToHigher = 0.5f;
+				float distToHigherFactor = maxDistToHigher / distToHigher;
+				if (distToHigher < maxDistToHigher) { return 1; }
+				float closestHigherFactor = GetAddPointFactorInRefTo(pPoint, closestHigher, pSameBranch, merging, pTreeToMerge);
+				closestHigherFactor = Math.Max(closestHigherFactor, distToHigherFactor);
+				bestFactor = Math.Max(bestFactor, closestHigherFactor);
+
+				if (bestFactor > .99f) { return bestFactor; }
+
+				Vector3? closestLower = GetClosestLowerTo(pTreeToMerge.peak.Center);
+				if (closestLower != null)
+				{
+					float closestLowerFactor = GetAddPointFactorInRefTo(pPoint, (Vector3)closestLower, pSameBranch, merging, pTreeToMerge);
+					bestFactor = Math.Max(bestFactor, closestLowerFactor);
+					if (bestFactor > .99f) { return bestFactor; }
+				}
 			}
 
 			return bestFactor;
@@ -132,11 +146,27 @@ namespace ForestReco
 		public Vector3 GetClosestHigherTo(Vector3 pPoint)
 		{
 			Vector3 closestPoint = tree.peak.Center;
+			float distToClosest = Vector3.Distance(closestPoint, pPoint);
 			for (int i = 0; i < TreePoints.Count; i++)
 			{
 				Vector3 treePoint = TreePoints[i].Center;
-				if(treePoint.Y < pPoint.Y){ break;}
-				if (Vector3.Distance(treePoint, pPoint) < Vector3.Distance(closestPoint, pPoint))
+				if (treePoint.Y < pPoint.Y) { break; }
+				if (Vector3.Distance(treePoint, pPoint) < distToClosest)
+				{
+					closestPoint = treePoint;
+					distToClosest = Vector3.Distance(closestPoint, pPoint);
+				}
+			}
+			return closestPoint;
+		}
+		public Vector3? GetClosestLowerTo(Vector3 pPoint)
+		{
+			Vector3? closestPoint = null;
+			for (int i = TreePoints.Count - 1; i >= 0; i--)
+			{
+				Vector3 treePoint = TreePoints[i].Center;
+				if (treePoint.Y > pPoint.Y) { break; }
+				if (closestPoint == null || Vector3.Distance(treePoint, pPoint) < Vector3.Distance((Vector3)closestPoint, pPoint))
 				{
 					closestPoint = treePoint;
 				}
@@ -150,7 +180,7 @@ namespace ForestReco
 			return TreePoints.Count == 0 ? tree.peak.Center : TreePoints.Last().Center;
 		}
 
-		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint, 
+		private float GetAddPointFactorInRefTo(Vector3 pPoint, Vector3 pReferencePoint,
 			bool pSameBranch, bool pMerging, CTree pTreeToMerge = null)
 		{
 			//during merging it is expected, that added peak will be higher
@@ -575,12 +605,12 @@ namespace ForestReco
 				{
 					return 0;
 				}
-				//float allPointsToBranchRatio = (float)allTreePointsCount / TreePoints.Count;
-				//if (allPointsToBranchRatio > allTreePointsCount / 2f)
-				//{
-				//	return 0;
-				//}
 			}
+			/*else
+			{
+				int treePointCountFactor = 2 * CTreeManager.MIN_BRANCH_POINT_COUNT / TreePoints.Count;
+				return treePointCountFactor;
+			}*/
 
 
 			float height = tree.GetTreeHeight();

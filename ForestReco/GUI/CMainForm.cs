@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Numerics;
 using System.Threading;
 using System.Windows.Forms;
@@ -49,6 +50,7 @@ namespace ForestReco
 		private CheckBox checkBoxReducedReftrees;
 		private CheckBox checkBoxFilterPoints;
 		private CheckBox checkBoxExportPoints;
+		private Button btnOpenResult;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -191,6 +193,7 @@ namespace ForestReco
 			this.checkBoxReducedReftrees = new System.Windows.Forms.CheckBox();
 			this.checkBoxFilterPoints = new System.Windows.Forms.CheckBox();
 			this.checkBoxExportPoints = new System.Windows.Forms.CheckBox();
+			this.btnOpenResult = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -581,9 +584,20 @@ namespace ForestReco
 			this.checkBoxExportPoints.UseVisualStyleBackColor = true;
 			this.checkBoxExportPoints.CheckedChanged += new System.EventHandler(this.checkBoxExportPoints_CheckedChanged);
 			// 
+			// btnOpenResult
+			// 
+			this.btnOpenResult.Location = new System.Drawing.Point(711, 406);
+			this.btnOpenResult.Name = "btnOpenResult";
+			this.btnOpenResult.Size = new System.Drawing.Size(109, 32);
+			this.btnOpenResult.TabIndex = 47;
+			this.btnOpenResult.Text = "open result";
+			this.btnOpenResult.UseVisualStyleBackColor = true;
+			this.btnOpenResult.Click += new System.EventHandler(this.btnOpenResult_Click);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(836, 491);
+			this.Controls.Add(this.btnOpenResult);
 			this.Controls.Add(this.checkBoxExportPoints);
 			this.Controls.Add(this.checkBoxFilterPoints);
 			this.Controls.Add(this.checkBoxReducedReftrees);
@@ -827,6 +841,13 @@ namespace ForestReco
 		private void checkBoxExportPoints_CheckedChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(ESettings.exportPoints, checkBoxExportPoints.Checked);
+		}
+
+		private void btnOpenResult_Click(object sender, EventArgs e)
+		{
+			string folderPath = CObjPartition.folderPath;
+			if(string.IsNullOrEmpty(folderPath)){ return; }
+			System.Diagnostics.Process.Start(folderPath);
 		}
 	}
 }
