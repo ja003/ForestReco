@@ -45,8 +45,8 @@ namespace ForestReco
 			//CProjectData.exportRefTrees = false;
 
 			//CHECK TREES
-			CProjectData.loadCheckTrees = true;
-			CProjectData.exportCheckTrees = true;
+			//CProjectData.loadCheckTrees = true;
+			//CProjectData.exportCheckTrees = true;
 
 			//GENERAL
 			CProjectData.useMaterial = true;

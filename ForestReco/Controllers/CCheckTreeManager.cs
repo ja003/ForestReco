@@ -16,9 +16,9 @@ namespace ForestReco
 		public static void Init()
 		{
 			Trees = new List<CCheckTree>();
-			if (CProjectData.loadCheckTrees)
+			CDebug.Step(EProgramStep.LoadCheckTrees);
+			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
-				CDebug.Step(EProgramStep.LoadCheckTrees);
 				LoadTrees(checkFileName);
 			}
 
@@ -29,7 +29,7 @@ namespace ForestReco
 
 			CProjectData.array.DebugCheckTrees();
 
-			if (CProjectData.exportCheckTrees)
+			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
 				CObjPartition.AddCheckTrees(false);
 			}

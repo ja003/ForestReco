@@ -44,8 +44,8 @@ namespace ForestReco
 		//public static bool useReducedRefTreeObjs;
 		//public static bool exportRefTrees;
 
-		public static bool loadCheckTrees;
-		public static bool exportCheckTrees;
+		//public static bool loadCheckTrees;
+		//public static bool exportCheckTrees;
 		
 		public static bool exportPoints;
 		public static bool useMaterial;

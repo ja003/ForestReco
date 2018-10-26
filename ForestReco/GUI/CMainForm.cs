@@ -57,7 +57,7 @@ namespace ForestReco
 			InitializeComponent();
 			InitializeValues();
 
-			CProgramStarter.Start();
+			//CProgramStarter.Start();
 		}
 
 		private void InitializeValues()
@@ -125,6 +125,12 @@ namespace ForestReco
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
+			if (!CUiInputCheck.CheckProblems())
+			{
+				return;
+			}
+
+
 			CProgramStarter.Start();
 		}
 

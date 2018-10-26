@@ -33,6 +33,8 @@ namespace ForestReco
 			WriteLine(pAction + ": " + pText, true);
 		}
 
+
+
 		internal static void Warning(string pText)
 		{
 			WriteLine("WARNING: " + pText, true);
@@ -124,13 +126,31 @@ namespace ForestReco
 			{
 				return;
 			}
-			lastTextProgress = GetStepText(pStep); 
+			lastTextProgress = GetStepText(pStep);
 			CProjectData.mainForm.textProgress.Text = lastTextProgress;
 
 			Application.DoEvents();
 			Thread.Sleep(100);
 		}
 
+		public static void WriteProblems(List<string> problems)
+		{
+			string message = "Problems:" + Environment.NewLine;
+
+			foreach (string p in problems)
+			{
+				message += p + Environment.NewLine;
+			}
+			CDebug.WriteLine(message);
+			if (CProjectData.mainForm == null)
+			{
+				return;
+			}
+			CProjectData.mainForm.textProgress.Text = message;
+		}
+
+
+		//private static List<EProgramStep> calledSteps = new List<EProgramStep>();
 
 		private static string GetStepText(EProgramStep pStep)
 		{
@@ -143,10 +163,12 @@ namespace ForestReco
 				return "ABORTED";
 			}
 
+			//calledSteps.Add(pStep);
+
 			stepCallCount++;
 			string progress = stepCallCount + "/" +
-				(Enum.GetNames(typeof(EProgramStep)).Length - 2) + ": "; 
-				//-2 for abort states
+				(Enum.GetNames(typeof(EProgramStep)).Length - 2) + ": ";
+			//-2 for abort states
 			string text;
 			switch (pStep)
 			{
@@ -204,29 +226,35 @@ namespace ForestReco
 					break;
 			}
 
+			//foreach (EProgramStep step in calledSteps)
+			//{
+			//	WriteLine(step.ToString());
+			//}
+
 			return progress + text;
 		}
 	}
 
 	public enum EProgramStep
 	{
-		LoadLines,
-		ParseLines,
-		ProcessGroundPoints,
-		ProcessVegePoints,
-		FilterVegePoints,
-		ValidateTrees1,
-		MergeTrees1,
-		ValidateTrees2,
-		MergeTrees2,
-		ValidateTrees3,
-		LoadReftrees,
-		AssignReftrees,
-		LoadCheckTrees,
-		AssignCheckTrees,
-		Export,
+		LoadLines = 1,
+		LoadReftrees = 2,
+		ParseLines = 3,
+		ProcessGroundPoints = 4,
+		FilterVegePoints = 5,
+		ProcessVegePoints = 6,
+		ValidateTrees1 = 7,
+		MergeTrees1 = 8,
+		ValidateTrees2 = 9,
+		MergeTrees2 = 10,
+		ValidateTrees3 = 11,
+		AssignReftrees = 12,
+		LoadCheckTrees = 13,
+		AssignCheckTrees = 14,
+		Export = 15,
+		Done = 16,
+
 		Aborting,
-		Aborted,
-		Done
+		Aborted
 	}
 }
