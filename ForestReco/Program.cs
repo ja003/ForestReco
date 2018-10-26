@@ -14,6 +14,8 @@ namespace ForestReco
 		[STAThread]
 		static void Main(string[] args)
 		{
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en");
+
 			CMainForm mainForm = new CMainForm();
 			Application.Run(mainForm);
 

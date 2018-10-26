@@ -11,7 +11,6 @@ namespace ForestReco
 	public static class CCheckTreeManager
 	{
 		public static List<CCheckTree> Trees { get; private set; }
-		public static string checkFileName;
 
 		public static void Init()
 		{
@@ -19,7 +18,7 @@ namespace ForestReco
 			CDebug.Step(EProgramStep.LoadCheckTrees);
 			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
-				LoadTrees(checkFileName);
+				LoadTrees();
 			}
 
 			CDebug.Step(EProgramStep.AssignCheckTrees);
@@ -86,13 +85,13 @@ namespace ForestReco
 			}
 		}
 
-		private static void LoadTrees(string pFileName)
+		private static void LoadTrees()
 		{
 			DateTime loadTreesStartTime = DateTime.Now;
-			CDebug.WriteLine("Load check trees: " + pFileName, true);
 
 			//string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
 			string fullFilepath = CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath);
+			CDebug.WriteLine("Load check trees: " + fullFilepath, true);
 
 			string[] allLines = File.ReadAllLines(fullFilepath);
 

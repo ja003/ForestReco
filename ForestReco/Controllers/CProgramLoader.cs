@@ -13,9 +13,7 @@ namespace ForestReco
 	public static class CProgramLoader
 	{
 		public static bool useDebugData = false;
-
-		public static string forrestFullFilePath;
-
+		
 		//@"BK_1000AGL_classified";
 		//@"BK_1000AGL_cl_split_s_mezerou";
 		//@"BK_1000AGL_classified_0007559_0182972";
@@ -33,16 +31,32 @@ namespace ForestReco
 		{
 			CDebug.Step(EProgramStep.LoadLines);
 
-			CProjectData.saveFileName = GetFileName(forrestFullFilePath);
-			//string saveFileName = "BK_1000AGL_";
+			CProjectData.saveFileName = GetFileName(CParameterSetter.GetStringSettings(ESettings.forrestFilePath));
 
-
-			//string podkladyPath = CPlatformManager.GetPodkladyPath();
-			//string fullFilePath = podkladyPath + @"\data-small\TXT\" + forrestFullFilePath + @".txt";
 			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
-
 			string[] lines = File.ReadAllLines(fullFilePath);
 			CDebug.Action("load", fullFilePath);
+
+			return lines;
+		}
+
+		public static string[] GetFileLines(string pFile, int pLines){
+
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			if(!File.Exists(fullFilePath)){ return null; }
+
+			string[] lines = new string[pLines];
+
+			int count = 0;
+			using (StreamReader sr = File.OpenText(pFile))
+			{
+				string s = "";
+				while ((s = sr.ReadLine()) != null && count < pLines)
+				{
+					lines[count] = s;
+					count++;
+				}
+			}
 
 			return lines;
 		}

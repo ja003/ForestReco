@@ -52,6 +52,10 @@ namespace ForestReco
 		private CheckBox checkBoxExportPoints;
 		private Button btnOpenResult;
 		private CheckBox checkBoxAutoTreeHeight;
+		private TextBox textBoxEstimatedSize;
+		private Label label1;
+		private Label label2;
+		private TextBox textBoxPartitionSize;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -204,8 +208,12 @@ namespace ForestReco
 			this.checkBoxReducedReftrees = new System.Windows.Forms.CheckBox();
 			this.checkBoxFilterPoints = new System.Windows.Forms.CheckBox();
 			this.checkBoxExportPoints = new System.Windows.Forms.CheckBox();
-			this.btnOpenResult = new System.Windows.Forms.Button();
 			this.checkBoxAutoTreeHeight = new System.Windows.Forms.CheckBox();
+			this.btnOpenResult = new System.Windows.Forms.Button();
+			this.textBoxEstimatedSize = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.textBoxPartitionSize = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -598,16 +606,6 @@ namespace ForestReco
 			this.checkBoxExportPoints.UseVisualStyleBackColor = true;
 			this.checkBoxExportPoints.CheckedChanged += new System.EventHandler(this.checkBoxExportPoints_CheckedChanged);
 			// 
-			// btnOpenResult
-			// 
-			this.btnOpenResult.Location = new System.Drawing.Point(712, 451);
-			this.btnOpenResult.Name = "btnOpenResult";
-			this.btnOpenResult.Size = new System.Drawing.Size(109, 32);
-			this.btnOpenResult.TabIndex = 47;
-			this.btnOpenResult.Text = "open result";
-			this.btnOpenResult.UseVisualStyleBackColor = true;
-			this.btnOpenResult.Click += new System.EventHandler(this.btnOpenResult_Click);
-			// 
 			// checkBoxAutoTreeHeight
 			// 
 			this.checkBoxAutoTreeHeight.AutoSize = true;
@@ -620,9 +618,57 @@ namespace ForestReco
 			this.checkBoxAutoTreeHeight.UseVisualStyleBackColor = true;
 			this.checkBoxAutoTreeHeight.CheckedChanged += new System.EventHandler(this.checkBoxAutoTreeHeight_CheckedChanged);
 			// 
+			// btnOpenResult
+			// 
+			this.btnOpenResult.Location = new System.Drawing.Point(712, 451);
+			this.btnOpenResult.Name = "btnOpenResult";
+			this.btnOpenResult.Size = new System.Drawing.Size(109, 32);
+			this.btnOpenResult.TabIndex = 47;
+			this.btnOpenResult.Text = "open result";
+			this.btnOpenResult.UseVisualStyleBackColor = true;
+			this.btnOpenResult.Click += new System.EventHandler(this.btnOpenResult_Click);
+			// 
+			// textBoxEstimatedSize
+			// 
+			this.textBoxEstimatedSize.Location = new System.Drawing.Point(113, 428);
+			this.textBoxEstimatedSize.Name = "textBoxEstimatedSize";
+			this.textBoxEstimatedSize.ReadOnly = true;
+			this.textBoxEstimatedSize.Size = new System.Drawing.Size(75, 22);
+			this.textBoxEstimatedSize.TabIndex = 49;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(9, 428);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(98, 17);
+			this.label1.TabIndex = 50;
+			this.label1.Text = "estimated size";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(9, 456);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(88, 17);
+			this.label2.TabIndex = 52;
+			this.label2.Text = "partition size";
+			// 
+			// textBoxPartitionSize
+			// 
+			this.textBoxPartitionSize.Location = new System.Drawing.Point(113, 456);
+			this.textBoxPartitionSize.Name = "textBoxPartitionSize";
+			this.textBoxPartitionSize.ReadOnly = true;
+			this.textBoxPartitionSize.Size = new System.Drawing.Size(75, 22);
+			this.textBoxPartitionSize.TabIndex = 51;
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(835, 491);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.textBoxPartitionSize);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.textBoxEstimatedSize);
 			this.Controls.Add(this.checkBoxAutoTreeHeight);
 			this.Controls.Add(this.btnOpenResult);
 			this.Controls.Add(this.checkBoxExportPoints);
@@ -731,6 +777,18 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(
 				ESettings.forrestFilePath, textForrestFilePath.Text);
+
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
+			if(lines == null){ return; }
+
+			CProjectData.header = new CHeaderInfo(lines);
+			RefreshEstimatedSize();
+		}
+
+		private void RefreshEstimatedSize()
+		{
+			CResultSize.WriteEstimatedSize(textBoxEstimatedSize, textBoxPartitionSize);
 		}
 
 		private void btnHintPartition_Click(object sender, EventArgs e)
@@ -771,6 +829,7 @@ namespace ForestReco
 
 			textPartition.Text = trackBarPartition.Value + " m";
 			CParameterSetter.SetParameter(ESettings.partitionStep, trackBarPartition.Value);
+			RefreshEstimatedSize();
 		}
 
 		//snap to multiply of 5 implementation
@@ -821,6 +880,8 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(ESettings.exportTreeStructures,
 				checkBoxExportTreeStructures.Checked);
+
+			RefreshEstimatedSize();
 		}
 
 		private void checkBoxExportInvalidTrees_CheckedChanged(object sender, EventArgs e)
@@ -831,8 +892,8 @@ namespace ForestReco
 
 		private void checkBoxExportRefTrees_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ESettings.exportRefTrees,
-				checkBoxExportRefTrees.Checked);
+			CParameterSetter.SetParameter(ESettings.exportRefTrees,	checkBoxExportRefTrees.Checked);
+			RefreshEstimatedSize();
 		}
 
 		private void checkBoxExportCheckTrees_CheckedChanged(object sender, EventArgs e)

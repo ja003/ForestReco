@@ -67,7 +67,7 @@ namespace ForestReco
 		{
 			bool exportTreeStructures = CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
 			bool exportReftrees = CParameterSetter.GetBoolSettings(ESettings.exportRefTrees);
-			if (!exportTreeStructures && !exportTreeStructures)
+			if (!exportTreeStructures && !exportReftrees)
 			{
 				problems.Add($"No reason to process when both exportReftrees and exportTreeStructures are false. Result will be empty.");
 			}

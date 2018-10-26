@@ -52,10 +52,10 @@
     <Compile Include="Controllers\CCheckTreeManager.cs" />
     <Compile Include="Controllers\CParameterSetter.cs" />
     <Compile Include="Controllers\CProgramStarter.cs" />
+    <Compile Include="Controllers\CResultSize.cs" />
     <Compile Include="DataStructures\CAnalytics.cs" />
     <Compile Include="DataStructures\CCheckTree.cs" />
     <Compile Include="DataStructures\CObjPartition.cs" />
-    <Compile Include="Controllers\CPlatformManager.cs" />
     <Compile Include="Controllers\CGroundFieldExporter.cs" />
     <Compile Include="Controllers\CObjExporter.cs" />
     <Compile Include="Controllers\CProjectData.cs" />
