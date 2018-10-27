@@ -38,6 +38,7 @@ namespace ForestReco
 		public Obj mostSuitableRefTreeObj;
 
 		public CCheckTree assignedCheckTree;
+		public string assignedMaterial;
 
 		//public bool isValid = false; //invalid by default - until Validate is called
 		public bool isValid = false;
@@ -70,6 +71,19 @@ namespace ForestReco
 			stem = new CBranch(this, 0, 0);
 
 			AddPoint(pPoint);
+
+		}
+
+		public void AssignMaterial()
+		{
+			assignedMaterial = CMaterialManager.GetTreeMaterial(this);
+			CDebug.WriteLine($"{this} color = {assignedMaterial}");
+			//if (mostSuitableRefTreeObj != null)
+			//{
+			//	mostSuitableRefTreeObj.UseMtl = assignedMaterial;
+			//	CDebug.WriteLine($"{mostSuitableRefTreeObj.Name} color = {assignedMaterial}");
+			//}
+
 		}
 
 		//MOST IMPORTANT
@@ -202,8 +216,8 @@ namespace ForestReco
 			float bestFactor = 0;
 
 			float branchFactor = branchForPoint.GetAddPointFactor(pPoint, true, pTreeToMerge);
-			if(branchFactor > bestFactor){ bestFactor = branchFactor; }
-			if(bestFactor > 0.9f){ return bestFactor; }
+			if (branchFactor > bestFactor) { bestFactor = branchFactor; }
+			if (bestFactor > 0.9f) { return bestFactor; }
 
 			branchFactor = branchForPoint.GetNeigbourBranch(1).GetAddPointFactor(pPoint, false, pTreeToMerge);
 			if (branchFactor > bestFactor) { bestFactor = branchFactor; }
@@ -212,7 +226,7 @@ namespace ForestReco
 			branchFactor = branchForPoint.GetNeigbourBranch(-1).GetAddPointFactor(pPoint, false, pTreeToMerge);
 			if (branchFactor > bestFactor) { bestFactor = branchFactor; }
 			if (bestFactor > 0.9f) { return bestFactor; }
-			
+
 			return bestFactor;
 		}
 
@@ -446,8 +460,10 @@ namespace ForestReco
 			//if (isFake) { prefix = "fake_"; }
 
 			Obj obj = new Obj(prefix + treeIndex);
-			obj.UseMtl = CMaterialManager.GetTreeMaterial(treeIndex);
-			
+
+			//obj.UseMtl = CMaterialManager.GetTreeMaterial(this);
+			obj.UseMtl = assignedMaterial;
+
 			List<CTreePoint> allTreePoints = GetAllPoints();
 
 			//display all peak points

@@ -55,6 +55,14 @@ namespace ForestReco
 			return GetMinPeakDistance(1) + (ratio - 1) * EXTENT_VALUE_STEP;
 		}
 
+		public static void AssignMaterials()
+		{
+			foreach (CTree tree in Trees)
+			{
+				tree.AssignMaterial();
+			}
+		}
+
 		public const float MAX_BRANCH_ANGLE = 45;
 		private static int treeIndex;
 
@@ -398,7 +406,7 @@ namespace ForestReco
 						}
 					}
 
-					if (treeToMerge.Equals(19))
+					if (treeToMerge.Equals(9))
 					{
 						Console.WriteLine("");
 					}

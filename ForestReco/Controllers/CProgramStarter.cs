@@ -57,6 +57,8 @@ namespace ForestReco
 			List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, CProjectData.header != null, true);
 			CProgramLoader.ProcessParsedLines(parsedLines);
 
+			//CTreeManager.AssignMaterials(); //call before export
+
 			if (abort)
 			{
 				OnAborted();

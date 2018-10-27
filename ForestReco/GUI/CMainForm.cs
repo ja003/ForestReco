@@ -53,8 +53,8 @@ namespace ForestReco
 		private Button btnOpenResult;
 		private CheckBox checkBoxAutoTreeHeight;
 		private TextBox textBoxEstimatedSize;
-		private Label label1;
-		private Label label2;
+		private Label labelEstimatedTotalSize;
+		private Label labelEstimatedPartitionSize;
 		private TextBox textBoxPartitionSize;
 		private Button btnSellectForrest;
 
@@ -138,6 +138,10 @@ namespace ForestReco
 			CTooltipManager.AssignTooltip(myToolTip, labelTreeExtent, ESettings.treeExtent);
 			CTooltipManager.AssignTooltip(myToolTip, labelTreeExtentMultiply, ESettings.treeExtentMultiply);
 
+			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedTotalSize, ETooltip.EstimatedTotalSize);
+			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedPartitionSize, ETooltip.EstimatedPartitionSize);
+
+
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -211,8 +215,8 @@ namespace ForestReco
 			this.checkBoxAutoTreeHeight = new System.Windows.Forms.CheckBox();
 			this.btnOpenResult = new System.Windows.Forms.Button();
 			this.textBoxEstimatedSize = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.labelEstimatedTotalSize = new System.Windows.Forms.Label();
+			this.labelEstimatedPartitionSize = new System.Windows.Forms.Label();
 			this.textBoxPartitionSize = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
@@ -636,23 +640,23 @@ namespace ForestReco
 			this.textBoxEstimatedSize.Size = new System.Drawing.Size(75, 22);
 			this.textBoxEstimatedSize.TabIndex = 49;
 			// 
-			// label1
+			// labelEstimatedTotalSize
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 428);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(98, 17);
-			this.label1.TabIndex = 50;
-			this.label1.Text = "estimated size";
+			this.labelEstimatedTotalSize.AutoSize = true;
+			this.labelEstimatedTotalSize.Location = new System.Drawing.Point(9, 428);
+			this.labelEstimatedTotalSize.Name = "labelEstimatedTotalSize";
+			this.labelEstimatedTotalSize.Size = new System.Drawing.Size(98, 17);
+			this.labelEstimatedTotalSize.TabIndex = 50;
+			this.labelEstimatedTotalSize.Text = "estimated size";
 			// 
-			// label2
+			// labelEstimatedPartitionSize
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(9, 456);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(88, 17);
-			this.label2.TabIndex = 52;
-			this.label2.Text = "partition size";
+			this.labelEstimatedPartitionSize.AutoSize = true;
+			this.labelEstimatedPartitionSize.Location = new System.Drawing.Point(9, 456);
+			this.labelEstimatedPartitionSize.Name = "labelEstimatedPartitionSize";
+			this.labelEstimatedPartitionSize.Size = new System.Drawing.Size(88, 17);
+			this.labelEstimatedPartitionSize.TabIndex = 52;
+			this.labelEstimatedPartitionSize.Text = "partition size";
 			// 
 			// textBoxPartitionSize
 			// 
@@ -665,9 +669,9 @@ namespace ForestReco
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(835, 491);
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.labelEstimatedPartitionSize);
 			this.Controls.Add(this.textBoxPartitionSize);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.labelEstimatedTotalSize);
 			this.Controls.Add(this.textBoxEstimatedSize);
 			this.Controls.Add(this.checkBoxAutoTreeHeight);
 			this.Controls.Add(this.btnOpenResult);

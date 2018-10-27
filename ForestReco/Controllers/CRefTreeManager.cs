@@ -85,48 +85,17 @@ namespace ForestReco
 				suitableTreeObj.Name += "_" + t.treeIndex;
 				t.mostSuitableRefTreeObj = suitableTreeObj;
 
+				suitableTreeObj.UseMtl = t.assignedMaterial;
+
 				CDebug.Progress(counter, CTreeManager.Trees.Count, debugFrequency, ref previousDebugStart, assignRefTreesStart, "Assigned reftree");
-				//if (counter % debugFrequency == 0 && counter > 0)
-				//{
-				//	CDebug.WriteLine("\nAssigned reftree " + counter + " out of " + CTreeManager.Trees.Count);
-				//	double lastAssignmentProcessTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-				//	CDebug.WriteLine("- time of last " + debugFrequency + " trees = " + lastAssignmentProcessTime);
-
-				//	float remainsRatio = (float)(CTreeManager.Trees.Count - counter) / debugFrequency;
-				//	double totalSeconds = remainsRatio * lastAssignmentProcessTime;
-				//	TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
-				//	string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-				//	CDebug.WriteLine("- estimated time left = " + timeString);
-
-				//	previousDebugStart = DateTime.Now;
-				//}
 				counter++;
 
 
-				//counter++;
-
 				if (DEBUG) { CDebug.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
 
-				//treeObjs.Add(suitableTree);
-
-				//export of refTree points. not very effective, data are not centered and positioning them
-				//correctly would be a bit complicated
-				/*if (CProjectData.exportPoints)
-				{
-					if (maxRefTreePointsCount > 0)
-					{
-						maxRefTreePointsCount--;
-						Obj refTreesPoints = new Obj("refTreesPoints");
-						CObjExporter.AddPointsToObj(ref refTreesPoints, mostSuitableRefTree.Points,
-							-mostSuitableRefTree.botCenter + suitableTree.Position, false);
-						CProjectData.objsToExport.Add(refTreesPoints);
-					}
-				}*/
 			}
 
 			CDebug.Duration("Assign ref tree models", addTreeObjModelsStart);
-
-			//return treeObjs;
 		}
 
 
@@ -155,7 +124,8 @@ namespace ForestReco
 				CRefTree refTree = deserializedRefTree ??
 										 new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
 
-				refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
+				//material set durring assigning to tree
+				//refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
 				Trees.Add(refTree);
 				CDebug.WriteLine("Loaded tree: " + fileName);
@@ -175,9 +145,7 @@ namespace ForestReco
 				CDebug.WriteLine(refTree.ToString());
 			}
 		}
-
-		//private static int counter;
-
+		
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
 			if (Trees.Count == 0)

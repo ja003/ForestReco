@@ -13,20 +13,7 @@ namespace ForestReco
 	public static class CProgramLoader
 	{
 		public static bool useDebugData = false;
-		
-		//@"BK_1000AGL_classified";
-		//@"BK_1000AGL_cl_split_s_mezerou";
-		//@"BK_1000AGL_classified_0007559_0182972";
-		//@"BK_1000AGL_classified_0007559_0182972_0037797";
-		//forrestFullFilePath = "debug_tree_04";
-		//"debug_tree_03";
-		//"debug_tree_06";
-		//"BK_1000AGL_59_72_97_x90_y62";
-		//"R2-F-1-j_fix";
-		//forrestFullFilePath = "debug_tree_05";
-
-
-
+			   		
 		public static string[] GetFileLines()
 		{
 			CDebug.Step(EProgramStep.LoadLines);
@@ -40,10 +27,11 @@ namespace ForestReco
 			return lines;
 		}
 
-		public static string[] GetFileLines(string pFile, int pLines){
+		public static string[] GetFileLines(string pFile, int pLines)
+		{
 
 			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
-			if(!File.Exists(fullFilePath)){ return null; }
+			if (!File.Exists(fullFilePath)) { return null; }
 
 			string[] lines = new string[pLines];
 
@@ -153,6 +141,8 @@ namespace ForestReco
 			//export before merge
 			if (CProjectData.exportBeforeMerge)
 			{
+				CTreeManager.AssignMaterials(); //call before export
+
 				CObjPartition.AddTrees(true);
 				CObjPartition.AddTrees(false);
 				CObjPartition.ExportPartition("_noMerge");
@@ -195,6 +185,7 @@ namespace ForestReco
 			CAnalytics.invalidTrees = CTreeManager.InvalidTrees.Count;
 			CAnalytics.invalidTreesAtBorder = CTreeManager.GetInvalidTreesAtBorderCount();
 
+			CAnalytics.inputAverageTreeHeight = CTreeManager.AVERAGE_TREE_HEIGHT;
 			CAnalytics.averageTreeHeight = CTreeManager.GetAverageTreeHeight();
 			CAnalytics.maxTreeHeight = CTreeManager.GetMaxTreeHeight();
 			CAnalytics.minTreeHeight = CTreeManager.GetMinTreeHeight();
@@ -203,6 +194,7 @@ namespace ForestReco
 			CDebug.Count("InvalidTrees", CTreeManager.InvalidTrees.Count);
 			//CProjectData.array.DebugDetectedTrees();
 
+			CTreeManager.AssignMaterials();
 
 			CDebug.Step(EProgramStep.AssignReftrees);
 			CRefTreeManager.AssignRefTrees();
@@ -307,6 +299,11 @@ namespace ForestReco
 			if (CParameterSetter.GetBoolSettings(ESettings.autoAverageTreeHeight))
 			{
 				CTreeManager.AVERAGE_TREE_HEIGHT = CProjectData.array.GetAveragePreProcessVegeHeight();
+				if (float.IsNaN(CTreeManager.AVERAGE_TREE_HEIGHT))
+				{
+					CDebug.Error("AVERAGE_TREE_HEIGHT = NaN. using input value");
+					CTreeManager.AVERAGE_TREE_HEIGHT = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
+				}
 			}
 			else
 			{

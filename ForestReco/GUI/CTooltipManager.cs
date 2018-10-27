@@ -70,9 +70,36 @@ namespace ForestReco
 			return "- no tooltip defined";
 		}
 
+		public static string GetTooltip(ETooltip pTooltip)
+		{
+			switch (pTooltip)
+			{
+				case ETooltip.EstimatedTotalSize:
+					return "Estimated total size of resulting OBJ files.\n\n" +
+							"The actual size can be very different. Estimation is based on average tree density which can be very different.";
+				case ETooltip.EstimatedPartitionSize:
+					return "Estimated size of 1 file partition.";
+
+			}
+
+			return "- no tooltip defined";
+		}
+
 		public static void AssignTooltip(ToolTip pTooltipForm, Control pControl, ESettings pSetting)
 		{
 			pTooltipForm.SetToolTip(pControl, GetTooltip(pSetting));
 		}
+
+		public static void AssignTooltip(ToolTip pTooltipForm, Control pControl, ETooltip pTooltip)
+		{
+			pTooltipForm.SetToolTip(pControl, GetTooltip(pTooltip));
+		}
+	}
+
+	public enum ETooltip
+	{
+		None,
+		EstimatedTotalSize,
+		EstimatedPartitionSize,
 	}
 }

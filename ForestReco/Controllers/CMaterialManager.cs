@@ -24,12 +24,17 @@ namespace ForestReco
 
 			AddTreeMaterial("red", 1, 0, 0);
 			AddTreeMaterial("orange", 1, .5f, 0);
+			AddTreeMaterial("lightOrange", 1, .2f, 0);
 			AddTreeMaterial("pink", 1, 0, .5f);
 			AddTreeMaterial("purple", .5f, 0, .5f);
 
 			AddTreeMaterial("green", 0, 1, 0);
+			AddTreeMaterial("yellow", 1, 1, 0);
 
+			AddTreeMaterial("azure", 0, 1, 1);
 			AddTreeMaterial("lightBlue", 0, .5f, 1);
+			AddTreeMaterial("darkBlue", 0, 0, .3f);
+			AddTreeMaterial("mediumBlue", 0, 0, .7f);
 		}
 
 		private static void AddMaterial(string pName, float pColorIntensity, EMaterial pType = EMaterial.None)
@@ -62,19 +67,65 @@ namespace ForestReco
 			}
 		}
 
-		public static string GetTreeMaterial(int pIndex)
+		public static string GetTreeMaterial(CTree pTree)
+		{
+			if (pTree.Equals(2) || pTree.Equals(3))
+			{
+				Console.Write("");
+			}
+
+			//based on position in field
+			//- not very good with big ground array step
+			//int xIndex = pTree.groundField.indexInField.Item1;
+			//int yIndex = pTree.groundField.indexInField.Item2;
+			//int selectedIndex = (xIndex + 1) * (yIndex - 1);
+
+			int selectedIndex = pTree.treeIndex;
+
+			List<CTree> neighbourTrees = CProjectData.array.GetTreesInDistanceFrom(pTree.Center, 5);			
+			//new List<CTree>();
+			//foreach (CGroundField field in pTree.groundField.GetNeighbours())
+			//{
+			//	neighbourTrees.AddRange(field.DetectedTrees);
+			//}
+			List<string> assignedMaterials = new List<string>();
+			foreach (CTree tree in neighbourTrees)
+			{
+				if(tree.Equals(pTree)){ continue; }
+				assignedMaterials.Add(tree.assignedMaterial);
+			}
+
+			string selectedMaterial = GetTreeMaterial(selectedIndex);
+			for (int i = 0; i < materialSet[EMaterial.Tree].Count; i++)
+			{
+				selectedMaterial = GetTreeMaterial(selectedIndex + i);
+				if (!assignedMaterials.Contains(selectedMaterial))
+				{
+					return selectedMaterial;
+				}
+			}
+			CDebug.Warning("No material left to assign. it will be same as neighbour");
+			return selectedMaterial;
+		}
+
+		private static string GetTreeMaterial(int pIndex)
 		{
 			List<int> treeIndexes = materialSet[EMaterial.Tree];
-			int matIndex = pIndex % treeIndexes.Count;
+			int matIndex = (pIndex % treeIndexes.Count + treeIndexes.Count) % treeIndexes.Count;
+			if (matIndex < 0 || matIndex > treeIndexes.Count - 1)
+			{
+				CDebug.Error("matIndex OOR");
+				matIndex = 0;
+			}
 
 			return materials.MaterialList[treeIndexes[matIndex]].Name;
 		}
 
-		public static string GetRefTreeMaterial(int pIndex)
+		/*public static string GetRefTreeMaterial(int pIndex)
 		{
 			return GetTreeMaterial(pIndex); //todo: select reftree material based on reftree type?
 			//return materials.MaterialList[materialSet[EMaterial.RefTree][0]].Name;
-		}
+		}*/
 
 		public static string GetInvalidMaterial()
 		{
