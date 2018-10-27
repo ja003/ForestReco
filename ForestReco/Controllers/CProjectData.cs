@@ -34,7 +34,7 @@ namespace ForestReco
 		public static bool tryMergeTrees = true; //automatically true, user dont choose
 		public static bool tryMergeTrees2 = true;//automatically true, user dont choose
 		//public static bool mergeOnlyInvalidTrees;
-		public static bool exportBeforeMerge = true;
+		public static bool exportBeforeMerge = false;
 		
 		//public static bool validateTrees;
 

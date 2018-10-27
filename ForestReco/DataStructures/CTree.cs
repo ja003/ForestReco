@@ -77,13 +77,7 @@ namespace ForestReco
 		public void AssignMaterial()
 		{
 			assignedMaterial = CMaterialManager.GetTreeMaterial(this);
-			CDebug.WriteLine($"{this} color = {assignedMaterial}");
-			//if (mostSuitableRefTreeObj != null)
-			//{
-			//	mostSuitableRefTreeObj.UseMtl = assignedMaterial;
-			//	CDebug.WriteLine($"{mostSuitableRefTreeObj.Name} color = {assignedMaterial}");
-			//}
-
+			//CDebug.WriteLine($"{this} color = {assignedMaterial}");
 		}
 
 		//MOST IMPORTANT

@@ -104,7 +104,7 @@ namespace ForestReco
 					return selectedMaterial;
 				}
 			}
-			CDebug.Warning("No material left to assign. it will be same as neighbour");
+			//CDebug.Warning("No material left to assign. it will be same as neighbour");
 			return selectedMaterial;
 		}
 

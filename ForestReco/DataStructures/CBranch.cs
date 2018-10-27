@@ -315,6 +315,10 @@ namespace ForestReco
 				}
 			}
 
+			if(Vector3.Distance(pPoint, new Vector3(794.261f, 163.686f, 1273.497f )) < 0.1f){
+				Console.Write("");
+			}
+
 			int insertAtIndex = 0;
 			//find appropriate insert at index
 			if (TreePoints.Count > 0)
@@ -330,7 +334,30 @@ namespace ForestReco
 					if (pointOnBranch.Includes(pPoint))
 					{
 						pointOnBranch.AddPoint(pPoint);
+						//boundaries of points are changed, check if the order has to be changed
+
+						if (i > 0)
+						{
+							CTreePoint previousPoint = TreePoints[i - 1];
+							//if(previousPoint.Contains(pointOnBranch.Center))
+							if (pointOnBranch.Y > previousPoint.Y)
+							{
+								TreePoints.RemoveAt(i);
+								TreePoints.Insert(i - 1, pointOnBranch);
+							}
+						}
+						if (i < TreePoints.Count - 1)
+						{
+							CTreePoint nextPoint = TreePoints[i + 1];
+							if (pointOnBranch.Y < nextPoint.Y)
+							{
+								TreePoints.RemoveAt(i);
+								TreePoints.Insert(i + 1, pointOnBranch);
+							}
+						}
+						CheckAddedPoint();
 						return;
+
 					}
 					if (pPoint.Y < pointOnBranch.Y)
 					{
@@ -339,25 +366,6 @@ namespace ForestReco
 							break;
 						}
 					}
-
-					//todo: maybe bullshit
-					//add point at correct position
-					/*if (pPoint.Y < pointOnBranch.Y)
-					{
-						//points doesnt have to neccessarily Y-ordered. check close points for possible candidate
-						int higherPointIndex = Math.Min(TreePoints.Count - 1, insertAtIndex);
-						CTreePoint higherPointOnBranch = TreePoints[higherPointIndex];
-						for (int j = higherPointIndex; j > 0 && higherPointOnBranch.Y - pointOnBranch.Y < tree.treePointExtent; j--)
-						{
-							higherPointOnBranch = TreePoints[j];
-							if (higherPointOnBranch.Includes(pPoint))
-							{
-								higherPointOnBranch.AddPoint(pPoint);
-								return;
-							}
-						}
-						break;
-					}*/
 				}
 			}
 
@@ -375,7 +383,8 @@ namespace ForestReco
 		{
 			if (TreePoints[0].Y > tree.peak.Y)
 			{
-				CDebug.Error($"CheckAddedPoint. tree {tree.treeIndex} : first point {TreePoints[0]} is higher than peak {tree.peak}");
+				//not error, can happen after merging when peak is expanded
+				//CDebug.Error($"CheckAddedPoint. tree {tree.treeIndex} : first point {TreePoints[0]} is higher than peak {tree.peak}");
 			}
 
 			if (TreePoints.Count < 2) { return; }
