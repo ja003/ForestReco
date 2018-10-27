@@ -55,8 +55,8 @@ namespace ForestReco
 				{
 					CGroundField newGroundField = new CGroundField(new Tuple<int, int>(x, y),
 						new Vector3(
-							topLeftCorner.X + x * stepSize + stepSize/2, 0,
-							topLeftCorner.Z - y * stepSize - stepSize/2));
+							topLeftCorner.X + x * stepSize + stepSize / 2, 0,
+							topLeftCorner.Z - y * stepSize - stepSize / 2));
 					array[x, y] = newGroundField;
 					fields.Add(newGroundField);
 				}
@@ -137,7 +137,6 @@ namespace ForestReco
 				CDebug.Error($"point {pPoint} is too far from center {el.center}");
 			}
 
-
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
@@ -154,6 +153,11 @@ namespace ForestReco
 		public void AddPointInField(Vector3 pPoint, EPointType pType)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
+			if (!IsWithinBounds(index))
+			{
+				CDebug.Error($"point {pPoint} is OOB {index}");
+				return;
+			}
 			switch (pType)
 			{
 				case EPointType.Ground:
@@ -187,7 +191,7 @@ namespace ForestReco
 
 			//float averageHeight = GetAveragePreProcessVegeHeight();
 
-			
+
 			float maxHeight = GetMaxPreProcessVegeHeight();
 
 
@@ -299,13 +303,13 @@ namespace ForestReco
 				if (preProcessVegeHeight != null && groundHeight != null)
 				{
 					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
-					if(vegeHeight > CTreeManager.AVERAGE_MAX_TREE_HEIGHT){ continue;}
+					if (vegeHeight > CTreeManager.AVERAGE_MAX_TREE_HEIGHT) { continue; }
 					Vector3 fieldCenter = field.center;
 					fieldCenter.Y = vegeHeight;
 					heights.Add(fieldCenter);
 				}
 			}
-			heights.Sort((a,b)=> b.Y.CompareTo(a.Y));
+			heights.Sort((a, b) => b.Y.CompareTo(a.Y));
 			Vector3 selectedPoint = heights[0];
 			int okHeightsInRow = 0;
 			int estimatedFakePointsCount = GetEstimatedFakePointsCount();
@@ -315,7 +319,7 @@ namespace ForestReco
 			{
 				Vector3 currentPoint = heights[i];
 				float dist = Vector3.Distance(currentPoint, selectedPoint);
-				if(dist < CParameterSetter.groundArrayStep + 0.5f)
+				if (dist < CParameterSetter.groundArrayStep + 0.5f)
 				{
 					selectedPoint = currentPoint;
 					continue;
@@ -336,7 +340,7 @@ namespace ForestReco
 					break;
 				}
 			}
-			
+
 			return selectedPoint.Y;
 		}
 
