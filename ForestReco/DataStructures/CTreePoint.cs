@@ -17,6 +17,7 @@ namespace ForestReco
 		//private Vector3 botLeft => minBB;
 		
 		public Vector3 maxHeight;
+		public Vector3 minHeight;
 
 		//private const float POINT_EXTENT = 0.1f;
 		public float treePointExtent;
@@ -25,6 +26,7 @@ namespace ForestReco
 		{
 			treePointExtent = pTreePointExtent;
 			maxHeight = pPoint;
+			minHeight = pPoint;
 			AddPoint(pPoint);
 		}
 
@@ -49,6 +51,7 @@ namespace ForestReco
 			OnAddPoint(pPoint);
 
 			if (pPoint.Y > maxHeight.Y) { maxHeight = pPoint; }
+			if (pPoint.Y < minHeight.Y) { minHeight = pPoint; }
 		}
 		
 

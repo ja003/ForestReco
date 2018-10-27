@@ -43,6 +43,7 @@ namespace ForestReco
 		internal static void Error(string pText)
 		{
 			WriteLine("ERROR: " + pText, true);
+			CAnalytics.AddError(pText);
 		}
 
 		internal static void Duration(string pText, DateTime pStartTime)

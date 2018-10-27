@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ForestReco
 {
@@ -24,6 +26,9 @@ namespace ForestReco
 		public static int assignedCheckTrees;
 		public static int invalidCheckTrees;
 
+		public static List<string> errors = new List<string>();
+
+
 		public static void Write()
 		{
 			string output = " - ANALYTICS - \n\n";
@@ -48,8 +53,21 @@ namespace ForestReco
 			output += $"assignedCheckTrees = {assignedCheckTrees} \n";
 			output += $"invalidCheckTrees = {invalidCheckTrees} \n";
 
+			output += $"\nERRORS\n";
+			foreach (string error in errors)
+			{
+				output += $"- {error} \n";
+			}
+
 			CDebug.WriteLine(output);
 			WriteToFile(output);
+
+			errors.Clear(); //reset, so errors dont stack with previous error
+		}
+
+		internal static void AddError(string pText)
+		{
+			errors.Add(pText);
 		}
 
 		private static void WriteToFile(string pText)

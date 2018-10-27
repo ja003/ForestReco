@@ -381,7 +381,7 @@ namespace ForestReco
 
 		private void CheckAddedPoint()
 		{
-			if (TreePoints[0].Y > tree.peak.Y)
+			if (TreePoints[0].minHeight.Y > tree.peak.Y)
 			{
 				//not error, can happen after merging when peak is expanded
 				//CDebug.Error($"CheckAddedPoint. tree {tree.treeIndex} : first point {TreePoints[0]} is higher than peak {tree.peak}");
@@ -390,7 +390,7 @@ namespace ForestReco
 			if (TreePoints.Count < 2) { return; }
 			CTreePoint previousTp = TreePoints[TreePoints.Count - 2];
 			CTreePoint tp = TreePoints[TreePoints.Count - 1];
-			if (tp.Y > previousTp.Y)
+			if (tp.minHeight.Y > previousTp.maxHeight.Y)
 			{
 				CDebug.Error("CheckAddedPoint. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 				/*if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
@@ -412,7 +412,7 @@ namespace ForestReco
 			{
 				CTreePoint previousTp = TreePoints[i - 1];
 				CTreePoint tp = TreePoints[i];
-				if (tp.Y > previousTp.Y)
+				if (tp.minHeight.Y > previousTp.maxHeight.Y)
 				{
 					CDebug.Error("-CheckBranch. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
 
