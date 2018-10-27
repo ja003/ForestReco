@@ -109,7 +109,7 @@ namespace ForestReco
 					   Right.Bot.IsDefined();
 			}
 		}
-		
+
 		/*public int GetPointCountInNeighbourhood()
 		{
 			int count = vegePoints.Count;
@@ -122,7 +122,20 @@ namespace ForestReco
 
 		public List<CGroundField> GetNeighbours(bool pIncludeThis = false)
 		{
-			if (neighbours != null) { return this.neighbours; }
+			if (neighbours != null)
+			{
+				if (pIncludeThis)
+				{
+					List<CGroundField> neighbourCopy = new List<CGroundField>();
+					neighbourCopy.Add(this);
+					foreach (CGroundField n in neighbours)
+					{
+						neighbourCopy.Add(n);
+					}
+					return neighbourCopy;
+				}
+				return neighbours;
+			}
 
 			neighbours = new List<CGroundField>();
 			if (pIncludeThis)
@@ -530,11 +543,11 @@ namespace ForestReco
 
 			float x = pPoint.X - center.X;
 			x += step / 2;
-			x = x/step ;
+			x = x / step;
 			//float z = 1 - (center.Z - pPoint.Z );
 			float z = center.Z - pPoint.Z;
 			z += step / 2;
-			z = z/step;
+			z = z / step;
 
 			if (x < 0 || x > 1 || z < 0 || z > 1)
 			{

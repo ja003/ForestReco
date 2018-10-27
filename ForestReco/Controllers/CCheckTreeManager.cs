@@ -48,14 +48,16 @@ namespace ForestReco
 
 		public static void AssignTrees()
 		{
+			float maxDistToTree = CParameterSetter.treeExtent * CParameterSetter.treeExtentMultiply;
+
 			foreach (CCheckTree checkTree in Trees)
 			{
 				Vector3 treePosition = checkTree.position;
 				List<CTree> possibleTrees = CTreeManager.GetPossibleTreesFor(treePosition, CTreeManager.EPossibleTreesMethos.ClosestHigher);
 
-				if (checkTree.index == 529)
+				if (checkTree.index == 53)
 				{
-					//CDebug.WriteLine("");
+					CDebug.WriteLine("");
 				}
 
 				if (possibleTrees.Count > 0)
@@ -75,10 +77,14 @@ namespace ForestReco
 							}
 						}
 
-						else if (possibleTree.isValid  && distToTree < CParameterSetter.treeExtent)
+						//else if (possibleTree.isValid  && distToTree < CParameterSetter.treeExtent)
+						else
 						{
-							checkTree.AssignTree(possibleTree);
-							break;
+							if (possibleTree.isValid && (distToTree < maxDistToTree || possibleTree.Contains2D(checkTree.position)))
+							{
+								checkTree.AssignTree(possibleTree);
+								break;
+							}
 						}
 					}
 				}

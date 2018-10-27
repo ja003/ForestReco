@@ -82,6 +82,13 @@ namespace ForestReco
 				pPoint.Z > minBB.Z && pPoint.Z < maxBB.Z;
 		}
 
+		public virtual bool Contains2D(Vector3 pPoint)
+		{
+			return
+				pPoint.X > minBB.X && pPoint.X < maxBB.X &&
+				pPoint.Z > minBB.Z && pPoint.Z < maxBB.Z;
+		}
+
 		/// <summary>
 		/// Returns Manhattan distance from center to point minus BB extents.
 		/// Distance = point is on BB or inside

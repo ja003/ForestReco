@@ -40,10 +40,13 @@ namespace ForestReco
 			WriteLine("WARNING: " + pText, true);
 		}
 
-		internal static void Error(string pText)
+		internal static void Error(string pText, bool pWriteInAnalytics = true)
 		{
 			WriteLine("ERROR: " + pText, true);
-			CAnalytics.AddError(pText);
+			if (pWriteInAnalytics)
+			{
+				CAnalytics.AddError(pText);
+			}
 		}
 
 		internal static void Duration(string pText, DateTime pStartTime)

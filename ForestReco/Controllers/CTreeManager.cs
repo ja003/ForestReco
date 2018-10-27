@@ -335,6 +335,10 @@ namespace ForestReco
 		/// </summary>
 		private static void MergeGoodAddFactorTrees(bool pOnlyInvalid)
 		{
+			DateTime mergeStart = DateTime.Now;
+			DateTime previousMergeStart = DateTime.Now;
+			int iteration = 0;
+			int maxIterations = Trees.Count;
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
 				if (CProgramStarter.abort) { return; }
@@ -428,6 +432,9 @@ namespace ForestReco
 				{
 					treeToMerge = MergeTrees(ref treeToMerge, ref selectedTree, pOnlyInvalid);
 				}
+
+				CDebug.Progress(iteration, maxIterations, 50, ref previousMergeStart, mergeStart, "merge");
+				iteration++;
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using ForestReco;
 using ObjParser;
@@ -73,7 +74,7 @@ namespace ForestReco
 			{
 				return;
 			}
-			if (index == 16)
+			if (index == 17)
 			{
 				Console.Write("");
 			}
@@ -81,7 +82,7 @@ namespace ForestReco
 			//groundField not assigned = checkTree is out of this array 
 			if (groundField == null)
 			{
-				CDebug.Error($"{this} has no ground field assigned");
+				CDebug.Error($"{this} has no ground field assigned", false);
 				return;
 			}
 			if (!groundField.HasAllNeighbours())
@@ -91,11 +92,6 @@ namespace ForestReco
 				return;
 			}
 
-			if (index == 50)
-			{
-				Console.WriteLine();
-			}
-			
 			const int minVegePointsPerField = 10;
 			//if (count < minVegePointsPerField)
 			//{
@@ -106,7 +102,9 @@ namespace ForestReco
 			int vegePointsCount = 0;
 			int undefinedNeighboursCount = 0;
 			int smallHeightCount = 0;
-			foreach (CGroundField neighbour in groundField.GetNeighbours(true))
+			List<CGroundField> neighbours = groundField.GetNeighbours(true);
+
+			foreach (CGroundField neighbour in neighbours)
 			{
 				int neighbourVegeCount = neighbour.vegePoints.Count;
 				if (neighbourVegeCount < minVegePointsPerField)
