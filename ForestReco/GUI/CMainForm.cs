@@ -56,6 +56,7 @@ namespace ForestReco
 		private Label labelEstimatedTotalSize;
 		private Label labelEstimatedPartitionSize;
 		private TextBox textBoxPartitionSize;
+		private CheckBox checkBoxExportTreeBoxes;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -112,6 +113,8 @@ namespace ForestReco
 				CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile);
 			checkBoxExportCheckTrees.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.exportCheckTrees);
+			checkBoxExportTreeBoxes.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes);
 			checkBoxReducedReftrees.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.useReducedReftreeModels);
 			checkBoxFilterPoints.Checked =
@@ -126,6 +129,7 @@ namespace ForestReco
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportRefTrees, ESettings.exportRefTrees);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportTreeStructures, ESettings.exportTreeStructures);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxReducedReftrees, ESettings.useReducedReftreeModels);
+			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportTreeBoxes, ESettings.exportTreeBoxes);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxUseCheckTree, ESettings.useCheckTreeFile);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportCheckTrees, ESettings.exportCheckTrees);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxFilterPoints, ESettings.filterPoints);
@@ -140,6 +144,7 @@ namespace ForestReco
 
 			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedTotalSize, ETooltip.EstimatedTotalSize);
 			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedPartitionSize, ETooltip.EstimatedPartitionSize);
+			CTooltipManager.AssignTooltip(myToolTip, trackBarAvgTreeHeight, ETooltip.avgTreeHeighSlider);
 
 
 		}
@@ -218,6 +223,7 @@ namespace ForestReco
 			this.labelEstimatedTotalSize = new System.Windows.Forms.Label();
 			this.labelEstimatedPartitionSize = new System.Windows.Forms.Label();
 			this.textBoxPartitionSize = new System.Windows.Forms.TextBox();
+			this.checkBoxExportTreeBoxes = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -517,7 +523,7 @@ namespace ForestReco
 			// checkBoxExportInvalidTrees
 			// 
 			this.checkBoxExportInvalidTrees.AutoSize = true;
-			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(237, 337);
+			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(237, 357);
 			this.checkBoxExportInvalidTrees.Name = "checkBoxExportInvalidTrees";
 			this.checkBoxExportInvalidTrees.Size = new System.Drawing.Size(149, 21);
 			this.checkBoxExportInvalidTrees.TabIndex = 39;
@@ -529,7 +535,7 @@ namespace ForestReco
 			// checkBoxExportRefTrees
 			// 
 			this.checkBoxExportRefTrees.AutoSize = true;
-			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(237, 364);
+			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(237, 384);
 			this.checkBoxExportRefTrees.Name = "checkBoxExportRefTrees";
 			this.checkBoxExportRefTrees.Size = new System.Drawing.Size(122, 21);
 			this.checkBoxExportRefTrees.TabIndex = 40;
@@ -601,7 +607,7 @@ namespace ForestReco
 			// checkBoxExportPoints
 			// 
 			this.checkBoxExportPoints.AutoSize = true;
-			this.checkBoxExportPoints.Location = new System.Drawing.Point(237, 391);
+			this.checkBoxExportPoints.Location = new System.Drawing.Point(237, 411);
 			this.checkBoxExportPoints.Name = "checkBoxExportPoints";
 			this.checkBoxExportPoints.Size = new System.Drawing.Size(111, 21);
 			this.checkBoxExportPoints.TabIndex = 46;
@@ -666,9 +672,22 @@ namespace ForestReco
 			this.textBoxPartitionSize.Size = new System.Drawing.Size(75, 22);
 			this.textBoxPartitionSize.TabIndex = 51;
 			// 
+			// checkBoxExportTreeBoxes
+			// 
+			this.checkBoxExportTreeBoxes.AutoSize = true;
+			this.checkBoxExportTreeBoxes.Location = new System.Drawing.Point(237, 334);
+			this.checkBoxExportTreeBoxes.Name = "checkBoxExportTreeBoxes";
+			this.checkBoxExportTreeBoxes.Size = new System.Drawing.Size(139, 21);
+			this.checkBoxExportTreeBoxes.TabIndex = 53;
+			this.checkBoxExportTreeBoxes.Text = "export tree boxes";
+			this.myToolTip.SetToolTip(this.checkBoxExportTreeBoxes, "hh");
+			this.checkBoxExportTreeBoxes.UseVisualStyleBackColor = true;
+			this.checkBoxExportTreeBoxes.CheckedChanged += new System.EventHandler(this.checkBoxExportTreeBoxes_CheckedChanged);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(835, 491);
+			this.Controls.Add(this.checkBoxExportTreeBoxes);
 			this.Controls.Add(this.labelEstimatedPartitionSize);
 			this.Controls.Add(this.textBoxPartitionSize);
 			this.Controls.Add(this.labelEstimatedTotalSize);
@@ -935,6 +954,11 @@ namespace ForestReco
 			CParameterSetter.SetParameter(ESettings.exportPoints, checkBoxExportPoints.Checked);
 		}
 
+		private void checkBoxExportTreeBoxes_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ESettings.exportTreeBoxes, checkBoxExportTreeBoxes.Checked);
+		}
+
 		private void btnOpenResult_Click(object sender, EventArgs e)
 		{
 			string folderPath = CObjPartition.folderPath;
@@ -950,5 +974,7 @@ namespace ForestReco
 			trackBarAvgTreeHeight.BackColor = checkBoxAutoTreeHeight.Checked ?
 				System.Drawing.Color.Gray : trackBarPartition.BackColor; //dont know color code of 'enabled color'
 		}
+
+		
 	}
 }

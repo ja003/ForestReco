@@ -205,14 +205,11 @@ namespace ForestReco
 				CObjPartition.AddRefTrees();
 			}
 
-			if (CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures))
+			
+			CObjPartition.AddTrees(true);
+			if (CParameterSetter.GetBoolSettings(ESettings.exportInvalidTrees))
 			{
-				//CTreeManager.ExportTrees();
-				CObjPartition.AddTrees(true);
-				if (CParameterSetter.GetBoolSettings(ESettings.exportInvalidTrees))
-				{
-					CObjPartition.AddTrees(false);
-				}
+				CObjPartition.AddTrees(false);
 			}
 		}
 

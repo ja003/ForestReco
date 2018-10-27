@@ -262,5 +262,17 @@ namespace ForestReco.Properties {
                 this["autoAverageTreeHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool exportTreeBoxes {
+            get {
+                return ((bool)(this["exportTreeBoxes"]));
+            }
+            set {
+                this["exportTreeBoxes"] = value;
+            }
+        }
     }
 }

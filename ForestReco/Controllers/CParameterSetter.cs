@@ -139,6 +139,7 @@ namespace ForestReco
 		consoleVisible,
 		filterPoints,
 		exportPoints,
-		autoAverageTreeHeight
+		autoAverageTreeHeight,
+		exportTreeBoxes
 	}
 }

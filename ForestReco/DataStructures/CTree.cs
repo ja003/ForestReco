@@ -446,7 +446,7 @@ namespace ForestReco
 			//return peak.Center - GetTreeHeight() * Vector3.UnitY;
 		}
 
-		public Obj GetObj(bool pExportBranches, bool pExportBB)
+		public Obj GetObj(bool pExportBranches, bool pExportPoints, bool pExportSimple)
 		{
 			//if (CTreeManager.DEBUG) CDebug.WriteLine("GetObj " + pName);
 
@@ -477,7 +477,7 @@ namespace ForestReco
 			}
 			CObjExporter.AddPointsToObj(ref obj, vectorPoints);
 
-			if (pExportBB)
+			if (pExportPoints)
 			{
 				CObjExporter.AddBBToObj(ref obj, allTreePoints);
 			}
@@ -488,6 +488,27 @@ namespace ForestReco
 				{
 					CObjExporter.AddBranchToObj(ref obj, b);
 				}
+			}
+			if (pExportSimple)
+			{
+				Vector3 point1 = b000;
+				Vector3 point2 = b100;
+				Vector3 point3 = b101;
+				Vector3 point4 = b001;
+
+				float? goundHeight = groundField.GetHeight();
+				if (groundHeight != null)
+				{
+					point1.Y = (float)goundHeight;
+					point2.Y = (float)goundHeight;
+					point3.Y = (float)goundHeight;
+					point4.Y = (float)goundHeight;
+				}
+
+				CObjExporter.AddLFaceToObj(ref obj, point1, point2, peak.Center);
+				CObjExporter.AddLFaceToObj(ref obj, point1, point4, peak.Center);
+				CObjExporter.AddLFaceToObj(ref obj, point2, point3, peak.Center);
+				CObjExporter.AddLFaceToObj(ref obj, point4, point3, peak.Center);
 			}
 
 			return obj;

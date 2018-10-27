@@ -119,6 +119,23 @@ namespace ForestReco
 			//obj.FaceList.Add(new Face(new List<Vertex> { v6, v4, v3 }));
 		}
 
+		public static void AddLFaceToObj(ref Obj obj, Vector3 pPoint1, Vector3 pPoint2, Vector3 pPoint3)
+		{
+			MoveToCenter(ref pPoint1);
+			MoveToCenter(ref pPoint2);
+			MoveToCenter(ref pPoint3);
+			float pointOffset = POINT_OFFSET;
+
+			Vertex v1 = new Vertex(pPoint1, obj.GetNextVertexIndex());
+			obj.AddVertex(v1);
+			Vertex v2 = new Vertex(pPoint2, obj.GetNextVertexIndex());
+			obj.AddVertex(v2);
+			Vertex v3 = new Vertex(pPoint3, obj.GetNextVertexIndex());
+			obj.AddVertex(v3);
+			
+			obj.FaceList.Add(new Face(new List<Vertex> { v1, v2, v3 }));
+		}
+
 		public static void AddBranchToObj(ref Obj obj, CBranch pBranch)
 		{
 			for (int i = 0; i < pBranch.TreePoints.Count; i++)

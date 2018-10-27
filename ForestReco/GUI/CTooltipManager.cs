@@ -20,6 +20,8 @@ namespace ForestReco
 					return "Use reduced file of reftree in final export. This option should be checked as the full quality model doesn't usually have that much effect on final look and the final size is reduced greatly by using reduced models.";
 				case ESettings.exportTreeStructures:
 					return "Include tree detection structures in final export. It is only for visualisation of points assigned to trees.";
+				case ESettings.exportTreeBoxes:
+					return "Include simple box surrounding tree in final export. It is only for visualisation of tree extent.";
 				case ESettings.exportInvalidTrees:
 					return "Include detected invalid trees in final export. Only for check if some trees which should have been detected were detected correctly.";
 				case ESettings.exportRefTrees:
@@ -39,13 +41,13 @@ namespace ForestReco
 							"Only for visualization. Correct assignment = blue, incorrect = red and invalid checktree = gray.";
 				case ESettings.autoAverageTreeHeight:
 					return "The average tree height is calculated automatically.\n\n" +
-							"The average height is used in tree extents calculation so it is good to have this value as close to real data as possible." +
+							"The average height is used in tree extents calculation so it is good to have this value as close to real data as possible. " +
 							"Use this if you dont have this knowledge about the data. This option disables manual selection of average tree height.";
 
 				//floats
 				case ESettings.avgTreeHeigh:
 					return "[adviced value = 15-30m] Expected average tree height in given forrest file.\n\n" +
-							"The average height is used in tree extents calculation so it is good to have this value as close to real data as possible." +
+							"The average height is used in tree extents calculation so it is good to have this value as close to real data as possible. " +
 							"Use this if you have this knowledge about the data. Otherwise use 'autoAverageTreeHeight'";
 
 				case ESettings.partitionStep:
@@ -79,6 +81,8 @@ namespace ForestReco
 							"The actual size can be very different. Estimation is based on average tree density which can be very different.";
 				case ETooltip.EstimatedPartitionSize:
 					return "Estimated size of 1 file partition.";
+				case ETooltip.avgTreeHeighSlider:
+					return "Set average tree height manually or let it be calculated automatically by checking 'automatic average tree height' checkbox.";
 
 			}
 
@@ -101,5 +105,6 @@ namespace ForestReco
 		None,
 		EstimatedTotalSize,
 		EstimatedPartitionSize,
+		avgTreeHeighSlider,
 	}
 }

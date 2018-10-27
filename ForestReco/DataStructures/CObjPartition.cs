@@ -80,6 +80,11 @@ namespace ForestReco
 		{
 			List<Tuple<Tuple<int, int>, CTree>> treesToExport = new List<Tuple<Tuple<int, int>, CTree>>();
 
+			bool exportTreeStrucure = CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
+			bool exportBoxes = CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes);
+
+			if(!exportBoxes && !exportTreeStrucure){ return; }
+
 			foreach (CGroundField f in CProjectData.array.fields)
 			{
 				//todo: k ničemu, výsledek stejně není seřaděn
@@ -101,7 +106,7 @@ namespace ForestReco
 			treesToExport.Sort((x, y) => x.Item2.treeIndex.CompareTo(y.Item2.treeIndex));
 			foreach (Tuple<Tuple<int, int>, CTree> exportTree in treesToExport)
 			{
-				Obj obj = exportTree.Item2.GetObj(true, false);
+				Obj obj = exportTree.Item2.GetObj(exportTreeStrucure, false, exportBoxes);
 				if (!pValid) { obj.UseMtl = CMaterialManager.GetInvalidMaterial(); }
 				//if (pFake) { obj.UseMtl = CMaterialManager.GetFakeMaterial(); }
 
