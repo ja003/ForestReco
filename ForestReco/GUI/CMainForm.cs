@@ -248,7 +248,7 @@ namespace ForestReco
 			// 
 			// textForrestFilePath
 			// 
-			this.textForrestFilePath.Location = new System.Drawing.Point(180, 12);
+			this.textForrestFilePath.Location = new System.Drawing.Point(180, 14);
 			this.textForrestFilePath.Name = "textForrestFilePath";
 			this.textForrestFilePath.Size = new System.Drawing.Size(641, 22);
 			this.textForrestFilePath.TabIndex = 1;
@@ -257,7 +257,7 @@ namespace ForestReco
 			// btnSellectReftreeFodlers
 			// 
 			this.btnSellectReftreeFodlers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnSellectReftreeFodlers.Location = new System.Drawing.Point(8, 47);
+			this.btnSellectReftreeFodlers.Location = new System.Drawing.Point(8, 46);
 			this.btnSellectReftreeFodlers.Name = "btnSellectReftreeFodlers";
 			this.btnSellectReftreeFodlers.Size = new System.Drawing.Size(155, 31);
 			this.btnSellectReftreeFodlers.TabIndex = 2;
@@ -267,7 +267,7 @@ namespace ForestReco
 			// 
 			// textReftreeFolder
 			// 
-			this.textReftreeFolder.Location = new System.Drawing.Point(180, 49);
+			this.textReftreeFolder.Location = new System.Drawing.Point(180, 50);
 			this.textReftreeFolder.Name = "textReftreeFolder";
 			this.textReftreeFolder.Size = new System.Drawing.Size(641, 22);
 			this.textReftreeFolder.TabIndex = 4;
@@ -275,12 +275,13 @@ namespace ForestReco
 			// 
 			// btnStart
 			// 
-			this.btnStart.Location = new System.Drawing.Point(426, 242);
+			this.btnStart.BackColor = System.Drawing.Color.LightGreen;
+			this.btnStart.Location = new System.Drawing.Point(427, 242);
 			this.btnStart.Name = "btnStart";
 			this.btnStart.Size = new System.Drawing.Size(299, 48);
 			this.btnStart.TabIndex = 5;
 			this.btnStart.Text = "START";
-			this.btnStart.UseVisualStyleBackColor = true;
+			this.btnStart.UseVisualStyleBackColor = false;
 			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
 			// 
 			// textOutputFolder
@@ -293,7 +294,7 @@ namespace ForestReco
 			// 
 			// btnOutputFolder
 			// 
-			this.btnOutputFolder.Location = new System.Drawing.Point(8, 84);
+			this.btnOutputFolder.Location = new System.Drawing.Point(8, 82);
 			this.btnOutputFolder.Name = "btnOutputFolder";
 			this.btnOutputFolder.Size = new System.Drawing.Size(155, 31);
 			this.btnOutputFolder.TabIndex = 6;
@@ -310,7 +311,7 @@ namespace ForestReco
 			// 
 			// textProgress
 			// 
-			this.textProgress.Location = new System.Drawing.Point(426, 298);
+			this.textProgress.Location = new System.Drawing.Point(427, 298);
 			this.textProgress.Multiline = true;
 			this.textProgress.Name = "textProgress";
 			this.textProgress.Size = new System.Drawing.Size(394, 118);
@@ -318,8 +319,8 @@ namespace ForestReco
 			// 
 			// btnAbort
 			// 
-			this.btnAbort.BackColor = System.Drawing.SystemColors.ActiveBorder;
-			this.btnAbort.Location = new System.Drawing.Point(731, 244);
+			this.btnAbort.BackColor = System.Drawing.Color.LightCoral;
+			this.btnAbort.Location = new System.Drawing.Point(732, 242);
 			this.btnAbort.Name = "btnAbort";
 			this.btnAbort.Size = new System.Drawing.Size(89, 48);
 			this.btnAbort.TabIndex = 11;
@@ -340,7 +341,7 @@ namespace ForestReco
 			// labelPartition
 			// 
 			this.labelPartition.AutoSize = true;
-			this.labelPartition.Location = new System.Drawing.Point(19, 169);
+			this.labelPartition.Location = new System.Drawing.Point(528, 173);
 			this.labelPartition.Name = "labelPartition";
 			this.labelPartition.Size = new System.Drawing.Size(90, 17);
 			this.labelPartition.TabIndex = 14;
@@ -348,7 +349,7 @@ namespace ForestReco
 			// 
 			// textPartition
 			// 
-			this.textPartition.Location = new System.Drawing.Point(107, 166);
+			this.textPartition.Location = new System.Drawing.Point(616, 170);
 			this.textPartition.Name = "textPartition";
 			this.textPartition.ReadOnly = true;
 			this.textPartition.Size = new System.Drawing.Size(34, 22);
@@ -358,7 +359,7 @@ namespace ForestReco
 			// 
 			this.trackBarPartition.AutoSize = false;
 			this.trackBarPartition.LargeChange = 10;
-			this.trackBarPartition.Location = new System.Drawing.Point(12, 198);
+			this.trackBarPartition.Location = new System.Drawing.Point(521, 195);
 			this.trackBarPartition.Maximum = 200;
 			this.trackBarPartition.Minimum = 10;
 			this.trackBarPartition.Name = "trackBarPartition";
@@ -371,7 +372,7 @@ namespace ForestReco
 			// 
 			// textCheckTreePath
 			// 
-			this.textCheckTreePath.Location = new System.Drawing.Point(180, 123);
+			this.textCheckTreePath.Location = new System.Drawing.Point(180, 122);
 			this.textCheckTreePath.Name = "textCheckTreePath";
 			this.textCheckTreePath.Size = new System.Drawing.Size(641, 22);
 			this.textCheckTreePath.TabIndex = 21;
@@ -379,7 +380,7 @@ namespace ForestReco
 			// 
 			// btnSelectCheckTree
 			// 
-			this.btnSelectCheckTree.Location = new System.Drawing.Point(8, 121);
+			this.btnSelectCheckTree.Location = new System.Drawing.Point(8, 118);
 			this.btnSelectCheckTree.Name = "btnSelectCheckTree";
 			this.btnSelectCheckTree.Size = new System.Drawing.Size(155, 31);
 			this.btnSelectCheckTree.TabIndex = 20;
@@ -391,7 +392,7 @@ namespace ForestReco
 			// 
 			this.trackBarGroundArrayStep.AutoSize = false;
 			this.trackBarGroundArrayStep.LargeChange = 10;
-			this.trackBarGroundArrayStep.Location = new System.Drawing.Point(156, 198);
+			this.trackBarGroundArrayStep.Location = new System.Drawing.Point(666, 195);
 			this.trackBarGroundArrayStep.Maximum = 100;
 			this.trackBarGroundArrayStep.Minimum = 5;
 			this.trackBarGroundArrayStep.Name = "trackBarGroundArrayStep";
@@ -404,7 +405,7 @@ namespace ForestReco
 			// 
 			// textGroundArrayStep
 			// 
-			this.textGroundArrayStep.Location = new System.Drawing.Point(281, 166);
+			this.textGroundArrayStep.Location = new System.Drawing.Point(791, 170);
 			this.textGroundArrayStep.Name = "textGroundArrayStep";
 			this.textGroundArrayStep.ReadOnly = true;
 			this.textGroundArrayStep.Size = new System.Drawing.Size(34, 22);
@@ -413,7 +414,7 @@ namespace ForestReco
 			// labelGroundArrayStep
 			// 
 			this.labelGroundArrayStep.AutoSize = true;
-			this.labelGroundArrayStep.Location = new System.Drawing.Point(163, 169);
+			this.labelGroundArrayStep.Location = new System.Drawing.Point(673, 173);
 			this.labelGroundArrayStep.Name = "labelGroundArrayStep";
 			this.labelGroundArrayStep.Size = new System.Drawing.Size(121, 17);
 			this.labelGroundArrayStep.TabIndex = 23;
@@ -423,7 +424,7 @@ namespace ForestReco
 			// 
 			this.trackBarTreeExtent.AutoSize = false;
 			this.trackBarTreeExtent.LargeChange = 10;
-			this.trackBarTreeExtent.Location = new System.Drawing.Point(321, 198);
+			this.trackBarTreeExtent.Location = new System.Drawing.Point(182, 195);
 			this.trackBarTreeExtent.Maximum = 30;
 			this.trackBarTreeExtent.Minimum = 5;
 			this.trackBarTreeExtent.Name = "trackBarTreeExtent";
@@ -435,7 +436,7 @@ namespace ForestReco
 			// 
 			// textTreeExtent
 			// 
-			this.textTreeExtent.Location = new System.Drawing.Point(446, 166);
+			this.textTreeExtent.Location = new System.Drawing.Point(307, 170);
 			this.textTreeExtent.Name = "textTreeExtent";
 			this.textTreeExtent.ReadOnly = true;
 			this.textTreeExtent.Size = new System.Drawing.Size(34, 22);
@@ -444,7 +445,7 @@ namespace ForestReco
 			// labelTreeExtent
 			// 
 			this.labelTreeExtent.AutoSize = true;
-			this.labelTreeExtent.Location = new System.Drawing.Point(328, 169);
+			this.labelTreeExtent.Location = new System.Drawing.Point(189, 173);
 			this.labelTreeExtent.Name = "labelTreeExtent";
 			this.labelTreeExtent.Size = new System.Drawing.Size(110, 17);
 			this.labelTreeExtent.TabIndex = 27;
@@ -454,7 +455,7 @@ namespace ForestReco
 			// 
 			this.trackBarTreeExtentMultiply.AutoSize = false;
 			this.trackBarTreeExtentMultiply.LargeChange = 10;
-			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(485, 197);
+			this.trackBarTreeExtentMultiply.Location = new System.Drawing.Point(346, 195);
 			this.trackBarTreeExtentMultiply.Maximum = 30;
 			this.trackBarTreeExtentMultiply.Minimum = 10;
 			this.trackBarTreeExtentMultiply.Name = "trackBarTreeExtentMultiply";
@@ -466,7 +467,7 @@ namespace ForestReco
 			// 
 			// textTreeExtentMultiply
 			// 
-			this.textTreeExtentMultiply.Location = new System.Drawing.Point(610, 168);
+			this.textTreeExtentMultiply.Location = new System.Drawing.Point(471, 170);
 			this.textTreeExtentMultiply.Name = "textTreeExtentMultiply";
 			this.textTreeExtentMultiply.ReadOnly = true;
 			this.textTreeExtentMultiply.Size = new System.Drawing.Size(34, 22);
@@ -475,7 +476,7 @@ namespace ForestReco
 			// labelTreeExtentMultiply
 			// 
 			this.labelTreeExtentMultiply.AutoSize = true;
-			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(492, 171);
+			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(353, 173);
 			this.labelTreeExtentMultiply.Name = "labelTreeExtentMultiply";
 			this.labelTreeExtentMultiply.Size = new System.Drawing.Size(126, 17);
 			this.labelTreeExtentMultiply.TabIndex = 31;
@@ -486,7 +487,7 @@ namespace ForestReco
 			this.trackBarAvgTreeHeight.AutoSize = false;
 			this.trackBarAvgTreeHeight.BackColor = System.Drawing.SystemColors.Control;
 			this.trackBarAvgTreeHeight.LargeChange = 10;
-			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(643, 199);
+			this.trackBarAvgTreeHeight.Location = new System.Drawing.Point(5, 195);
 			this.trackBarAvgTreeHeight.Maximum = 50;
 			this.trackBarAvgTreeHeight.Minimum = 5;
 			this.trackBarAvgTreeHeight.Name = "trackBarAvgTreeHeight";
@@ -498,7 +499,7 @@ namespace ForestReco
 			// 
 			// textAvgTreeHeight
 			// 
-			this.textAvgTreeHeight.Location = new System.Drawing.Point(787, 171);
+			this.textAvgTreeHeight.Location = new System.Drawing.Point(149, 170);
 			this.textAvgTreeHeight.Name = "textAvgTreeHeight";
 			this.textAvgTreeHeight.ReadOnly = true;
 			this.textAvgTreeHeight.Size = new System.Drawing.Size(34, 22);
@@ -507,7 +508,7 @@ namespace ForestReco
 			// labelAvgTreeHeight
 			// 
 			this.labelAvgTreeHeight.AutoSize = true;
-			this.labelAvgTreeHeight.Location = new System.Drawing.Point(650, 173);
+			this.labelAvgTreeHeight.Location = new System.Drawing.Point(12, 173);
 			this.labelAvgTreeHeight.Name = "labelAvgTreeHeight";
 			this.labelAvgTreeHeight.Size = new System.Drawing.Size(132, 17);
 			this.labelAvgTreeHeight.TabIndex = 35;
@@ -516,7 +517,7 @@ namespace ForestReco
 			// checkBoxExportTreeStructures
 			// 
 			this.checkBoxExportTreeStructures.AutoSize = true;
-			this.checkBoxExportTreeStructures.Location = new System.Drawing.Point(237, 310);
+			this.checkBoxExportTreeStructures.Location = new System.Drawing.Point(238, 310);
 			this.checkBoxExportTreeStructures.Name = "checkBoxExportTreeStructures";
 			this.checkBoxExportTreeStructures.Size = new System.Drawing.Size(165, 21);
 			this.checkBoxExportTreeStructures.TabIndex = 38;
@@ -528,7 +529,7 @@ namespace ForestReco
 			// checkBoxExportInvalidTrees
 			// 
 			this.checkBoxExportInvalidTrees.AutoSize = true;
-			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(237, 357);
+			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(238, 360);
 			this.checkBoxExportInvalidTrees.Name = "checkBoxExportInvalidTrees";
 			this.checkBoxExportInvalidTrees.Size = new System.Drawing.Size(149, 21);
 			this.checkBoxExportInvalidTrees.TabIndex = 39;
@@ -540,7 +541,7 @@ namespace ForestReco
 			// checkBoxExportRefTrees
 			// 
 			this.checkBoxExportRefTrees.AutoSize = true;
-			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(237, 384);
+			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(238, 385);
 			this.checkBoxExportRefTrees.Name = "checkBoxExportRefTrees";
 			this.checkBoxExportRefTrees.Size = new System.Drawing.Size(122, 21);
 			this.checkBoxExportRefTrees.TabIndex = 40;
@@ -576,7 +577,7 @@ namespace ForestReco
 			// checkBoxExportCheckTrees
 			// 
 			this.checkBoxExportCheckTrees.AutoSize = true;
-			this.checkBoxExportCheckTrees.Location = new System.Drawing.Point(237, 269);
+			this.checkBoxExportCheckTrees.Location = new System.Drawing.Point(238, 269);
 			this.checkBoxExportCheckTrees.Name = "checkBoxExportCheckTrees";
 			this.checkBoxExportCheckTrees.Size = new System.Drawing.Size(142, 21);
 			this.checkBoxExportCheckTrees.TabIndex = 43;
@@ -612,7 +613,7 @@ namespace ForestReco
 			// checkBoxExportPoints
 			// 
 			this.checkBoxExportPoints.AutoSize = true;
-			this.checkBoxExportPoints.Location = new System.Drawing.Point(237, 411);
+			this.checkBoxExportPoints.Location = new System.Drawing.Point(238, 410);
 			this.checkBoxExportPoints.Name = "checkBoxExportPoints";
 			this.checkBoxExportPoints.Size = new System.Drawing.Size(111, 21);
 			this.checkBoxExportPoints.TabIndex = 46;
@@ -636,7 +637,7 @@ namespace ForestReco
 			// checkBoxExportTreeBoxes
 			// 
 			this.checkBoxExportTreeBoxes.AutoSize = true;
-			this.checkBoxExportTreeBoxes.Location = new System.Drawing.Point(237, 334);
+			this.checkBoxExportTreeBoxes.Location = new System.Drawing.Point(238, 335);
 			this.checkBoxExportTreeBoxes.Name = "checkBoxExportTreeBoxes";
 			this.checkBoxExportTreeBoxes.Size = new System.Drawing.Size(139, 21);
 			this.checkBoxExportTreeBoxes.TabIndex = 53;
@@ -647,17 +648,18 @@ namespace ForestReco
 			// 
 			// btnOpenResult
 			// 
+			this.btnOpenResult.BackColor = System.Drawing.Color.Khaki;
 			this.btnOpenResult.Location = new System.Drawing.Point(712, 451);
 			this.btnOpenResult.Name = "btnOpenResult";
 			this.btnOpenResult.Size = new System.Drawing.Size(109, 32);
 			this.btnOpenResult.TabIndex = 47;
 			this.btnOpenResult.Text = "open result";
-			this.btnOpenResult.UseVisualStyleBackColor = true;
+			this.btnOpenResult.UseVisualStyleBackColor = false;
 			this.btnOpenResult.Click += new System.EventHandler(this.btnOpenResult_Click);
 			// 
 			// textBoxEstimatedSize
 			// 
-			this.textBoxEstimatedSize.Location = new System.Drawing.Point(113, 428);
+			this.textBoxEstimatedSize.Location = new System.Drawing.Point(113, 432);
 			this.textBoxEstimatedSize.Name = "textBoxEstimatedSize";
 			this.textBoxEstimatedSize.ReadOnly = true;
 			this.textBoxEstimatedSize.Size = new System.Drawing.Size(75, 22);
@@ -666,7 +668,7 @@ namespace ForestReco
 			// labelEstimatedTotalSize
 			// 
 			this.labelEstimatedTotalSize.AutoSize = true;
-			this.labelEstimatedTotalSize.Location = new System.Drawing.Point(9, 428);
+			this.labelEstimatedTotalSize.Location = new System.Drawing.Point(9, 432);
 			this.labelEstimatedTotalSize.Name = "labelEstimatedTotalSize";
 			this.labelEstimatedTotalSize.Size = new System.Drawing.Size(98, 17);
 			this.labelEstimatedTotalSize.TabIndex = 50;
@@ -675,7 +677,7 @@ namespace ForestReco
 			// labelEstimatedPartitionSize
 			// 
 			this.labelEstimatedPartitionSize.AutoSize = true;
-			this.labelEstimatedPartitionSize.Location = new System.Drawing.Point(9, 456);
+			this.labelEstimatedPartitionSize.Location = new System.Drawing.Point(9, 460);
 			this.labelEstimatedPartitionSize.Name = "labelEstimatedPartitionSize";
 			this.labelEstimatedPartitionSize.Size = new System.Drawing.Size(88, 17);
 			this.labelEstimatedPartitionSize.TabIndex = 52;
@@ -683,7 +685,7 @@ namespace ForestReco
 			// 
 			// textBoxPartitionSize
 			// 
-			this.textBoxPartitionSize.Location = new System.Drawing.Point(113, 456);
+			this.textBoxPartitionSize.Location = new System.Drawing.Point(113, 460);
 			this.textBoxPartitionSize.Name = "textBoxPartitionSize";
 			this.textBoxPartitionSize.ReadOnly = true;
 			this.textBoxPartitionSize.Size = new System.Drawing.Size(75, 22);
@@ -702,6 +704,7 @@ namespace ForestReco
 			// 
 			// CMainForm
 			// 
+			this.BackColor = System.Drawing.SystemColors.MenuBar;
 			this.ClientSize = new System.Drawing.Size(835, 491);
 			this.Controls.Add(this.checkBoxColorTrees);
 			this.Controls.Add(this.checkBoxExportTreeBoxes);

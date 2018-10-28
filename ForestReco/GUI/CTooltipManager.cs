@@ -48,7 +48,7 @@ namespace ForestReco
 
 				//floats
 				case ESettings.avgTreeHeigh:
-					return "[adviced value = 15-30m] Expected average tree height in given forrest file.\n\n" +
+					return "[adviced value = 15-30m] Expected average tree height in given forrest file. (disabled when 'autoAverageTreeHeight' is checked)\n\n" +
 							"The average height is used in tree extents calculation so it is good to have this value as close to real data as possible. " +
 							"Use this if you have this knowledge about the data. Otherwise use 'autoAverageTreeHeight'";
 
