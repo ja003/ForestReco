@@ -15,6 +15,7 @@ namespace ForestReco
 	{
 		public Obj Obj;
 		public string fileName;
+		//public bool isInvalid;
 
 		public CRefTree() { }
 
@@ -23,10 +24,17 @@ namespace ForestReco
 			treeIndex = pTreeIndex;
 			fileName = pFileName;
 			treePointExtent = pTreePointExtent;
+			isValid = true;
 
 			if (pLoadFromFile)
 			{
 				string[] lines = GetFileLines(pFileName);
+				if (lines.Length == 0)
+				{
+					isValid = false;
+					return;
+				}
+
 				LoadObj(pFileName);
 
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, false, false);
@@ -71,6 +79,7 @@ namespace ForestReco
 		{
 			DeserialiseMode currentMode = DeserialiseMode.None;
 			fileName = pFileName;
+			isValid = true;
 
 			branches = new List<CBranch>();
 			//List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
@@ -168,7 +177,8 @@ namespace ForestReco
 
 			if (!File.Exists(filePath))
 			{
-				CDebug.Error(".reftree file does not exist.");
+				//not error. reftree files doesnt have to be generated yet
+				CDebug.Warning(".reftree file does not exist.");
 				return null;
 			}
 
@@ -369,7 +379,8 @@ namespace ForestReco
 		{
 			if (!File.Exists(refTreeXyzPath))
 			{
-				CDebug.Error("Ref tree " + refTreeXyzPath + " XYZ does not exist.");
+				//not errror. all files doesnt have to be specified
+				CDebug.Warning("Ref tree " + refTreeXyzPath + " XYZ does not exist.");
 				return new string[0];
 			}
 

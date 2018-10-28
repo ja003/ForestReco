@@ -18,33 +18,51 @@ namespace ForestReco
 		{
 			Trees = new List<CRefTree>();
 			//string podkladyPath = CPlatformManager.GetPodkladyPath();
+			List<string> treeFileNames = GetTreeFileNames();
+			/*
 			List<string> treeFileNames = new List<string>()
 			{
 				"R1",
 				"R2",
 				"R3",
-				//"R4",
-				//"R5",
-				//"R6",
-				//"R7",
-				//"R8",
-				//"R9",
-				//"R10",
-				//"R11",
-				//"R12",
-				//"R13",
-				//"R14",
-				//"R15",
-
+				"R4",
+				"R5",
+				"R6",
+				"R7",
+				"R8",
+				"R9",
+				"R10",
+				"R11",
+				"R12",
+				"R13",
+				"R14",
+				"R15",
 
 				//"R7_test"
-			};
+			};*/
 
 			//todo: dont load if not specified
 			//if (CProjectData.loadRefTrees)
 			{
 				LoadTrees(treeFileNames);
 			}
+		}
+
+		private static List<string> GetTreeFileNames()
+		{
+			List<string> names = new List<string>();
+			string folderPath = CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath);
+			string[] subfolders = Directory.GetDirectories(folderPath);
+
+			for (int i = 0; i < subfolders.Length; i++)
+			{
+				string subfolderPath = subfolders[i];
+				string[] pathSplit = subfolderPath.Split('\\');
+				string subfolderName = pathSplit[pathSplit.Length - 1];
+				names.Add(subfolderName);
+			}
+
+			return names;
 		}
 
 		/// <summary>
@@ -124,6 +142,12 @@ namespace ForestReco
 				CRefTree refTree = deserializedRefTree ??
 										 new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
 
+				if (!refTree.isValid)
+				{
+					//this reftree is not valid. case for reftrees in 'ignore' folder
+					CDebug.Warning($"Skipping reftree {fileName}"); 
+					continue;
+				}
 				//material set durring assigning to tree
 				//refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
@@ -145,7 +169,7 @@ namespace ForestReco
 				CDebug.WriteLine(refTree.ToString());
 			}
 		}
-		
+
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
 			if (Trees.Count == 0)
@@ -173,6 +197,8 @@ namespace ForestReco
 			{
 				treeSimilarity = CTreeMath.GetSimilarityWith(refTree, pTree);
 				float similarity = treeSimilarity.similarity;
+				//CDebug.WriteLine($"similarity = {similarity}\n");
+
 				if (similarity > bestSimilarity)
 				{
 					mostSuitableTree = refTree;
