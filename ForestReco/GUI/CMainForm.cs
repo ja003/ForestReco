@@ -350,11 +350,12 @@ namespace ForestReco
 			// 
 			// textPartition
 			// 
-			this.textPartition.Location = new System.Drawing.Point(616, 170);
+			this.textPartition.Location = new System.Drawing.Point(610, 170);
 			this.textPartition.Name = "textPartition";
 			this.textPartition.ReadOnly = true;
-			this.textPartition.Size = new System.Drawing.Size(34, 22);
+			this.textPartition.Size = new System.Drawing.Size(40, 22);
 			this.textPartition.TabIndex = 16;
+			this.textPartition.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// trackBarPartition
 			// 
@@ -406,11 +407,12 @@ namespace ForestReco
 			// 
 			// textGroundArrayStep
 			// 
-			this.textGroundArrayStep.Location = new System.Drawing.Point(791, 170);
+			this.textGroundArrayStep.Location = new System.Drawing.Point(785, 170);
 			this.textGroundArrayStep.Name = "textGroundArrayStep";
 			this.textGroundArrayStep.ReadOnly = true;
-			this.textGroundArrayStep.Size = new System.Drawing.Size(34, 22);
+			this.textGroundArrayStep.Size = new System.Drawing.Size(40, 22);
 			this.textGroundArrayStep.TabIndex = 24;
+			this.textGroundArrayStep.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// labelGroundArrayStep
 			// 
@@ -437,11 +439,12 @@ namespace ForestReco
 			// 
 			// textTreeExtent
 			// 
-			this.textTreeExtent.Location = new System.Drawing.Point(307, 170);
+			this.textTreeExtent.Location = new System.Drawing.Point(301, 170);
 			this.textTreeExtent.Name = "textTreeExtent";
 			this.textTreeExtent.ReadOnly = true;
-			this.textTreeExtent.Size = new System.Drawing.Size(34, 22);
+			this.textTreeExtent.Size = new System.Drawing.Size(40, 22);
 			this.textTreeExtent.TabIndex = 28;
+			this.textTreeExtent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// labelTreeExtent
 			// 
@@ -468,11 +471,12 @@ namespace ForestReco
 			// 
 			// textTreeExtentMultiply
 			// 
-			this.textTreeExtentMultiply.Location = new System.Drawing.Point(471, 170);
+			this.textTreeExtentMultiply.Location = new System.Drawing.Point(465, 170);
 			this.textTreeExtentMultiply.Name = "textTreeExtentMultiply";
 			this.textTreeExtentMultiply.ReadOnly = true;
-			this.textTreeExtentMultiply.Size = new System.Drawing.Size(34, 22);
+			this.textTreeExtentMultiply.Size = new System.Drawing.Size(40, 22);
 			this.textTreeExtentMultiply.TabIndex = 32;
+			this.textTreeExtentMultiply.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// labelTreeExtentMultiply
 			// 
@@ -500,11 +504,12 @@ namespace ForestReco
 			// 
 			// textAvgTreeHeight
 			// 
-			this.textAvgTreeHeight.Location = new System.Drawing.Point(149, 170);
+			this.textAvgTreeHeight.Location = new System.Drawing.Point(143, 170);
 			this.textAvgTreeHeight.Name = "textAvgTreeHeight";
 			this.textAvgTreeHeight.ReadOnly = true;
-			this.textAvgTreeHeight.Size = new System.Drawing.Size(34, 22);
+			this.textAvgTreeHeight.Size = new System.Drawing.Size(40, 22);
 			this.textAvgTreeHeight.TabIndex = 36;
+			this.textAvgTreeHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
 			// labelAvgTreeHeight
 			// 

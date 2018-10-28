@@ -32,8 +32,10 @@ namespace ForestReco
 		public static void Init()
 		{
 			Trees = new List<CTree>();
+			treeIndex = 0;
 			InvalidTrees = new List<CTree>();
 			invalidVegePoints = new List<Vector3>();
+			pointCounter = 0;
 		}
 
 		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;

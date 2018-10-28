@@ -437,7 +437,7 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			return "[" + treeIndex + "] : " + GetTreeHeight() + "m.";
+			return $"[{treeIndex}] : {GetTreeHeight()}m. {Obj.Name}";
 		}
 	}
 }

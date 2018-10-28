@@ -12,8 +12,6 @@ namespace ForestReco
 		public static List<CRefTree> Trees;
 		private const float TREE_POINT_EXTENT = 0.2f;
 
-		public static bool DEBUG = false;
-
 		public static void Init()
 		{
 			Trees = new List<CRefTree>();
@@ -109,7 +107,7 @@ namespace ForestReco
 				counter++;
 
 
-				if (DEBUG) { CDebug.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); }
+				CDebug.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); 
 
 			}
 
@@ -145,7 +143,7 @@ namespace ForestReco
 				if (!refTree.isValid)
 				{
 					//this reftree is not valid. case for reftrees in 'ignore' folder
-					CDebug.Warning($"Skipping reftree {fileName}"); 
+					CDebug.Warning($"Skipping reftree {fileName}");
 					continue;
 				}
 				//material set durring assigning to tree
@@ -170,6 +168,8 @@ namespace ForestReco
 			}
 		}
 
+		static int debugTree = -1;
+
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
 			if (Trees.Count == 0)
@@ -183,15 +183,21 @@ namespace ForestReco
 			float bestSimilarity = 0;
 			if (Trees.Count == 1)
 			{
-				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity); ;
+				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity);
 			}
-			if (CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom))
+			bool forceRandom = pTree.treeIndex != debugTree;
+
+			if (forceRandom||CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom))
 			{
 				int random = new Random().Next(0, Trees.Count);
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
+			//CDebug.WriteLine(pTree.treeIndex + " similarities = \n"); 
 
-			//CDebug.WriteLine(pTree.treeIndex + " similarities = \n");
+			if (pTree.treeIndex == debugTree)
+			{
+				Console.Write("");
+			}
 
 			foreach (CRefTree refTree in Trees)
 			{
@@ -205,9 +211,10 @@ namespace ForestReco
 					bestSimilarity = similarity;
 				}
 				if (bestSimilarity > 0.9f) { break; }
+				if(CProgramStarter.abort){ break; }
 			}
 
-			//CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
+			//CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity); 
 
 			//Obj suitableTree = bestTree.Obj.Clone();
 			//suitableTree.Name += "_" + counter;
@@ -243,13 +250,13 @@ namespace ForestReco
 			pRefTree.Obj.Rotation = new Vector3(0, -pAngleOffset, 0);
 			//pRefTree.Obj.Rotation = new Vector3(0, -CTreeMath.GetOffsetAngleTo(pRefTree, pTargetTree), 0);
 
-			if (DEBUG)
+			/*if (DEBUG)
 			{
 				CDebug.WriteLine(pRefTree.treeIndex +
 					"[" + pRefTree.Obj.Position + "], " +
 					"[" + pRefTree.Obj.Rotation + "]" +
 					". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
-			}
+			}*/
 		}
 	}
 }

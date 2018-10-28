@@ -456,7 +456,7 @@ namespace ForestReco
 			for (int i = approxIndex; isPointOnBranchWithinRange && i > 0 && i < TreePoints.Count; i += dir)
 			{
 				pointOnBranch = TreePoints[i];
-				if (pointOnBranch.Includes(pPoint)) { return true; }
+				if (pointOnBranch.Includes(pPoint, pToleranceMultiply)) { return true; }
 				isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
 			}
 
@@ -466,7 +466,7 @@ namespace ForestReco
 			for (int i = approxIndex; isPointOnBranchWithinRange && i > 0 && i < TreePoints.Count; i += dir)
 			{
 				pointOnBranch = TreePoints[i];
-				if (pointOnBranch.Includes(pPoint)) { return true; }
+				if (pointOnBranch.Includes(pPoint, pToleranceMultiply)) { return true; }
 				isPointOnBranchWithinRange = Math.Abs(pointOnBranch.Y - pPoint.Y) < treePointExtent + 1;
 			}
 

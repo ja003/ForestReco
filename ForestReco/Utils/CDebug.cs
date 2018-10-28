@@ -170,8 +170,9 @@ namespace ForestReco
 			//calledSteps.Add(pStep);
 
 			stepCallCount++;
-			string progress = stepCallCount + "/" +
-				(Enum.GetNames(typeof(EProgramStep)).Length - 2) + ": ";
+			int maxSteps = (Enum.GetNames(typeof(EProgramStep)).Length - 2);
+			stepCallCount = Math.Min(stepCallCount, maxSteps); //bug: sometimes writes higher value
+			string progress = stepCallCount + "/" +	maxSteps + ": ";
 			//-2 for abort states
 			string text;
 			switch (pStep)
