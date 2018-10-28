@@ -98,7 +98,7 @@ namespace ForestReco
 			{
 				if (DEBUG) { CDebug.WriteLine("- try add to : " + t.ToString(CTree.EDebug.Peak)); }
 
-				if (pPointIndex == 707)
+				if (pPointIndex == 173)
 				{
 					Console.Write("");
 				}
@@ -179,7 +179,7 @@ namespace ForestReco
 
 			newTree.groundField = element;
 
-			if (newTree.treeIndex == 66)
+			if (newTree.treeIndex == 27)
 			{
 				CDebug.WriteLine("");
 			}
@@ -350,13 +350,13 @@ namespace ForestReco
 				}
 				CTree treeToMerge = Trees[i];
 
-				if (treeToMerge.Equals(206))
+				if (treeToMerge.Equals(13))
 				{
 					Console.WriteLine("");
 				}
 
 
-				if (pOnlyInvalid && treeToMerge.IsAtBorder())
+				if (pOnlyInvalid && !treeToMerge.isValid && treeToMerge.IsAtBorder())
 				{
 					//CDebug.Warning(treeToMerge + " is at border");
 					continue;
@@ -375,7 +375,20 @@ namespace ForestReco
 					bool isFar = false;
 					bool isSimilarHeight = false;
 
-					if (pOnlyInvalid && possibleTree.isValid && treeToMerge.isValid) { continue; }
+					if (possibleTree.isValid && treeToMerge.isValid)
+					{
+						float mergeFactor = GetMergeValidFacor(treeToMerge, possibleTree);
+						if (mergeFactor > 0.9f)
+						{
+							selectedTree = possibleTree;
+							break;
+						}
+					}
+					if (pOnlyInvalid && possibleTree.isValid && treeToMerge.isValid)
+					{
+						continue;
+					}
+
 
 
 					if (treeToMerge.isValid)
@@ -436,6 +449,44 @@ namespace ForestReco
 				CDebug.Progress(iteration, maxIterations, 50, ref previousMergeStart, mergeStart, "merge");
 				iteration++;
 			}
+		}
+
+		/// <summary>
+		/// Merge trees with similar height which have peaks too close
+		/// </summary>
+		private static float GetMergeValidFacor(CTree pTreeToMerge, CTree pPossibleTree)
+		{
+			float factor = 0;
+			if (pTreeToMerge.treeIndex == 13)
+			{
+				Console.Write("");
+			}
+			float peakHeightDiff = pPossibleTree.peak.Y - pTreeToMerge.peak.Y;
+			float treeExtent = CParameterSetter.treeExtent * CParameterSetter.treeExtentMultiply;
+			float similarHeightFactor = (treeExtent - peakHeightDiff) / treeExtent;
+			bool isSimilarHeight = similarHeightFactor > 0.5f;
+			if (!isSimilarHeight) { return 0; }
+
+			float peakDist2D = CUtils.Get2DDistance(pTreeToMerge.peak, pPossibleTree.peak);
+			if (peakDist2D < treeExtent)
+			{
+				return 1;
+			}
+
+			/*float peakHeightDiff = pPossibleTree.peak.Y - pTreeToMerge.peak.Y;
+			float similarHeightFactor = CParameterSetter.treeExtent - peakHeightDiff;
+			similarHeightFactor = Math.Max(0.1f, similarHeightFactor);
+
+			float peakDist2D = CUtils.Get2DDistance(pTreeToMerge.peak, pPossibleTree.peak);
+			float treeExtent = CParameterSetter.treeExtent * CParameterSetter.treeExtentMultiply;
+			if (peakDist2D > treeExtent)
+			{
+				return 0;
+			}
+			float distFactor = (treeExtent - peakDist2D) / treeExtent;
+			factor = (distFactor + similarHeightFactor) / 2;*/
+
+			return factor;
 		}
 
 		private static CTree MergeTrees(ref CTree pTree1, ref CTree pTree2, bool pValidateRestrictive)
