@@ -241,7 +241,7 @@ namespace ForestReco
 			//const float unacceptableAngle = CTreeManager.MAX_BRANCH_ANGLE * 2;
 			float maxBranchAngle = CTree.GetMaxBranchAngle(suitablePeakPoint, pPoint);
 			float unacceptableAngle = maxBranchAngle;
-			if (angle > unacceptableAngle) { return 0; }
+			if (!pMerging && angle > unacceptableAngle) { return 0; }
 			unacceptableAngle += 30;
 			unacceptableAngle = Math.Min(unacceptableAngle, 100);
 

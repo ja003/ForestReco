@@ -107,7 +107,7 @@ namespace ForestReco
 				counter++;
 
 
-				CDebug.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); 
+				//CDebug.WriteLine("\n mostSuitableRefTree = " + mostSuitableRefTree); 
 
 			}
 
@@ -168,7 +168,7 @@ namespace ForestReco
 			}
 		}
 
-		static int debugTree = -1;
+		static int debugTree = -7;
 
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
