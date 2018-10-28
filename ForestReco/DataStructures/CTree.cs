@@ -544,15 +544,45 @@ namespace ForestReco
 			return isValid;
 		}
 
+		private bool ValidateFirstBranchPoints()
+		{
+			if (Equals(7))
+			{
+				Console.WriteLine("");
+			}
+
+			//too many branch points are too far from peak
+			const float maxDistOfFirstBranchPoint = 1;
+			int tooFarPointsCount = 0;
+			foreach (CBranch branch in branches)
+			{
+				if (branch.TreePoints.Count == 0) { continue; }
+				float dist = peak.Y - branch.TreePoints[0].Y;
+				if (dist > maxDistOfFirstBranchPoint)
+				{
+					tooFarPointsCount++;
+				}
+			}
+			return tooFarPointsCount < 6;
+		}
+
 		private bool ValidatePoints()
 		{
 			if (Equals(debugTree))
 			{
 				Console.WriteLine("");
 			}
+
+			//if(!ValidateFirstBranchPoints()){ return false; }
+			
 			int totalPointCount = GetBranchesPointCount();
 			//float definedHeight = GetTreeHeight() / 2;
 			float definedHeight = Extent.Y;
+
+			//in case only few points are defined at bottom. in this case the mniddle part is almost not defined (its ok)
+			//and validation is affected
+			definedHeight = Math.Min(GetTreeHeight() / 2, definedHeight);
+
 			if (definedHeight < 1) { return false; }
 
 			int requiredPointsPerMeter = 3;
@@ -602,7 +632,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private int debugTree = 54;
+		private int debugTree = 52;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.
@@ -615,6 +645,9 @@ namespace ForestReco
 			{
 				Console.WriteLine("");
 			}
+
+			if (!ValidateFirstBranchPoints()) { return false; }
+
 			float branchDefinedFactor = 0;
 			int undefinedBranchesCount = 0;
 			int wellDefinedBranchesCount = 0;

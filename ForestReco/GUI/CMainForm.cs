@@ -424,7 +424,7 @@ namespace ForestReco
 			this.trackBarTreeExtent.AutoSize = false;
 			this.trackBarTreeExtent.LargeChange = 10;
 			this.trackBarTreeExtent.Location = new System.Drawing.Point(321, 198);
-			this.trackBarTreeExtent.Maximum = 50;
+			this.trackBarTreeExtent.Maximum = 30;
 			this.trackBarTreeExtent.Minimum = 5;
 			this.trackBarTreeExtent.Name = "trackBarTreeExtent";
 			this.trackBarTreeExtent.Size = new System.Drawing.Size(159, 30);
@@ -763,7 +763,7 @@ namespace ForestReco
 
 		private void textOutputFolder_TextChanged(object sender, EventArgs e)
 		{
-			CDebug.Warning("txt change " + textOutputFolder.Text);
+			//CDebug.Warning("txt change " + textOutputFolder.Text);
 			CParameterSetter.SetParameter(
 				ESettings.outputFolderPath, textOutputFolder.Text);
 		}
