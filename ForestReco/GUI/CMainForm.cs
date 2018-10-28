@@ -57,6 +57,7 @@ namespace ForestReco
 		private Label labelEstimatedPartitionSize;
 		private TextBox textBoxPartitionSize;
 		private CheckBox checkBoxExportTreeBoxes;
+		private CheckBox checkBoxColorTrees;
 		private Button btnSellectForrest;
 
 		public CMainForm()
@@ -115,6 +116,8 @@ namespace ForestReco
 				CParameterSetter.GetBoolSettings(ESettings.exportCheckTrees);
 			checkBoxExportTreeBoxes.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes);
+			checkBoxColorTrees.Checked =
+			CParameterSetter.GetBoolSettings(ESettings.colorTrees);
 			checkBoxReducedReftrees.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.useReducedReftreeModels);
 			checkBoxFilterPoints.Checked =
@@ -128,6 +131,7 @@ namespace ForestReco
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportInvalidTrees, ESettings.exportInvalidTrees);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportRefTrees, ESettings.exportRefTrees);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportTreeStructures, ESettings.exportTreeStructures);
+			CTooltipManager.AssignTooltip(myToolTip, checkBoxColorTrees, ESettings.colorTrees);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxReducedReftrees, ESettings.useReducedReftreeModels);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportTreeBoxes, ESettings.exportTreeBoxes);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxUseCheckTree, ESettings.useCheckTreeFile);
@@ -224,6 +228,7 @@ namespace ForestReco
 			this.labelEstimatedTotalSize = new System.Windows.Forms.Label();
 			this.labelEstimatedPartitionSize = new System.Windows.Forms.Label();
 			this.textBoxPartitionSize = new System.Windows.Forms.TextBox();
+			this.checkBoxColorTrees = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -684,9 +689,21 @@ namespace ForestReco
 			this.textBoxPartitionSize.Size = new System.Drawing.Size(75, 22);
 			this.textBoxPartitionSize.TabIndex = 51;
 			// 
+			// checkBoxColorTrees
+			// 
+			this.checkBoxColorTrees.AutoSize = true;
+			this.checkBoxColorTrees.Location = new System.Drawing.Point(238, 451);
+			this.checkBoxColorTrees.Name = "checkBoxColorTrees";
+			this.checkBoxColorTrees.Size = new System.Drawing.Size(97, 21);
+			this.checkBoxColorTrees.TabIndex = 54;
+			this.checkBoxColorTrees.Text = "color trees";
+			this.checkBoxColorTrees.UseVisualStyleBackColor = true;
+			this.checkBoxColorTrees.CheckedChanged += new System.EventHandler(this.checkBoxColorTrees_CheckedChanged);
+			// 
 			// CMainForm
 			// 
 			this.ClientSize = new System.Drawing.Size(835, 491);
+			this.Controls.Add(this.checkBoxColorTrees);
 			this.Controls.Add(this.checkBoxExportTreeBoxes);
 			this.Controls.Add(this.labelEstimatedPartitionSize);
 			this.Controls.Add(this.textBoxPartitionSize);
@@ -975,6 +992,10 @@ namespace ForestReco
 				System.Drawing.Color.Gray : trackBarPartition.BackColor; //dont know color code of 'enabled color'
 		}
 
-		
+		private void checkBoxColorTrees_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ESettings.colorTrees, checkBoxColorTrees.Checked);
+
+		}
 	}
 }

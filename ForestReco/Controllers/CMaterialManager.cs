@@ -12,8 +12,12 @@ namespace ForestReco
 
 		private static Dictionary<EMaterial, List<int>> materialSet;
 
+		private static bool useTreeMaterial;
+
 		public static void Init()
 		{
+			useTreeMaterial = CParameterSetter.GetBoolSettings(ESettings.colorTrees);
+
 			materialSet = new Dictionary<EMaterial, List<int>>();
 
 			materials = new Mtl("colors");
@@ -110,6 +114,8 @@ namespace ForestReco
 
 		private static string GetTreeMaterial(int pIndex)
 		{
+			if(!useTreeMaterial){ return ""; }
+
 			List<int> treeIndexes = materialSet[EMaterial.Tree];
 			int matIndex = (pIndex % treeIndexes.Count + treeIndexes.Count) % treeIndexes.Count;
 			if (matIndex < 0 || matIndex > treeIndexes.Count - 1)

@@ -22,6 +22,8 @@ namespace ForestReco
 					return "Include tree detection structures in final export. It is only for visualisation of points assigned to trees.";
 				case ESettings.exportTreeBoxes:
 					return "Include simple box surrounding tree in final export. It is only for visualisation of tree extent.";
+				case ESettings.colorTrees:
+					return "Assign color material to trees. No neighbouring tree should have the same color. Good for visualization.";
 				case ESettings.exportInvalidTrees:
 					return "Include detected invalid trees in final export. Only for check if some trees which should have been detected were detected correctly.";
 				case ESettings.exportRefTrees:

@@ -140,6 +140,7 @@ namespace ForestReco
 		filterPoints,
 		exportPoints,
 		autoAverageTreeHeight,
-		exportTreeBoxes
+		exportTreeBoxes,
+		colorTrees
 	}
 }

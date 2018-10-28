@@ -253,7 +253,7 @@ namespace ForestReco.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool autoAverageTreeHeight {
             get {
                 return ((bool)(this["autoAverageTreeHeight"]));
@@ -272,6 +272,18 @@ namespace ForestReco.Properties {
             }
             set {
                 this["exportTreeBoxes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool colorTrees {
+            get {
+                return ((bool)(this["colorTrees"]));
+            }
+            set {
+                this["colorTrees"] = value;
             }
         }
     }
