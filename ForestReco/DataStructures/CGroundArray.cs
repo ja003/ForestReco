@@ -470,6 +470,7 @@ namespace ForestReco
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
 			int steps = (int)(pDistance / stepSize);
+			steps = Math.Max(1, steps);
 
 			List<CTree> trees = new List<CTree>();
 

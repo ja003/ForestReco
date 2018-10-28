@@ -183,6 +183,7 @@ namespace ForestReco
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CMainForm));
 			this.btnSellectForrest = new System.Windows.Forms.Button();
 			this.textForrestFilePath = new System.Windows.Forms.TextBox();
 			this.btnSellectReftreeFodlers = new System.Windows.Forms.Button();
@@ -275,7 +276,7 @@ namespace ForestReco
 			// 
 			// btnStart
 			// 
-			this.btnStart.BackColor = System.Drawing.Color.LightGreen;
+			this.btnStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(237)))), ((int)(((byte)(124)))));
 			this.btnStart.Location = new System.Drawing.Point(427, 242);
 			this.btnStart.Name = "btnStart";
 			this.btnStart.Size = new System.Drawing.Size(299, 48);
@@ -319,7 +320,7 @@ namespace ForestReco
 			// 
 			// btnAbort
 			// 
-			this.btnAbort.BackColor = System.Drawing.Color.LightCoral;
+			this.btnAbort.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(124)))), ((int)(((byte)(112)))));
 			this.btnAbort.Location = new System.Drawing.Point(732, 242);
 			this.btnAbort.Name = "btnAbort";
 			this.btnAbort.Size = new System.Drawing.Size(89, 48);
@@ -393,7 +394,7 @@ namespace ForestReco
 			this.trackBarGroundArrayStep.AutoSize = false;
 			this.trackBarGroundArrayStep.LargeChange = 10;
 			this.trackBarGroundArrayStep.Location = new System.Drawing.Point(666, 195);
-			this.trackBarGroundArrayStep.Maximum = 100;
+			this.trackBarGroundArrayStep.Maximum = 30;
 			this.trackBarGroundArrayStep.Minimum = 5;
 			this.trackBarGroundArrayStep.Name = "trackBarGroundArrayStep";
 			this.trackBarGroundArrayStep.Size = new System.Drawing.Size(159, 30);
@@ -648,7 +649,7 @@ namespace ForestReco
 			// 
 			// btnOpenResult
 			// 
-			this.btnOpenResult.BackColor = System.Drawing.Color.Khaki;
+			this.btnOpenResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(161)))), ((int)(((byte)(212)))));
 			this.btnOpenResult.Location = new System.Drawing.Point(712, 451);
 			this.btnOpenResult.Name = "btnOpenResult";
 			this.btnOpenResult.Size = new System.Drawing.Size(109, 32);
@@ -751,6 +752,7 @@ namespace ForestReco
 			this.Controls.Add(this.btnSellectReftreeFodlers);
 			this.Controls.Add(this.textForrestFilePath);
 			this.Controls.Add(this.btnSellectForrest);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "CMainForm";
 			this.Text = "ForrestReco";
 			this.Load += new System.EventHandler(this.MainForm_Load);
