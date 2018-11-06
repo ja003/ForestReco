@@ -59,7 +59,7 @@ namespace ForestReco
 			}
 		}
 
-		public static void AddBBToObj(ref Obj obj, List<CTreePoint> pTreePoints)
+		public static void AddTreePointsBBToObj(ref Obj obj, List<CTreePoint> pTreePoints)
 		{
 			foreach (CTreePoint p in pTreePoints)
 			{

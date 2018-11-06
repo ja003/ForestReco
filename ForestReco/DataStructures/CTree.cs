@@ -469,21 +469,23 @@ namespace ForestReco
 			//display highest peak point
 			allTreePoints.Add(new CTreePoint(peak.maxHeight, treePointExtent));
 
-			//add centers of all tree points
-			List<Vector3> vectorPoints = new List<Vector3>();
-			foreach (CTreePoint p in allTreePoints)
-			{
-				vectorPoints.Add(p.Center);
-			}
-			CObjExporter.AddPointsToObj(ref obj, vectorPoints);
+			
 
 			if (pExportPoints)
 			{
-				CObjExporter.AddBBToObj(ref obj, allTreePoints);
+				CObjExporter.AddTreePointsBBToObj(ref obj, allTreePoints);
 			}
 
 			if (pExportBranches)
 			{
+				//add centers of all tree points
+				List<Vector3> vectorPoints = new List<Vector3>();
+				foreach (CTreePoint p in allTreePoints)
+				{
+					vectorPoints.Add(p.Center);
+				}
+				CObjExporter.AddPointsToObj(ref obj, vectorPoints);
+
 				foreach (CBranch b in branches)
 				{
 					CObjExporter.AddBranchToObj(ref obj, b);
