@@ -427,7 +427,7 @@ namespace ForestReco
 
 		/*public CRefTree Clone(string pNameAppendix)
 		{
-			CRefTree cloneTree = new CRefTree(forrestFullFilePath + pNameAppendix, treeIndex, false);
+			CRefTree cloneTree = new CRefTree(forestFullFilePath + pNameAppendix, treeIndex, false);
 			cloneTree.Obj = Obj.Clone();
 			cloneTree.peak = peak.Clone();
 

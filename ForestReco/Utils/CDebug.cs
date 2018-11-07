@@ -178,10 +178,10 @@ namespace ForestReco
 			switch (pStep)
 			{
 				case EProgramStep.LoadLines:
-					text = "load forrest file lines";
+					text = "load forest file lines";
 					break;
 				case EProgramStep.ParseLines:
-					text = "parse forrest file lines";
+					text = "parse forest file lines";
 					break;
 				case EProgramStep.ProcessGroundPoints:
 					text = "process ground points";

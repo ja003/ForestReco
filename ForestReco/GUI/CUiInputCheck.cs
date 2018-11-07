@@ -45,7 +45,7 @@ namespace ForestReco
 		public static bool CheckProblems()
 		{
 			Reset();
-			CheckPath("Forrest", CParameterSetter.GetStringSettings(ESettings.forrestFilePath), true);
+			CheckPath("Forest", CParameterSetter.GetStringSettings(ESettings.forestFilePath), true);
 			CheckPath("Reftree", CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath), false);
 			CheckPath("Output", CParameterSetter.GetStringSettings(ESettings.outputFolderPath), false);
 			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))

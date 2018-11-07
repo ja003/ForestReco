@@ -12,7 +12,7 @@ namespace ForestReco
 {
 	public class CMainForm : Form
 	{
-		private TextBox textForrestFilePath;
+		private TextBox textForestFilePath;
 		private Button btnSellectReftreeFodlers;
 		private TextBox textReftreeFolder;
 		private Button btnStart;
@@ -58,7 +58,7 @@ namespace ForestReco
 		private TextBox textBoxPartitionSize;
 		private CheckBox checkBoxExportTreeBoxes;
 		private CheckBox checkBoxColorTrees;
-		private Button btnSellectForrest;
+		private Button btnSellectForest;
 
 		public CMainForm()
 		{
@@ -73,7 +73,7 @@ namespace ForestReco
 		private void InitializeValues()
 		{
 			CParameterSetter.Init();
-			textForrestFilePath.Text = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			textForestFilePath.Text = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			textReftreeFolder.Text = CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath);
 			textOutputFolder.Text = CParameterSetter.GetStringSettings(ESettings.outputFolderPath);
 			textCheckTreePath.Text = CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath);
@@ -184,8 +184,8 @@ namespace ForestReco
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CMainForm));
-			this.btnSellectForrest = new System.Windows.Forms.Button();
-			this.textForrestFilePath = new System.Windows.Forms.TextBox();
+			this.btnSellectForest = new System.Windows.Forms.Button();
+			this.textForestFilePath = new System.Windows.Forms.TextBox();
 			this.btnSellectReftreeFodlers = new System.Windows.Forms.Button();
 			this.textReftreeFolder = new System.Windows.Forms.TextBox();
 			this.btnStart = new System.Windows.Forms.Button();
@@ -237,23 +237,23 @@ namespace ForestReco
 			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// btnSellectForrest
+			// btnSellectForest
 			// 
-			this.btnSellectForrest.Location = new System.Drawing.Point(8, 10);
-			this.btnSellectForrest.Name = "btnSellectForrest";
-			this.btnSellectForrest.Size = new System.Drawing.Size(155, 31);
-			this.btnSellectForrest.TabIndex = 0;
-			this.btnSellectForrest.Text = "select forrest file";
-			this.btnSellectForrest.UseVisualStyleBackColor = true;
-			this.btnSellectForrest.Click += new System.EventHandler(this.btnSellectForrest_Click);
+			this.btnSellectForest.Location = new System.Drawing.Point(8, 10);
+			this.btnSellectForest.Name = "btnSellectForest";
+			this.btnSellectForest.Size = new System.Drawing.Size(155, 31);
+			this.btnSellectForest.TabIndex = 0;
+			this.btnSellectForest.Text = "select forest file";
+			this.btnSellectForest.UseVisualStyleBackColor = true;
+			this.btnSellectForest.Click += new System.EventHandler(this.btnSellectForest_Click);
 			// 
-			// textForrestFilePath
+			// textForestFilePath
 			// 
-			this.textForrestFilePath.Location = new System.Drawing.Point(180, 14);
-			this.textForrestFilePath.Name = "textForrestFilePath";
-			this.textForrestFilePath.Size = new System.Drawing.Size(641, 22);
-			this.textForrestFilePath.TabIndex = 1;
-			this.textForrestFilePath.TextChanged += new System.EventHandler(this.textForrestFilePath_TextChanged);
+			this.textForestFilePath.Location = new System.Drawing.Point(180, 14);
+			this.textForestFilePath.Name = "textForestFilePath";
+			this.textForestFilePath.Size = new System.Drawing.Size(641, 22);
+			this.textForestFilePath.TabIndex = 1;
+			this.textForestFilePath.TextChanged += new System.EventHandler(this.textForestFilePath_TextChanged);
 			// 
 			// btnSellectReftreeFodlers
 			// 
@@ -755,11 +755,11 @@ namespace ForestReco
 			this.Controls.Add(this.btnStart);
 			this.Controls.Add(this.textReftreeFolder);
 			this.Controls.Add(this.btnSellectReftreeFodlers);
-			this.Controls.Add(this.textForrestFilePath);
-			this.Controls.Add(this.btnSellectForrest);
+			this.Controls.Add(this.textForestFilePath);
+			this.Controls.Add(this.btnSellectForest);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "CMainForm";
-			this.Text = "ForrestReco";
+			this.Text = "ForestReco";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).EndInit();
@@ -810,25 +810,25 @@ namespace ForestReco
 		}
 
 
-		private void btnSellectForrest_Click(object sender, EventArgs e)
+		private void btnSellectForest_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select forrest file");
+			string path = CParameterSetter.SelectFile("Select forest file");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
 				return;
 			}
-			textForrestFilePath.Clear();
-			textForrestFilePath.Text = path;
+			textForestFilePath.Clear();
+			textForestFilePath.Text = path;
 		}
 
 
-		private void textForrestFilePath_TextChanged(object sender, EventArgs e)
+		private void textForestFilePath_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
-				ESettings.forrestFilePath, textForrestFilePath.Text);
+				ESettings.forestFilePath, textForestFilePath.Text);
 
-			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
 			if(lines == null){ return; }
 

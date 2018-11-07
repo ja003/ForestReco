@@ -114,7 +114,7 @@ namespace ForestReco
 	{
 		None,
 		//strings
-		forrestFilePath,
+		forestFilePath,
 		reftreeFolderPath,
 		outputFolderPath,
 		checkTreeFilePath,

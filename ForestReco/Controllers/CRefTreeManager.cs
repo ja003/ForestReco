@@ -170,6 +170,7 @@ namespace ForestReco
 
 		static int debugTree = -7;
 
+		public static bool debugSimilarites = true;
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
 			if (Trees.Count == 0)
@@ -185,25 +186,21 @@ namespace ForestReco
 			{
 				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity);
 			}
-			bool forceRandom = pTree.treeIndex != debugTree;
+			bool forceRandom = false;//pTree.treeIndex != debugTree;
 
 			if (forceRandom||CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom))
 			{
 				int random = new Random().Next(0, Trees.Count);
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
-			//CDebug.WriteLine(pTree.treeIndex + " similarities = \n"); 
+			if(debugSimilarites){CDebug.WriteLine(pTree.treeIndex + " similarities = \n");} 
 
-			if (pTree.treeIndex == debugTree)
-			{
-				Console.Write("");
-			}
 
 			foreach (CRefTree refTree in Trees)
 			{
 				treeSimilarity = CTreeMath.GetSimilarityWith(refTree, pTree);
 				float similarity = treeSimilarity.similarity;
-				//CDebug.WriteLine($"similarity = {similarity}\n");
+				if (debugSimilarites) {CDebug.WriteLine($"similarity = {similarity}\n");}
 
 				if (similarity > bestSimilarity)
 				{
@@ -214,7 +211,10 @@ namespace ForestReco
 				if(CProgramStarter.abort){ break; }
 			}
 
-			//CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity); 
+			if (debugSimilarites)
+			{
+				CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
+			} 
 
 			//Obj suitableTree = bestTree.Obj.Clone();
 			//suitableTree.Name += "_" + counter;

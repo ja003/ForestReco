@@ -48,7 +48,7 @@ namespace ForestReco
 
 				//floats
 				case ESettings.avgTreeHeigh:
-					return "[adviced value = 15-30m] Expected average tree height in given forrest file. (disabled when 'autoAverageTreeHeight' is checked)\n\n" +
+					return "[adviced value = 15-30m] Expected average tree height in given forest file. (disabled when 'autoAverageTreeHeight' is checked)\n\n" +
 							"The average height is used in tree extents calculation so it is good to have this value as close to real data as possible. " +
 							"Use this if you have this knowledge about the data. Otherwise use 'autoAverageTreeHeight'";
 
@@ -62,7 +62,7 @@ namespace ForestReco
 
 				case ESettings.treeExtent:
 					return "[adviced value = 1-2,5m] The maximal distance of point belonging to tree with height specified in 'average height'.\n\n" +
-							"This value is grows/decreases with actual tree height in proportion to 'average height'. To detect trees which are very close to each other choose smaller value. In sparse forrest this value can be bigger.";
+							"This value is grows/decreases with actual tree height in proportion to 'average height'. To detect trees which are very close to each other choose smaller value. In sparse forest this value can be bigger.";
 
 				case ESettings.treeExtentMultiply:
 					return "[adviced value = 1,5-2,5m] The multiplicator of tree extent during merging process.\n\n" +

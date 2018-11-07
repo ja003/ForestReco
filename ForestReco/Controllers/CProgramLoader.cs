@@ -18,9 +18,9 @@ namespace ForestReco
 		{
 			CDebug.Step(EProgramStep.LoadLines);
 
-			CProjectData.saveFileName = GetFileName(CParameterSetter.GetStringSettings(ESettings.forrestFilePath));
+			CProjectData.saveFileName = GetFileName(CParameterSetter.GetStringSettings(ESettings.forestFilePath));
 
-			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			string[] lines = File.ReadAllLines(fullFilePath);
 			CDebug.Action("load", fullFilePath);
 
@@ -30,7 +30,7 @@ namespace ForestReco
 		public static string[] GetFileLines(string pFile, int pLines)
 		{
 
-			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forrestFilePath);
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			if (!File.Exists(fullFilePath)) { return null; }
 
 			string[] lines = new string[pLines];
