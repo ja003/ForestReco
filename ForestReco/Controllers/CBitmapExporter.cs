@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,32 +37,97 @@ namespace ForestReco
 			}
 
 			StretchColorRange(ref bitmap, maxValue);
-			ExportBitmap(bitmap, "tree_beforeMax");
+			//ExportBitmap(bitmap, "tree_beforeMax");
 
 			FilterBitmap(ref bitmap, GetKernelSize(array.stepSize, .2f), EFilter.Max);
-			//ExportBitmap(bitmap, "tree_beforeMax2");
-			//FilterBitmap(ref bitmap, GetKernelSize(array.stepSize, .2f), EFilter.Max);
 
+			ExportBitmap(bitmap, "heightmap");
+
+			Bitmap bitmapTreePos = new Bitmap(bitmap);
+			AddTreesToBitmap(array, bitmapTreePos, true, false);
+			ExportBitmap(bitmapTreePos, "tree_positions");
+
+			Bitmap bitmapTreeBorder = new Bitmap(bitmap);
+			AddTreesToBitmap(array, bitmapTreeBorder, true, true);
+			ExportBitmap(bitmapTreeBorder, "tree_borders");
+		}
+
+		private static void AddTreesToBitmap(CGroundArray pArray, Bitmap pBitmap, bool pTreePostition, bool pTreeBorder)
+		{
 			Color treeColor = new Color();
 			treeColor = Color.FromArgb(255, 0, 0);
-			int treeBrushSize = GetTreeBrushSize(array.stepSize);
+			Color treeBorderColor = new Color();
+			treeBorderColor = Color.FromArgb(0, 0, 255);
+			Color branchColor = new Color();
+			branchColor = Color.FromArgb(0, 255, 0);
+
+			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize);
+
+			SolidBrush treeBorderBrush = new SolidBrush(treeBorderColor);
+			SolidBrush branchBrush = new SolidBrush(branchColor);
+			SolidBrush treeBrush = new SolidBrush(treeColor);
+			Pen treeBorderPen = new Pen(treeBorderBrush);
+			Pen branchPen = new Pen(branchBrush);
+
 			foreach (CTree tree in CTreeManager.Trees)
 			{
-				CGroundField fieldWithTree = array.GetElementContainingPoint(tree.peak.Center);
+				CGroundField fieldWithTree = pArray.GetElementContainingPoint(tree.peak.Center);
 				int x = fieldWithTree.indexInField.Item1;
 				int y = fieldWithTree.indexInField.Item2;
-				bitmap.SetPixel(x, y, treeColor);
 
-				using (Graphics g = Graphics.FromImage(bitmap))
+				//draw branch extents
+				if (pTreeBorder)
 				{
-					SolidBrush shadowBrush = new SolidBrush(treeColor);
-					g.FillRectangle(shadowBrush, x, y, treeBrushSize, treeBrushSize);
+					List<Vector3> furthestPoints = new List<Vector3>();
+					foreach (CBranch branch in tree.Branches)
+					{
+						furthestPoints.Add(branch.furthestPoint);
+					}
+					for (int i = 0; i < furthestPoints.Count; i++)
+					{
+						Vector3 furthestPoint = furthestPoints[i];
+						Vector3 nextFurthestPoint = furthestPoints[(i + 1) % furthestPoints.Count];
+
+						CGroundField fieldWithFP1 = pArray.GetElementContainingPoint(furthestPoint);
+						CGroundField fieldWithFP2 = pArray.GetElementContainingPoint(nextFurthestPoint);
+						int x1 = fieldWithFP1.indexInField.Item1;
+						int y1 = fieldWithFP1.indexInField.Item2;
+						int x2 = fieldWithFP2.indexInField.Item1;
+						int y2 = fieldWithFP2.indexInField.Item2;
+
+						using (Graphics g = Graphics.FromImage(pBitmap))
+						{
+							g.DrawLine(treeBorderPen, x1, y1, x2, y2);
+						}
+					}
+
+					foreach (CBranch branch in tree.Branches)
+					{
+						CGroundField fieldWithBranch = pArray.GetElementContainingPoint(branch.furthestPoint);
+						int _x = fieldWithBranch.indexInField.Item1;
+						int _y = fieldWithBranch.indexInField.Item2;
+
+						using (Graphics g = Graphics.FromImage(pBitmap))
+						{
+							g.DrawLine(branchPen, x, y, _x, _y);
+						}
+					}
+				}
+				//mark tree position
+				if (pTreePostition)
+				{
+					pBitmap.SetPixel(x, y, treeColor);
+					using (Graphics g = Graphics.FromImage(pBitmap))
+					{
+						//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
+						int _x = x - treeMarkerSize / 2;
+						if(_x < 0){ _x = x; }
+						int _y = y - treeMarkerSize / 2;
+						if(_y < 0){ _y = y; }
+						g.FillRectangle(treeBrush, _x, _y, treeMarkerSize, treeMarkerSize);
+					}
 				}
 			}
-			ExportBitmap(bitmap, "tree_beforeResize");
-			ResizeBitmap(ref bitmap);
-
-			ExportBitmap(bitmap, "tree");
 		}
 
 		public enum EFilter
@@ -144,7 +210,7 @@ namespace ForestReco
 
 		private static int GetTreeBrushSize(float pArrayStepSize)
 		{
-			int size = (int)(0.5f / pArrayStepSize);
+			int size = (int)(0.6f / pArrayStepSize);
 			size = Math.Max(1, size);
 			return size;
 		}
@@ -158,7 +224,7 @@ namespace ForestReco
 
 		private static void ResizeBitmap(ref Bitmap pBitmap)
 		{
-			const int resultWidth = 800;
+			const int resultWidth = 800; //todo: set from GUI
 			float scale = resultWidth / pBitmap.Width;
 			Bitmap resized = new Bitmap(pBitmap, new Size((int)(pBitmap.Width * scale), (int)(pBitmap.Height * scale)));
 			pBitmap = resized;
@@ -166,6 +232,8 @@ namespace ForestReco
 
 		private static void ExportBitmap(Bitmap pBitmap, string pName)
 		{
+			ResizeBitmap(ref pBitmap);
+
 			string fileName = pName + ".jpg";
 			string filePath = CObjPartition.folderPath + "/" + fileName;
 			pBitmap.Save(filePath, ImageFormat.Jpeg);
