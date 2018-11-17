@@ -85,6 +85,11 @@ namespace ForestReco
 			return header?.MinHeight ?? 0;
 		}
 
+		public static float GetMaxHeight()
+		{
+			return header?.MaxHeight ?? 1;
+		}
+
 		public static void AddPoint(Tuple<EClass, Vector3> pParsedLine)
 		{
 			//1 = unclassified

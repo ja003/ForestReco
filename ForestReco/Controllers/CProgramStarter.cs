@@ -83,6 +83,8 @@ namespace ForestReco
 
 			//has to be called after ExportPartition where final folder location is determined
 			CAnalytics.Write();
+			CBitmapExporter.Export();
+
 
 			CDebug.Step(EProgramStep.Done);
 

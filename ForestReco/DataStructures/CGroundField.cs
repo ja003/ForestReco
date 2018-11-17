@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -19,6 +20,8 @@ namespace ForestReco
 
 		public List<Vector3> goundPoints = new List<Vector3>();
 		public List<Vector3> vegePoints = new List<Vector3>();
+
+
 		public List<Vector3> fakePoints = new List<Vector3>();
 		public List<Vector3> validPoints = new List<Vector3>();
 
@@ -154,6 +157,22 @@ namespace ForestReco
 		}
 
 		//PUBLIC
+
+		public Color GetColor()
+		{
+			float? height = GetHeight();
+			Color color = new Color();
+			if (height == null) { return color; }
+
+			float min = CProjectData.GetMinHeight();
+			float max = CProjectData.GetMaxHeight();
+			float value = ((float)height - min) / (max - min);
+			value *= 256;
+			value = 255;
+			int intVal = (int)value;
+			color = Color.FromArgb(intVal, intVal, intVal);
+			return color;
+		}
 
 		public void AddGroundPoint(Vector3 pPoint)
 		{
