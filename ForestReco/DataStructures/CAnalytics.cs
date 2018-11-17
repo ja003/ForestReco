@@ -29,7 +29,7 @@ namespace ForestReco
 		public static List<string> errors = new List<string>();
 
 
-		public static void Write()
+		public static void Write(bool pToFile)
 		{
 			string output = " - ANALYTICS - \n\n";
 			output += $"loadedPoints = {loadedPoints} \n";
@@ -60,9 +60,27 @@ namespace ForestReco
 			}
 
 			CDebug.WriteLine(output);
-			WriteToFile(output);
+			if (pToFile)
+			{
+				WriteToFile(output);
+			}
 
 			errors.Clear(); //reset, so errors dont stack with previous error
+		}
+
+		public static void WriteErrors()
+		{
+			if (CProjectData.mainForm == null)
+			{
+				return;
+			}
+			string progressText = CProjectData.mainForm.textProgress.Text;
+			progressText += " - ERRORS: \n";
+			foreach (string error in errors)
+			{
+				progressText += error + "\n";
+			}
+			CProjectData.mainForm.textProgress.Text = progressText;
 		}
 
 		internal static void AddError(string pText)

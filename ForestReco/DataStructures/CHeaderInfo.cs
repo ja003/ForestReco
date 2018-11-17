@@ -94,7 +94,9 @@ namespace ForestReco
 		public static bool HasHeader(string pFirstLine)
 		{
 			string[] split = pFirstLine.Split(null);
-			return split[0] == "%";
+			string firstSign = split[0];
+			bool result = string.Equals(firstSign, "%") || string.Equals(firstSign, "#");
+			return result;
 		}
 	}
 }

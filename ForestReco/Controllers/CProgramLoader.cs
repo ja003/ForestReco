@@ -103,13 +103,13 @@ namespace ForestReco
 				{
 					// <class, coordinate>
 					Tuple<EClass, Vector3> c = CLazTxtParser.ParseLine(lines[i], pUseHeader);
+					if (c == null) { continue; }
 					//some files have different class counting. we are interested only in classes in EClass
 					if (c.Item1 == EClass.Other)
 					{
 						c = new Tuple<EClass, Vector3>(EClass.Vege, c.Item2);
 						classesCorect = false;
 					}
-					if (c == null) { continue; }
 					parsedLines.Add(c);
 				}
 			}

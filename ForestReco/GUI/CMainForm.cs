@@ -164,8 +164,7 @@ namespace ForestReco
 			{
 				return;
 			}
-
-
+			
 			CProgramStarter.Start();
 		}
 

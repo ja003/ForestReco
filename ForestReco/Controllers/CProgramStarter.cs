@@ -44,6 +44,7 @@ namespace ForestReco
 			else
 			{
 				CDebug.Error("No header is defined");
+				Abort();
 			}
 
 			CRefTreeManager.Init();
@@ -82,7 +83,7 @@ namespace ForestReco
 			CObjPartition.ExportPartition();
 
 			//has to be called after ExportPartition where final folder location is determined
-			CAnalytics.Write();
+			CAnalytics.Write(true);
 			CBitmapExporter.Export();
 
 
@@ -101,6 +102,7 @@ namespace ForestReco
 		public static void OnAborted()
 		{
 			CDebug.Step(EProgramStep.Aborted);
+			CAnalytics.WriteErrors();
 		}
 	}
 }
