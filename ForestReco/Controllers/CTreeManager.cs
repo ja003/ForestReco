@@ -426,7 +426,7 @@ namespace ForestReco
 						}
 					}
 
-					if (treeToMerge.Equals(9))
+					if (treeToMerge.Equals(21))
 					{
 						Console.WriteLine("");
 					}

@@ -221,12 +221,12 @@ namespace ForestReco
 			}
 
 
-
+			/*
 			//TODO:TEST. not very effective
 			float unacceptabledistToPeakDiff = 0.5f;
 			//bool useDistToPeakDiff = distToPeakDiff < unacceptabledistToPeakDiff;
 			float distToPeakDiffFactor = (unacceptabledistToPeakDiff - distToPeakDiff) / unacceptabledistToPeakDiff;
-			distToPeakDiffFactor = Math.Max(0, distToPeakDiffFactor);
+			distToPeakDiffFactor = Math.Max(0, distToPeakDiffFactor);*/
 
 			float refAngleToPoint =
 				CUtils.AngleBetweenThreePoints(pReferencePoint - Vector3.UnitY, pReferencePoint, pPoint);
@@ -277,14 +277,18 @@ namespace ForestReco
 				{
 					Console.WriteLine();
 				}
-				if (pSameBranch)
+				int factorCount = 3;
+				if(distToClosestFactor < .1f){ factorCount -= 1; }
+				totalFactor = (distToClosestFactor + angleFactor + distFactor) / factorCount;
+
+				/*if (pSameBranch)
 				{
 					totalFactor = (distToClosestFactor + angleFactor + distFactor + distToPeakDiffFactor) / 4;
 				}
 				else
 				{
 					totalFactor = (distToClosestFactor + angleFactor + distFactor + .5f * distToPeakDiffFactor) / 3.5f;
-				}
+				}*/
 
 			}
 			else
