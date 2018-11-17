@@ -162,6 +162,11 @@ namespace ForestReco
 
 		//PUBLIC
 
+		/*private float? GetMaxVege(int pKernelSize)
+		{
+			if(MaxVege != null){ return MaxVege; }
+		}*/
+
 		public int? GetColorValue()
 		{
 			float? vegeHeight = MaxVege;
