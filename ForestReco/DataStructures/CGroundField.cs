@@ -160,7 +160,9 @@ namespace ForestReco
 
 		public Color GetColor()
 		{
-			float? height = GetHeight();
+			float? height = MaxPreProcessVege;
+			if (height == null) { height = GetHeight(); }
+
 			Color color = new Color();
 			if (height == null) { return color; }
 
@@ -168,7 +170,6 @@ namespace ForestReco
 			float max = CProjectData.GetMaxHeight();
 			float value = ((float)height - min) / (max - min);
 			value *= 256;
-			value = 255;
 			int intVal = (int)value;
 			color = Color.FromArgb(intVal, intVal, intVal);
 			return color;
