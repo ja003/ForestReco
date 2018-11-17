@@ -13,20 +13,41 @@ namespace ForestReco
 
 		public static void Export()
 		{
-			Bitmap bitmap = new Bitmap(CProjectData.array.arrayXRange, CProjectData.array.arrayYRange);
+			CGroundArray array = CProjectData.detailArray;
+			Bitmap bitmap = new Bitmap(array.arrayXRange, array.arrayYRange);
 
-			CGroundArray array = CProjectData.array;
+			int maxValue = 0;
 			for (int x = 0; x < array.arrayXRange; x++)
 			{
 				for (int y = 0; y < array.arrayYRange; y++)
 				{
-					bitmap.SetPixel(x, y, array.GetElement(x, y).GetColor());
+					CGroundField groundElement = array.GetElement(x, y);
+					int? colorVal = groundElement.GetColorValue();//from detailed array
+
+					if (colorVal == null)
+					{
+						continue;
+						/*//if not defined (expected on many fields, use array used in project with filled in values) 
+						pixelColor = CProjectData.array.GetElementContainingPoint(groundElement.center).GetColor();
+						if (pixelColor == null)
+						{
+							//undefined - should not happen
+							pixelColor = new Color();
+						}*/
+					}
+					int colorVaInt = (int)colorVal;
+					if (colorVaInt > maxValue) { maxValue = colorVaInt; }
+					Color color = Color.FromArgb(colorVaInt, colorVaInt, colorVaInt);
+					bitmap.SetPixel(x, y, color);
 				}
 			}
 
+			StretchColorRange(ref bitmap, maxValue);
+			BlurBitmap(ref bitmap);
+
 			Color treeColor = new Color();
 			treeColor = Color.FromArgb(255, 0, 0);
-			int treeBrushSize = GetTreeBrushSize();
+			int treeBrushSize = GetTreeBrushSize(array.stepSize);
 			foreach (CTree tree in CTreeManager.Trees)
 			{
 				CGroundField fieldWithTree = array.GetElementContainingPoint(tree.peak.Center);
@@ -44,35 +65,60 @@ namespace ForestReco
 			ExportBitmap(bitmap);
 		}
 
-		private static int GetTreeBrushSize()
+		private static void BlurBitmap(ref Bitmap pBitmap)
 		{
-			return 1;
+			//pBitmap.
+
 		}
 
-		private static void ExportBitmap(Bitmap bitmap)
+		private static void StretchColorRange(ref Bitmap pBitmap, int pMaxValue)
+		{
+			float scale = 255 / pMaxValue;
+			for (int x = 0; x < pBitmap.Width; x++)
+			{
+				for (int y = 0; y < pBitmap.Height; y++)
+				{
+					Color color = pBitmap.GetPixel(x, y);
+					int origVal = color.R;
+					int scaledVal = (int)(origVal * scale);
+					Color newColor = Color.FromArgb(scaledVal, scaledVal, scaledVal);
+
+					pBitmap.SetPixel(x, y, newColor);
+				}
+			}
+		}
+
+		private static int GetTreeBrushSize(float pArrayStepSize)
+		{
+			int size = (int)(0.5f / pArrayStepSize);
+			size = Math.Max(1, size);
+			return size;
+		}
+
+		private static void ResizeBitmap(ref Bitmap pBitmap)
 		{
 			int minWidth = 500;
-
-
-			var brush = new SolidBrush(Color.Black);
-
-
-			if (bitmap.Width < minWidth)
+			if (pBitmap.Width < minWidth)
 			{
 				string fileName0 = "trees_orig.Jpeg";
 				string filePath0 = CObjPartition.folderPath + "/" + fileName0;
-				bitmap.Save(filePath0, ImageFormat.Jpeg);
+				pBitmap.Save(filePath0, ImageFormat.Jpeg);
 
-				float scale = minWidth / bitmap.Width;
+				float scale = minWidth / pBitmap.Width;
 				//Bitmap original = (Bitmap)Image.FromFile("DSC_0002.jpg");
-				Bitmap resized = new Bitmap(bitmap, new Size((int)(bitmap.Width * scale), (int)(bitmap.Height  * scale)));
-				bitmap = resized;
+				Bitmap resized = new Bitmap(pBitmap, new Size((int)(pBitmap.Width * scale), (int)(pBitmap.Height * scale)));
+				pBitmap = resized;
 			}
+		}
+
+		private static void ExportBitmap(Bitmap pBitmap)
+		{
+			ResizeBitmap(ref pBitmap);
 
 
 			string fileName = "trees.Jpeg";
 			string filePath = CObjPartition.folderPath + "/" + fileName;
-			bitmap.Save(filePath, ImageFormat.Jpeg);
+			pBitmap.Save(filePath, ImageFormat.Jpeg);
 		}
 	}
 }

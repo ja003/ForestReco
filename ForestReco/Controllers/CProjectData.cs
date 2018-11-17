@@ -27,6 +27,7 @@ namespace ForestReco
 		
 
 		public static CGroundArray array;
+		public static CGroundArray detailArray;
 		//public static float groundArrayStep;
 
 		public static CHeaderInfo header;

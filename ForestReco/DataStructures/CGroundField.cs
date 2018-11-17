@@ -33,6 +33,10 @@ namespace ForestReco
 		public float? MaxGround;
 		public float? SumGround;
 
+		public float? MinVege;
+		public float? MaxVege;
+
+
 		public int VertexIndex = -1;
 
 		public readonly Tuple<int, int> indexInField;
@@ -158,21 +162,29 @@ namespace ForestReco
 
 		//PUBLIC
 
-		public Color GetColor()
+		public int? GetColorValue()
 		{
-			float? height = MaxPreProcessVege;
-			if (height == null) { height = GetHeight(); }
+			float? vegeHeight = MaxVege;
+			float? groundHeight = CProjectData.array.GetElementContainingPoint(center).GetHeight();
+			float height = 0;
+			if (vegeHeight != null && groundHeight != null)
+			{
+				height = (float)vegeHeight - (float)groundHeight;
+			}
+			//Color color = new Color();
+			float max = CTreeManager.AVERAGE_MAX_TREE_HEIGHT;
+			float value = height / max;
+			value *= 255;
+			if (value < 0 || value > 255)
+			{
+				CDebug.Error($"color value = {value}!", false);
+				value = Math.Max(0, value);
+				value = Math.Min(255, value);
+			}
 
-			Color color = new Color();
-			if (height == null) { return color; }
-
-			float min = CProjectData.GetMinHeight();
-			float max = CProjectData.GetMaxHeight();
-			float value = ((float)height - min) / (max - min);
-			value *= 256;
 			int intVal = (int)value;
-			color = Color.FromArgb(intVal, intVal, intVal);
-			return color;
+			//color = Color.FromArgb(intVal, intVal, intVal);
+			return intVal;
 		}
 
 		public void AddGroundPoint(Vector3 pPoint)
@@ -204,6 +216,10 @@ namespace ForestReco
 				CDebug.Error($"point {pPoint} is too far from center {center}");
 			}
 			vegePoints.Add(pPoint);
+
+			float height = pPoint.Y;
+			if (height > MaxVege || MaxVege == null) { MaxVege = height; }
+			if (height < MinVege || MinVege == null) { MinVege = height; }
 		}
 
 		public void AddPreProcessVegePoint(Vector3 pPoint)

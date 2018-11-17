@@ -90,6 +90,7 @@ namespace ForestReco
 				return;
 			}*/
 			CProjectData.array.AddPointInField(pPoint, CGroundArray.EPointType.Vege);
+			CProjectData.detailArray.AddPointInField(pPoint, CGroundArray.EPointType.Vege);
 
 			List<CTree> possibleTrees = GetPossibleTreesFor(pPoint, EPossibleTreesMethos.ClosestHigher);
 

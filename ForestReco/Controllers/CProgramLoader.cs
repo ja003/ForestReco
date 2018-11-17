@@ -74,7 +74,8 @@ namespace ForestReco
 			//float stepSize = .4f; //in meters
 			if (pArray)
 			{
-				CProjectData.array = new CGroundArray();
+				CProjectData.array = new CGroundArray(CParameterSetter.groundArrayStep);
+				CProjectData.detailArray = new CGroundArray(0.1f);
 
 				//CObjPartition is dependent on Array initialization
 				CObjPartition.Init();
@@ -347,6 +348,7 @@ namespace ForestReco
 
 				Vector3 point = CProjectData.groundPoints[i];
 				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground);
+				CProjectData.detailArray?.AddPointInField(point, CGroundArray.EPointType.Ground);
 			}
 
 			if (CProjectData.array == null)

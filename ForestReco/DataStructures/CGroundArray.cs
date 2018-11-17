@@ -14,7 +14,7 @@ namespace ForestReco
 		private CGroundField[,] array;
 		public List<CGroundField> fields { get; private set; }
 
-		private float stepSize;
+		public float stepSize { get; }
 		public int arrayXRange { get; }
 		public int arrayYRange { get; }
 		// ReSharper disable once NotAccessedField.Local
@@ -28,9 +28,9 @@ namespace ForestReco
 
 		//--------------------------------------------------------------
 
-		public CGroundArray()
+		public CGroundArray(float pStepSize)
 		{
-			stepSize = CParameterSetter.groundArrayStep;
+			stepSize = pStepSize;
 
 			botLeftCorner = CProjectData.header.BotLeftCorner;
 			topRightCorner = CProjectData.header.TopRightCorner;
@@ -319,7 +319,7 @@ namespace ForestReco
 			{
 				Vector3 currentPoint = heights[i];
 				float dist = Vector3.Distance(currentPoint, selectedPoint);
-				if (dist < CParameterSetter.groundArrayStep + 0.5f)
+				if (dist < stepSize + 0.5f)
 				{
 					selectedPoint = currentPoint;
 					continue;
