@@ -111,6 +111,7 @@ namespace ForestReco
 
 			}
 
+			CAnalytics.reftreeAssignDuration = CAnalytics.GetDuration(addTreeObjModelsStart);
 			CDebug.Duration("Assign ref tree models", addTreeObjModelsStart);
 		}
 
@@ -168,7 +169,7 @@ namespace ForestReco
 			}
 		}
 
-		static int debugTree = -7;
+		static int debugTree = 185;
 
 		public static bool debugSimilarites = true;
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
@@ -188,19 +189,21 @@ namespace ForestReco
 			}
 			bool forceRandom = false;//pTree.treeIndex != debugTree;
 
-			if (forceRandom||CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom))
+			bool randomReftree = CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom)
+				&& pTree.treeIndex != debugTree;
+			if (forceRandom || randomReftree)
 			{
 				int random = new Random().Next(0, Trees.Count);
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
-			if(debugSimilarites){CDebug.WriteLine(pTree.treeIndex + " similarities = \n");} 
+			if (debugSimilarites) { CDebug.WriteLine(pTree.treeIndex + " similarities = \n"); }
 
 
 			foreach (CRefTree refTree in Trees)
 			{
 				treeSimilarity = CTreeMath.GetSimilarityWith(refTree, pTree);
 				float similarity = treeSimilarity.similarity;
-				if (debugSimilarites) {CDebug.WriteLine($"similarity = {similarity}\n");}
+				if (debugSimilarites) { CDebug.WriteLine($"similarity = {similarity}"); }
 
 				if (similarity > bestSimilarity)
 				{
@@ -208,13 +211,15 @@ namespace ForestReco
 					bestSimilarity = similarity;
 				}
 				if (bestSimilarity > 0.9f) { break; }
-				if(CProgramStarter.abort){ break; }
+				if (CProgramStarter.abort) { break; }
 			}
 
 			if (debugSimilarites)
 			{
 				CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
-			} 
+				CDebug.WriteLine($"tree height = {pTree.GetTreeHeight()}");
+				CDebug.WriteLine($"reftree height = {mostSuitableTree.GetTreeHeight()}");
+			}
 
 			//Obj suitableTree = bestTree.Obj.Clone();
 			//suitableTree.Name += "_" + counter;

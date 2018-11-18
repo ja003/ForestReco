@@ -26,6 +26,8 @@ namespace ForestReco
 		public static int assignedCheckTrees;
 		public static int invalidCheckTrees;
 
+		public static double reftreeAssignDuration;
+
 		public static List<string> errors = new List<string>();
 
 
@@ -49,9 +51,19 @@ namespace ForestReco
 			output += $"maxTreeHeight = {maxTreeHeight} \n";
 			output += $"minTreeHeight = {minTreeHeight} \n\n";
 
-			output += $"loadedCheckTrees = {loadedCheckTrees} \n";
-			output += $"assignedCheckTrees = {assignedCheckTrees} \n";
-			output += $"invalidCheckTrees = {invalidCheckTrees} \n";
+
+			output += "Duration";
+			output += $"reftreeAssignDuration = {reftreeAssignDuration} \n";
+			//todo: other
+
+
+			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
+			{
+				output += "Checktree";
+				output += $"loadedCheckTrees = {loadedCheckTrees} \n";
+				output += $"assignedCheckTrees = {assignedCheckTrees} \n";
+				output += $"invalidCheckTrees = {invalidCheckTrees} \n";
+			}
 
 			output += $"\nERRORS\n";
 			foreach (string error in errors)
@@ -81,6 +93,11 @@ namespace ForestReco
 				progressText += error + "\n";
 			}
 			CProjectData.mainForm.textProgress.Text = progressText;
+		}
+
+		public static double GetDuration(DateTime pStartTime)
+		{
+			return (DateTime.Now - pStartTime).TotalSeconds;
 		}
 
 		internal static void AddError(string pText)

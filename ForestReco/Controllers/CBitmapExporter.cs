@@ -246,6 +246,7 @@ namespace ForestReco
 
 		private static void StretchColorRange(ref Bitmap pBitmap, int pMaxValue)
 		{
+			pMaxValue = Math.Max(1, pMaxValue); //if no value was not assigned (its error, but just to prevent exception)
 			float scale = 255f / pMaxValue;
 			for (int x = 0; x < pBitmap.Width; x++)
 			{
