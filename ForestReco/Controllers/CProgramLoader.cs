@@ -123,7 +123,6 @@ namespace ForestReco
 
 		public static void ProcessParsedLines(List<Tuple<EClass, Vector3>> parsedLines)
 		{
-
 			CAnalytics.loadedPoints = parsedLines.Count;
 			AddPointsFromLines(parsedLines);
 
