@@ -47,21 +47,30 @@ namespace ForestReco
 			AddTreesToBitmap(array, bitmapTreePos, true, false);
 			ExportBitmap(bitmapTreePos, "tree_positions");
 
+			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
+			{
+				Bitmap bitmapChecktree = new Bitmap(bitmapTreePos);
+				AddChecktreesToBitmap(array, bitmapChecktree);
+				ExportBitmap(bitmapChecktree, "tree_check");
+			}
+
 			Bitmap bitmapTreeBorder = new Bitmap(bitmap);
 			AddTreesToBitmap(array, bitmapTreeBorder, true, true);
 			ExportBitmap(bitmapTreeBorder, "tree_borders");
+
+
 		}
 
 		private static void AddTreesToBitmap(CGroundArray pArray, Bitmap pBitmap, bool pTreePostition, bool pTreeBorder)
 		{
 			Color treeColor = new Color();
-			treeColor = Color.FromArgb(255, 0, 0);
+			treeColor = Color.Blue;
 			Color treeBorderColor = new Color();
-			treeBorderColor = Color.FromArgb(0, 0, 255);
+			treeBorderColor = Color.FromArgb(255, 0, 255);
 			Color branchColor = new Color();
-			branchColor = Color.FromArgb(0, 255, 0);
+			branchColor = Color.Yellow;
 
-			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize);
+			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize, false);
 
 			SolidBrush treeBorderBrush = new SolidBrush(treeBorderColor);
 			SolidBrush branchBrush = new SolidBrush(branchColor);
@@ -121,11 +130,55 @@ namespace ForestReco
 					{
 						//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
 						int _x = x - treeMarkerSize / 2;
-						if(_x < 0){ _x = x; }
+						if (_x < 0) { _x = x; }
 						int _y = y - treeMarkerSize / 2;
-						if(_y < 0){ _y = y; }
+						if (_y < 0) { _y = y; }
 						g.FillRectangle(treeBrush, _x, _y, treeMarkerSize, treeMarkerSize);
 					}
+				}
+			}
+		}
+
+		private static void AddChecktreesToBitmap(CGroundArray pArray, Bitmap pBitmap)
+		{
+			Color checktreeOk = new Color();
+			checktreeOk = Color.Green;
+			Color checktreeFail = new Color();
+			checktreeFail = Color.Red;
+			Color checktreeInvalid = new Color();
+			checktreeInvalid = Color.Orange;
+
+			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize, true);
+
+			SolidBrush checktreeFailBrush = new SolidBrush(checktreeFail);
+			SolidBrush checktreeInvalidBrush = new SolidBrush(checktreeInvalid);
+			SolidBrush checktreeOkBrush = new SolidBrush(checktreeOk);
+			//Pen treeBorderPen = new Pen(checktreeFailBrush);
+			//Pen branchPen = new Pen(checktreeInvalidBrush);
+
+			foreach (CCheckTree tree in CCheckTreeManager.Trees)
+			{
+				CGroundField fieldWithTree = pArray.GetElementContainingPoint(tree.position);
+				if (fieldWithTree == null) { continue; }
+
+				int x = fieldWithTree.indexInField.Item1;
+				int y = fieldWithTree.indexInField.Item2;
+
+				pBitmap.SetPixel(x, y, checktreeOk);
+				using (Graphics g = Graphics.FromImage(pBitmap))
+				{
+					//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
+					int _x = x - treeMarkerSize / 2;
+					if (_x < 0) { _x = x; }
+					int _y = y - treeMarkerSize / 2;
+					if (_y < 0) { _y = y; }
+					SolidBrush brush = checktreeInvalidBrush;
+					if (!tree.isInvalid)
+					{
+						brush = tree.assignedTree == null ? checktreeFailBrush : checktreeOkBrush;
+					}
+
+					g.FillRectangle(brush, _x, _y, treeMarkerSize, treeMarkerSize);
 				}
 			}
 		}
@@ -208,9 +261,10 @@ namespace ForestReco
 			}
 		}
 
-		private static int GetTreeBrushSize(float pArrayStepSize)
+		private static int GetTreeBrushSize(float pArrayStepSize, bool pSmall)
 		{
 			int size = (int)(0.6f / pArrayStepSize);
+			if(pSmall){ size -= 1; }
 			size = Math.Max(1, size);
 			return size;
 		}
