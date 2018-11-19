@@ -222,6 +222,8 @@ namespace ForestReco
 				return;
 			}
 
+			DateTime fillAllHeightsStart = DateTime.Now;
+
 			int counter = 1;
 			while (!CProjectData.array.IsAllDefined())
 			{
@@ -241,6 +243,8 @@ namespace ForestReco
 				}
 				CDebug.Duration("FillMissingHeights", fillHeightsStart);
 			}
+			CAnalytics.fillAllHeightsDuration = CAnalytics.GetDuration(fillAllHeightsStart);
+			CDebug.Duration("fillAllHeights", fillAllHeightsStart);
 		}
 
 		private static void AddPointsFromLines(List<Tuple<EClass, Vector3>> pParsedLines)
@@ -263,6 +267,7 @@ namespace ForestReco
 			CDebug.Step(EProgramStep.ProcessVegePoints);
 			ProcessVegePoints();
 
+			//CAnalytics.detectionDuration = CAnalytics.GetDuration(processStartTime);
 			CDebug.Duration("All points added", processStartTime);
 		}
 
@@ -336,6 +341,7 @@ namespace ForestReco
 
 				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, processVegePointsStart, "added point");
 			}
+			CAnalytics.processVegePointsDuration = CAnalytics.GetDuration(processVegePointsStart);
 			CDebug.Duration("ProcessVegePoints", processVegePointsStart);
 		}
 

@@ -155,7 +155,8 @@ namespace ForestReco
 
 				counter++;
 			}
-			CDebug.Duration("Load ref trees", lastDebugTime);
+			CAnalytics.loadReftreesDuration = CAnalytics.GetDuration(loadTreesStartTime);
+			CDebug.Duration("Load ref trees", loadTreesStartTime);
 
 			DebugRefTrees();
 		}

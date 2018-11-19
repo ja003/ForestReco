@@ -13,7 +13,7 @@ namespace ForestReco
 
 		public static void Start()
 		{
-			DateTime start = DateTime.Now;
+			DateTime startTime = DateTime.Now;
 			abort = false;
 			CProjectData.Init();
 			CDebug.Init();
@@ -85,8 +85,13 @@ namespace ForestReco
 				CObjPartition.ExportPartition();
 
 				//has to be called after ExportPartition where final folder location is determined
-				CAnalytics.Write(true);
+				
 				CBitmapExporter.Export();
+
+				CAnalytics.totalDuration = CAnalytics.GetDuration(startTime);
+				CDebug.Duration("total time", startTime);
+
+				CAnalytics.Write(true);
 			}
 			catch (Exception e)
 			{
@@ -99,7 +104,7 @@ namespace ForestReco
 				OnAborted();
 				return;
 			}
-
+			
 			CDebug.Step(EProgramStep.Done);
 
 		}

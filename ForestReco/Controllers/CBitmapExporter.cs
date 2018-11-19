@@ -14,6 +14,8 @@ namespace ForestReco
 
 		public static void Export()
 		{
+			DateTime bitmapStart = DateTime.Now;
+
 			CGroundArray array = CProjectData.detailArray;
 			Bitmap bitmap = new Bitmap(array.arrayXRange, array.arrayYRange);
 
@@ -58,7 +60,8 @@ namespace ForestReco
 			AddTreesToBitmap(array, bitmapTreeBorder, true, true);
 			ExportBitmap(bitmapTreeBorder, "tree_borders");
 
-
+			CAnalytics.bitmapExportDuration = CAnalytics.GetDuration(bitmapStart);
+			CDebug.Duration("bitmap export", bitmapStart);
 		}
 
 		private static void AddTreesToBitmap(CGroundArray pArray, Bitmap pBitmap, bool pTreePostition, bool pTreeBorder)

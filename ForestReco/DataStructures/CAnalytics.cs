@@ -26,10 +26,20 @@ namespace ForestReco
 		public static int assignedCheckTrees;
 		public static int invalidCheckTrees;
 
-		public static double reftreeAssignDuration;
-
 		public static List<string> errors = new List<string>();
 
+		//durations
+		public static double loadReftreesDuration;
+		public static double fillAllHeightsDuration;
+
+		public static double processVegePointsDuration;
+		public static double firstMergeDuration;
+		public static double secondMergeDuration;
+
+		public static double reftreeAssignDuration;
+
+		public static double bitmapExportDuration;
+		public static double totalDuration;
 
 		public static void Write(bool pToFile)
 		{
@@ -52,8 +62,16 @@ namespace ForestReco
 			output += $"minTreeHeight = {minTreeHeight} \n\n";
 
 
-			output += "Duration";
-			output += $"reftreeAssignDuration = {reftreeAssignDuration} \n";
+			output += "Duration\n";
+			output += $"load reftrees = {loadReftreesDuration} \n";
+			output += $"fill missing ground = {fillAllHeightsDuration} \n";
+			output += $"initial detection = {processVegePointsDuration} \n";
+			output += $"first merge = {firstMergeDuration} \n";
+			output += $"second merge = {secondMergeDuration} \n";
+			output += $"reftree assignment = {reftreeAssignDuration} \n";
+			output += $"bitmap export = {bitmapExportDuration} \n";
+			output += $"-------------------\n";
+			output += $"total = {totalDuration} \n";
 			//todo: other
 
 

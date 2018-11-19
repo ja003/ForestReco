@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +52,8 @@ namespace ForestReco
 
 		internal static void Duration(string pText, DateTime pStartTime)
 		{
-			WriteLine(pText + " | duration = " + (DateTime.Now - pStartTime).TotalSeconds);
+			double totalSeconds = CAnalytics.GetDuration(pStartTime);
+			WriteLine(pText + " | duration = " + totalSeconds);
 		}
 
 		public static void Progress(int pIteration, int pMaxIteration, int pDebugFrequency, ref DateTime pPreviousDebugStart, DateTime pStart, string pText)

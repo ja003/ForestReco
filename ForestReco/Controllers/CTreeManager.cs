@@ -329,6 +329,15 @@ namespace ForestReco
 
 			MergeGoodAddFactorTrees(pOnlyInvalid);
 
+			if (pOnlyInvalid)
+			{
+				CAnalytics.secondMergeDuration = CAnalytics.GetDuration(mergeStartTime);
+			}
+			else
+			{
+				CAnalytics.firstMergeDuration = CAnalytics.GetDuration(mergeStartTime);
+			}
+
 			CDebug.Duration("Trees merge", mergeStartTime);
 			CDebug.Count("Number of trees merged", treeCountBeforeMerge - Trees.Count);
 		}
@@ -549,7 +558,8 @@ namespace ForestReco
 			}
 		}
 
-		public static void ProcessAllTrees()
+		//todo: delete
+		/*public static void ProcessAllTrees()
 		{
 			DateTime processTreesStartTime = DateTime.Now;
 			CDebug.WriteLine("ProcessAllTrees", true);
@@ -558,8 +568,7 @@ namespace ForestReco
 				t.Process();
 			}
 			CDebug.Duration("Trees processed", processTreesStartTime);
-
-		}
+		}*/
 
 		public static void DebugTrees()
 		{
