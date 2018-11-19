@@ -572,6 +572,12 @@ namespace ForestReco
 			return pPoint.Y - groundHeight;
 		}
 
+		public bool IsAtBorder(Vector3 pPoint)
+		{
+			float distanceToBorder = GetDistanceToBorderFrom(pPoint);
+			return distanceToBorder < CParameterSetter.GetFloatSettings(ESettings.treeExtent);
+		}
+
 		public float GetDistanceToBorderFrom(Vector3 pPoint)
 		{
 			float xDistToRight = topRightCorner.X - pPoint.X;

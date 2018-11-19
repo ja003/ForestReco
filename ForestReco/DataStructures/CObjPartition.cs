@@ -156,7 +156,7 @@ namespace ForestReco
 			{
 				foreach (CCheckTree tree in CCheckTreeManager.Trees)
 				{
-					AddToPartiotion(tree.GetObj(), new Tuple<int, int>(0, 0));
+					AddToPartition(tree.GetObj(), new Tuple<int, int>(0, 0));
 				}
 			}
 		}
@@ -173,10 +173,10 @@ namespace ForestReco
 				CDebug.Error("AddObj is null!");
 			}
 			Tuple<int, int> index = GetIndexInArray(pArrayIndexX, pArrayIndexY);
-			AddToPartiotion(pObj, index);
+			AddToPartition(pObj, index);
 		}
 
-		private static void AddToPartiotion(Obj pObj, Tuple<int, int> pIndex)
+		private static void AddToPartition(Obj pObj, Tuple<int, int> pIndex)
 		{
 			objPartition[pIndex.Item1, pIndex.Item2].Add(pObj);
 		}

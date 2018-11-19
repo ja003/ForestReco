@@ -173,6 +173,14 @@ namespace ForestReco
 
 		private static void CreateNewTree(Vector3 pPoint)
 		{
+			//not solving border problem much
+			/*if (CProjectData.array.IsAtBorder(pPoint))
+			{
+				//CProjectData.fakePoints.Add(pPoint);
+				CProjectData.array.GetElementContainingPoint(pPoint).fakePoints.Add(pPoint);
+				return;
+			}*/
+
 			CTree newTree = new CTree(pPoint, treeIndex, TREE_POINT_EXTENT);
 			Trees.Add(newTree);
 			treeIndex++;
