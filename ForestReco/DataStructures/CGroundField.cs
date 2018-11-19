@@ -182,7 +182,8 @@ namespace ForestReco
 			value *= 255;
 			if (value < 0 || value > 255)
 			{
-				CDebug.Error($"color value = {value}!", false);
+				//not error - comparing just to AVERAGE_MAX_TREE_HEIGHT, not MAX
+				//CDebug.Error($"color value = {value}!", false);
 				value = Math.Max(0, value);
 				value = Math.Min(255, value);
 			}

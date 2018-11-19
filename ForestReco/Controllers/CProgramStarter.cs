@@ -88,6 +88,7 @@ namespace ForestReco
 
 				try
 				{
+					CDebug.Step(EProgramStep.Bitmap);
 					CBitmapExporter.Export();
 				}
 				catch (Exception e)

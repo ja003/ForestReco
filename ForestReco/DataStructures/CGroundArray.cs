@@ -112,7 +112,10 @@ namespace ForestReco
 		public CGroundField GetElementContainingPoint(Vector3 pPoint)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
-			if (!IsWithinBounds(index)) { return null; }
+			if (!IsWithinBounds(index))
+			{
+				return null;
+			}
 			return array[index.Item1, index.Item2];
 		}
 

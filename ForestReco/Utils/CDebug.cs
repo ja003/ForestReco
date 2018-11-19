@@ -224,6 +224,9 @@ namespace ForestReco
 				case EProgramStep.Export:
 					text = "exporting";
 					break;
+				case EProgramStep.Bitmap:
+					text = "generating bitmaps";
+					break;
 				case EProgramStep.Done:
 					text = "DONE";
 					break;
@@ -259,7 +262,8 @@ namespace ForestReco
 		LoadCheckTrees = 13,
 		AssignCheckTrees = 14,
 		Export = 15,
-		Done = 16,
+		Bitmap = 16,
+		Done = 17,
 
 		Aborting,
 		Aborted

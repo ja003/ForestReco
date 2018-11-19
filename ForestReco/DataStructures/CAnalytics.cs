@@ -65,7 +65,7 @@ namespace ForestReco
 			output += "Duration\n";
 			output += $"load reftrees = {loadReftreesDuration} \n";
 			output += $"fill missing ground = {fillAllHeightsDuration} \n";
-			output += $"initial detection = {processVegePointsDuration} \n";
+			output += $"add vege points = {processVegePointsDuration} \n";
 			output += $"first merge = {firstMergeDuration} \n";
 			output += $"second merge = {secondMergeDuration} \n";
 			output += $"reftree assignment = {reftreeAssignDuration} \n";

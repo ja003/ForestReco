@@ -172,7 +172,9 @@ namespace ForestReco
 
 		static int debugTree = 185;
 
-		public static bool debugSimilarites = true;
+		public static bool debugSimilarites = false; //todo: nějak omezit?
+		public static bool forceAlgorithm = false;
+
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{
 			if (Trees.Count == 0)
@@ -184,7 +186,7 @@ namespace ForestReco
 			CRefTree mostSuitableTree = Trees[0];
 			STreeSimilarity treeSimilarity = new STreeSimilarity();
 			float bestSimilarity = 0;
-			if (Trees.Count == 1)
+			if (Trees.Count == 1 && !forceAlgorithm)
 			{
 				return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, treeSimilarity);
 			}
@@ -211,7 +213,7 @@ namespace ForestReco
 					mostSuitableTree = refTree;
 					bestSimilarity = similarity;
 				}
-				if (bestSimilarity > 0.9f) { break; }
+				if (bestSimilarity > 0.9f && !forceAlgorithm) { break; }
 				if (CProgramStarter.abort) { break; }
 			}
 

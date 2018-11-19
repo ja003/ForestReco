@@ -45,33 +45,47 @@ namespace ForestReco
 
 			ExportBitmap(bitmap, "heightmap");
 
+			int bitmapsCount = 3;
+			bool useCheckTree = CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile);
+			if (useCheckTree) { bitmapsCount++; }
+
+			CDebug.Progress(1, bitmapsCount, 1, ref bitmapStart, bitmapStart, "bitmap: ");
+
 			Bitmap bitmapTreePos = new Bitmap(bitmap);
 			AddTreesToBitmap(array, bitmapTreePos, true, false);
 			ExportBitmap(bitmapTreePos, "tree_positions");
 
-			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
+			CDebug.Progress(2, bitmapsCount, 1, ref bitmapStart, bitmapStart, "bitmap: ");
+
+			if (useCheckTree)
 			{
 				Bitmap bitmapChecktree = new Bitmap(bitmapTreePos);
 				AddChecktreesToBitmap(array, bitmapChecktree);
 				ExportBitmap(bitmapChecktree, "tree_check");
+				CDebug.Progress(bitmapsCount - 1, bitmapsCount, 1, ref bitmapStart, bitmapStart, "bitmap: ");
 			}
 
 			Bitmap bitmapTreeBorder = new Bitmap(bitmap);
 			AddTreesToBitmap(array, bitmapTreeBorder, true, true);
 			ExportBitmap(bitmapTreeBorder, "tree_borders");
 
+			CDebug.Progress(bitmapsCount, bitmapsCount, 1, ref bitmapStart, bitmapStart, "bitmap: ");
+
+
 			CAnalytics.bitmapExportDuration = CAnalytics.GetDuration(bitmapStart);
 			CDebug.Duration("bitmap export", bitmapStart);
 		}
 
+		private static bool IsOOB(int pX, int pY, Bitmap pBitmap)
+		{
+			return pX < 0 || pX >= pBitmap.Width || pY < 0 || pY >= pBitmap.Height;
+		}
+
 		private static void AddTreesToBitmap(CGroundArray pArray, Bitmap pBitmap, bool pTreePostition, bool pTreeBorder)
 		{
-			Color treeColor = new Color();
-			treeColor = Color.Blue;
-			Color treeBorderColor = new Color();
-			treeBorderColor = Color.FromArgb(255, 0, 255);
-			Color branchColor = new Color();
-			branchColor = Color.Yellow;
+			Color treeColor = Color.Blue;
+			Color treeBorderColor = Color.FromArgb(255, 0, 255);
+			Color branchColor = Color.Yellow;
 
 			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize, false);
 
@@ -100,9 +114,10 @@ namespace ForestReco
 					int y = fieldWithTree.indexInField.Item2;
 
 
-					if (x < 0 || x > pBitmap.Width || y < 0 || y > pBitmap.Height)
+					//if (x < 0 || x > pBitmap.Width || y < 0 || y > pBitmap.Height)
+					if (IsOOB(x, y, pBitmap))
 					{
-						CDebug.Error($"{x},{y} is OOB");
+						CDebug.Error($"{x},{y} is OOB {pBitmap.Width}x{pBitmap.Height}");
 						continue;
 					}
 
@@ -141,6 +156,12 @@ namespace ForestReco
 						foreach (CBranch branch in tree.Branches)
 						{
 							CGroundField fieldWithBranch = pArray.GetElementContainingPoint(branch.furthestPoint);
+							if (fieldWithBranch == null)
+							{
+								CDebug.Error($"branch {branch} is OOB");
+								continue;
+							}
+
 							int _x = fieldWithBranch.indexInField.Item1;
 							int _y = fieldWithBranch.indexInField.Item2;
 
@@ -197,6 +218,11 @@ namespace ForestReco
 				int x = fieldWithTree.indexInField.Item1;
 				int y = fieldWithTree.indexInField.Item2;
 
+				if (IsOOB(x, y, pBitmap))
+				{
+					CDebug.Error($"{x},{y} is OOB {pBitmap.Width}x{pBitmap.Height}");
+					continue;
+				}
 
 				pBitmap.SetPixel(x, y, checktreeOk);
 				using (Graphics g = Graphics.FromImage(pBitmap))
@@ -244,7 +270,7 @@ namespace ForestReco
 						{
 							int _x = x + i;
 							int _y = y + j;
-							if (_x < 0 || _x >= pBitmap.Width || _y < 0 || _y >= pBitmap.Height) { continue; }
+							if (IsOOB(_x, _y, pBitmap)) { continue; }
 							int val = pBitmap.GetPixel(_x, _y).R;
 							if (val > 0)
 							{
@@ -299,7 +325,7 @@ namespace ForestReco
 		private static int GetTreeBrushSize(float pArrayStepSize, bool pSmall)
 		{
 			int size = (int)(0.6f / pArrayStepSize);
-			if(pSmall){ size -= 1; }
+			if (pSmall) { size -= 1; }
 			size = Math.Max(1, size);
 			return size;
 		}
@@ -314,7 +340,7 @@ namespace ForestReco
 		private static void ResizeBitmap(ref Bitmap pBitmap)
 		{
 			const int resultWidth = 800; //todo: set from GUI
-			float scale = resultWidth / pBitmap.Width;
+			float scale = (float)resultWidth / pBitmap.Width;
 			Bitmap resized = new Bitmap(pBitmap, new Size((int)(pBitmap.Width * scale), (int)(pBitmap.Height * scale)));
 			pBitmap = resized;
 		}

@@ -983,6 +983,7 @@ namespace ForestReco
 		private void checkBoxExportTreeBoxes_CheckedChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(ESettings.exportTreeBoxes, checkBoxExportTreeBoxes.Checked);
+			RefreshEstimatedSize();
 		}
 
 		private void btnOpenResult_Click(object sender, EventArgs e)

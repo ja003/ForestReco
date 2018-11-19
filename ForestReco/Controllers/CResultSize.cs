@@ -21,12 +21,24 @@ namespace ForestReco
 			float area = header.Width * header.Height;
 			const float treeStructureSizePerMeter = .2f;
 			const float reftreeSizePerMeter = 2;
+			const float treeBoxSizePerMeter = .1f;
+			
 			const float treeDensity = .05f; //1 tree per 10 squared meters
 
-			float totalSize = 10;
+			//float groundSize = area / 100;
+			//groundSize = Math.Max(10, groundSize);
+			float groundSize = 10; //its just small, no reason to count it in
+
+			float totalSize = groundSize;
+
+
 			if (CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures))
 			{
 				totalSize += area* treeDensity * treeStructureSizePerMeter;
+			}
+			if (CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes))
+			{
+				totalSize += area * treeDensity * treeBoxSizePerMeter;
 			}
 			if (CParameterSetter.GetBoolSettings(ESettings.exportRefTrees))
 			{
