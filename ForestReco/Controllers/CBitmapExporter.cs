@@ -83,61 +83,91 @@ namespace ForestReco
 
 			foreach (CTree tree in CTreeManager.Trees)
 			{
-				CGroundField fieldWithTree = pArray.GetElementContainingPoint(tree.peak.Center);
-				int x = fieldWithTree.indexInField.Item1;
-				int y = fieldWithTree.indexInField.Item2;
-
-				//draw branch extents
-				if (pTreeBorder)
+				try
 				{
-					List<Vector3> furthestPoints = new List<Vector3>();
-					foreach (CBranch branch in tree.Branches)
+					if (tree.treeIndex == 128)
 					{
-						furthestPoints.Add(branch.furthestPoint);
+						Console.WriteLine();
 					}
-					for (int i = 0; i < furthestPoints.Count; i++)
+					CGroundField fieldWithTree = pArray.GetElementContainingPoint(tree.peak.Center);
+					if (fieldWithTree == null)
 					{
-						Vector3 furthestPoint = furthestPoints[i];
-						Vector3 nextFurthestPoint = furthestPoints[(i + 1) % furthestPoints.Count];
+						CDebug.Error($"tree {tree.treeIndex} field = null");
+						continue;
+					}
 
-						CGroundField fieldWithFP1 = pArray.GetElementContainingPoint(furthestPoint);
-						CGroundField fieldWithFP2 = pArray.GetElementContainingPoint(nextFurthestPoint);
-						int x1 = fieldWithFP1.indexInField.Item1;
-						int y1 = fieldWithFP1.indexInField.Item2;
-						int x2 = fieldWithFP2.indexInField.Item1;
-						int y2 = fieldWithFP2.indexInField.Item2;
+					int x = fieldWithTree.indexInField.Item1;
+					int y = fieldWithTree.indexInField.Item2;
 
-						using (Graphics g = Graphics.FromImage(pBitmap))
+
+					if (x < 0 || x > pBitmap.Width || y < 0 || y > pBitmap.Height)
+					{
+						CDebug.Error($"{x},{y} is OOB");
+						continue;
+					}
+
+					//draw branch extents
+					if (pTreeBorder)
+					{
+						List<Vector3> furthestPoints = new List<Vector3>();
+						foreach (CBranch branch in tree.Branches)
 						{
-							g.DrawLine(treeBorderPen, x1, y1, x2, y2);
+							furthestPoints.Add(branch.furthestPoint);
+						}
+						for (int i = 0; i < furthestPoints.Count; i++)
+						{
+							Vector3 furthestPoint = furthestPoints[i];
+							Vector3 nextFurthestPoint = furthestPoints[(i + 1) % furthestPoints.Count];
+
+							CGroundField fieldWithFP1 = pArray.GetElementContainingPoint(furthestPoint);
+							CGroundField fieldWithFP2 = pArray.GetElementContainingPoint(nextFurthestPoint);
+							if (fieldWithFP1 == null || fieldWithFP2 == null)
+							{
+								CDebug.Error($"futhest points {furthestPoint} + {nextFurthestPoint} - no field assigned");
+								continue;
+							}
+
+							int x1 = fieldWithFP1.indexInField.Item1;
+							int y1 = fieldWithFP1.indexInField.Item2;
+							int x2 = fieldWithFP2.indexInField.Item1;
+							int y2 = fieldWithFP2.indexInField.Item2;
+
+							using (Graphics g = Graphics.FromImage(pBitmap))
+							{
+								g.DrawLine(treeBorderPen, x1, y1, x2, y2);
+							}
+						}
+
+						foreach (CBranch branch in tree.Branches)
+						{
+							CGroundField fieldWithBranch = pArray.GetElementContainingPoint(branch.furthestPoint);
+							int _x = fieldWithBranch.indexInField.Item1;
+							int _y = fieldWithBranch.indexInField.Item2;
+
+							using (Graphics g = Graphics.FromImage(pBitmap))
+							{
+								g.DrawLine(branchPen, x, y, _x, _y);
+							}
 						}
 					}
-
-					foreach (CBranch branch in tree.Branches)
+					//mark tree position
+					if (pTreePostition)
 					{
-						CGroundField fieldWithBranch = pArray.GetElementContainingPoint(branch.furthestPoint);
-						int _x = fieldWithBranch.indexInField.Item1;
-						int _y = fieldWithBranch.indexInField.Item2;
-
+						pBitmap.SetPixel(x, y, treeColor);
 						using (Graphics g = Graphics.FromImage(pBitmap))
 						{
-							g.DrawLine(branchPen, x, y, _x, _y);
+							//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
+							int _x = x - treeMarkerSize / 2;
+							if (_x < 0) { _x = x; }
+							int _y = y - treeMarkerSize / 2;
+							if (_y < 0) { _y = y; }
+							g.FillRectangle(treeBrush, _x, _y, treeMarkerSize, treeMarkerSize);
 						}
 					}
 				}
-				//mark tree position
-				if (pTreePostition)
+				catch (Exception e)
 				{
-					pBitmap.SetPixel(x, y, treeColor);
-					using (Graphics g = Graphics.FromImage(pBitmap))
-					{
-						//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
-						int _x = x - treeMarkerSize / 2;
-						if (_x < 0) { _x = x; }
-						int _y = y - treeMarkerSize / 2;
-						if (_y < 0) { _y = y; }
-						g.FillRectangle(treeBrush, _x, _y, treeMarkerSize, treeMarkerSize);
-					}
+					CDebug.Error(e.Message);
 				}
 			}
 		}
@@ -166,6 +196,7 @@ namespace ForestReco
 
 				int x = fieldWithTree.indexInField.Item1;
 				int y = fieldWithTree.indexInField.Item2;
+
 
 				pBitmap.SetPixel(x, y, checktreeOk);
 				using (Graphics g = Graphics.FromImage(pBitmap))

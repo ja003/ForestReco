@@ -85,8 +85,15 @@ namespace ForestReco
 				CObjPartition.ExportPartition();
 
 				//has to be called after ExportPartition where final folder location is determined
-				
-				CBitmapExporter.Export();
+
+				try
+				{
+					CBitmapExporter.Export();
+				}
+				catch (Exception e)
+				{
+					CDebug.Error("exception: " + e.Message);
+				}
 
 				CAnalytics.totalDuration = CAnalytics.GetDuration(startTime);
 				CDebug.Duration("total time", startTime);
