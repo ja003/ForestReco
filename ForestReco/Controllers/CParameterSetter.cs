@@ -129,6 +129,7 @@ namespace ForestReco
 		treeExtentMultiply,
 
 		//bools
+		export3d,
 		exportTreeStructures,
 		exportInvalidTrees,
 		exportRefTrees,
@@ -141,6 +142,6 @@ namespace ForestReco
 		exportPoints,
 		autoAverageTreeHeight,
 		exportTreeBoxes,
-		colorTrees
+		colorTrees,
 	}
 }

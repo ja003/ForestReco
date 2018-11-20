@@ -18,6 +18,8 @@ namespace ForestReco
 					return "The selection of most appropriate reftree to every detected tree (the most time consuming part of process) is skipped and reftree is selected randomly.";
 				case ESettings.useReducedReftreeModels:
 					return "Use reduced file of reftree in final export. This option should be checked as the full quality model doesn't usually have that much effect on final look and the final size is reduced greatly by using reduced models.";
+				case ESettings.export3d:
+					return "Export 3D models. If false -> only analytics and bitmap will be produced.";
 				case ESettings.exportTreeStructures:
 					return "Include tree detection structures in final export. It is only for visualisation of points assigned to trees.";
 				case ESettings.exportTreeBoxes:

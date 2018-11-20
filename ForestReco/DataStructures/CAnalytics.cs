@@ -48,6 +48,11 @@ namespace ForestReco
 		public static void Write(bool pToFile)
 		{
 			string output = " - ANALYTICS - \n\n";
+			output += $"width = {CProjectData.header.Width} \n";
+			output += $"height = {CProjectData.header.Height} \n";
+			output += $"treeExtent = {CParameterSetter.GetFloatSettings(ESettings.treeExtent)} \n";
+			output += $"treeExtentMultiply = {CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply)} \n\n";
+
 			output += $"loadedPoints = {loadedPoints} \n";
 			output += $"vegePoints = {vegePoints} \n";
 			output += $"groundPoints = {groundPoints} \n";
@@ -104,6 +109,7 @@ namespace ForestReco
 				WriteToFile(output);
 				ExportCsv(ECsvAnalytics.InputParams);
 				ExportCsv(ECsvAnalytics.ComputationTime);
+				ExportCsv(ECsvAnalytics.Summary);
 			}
 
 			errors.Clear(); //reset, so errors dont stack with previous error
@@ -122,7 +128,8 @@ namespace ForestReco
 		public enum ECsvAnalytics
 		{
 			InputParams,
-			ComputationTime
+			ComputationTime,
+			Summary
 		}
 
 		private static void ExportCsv(ECsvAnalytics pType)
@@ -150,6 +157,29 @@ namespace ForestReco
 							CProjectData.header.Height,
 							loadedPoints,
 							detectedTrees,
+							processVegePointsDuration,
+							firstMergeDuration,
+							secondMergeDuration,
+							reftreeAssignDuration,
+							totalDuration
+						},
+						pType.ToString());
+					break;
+
+				case ECsvAnalytics.Summary:
+					ExportCsv(new List<object>
+						{
+							CProjectData.header.Width,
+							CProjectData.header.Height,
+							CParameterSetter.GetFloatSettings(ESettings.treeExtent),
+							CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply),
+							loadedPoints,
+
+							firstDetectedTrees,
+							GetFirstMergedCount(),
+							GetSecondMergedCount(),
+							detectedTrees,
+
 							processVegePointsDuration,
 							firstMergeDuration,
 							secondMergeDuration,

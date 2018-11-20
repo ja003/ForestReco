@@ -286,5 +286,17 @@ namespace ForestReco.Properties {
                 this["colorTrees"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool export3d {
+            get {
+                return ((bool)(this["export3d"]));
+            }
+            set {
+                this["export3d"] = value;
+            }
+        }
     }
 }

@@ -186,6 +186,14 @@ namespace ForestReco
 		public static void ExportPartition(string pFileSuffix = "")
 		{
 			folderPath = CObjExporter.CreateFolder(CProjectData.saveFileName);
+
+			//just creates a folder (for analytics etc)
+			if (!CParameterSetter.GetBoolSettings(ESettings.export3d))
+			{
+				CDebug.WriteLine("Skipping export");
+				return;
+			}
+
 			int counter = 0;
 			DateTime exportPartitionStart = DateTime.Now;
 			DateTime previousDebugStart = DateTime.Now;
