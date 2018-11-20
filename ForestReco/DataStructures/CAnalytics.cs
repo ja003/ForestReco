@@ -105,7 +105,7 @@ namespace ForestReco
 				return;
 			}
 			string progressText = CProjectData.mainForm.textProgress.Text;
-			progressText += " - ERRORS: \n";
+			progressText += "\n - ERRORS: \n";
 			foreach (string error in errors)
 			{
 				progressText += error + "\n";

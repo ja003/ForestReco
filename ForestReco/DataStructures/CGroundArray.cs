@@ -594,5 +594,19 @@ namespace ForestReco
 			float dist = Math.Min(xDist, zDist);
 			return dist;
 		}
+
+		public static float GetStepSizeForWidth(int pMaxArrayWidth)
+		{
+			float width = CProjectData.header.Width; //in meters
+			const float minStepSize = .1f;
+			float stepSize = minStepSize;
+			int arrayWidth = (int)(width / stepSize);
+			if (arrayWidth > pMaxArrayWidth)
+			{
+				float scale = arrayWidth / (float)pMaxArrayWidth;
+				stepSize *= scale;
+			}
+			return stepSize;
+		}
 	}
 }

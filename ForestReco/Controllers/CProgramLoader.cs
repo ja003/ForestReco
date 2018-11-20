@@ -75,7 +75,8 @@ namespace ForestReco
 			if (pArray)
 			{
 				CProjectData.array = new CGroundArray(CParameterSetter.groundArrayStep);
-				CProjectData.detailArray = new CGroundArray(0.1f);
+				float detailStepSize = CGroundArray.GetStepSizeForWidth(800);
+				CProjectData.detailArray = new CGroundArray(detailStepSize);
 
 				//CObjPartition is dependent on Array initialization
 				CObjPartition.Init();
