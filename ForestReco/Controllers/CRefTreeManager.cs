@@ -173,7 +173,7 @@ namespace ForestReco
 		static int debugTree = 185;
 
 		public static bool debugSimilarites = false; //todo: nějak omezit?
-		public static bool forceAlgorithm = false;
+		public static bool forceAlgorithm = true;
 
 		private static Tuple<CRefTree, STreeSimilarity> GetMostSuitableRefTree(CTree pTree)
 		{

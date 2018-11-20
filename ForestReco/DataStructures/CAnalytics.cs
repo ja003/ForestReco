@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ForestReco
 {
@@ -14,7 +15,10 @@ namespace ForestReco
 		public static float arrayWidth;
 		public static float arrayHeight;
 
+		public static int firstDetectedTrees;
+		public static int afterFirstMergedTrees;
 		public static int detectedTrees;
+
 		public static int invalidTrees;
 		public static int invalidTreesAtBorder;
 		public static float inputAverageTreeHeight;
@@ -52,7 +56,12 @@ namespace ForestReco
 			output += $"arrayWidth = {arrayWidth} m\n";
 			output += $"arrayHeight = {arrayHeight} m\n\n";
 
+			output += $"firstDetectedTrees = {firstDetectedTrees} \n";
+			output += $"firstMergedCount = {GetFirstMergedCount()} \n";
+			output += $"secondMergedCount = {GetSecondMergedCount()} \n";
 			output += $"detectedTrees = {detectedTrees} \n";
+
+
 			output += $"trees density = 1 per {GetTreesDensity():0.00} m\xB2 \n";
 			output += $"invalidTrees = {invalidTrees} ({invalidTreesAtBorder} of them at border)\n\n";
 
@@ -93,9 +102,89 @@ namespace ForestReco
 			if (pToFile)
 			{
 				WriteToFile(output);
+				ExportCsv(ECsvAnalytics.InputParams);
+				ExportCsv(ECsvAnalytics.ComputationTime);
 			}
 
 			errors.Clear(); //reset, so errors dont stack with previous error
+		}
+
+		private static int GetSecondMergedCount()
+		{
+			return afterFirstMergedTrees - detectedTrees;
+		}
+
+		private static int GetFirstMergedCount()
+		{
+			return firstDetectedTrees - afterFirstMergedTrees;
+		}
+
+		public enum ECsvAnalytics
+		{
+			InputParams,
+			ComputationTime
+		}
+
+		private static void ExportCsv(ECsvAnalytics pType)
+		{
+			switch (pType)
+			{
+				case ECsvAnalytics.InputParams:
+					ExportCsv(new List<object>
+						{
+							CProjectData.header.Width,
+							CProjectData.header.Height,
+							CParameterSetter.GetFloatSettings(ESettings.treeExtent),
+							CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply),
+							firstDetectedTrees,
+							GetFirstMergedCount(),
+							GetSecondMergedCount(),
+							detectedTrees
+						},
+						pType.ToString());
+					break;
+				case ECsvAnalytics.ComputationTime:
+					ExportCsv(new List<object>
+						{
+							CProjectData.header.Width,
+							CProjectData.header.Height,
+							loadedPoints,
+							detectedTrees,
+							processVegePointsDuration,
+							firstMergeDuration,
+							secondMergeDuration,
+							totalDuration
+						},
+						pType.ToString());
+					break;
+			}
+		}
+
+		private static void ExportCsv(List<object> pObjs, string pName)
+		{
+			string fileName = pName + ".csv";
+			string filePath = CObjPartition.folderPath + "/" + fileName;
+			string[] pathSplit = CObjPartition.folderPath.Split('\\');
+			string folderName = pathSplit[pathSplit.Length - 2];
+
+			using (var outStream = File.OpenWrite(filePath))
+			using (var writer = new StreamWriter(outStream))
+			{
+				//todo: colums name?
+				/*writer.Write("file");
+				foreach (object obj in pObjs)
+				{
+					writer.Write("," + obj.get);
+				}
+				writer.WriteLine(filePath);
+				*/
+
+				writer.Write(folderName);
+				foreach (object obj in pObjs)
+				{
+					writer.Write("," + obj);
+				}
+			}
 		}
 
 		public static void WriteErrors()

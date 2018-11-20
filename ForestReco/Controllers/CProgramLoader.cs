@@ -152,12 +152,15 @@ namespace ForestReco
 			}
 
 
+			CAnalytics.firstDetectedTrees = CTreeManager.Trees.Count;
+
 			CDebug.Step(EProgramStep.MergeTrees1);
 			//try merge all (even valid)
 			if (CProjectData.tryMergeTrees)
 			{
 				CTreeManager.TryMergeAllTrees(false);
 			}
+			CAnalytics.afterFirstMergedTrees = CTreeManager.Trees.Count;
 
 
 			//validate restrictive

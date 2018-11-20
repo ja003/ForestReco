@@ -87,7 +87,7 @@ namespace ForestReco
 			Color treeBorderColor = Color.FromArgb(255, 0, 255);
 			Color branchColor = Color.Yellow;
 
-			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize, false);
+			int treeMarkerSize = GetTreeBrushSize(false);
 
 			SolidBrush treeBorderBrush = new SolidBrush(treeBorderColor);
 			SolidBrush branchBrush = new SolidBrush(branchColor);
@@ -195,14 +195,11 @@ namespace ForestReco
 
 		private static void AddChecktreesToBitmap(CGroundArray pArray, Bitmap pBitmap)
 		{
-			Color checktreeOk = new Color();
-			checktreeOk = Color.Green;
-			Color checktreeFail = new Color();
-			checktreeFail = Color.Red;
-			Color checktreeInvalid = new Color();
-			checktreeInvalid = Color.Orange;
+			Color checktreeOk = Color.Green;
+			Color checktreeFail = Color.Red;
+			Color checktreeInvalid = Color.Orange;
 
-			int treeMarkerSize = GetTreeBrushSize(pArray.stepSize, true);
+			int treeMarkerSize = GetTreeBrushSize(true);
 
 			SolidBrush checktreeFailBrush = new SolidBrush(checktreeFail);
 			SolidBrush checktreeInvalidBrush = new SolidBrush(checktreeInvalid);
@@ -322,12 +319,20 @@ namespace ForestReco
 			}
 		}
 
-		private static int GetTreeBrushSize(float pArrayStepSize, bool pSmall)
+		private static int GetTreeBrushSize(bool pSmall)
 		{
-			int size = (int)(0.6f / pArrayStepSize);
+			//float width = CProjectData.header.Width;
+			//bool isArrayLarge = width > 100;
+			const int smallSize = 3;
+			int size = smallSize;
+			if (!pSmall) { size *= 2;}
+			//if(isArrayLarge) { size += 2; }
+			return size;
+
+			/*int size = (int)(0.6f / pArrayStepSize);
 			if (pSmall) { size -= 1; }
 			size = Math.Max(1, size);
-			return size;
+			return size;*/
 		}
 
 		private static int GetKernelSize(float pArrayStepSize, float pRadius)
