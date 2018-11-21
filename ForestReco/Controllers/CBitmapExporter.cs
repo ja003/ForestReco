@@ -321,12 +321,15 @@ namespace ForestReco
 
 		private static int GetTreeBrushSize(bool pSmall)
 		{
-			//float width = CProjectData.header.Width;
-			//bool isArrayLarge = width > 100;
+			float width = CProjectData.header.Width;
+			bool isArrayLarge = width > 150;
 			const int smallSize = 3;
 			int size = smallSize;
 			if (!pSmall) { size *= 2;}
-			//if(isArrayLarge) { size += 2; }
+			if(isArrayLarge) { size -= 2; }
+
+			size = Math.Max(2, size);
+
 			return size;
 
 			/*int size = (int)(0.6f / pArrayStepSize);

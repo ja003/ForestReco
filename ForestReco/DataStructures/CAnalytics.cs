@@ -48,8 +48,6 @@ namespace ForestReco
 		public static void Write(bool pToFile)
 		{
 			string output = " - ANALYTICS - \n\n";
-			output += $"width = {CProjectData.header.Width} \n";
-			output += $"height = {CProjectData.header.Height} \n";
 			output += $"treeExtent = {CParameterSetter.GetFloatSettings(ESettings.treeExtent)} \n";
 			output += $"treeExtentMultiply = {CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply)} \n\n";
 
@@ -103,6 +101,9 @@ namespace ForestReco
 				output += $"- {error} \n";
 			}
 
+			//before WriteToFile (it can fail there too)
+			errors.Clear(); //reset, so errors dont stack with previous error
+
 			CDebug.WriteLine(output);
 			if (pToFile)
 			{
@@ -112,7 +113,6 @@ namespace ForestReco
 				ExportCsv(ECsvAnalytics.Summary); //probably enough
 			}
 
-			errors.Clear(); //reset, so errors dont stack with previous error
 		}
 
 		private static int GetSecondMergedCount()
