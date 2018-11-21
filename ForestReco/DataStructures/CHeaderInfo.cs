@@ -76,6 +76,8 @@ namespace ForestReco
 
 		private Vector3 ParseLineVector3(string pLine)
 		{
+			if (string.IsNullOrEmpty(pLine)) { return Vector3.Zero;}
+
 			string[] split = pLine.Split(null);
 			int length = split.Length;
 			//											X					Y					Z

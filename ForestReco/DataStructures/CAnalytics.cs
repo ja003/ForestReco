@@ -107,9 +107,9 @@ namespace ForestReco
 			if (pToFile)
 			{
 				WriteToFile(output);
-				ExportCsv(ECsvAnalytics.InputParams);
-				ExportCsv(ECsvAnalytics.ComputationTime);
-				ExportCsv(ECsvAnalytics.Summary);
+				//ExportCsv(ECsvAnalytics.InputParams);
+				//ExportCsv(ECsvAnalytics.ComputationTime);
+				ExportCsv(ECsvAnalytics.Summary); //probably enough
 			}
 
 			errors.Clear(); //reset, so errors dont stack with previous error

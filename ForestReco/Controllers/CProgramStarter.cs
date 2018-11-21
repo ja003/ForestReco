@@ -11,8 +11,16 @@ namespace ForestReco
 	{
 		public static bool abort;
 
+
+		public static void PrepareSequence()
+		{
+			CSequenceController.Init();
+		}
+
 		public static void Start()
 		{
+			CSequenceController.SetValues();
+
 			DateTime startTime = DateTime.Now;
 			abort = false;
 			CProjectData.Init();
@@ -115,6 +123,14 @@ namespace ForestReco
 			
 			CDebug.Step(EProgramStep.Done);
 
+			if (CSequenceController.IsLastSequence())
+			{
+				CSequenceController.OnLastSequenceEnd();
+				return;
+			}
+
+			CSequenceController.currentConfigIndex++;
+			Start();
 		}
 
 		public static void Abort()

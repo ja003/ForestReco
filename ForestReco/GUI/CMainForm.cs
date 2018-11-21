@@ -59,6 +59,7 @@ namespace ForestReco
 		private CheckBox checkBoxExportTreeBoxes;
 		private CheckBox checkBoxColorTrees;
 		private CheckBox checkBoxExport3d;
+		private Button btnSequence;
 		private Button btnSellectForest;
 
 		public CMainForm()
@@ -104,7 +105,7 @@ namespace ForestReco
 
 			//bools
 			checkBoxExport3d.Checked =
-				CParameterSetter.GetBoolSettings(ESettings.export3d); 
+				CParameterSetter.GetBoolSettings(ESettings.export3d);
 			checkBoxExportTreeStructures.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
 			checkBoxExportInvalidTrees.Checked =
@@ -144,7 +145,7 @@ namespace ForestReco
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportPoints, ESettings.exportPoints);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxAutoTreeHeight, ESettings.autoAverageTreeHeight);
 
-			CTooltipManager.AssignTooltip(myToolTip, labelPartition , ESettings.partitionStep);
+			CTooltipManager.AssignTooltip(myToolTip, labelPartition, ESettings.partitionStep);
 			CTooltipManager.AssignTooltip(myToolTip, labelAvgTreeHeight, ESettings.avgTreeHeigh);
 			CTooltipManager.AssignTooltip(myToolTip, labelGroundArrayStep, ESettings.groundArrayStep);
 			CTooltipManager.AssignTooltip(myToolTip, labelTreeExtent, ESettings.treeExtent);
@@ -168,7 +169,7 @@ namespace ForestReco
 			{
 				return;
 			}
-			
+			CProgramStarter.PrepareSequence();
 			CProgramStarter.Start();
 		}
 
@@ -227,13 +228,14 @@ namespace ForestReco
 			this.checkBoxExportPoints = new System.Windows.Forms.CheckBox();
 			this.checkBoxAutoTreeHeight = new System.Windows.Forms.CheckBox();
 			this.checkBoxExportTreeBoxes = new System.Windows.Forms.CheckBox();
+			this.checkBoxExport3d = new System.Windows.Forms.CheckBox();
 			this.btnOpenResult = new System.Windows.Forms.Button();
 			this.textBoxEstimatedSize = new System.Windows.Forms.TextBox();
 			this.labelEstimatedTotalSize = new System.Windows.Forms.Label();
 			this.labelEstimatedPartitionSize = new System.Windows.Forms.Label();
 			this.textBoxPartitionSize = new System.Windows.Forms.TextBox();
 			this.checkBoxColorTrees = new System.Windows.Forms.CheckBox();
-			this.checkBoxExport3d = new System.Windows.Forms.CheckBox();
+			this.btnSequence = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -245,17 +247,17 @@ namespace ForestReco
 			// 
 			this.btnSellectForest.Location = new System.Drawing.Point(8, 10);
 			this.btnSellectForest.Name = "btnSellectForest";
-			this.btnSellectForest.Size = new System.Drawing.Size(155, 31);
+			this.btnSellectForest.Size = new System.Drawing.Size(121, 31);
 			this.btnSellectForest.TabIndex = 0;
-			this.btnSellectForest.Text = "select forest file";
+			this.btnSellectForest.Text = "forest file";
 			this.btnSellectForest.UseVisualStyleBackColor = true;
 			this.btnSellectForest.Click += new System.EventHandler(this.btnSellectForest_Click);
 			// 
 			// textForestFilePath
 			// 
-			this.textForestFilePath.Location = new System.Drawing.Point(180, 14);
+			this.textForestFilePath.Location = new System.Drawing.Point(143, 14);
 			this.textForestFilePath.Name = "textForestFilePath";
-			this.textForestFilePath.Size = new System.Drawing.Size(641, 22);
+			this.textForestFilePath.Size = new System.Drawing.Size(583, 22);
 			this.textForestFilePath.TabIndex = 1;
 			this.textForestFilePath.TextChanged += new System.EventHandler(this.textForestFilePath_TextChanged);
 			// 
@@ -264,17 +266,17 @@ namespace ForestReco
 			this.btnSellectReftreeFodlers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btnSellectReftreeFodlers.Location = new System.Drawing.Point(8, 46);
 			this.btnSellectReftreeFodlers.Name = "btnSellectReftreeFodlers";
-			this.btnSellectReftreeFodlers.Size = new System.Drawing.Size(155, 31);
+			this.btnSellectReftreeFodlers.Size = new System.Drawing.Size(121, 31);
 			this.btnSellectReftreeFodlers.TabIndex = 2;
-			this.btnSellectReftreeFodlers.Text = "select reftree folders";
+			this.btnSellectReftreeFodlers.Text = "reftrees folder";
 			this.btnSellectReftreeFodlers.UseVisualStyleBackColor = true;
 			this.btnSellectReftreeFodlers.Click += new System.EventHandler(this.btnSellectReftreeFodlers_Click);
 			// 
 			// textReftreeFolder
 			// 
-			this.textReftreeFolder.Location = new System.Drawing.Point(180, 50);
+			this.textReftreeFolder.Location = new System.Drawing.Point(143, 50);
 			this.textReftreeFolder.Name = "textReftreeFolder";
-			this.textReftreeFolder.Size = new System.Drawing.Size(641, 22);
+			this.textReftreeFolder.Size = new System.Drawing.Size(678, 22);
 			this.textReftreeFolder.TabIndex = 4;
 			this.textReftreeFolder.TextChanged += new System.EventHandler(this.textReftreeFolder_TextChanged);
 			// 
@@ -291,9 +293,9 @@ namespace ForestReco
 			// 
 			// textOutputFolder
 			// 
-			this.textOutputFolder.Location = new System.Drawing.Point(180, 86);
+			this.textOutputFolder.Location = new System.Drawing.Point(143, 86);
 			this.textOutputFolder.Name = "textOutputFolder";
-			this.textOutputFolder.Size = new System.Drawing.Size(641, 22);
+			this.textOutputFolder.Size = new System.Drawing.Size(678, 22);
 			this.textOutputFolder.TabIndex = 7;
 			this.textOutputFolder.TextChanged += new System.EventHandler(this.textOutputFolder_TextChanged);
 			// 
@@ -301,9 +303,9 @@ namespace ForestReco
 			// 
 			this.btnOutputFolder.Location = new System.Drawing.Point(8, 82);
 			this.btnOutputFolder.Name = "btnOutputFolder";
-			this.btnOutputFolder.Size = new System.Drawing.Size(155, 31);
+			this.btnOutputFolder.Size = new System.Drawing.Size(121, 31);
 			this.btnOutputFolder.TabIndex = 6;
-			this.btnOutputFolder.Text = "select output folder";
+			this.btnOutputFolder.Text = "output folder";
 			this.btnOutputFolder.UseVisualStyleBackColor = true;
 			this.btnOutputFolder.Click += new System.EventHandler(this.btnOutputFolder_Click);
 			// 
@@ -378,9 +380,9 @@ namespace ForestReco
 			// 
 			// textCheckTreePath
 			// 
-			this.textCheckTreePath.Location = new System.Drawing.Point(180, 122);
+			this.textCheckTreePath.Location = new System.Drawing.Point(143, 122);
 			this.textCheckTreePath.Name = "textCheckTreePath";
-			this.textCheckTreePath.Size = new System.Drawing.Size(641, 22);
+			this.textCheckTreePath.Size = new System.Drawing.Size(678, 22);
 			this.textCheckTreePath.TabIndex = 21;
 			this.textCheckTreePath.TextChanged += new System.EventHandler(this.textCheckTreePath_TextChanged);
 			// 
@@ -388,9 +390,9 @@ namespace ForestReco
 			// 
 			this.btnSelectCheckTree.Location = new System.Drawing.Point(8, 118);
 			this.btnSelectCheckTree.Name = "btnSelectCheckTree";
-			this.btnSelectCheckTree.Size = new System.Drawing.Size(155, 31);
+			this.btnSelectCheckTree.Size = new System.Drawing.Size(121, 31);
 			this.btnSelectCheckTree.TabIndex = 20;
-			this.btnSelectCheckTree.Text = "select checktree";
+			this.btnSelectCheckTree.Text = "checktree file";
 			this.btnSelectCheckTree.UseVisualStyleBackColor = true;
 			this.btnSelectCheckTree.Click += new System.EventHandler(this.btnSelectCheckTree_Click);
 			// 
@@ -656,6 +658,19 @@ namespace ForestReco
 			this.checkBoxExportTreeBoxes.UseVisualStyleBackColor = true;
 			this.checkBoxExportTreeBoxes.CheckedChanged += new System.EventHandler(this.checkBoxExportTreeBoxes_CheckedChanged);
 			// 
+			// checkBoxExport3d
+			// 
+			this.checkBoxExport3d.AutoSize = true;
+			this.checkBoxExport3d.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.checkBoxExport3d.Location = new System.Drawing.Point(217, 296);
+			this.checkBoxExport3d.Name = "checkBoxExport3d";
+			this.checkBoxExport3d.Size = new System.Drawing.Size(118, 21);
+			this.checkBoxExport3d.TabIndex = 55;
+			this.checkBoxExport3d.Text = "EXPORT 3D";
+			this.myToolTip.SetToolTip(this.checkBoxExport3d, "hh");
+			this.checkBoxExport3d.UseVisualStyleBackColor = true;
+			this.checkBoxExport3d.CheckedChanged += new System.EventHandler(this.checkBoxExort3d_CheckedChanged);
+			// 
 			// btnOpenResult
 			// 
 			this.btnOpenResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(161)))), ((int)(((byte)(212)))));
@@ -712,23 +727,21 @@ namespace ForestReco
 			this.checkBoxColorTrees.UseVisualStyleBackColor = true;
 			this.checkBoxColorTrees.CheckedChanged += new System.EventHandler(this.checkBoxColorTrees_CheckedChanged);
 			// 
-			// checkBoxExort3d
+			// btnSequence
 			// 
-			this.checkBoxExport3d.AutoSize = true;
-			this.checkBoxExport3d.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.checkBoxExport3d.Location = new System.Drawing.Point(217, 296);
-			this.checkBoxExport3d.Name = "checkBoxExport3d";
-			this.checkBoxExport3d.Size = new System.Drawing.Size(118, 21);
-			this.checkBoxExport3d.TabIndex = 55;
-			this.checkBoxExport3d.Text = "EXPORT 3D";
-			this.myToolTip.SetToolTip(this.checkBoxExport3d, "hh");
-			this.checkBoxExport3d.UseVisualStyleBackColor = true;
-			this.checkBoxExport3d.CheckedChanged += new System.EventHandler(this.checkBoxExort3d_CheckedChanged);
+			this.btnSequence.Location = new System.Drawing.Point(732, 10);
+			this.btnSequence.Name = "btnSequence";
+			this.btnSequence.Size = new System.Drawing.Size(93, 31);
+			this.btnSequence.TabIndex = 56;
+			this.btnSequence.Text = "sequence";
+			this.btnSequence.UseVisualStyleBackColor = true;
+			this.btnSequence.Click += new System.EventHandler(this.btnSequence_Click);
 			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
 			this.ClientSize = new System.Drawing.Size(835, 491);
+			this.Controls.Add(this.btnSequence);
 			this.Controls.Add(this.checkBoxExport3d);
 			this.Controls.Add(this.checkBoxColorTrees);
 			this.Controls.Add(this.checkBoxExportTreeBoxes);
@@ -841,6 +854,18 @@ namespace ForestReco
 		}
 
 
+		private void btnSequence_Click(object sender, EventArgs e)
+		{
+			string path = CParameterSetter.SelectFile("Select sequence config");
+			if (path.Length == 0)
+			{
+				CDebug.Warning("no path selected");
+				return;
+			}
+			textForestFilePath.Clear();
+			textForestFilePath.Text = path;
+		}
+
 		private void textForestFilePath_TextChanged(object sender, EventArgs e)
 		{
 			CParameterSetter.SetParameter(
@@ -848,7 +873,9 @@ namespace ForestReco
 
 			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
-			if(lines == null){ return; }
+			if (lines == null) { return; }
+
+			if (CSequenceController.IsSequence()) { return; }
 
 			CProjectData.header = new CHeaderInfo(lines);
 			RefreshEstimatedSize();
@@ -960,7 +987,7 @@ namespace ForestReco
 
 		private void checkBoxExportRefTrees_CheckedChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(ESettings.exportRefTrees,	checkBoxExportRefTrees.Checked);
+			CParameterSetter.SetParameter(ESettings.exportRefTrees, checkBoxExportRefTrees.Checked);
 			RefreshEstimatedSize();
 		}
 
@@ -1008,7 +1035,7 @@ namespace ForestReco
 		private void btnOpenResult_Click(object sender, EventArgs e)
 		{
 			string folderPath = CObjPartition.folderPath;
-			if(string.IsNullOrEmpty(folderPath)){ return; }
+			if (string.IsNullOrEmpty(folderPath)) { return; }
 			System.Diagnostics.Process.Start(folderPath);
 		}
 
@@ -1032,5 +1059,6 @@ namespace ForestReco
 			//todo: disable export checkboxes
 			CParameterSetter.SetParameter(ESettings.export3d, checkBoxExport3d.Checked);
 		}
+
 	}
 }
