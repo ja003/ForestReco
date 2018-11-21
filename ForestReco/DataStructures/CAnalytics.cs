@@ -183,6 +183,7 @@ namespace ForestReco
 							processVegePointsDuration,
 							firstMergeDuration,
 							secondMergeDuration,
+							reftreeAssignDuration,
 							totalDuration
 						},
 						pType.ToString());
@@ -197,6 +198,7 @@ namespace ForestReco
 			string[] pathSplit = CObjPartition.folderPath.Split('\\');
 			string folderName = pathSplit[pathSplit.Length - 2];
 
+			string line;
 			using (var outStream = File.OpenWrite(filePath))
 			using (var writer = new StreamWriter(outStream))
 			{
@@ -210,10 +212,23 @@ namespace ForestReco
 				*/
 
 				writer.Write(folderName);
+				line = folderName;
 				foreach (object obj in pObjs)
 				{
-					writer.Write("," + obj);
+					string val = "," + obj;
+					writer.Write(val);
+					line += val;
 				}
+			}
+
+			//TODO: smazat, pouze pro mě
+			string mainSummaryFile =
+				"D:\\ja004\\OneDrive - MUNI\\ŠKOLA [old]\\SDIPR\\_thesis\\evaluation\\summary\\Summary_03.csv";
+			//using (var outStream = File.OpenWrite(mainSummaryFile))
+			using(FileStream fs = new FileStream(mainSummaryFile, FileMode.Append, FileAccess.Write))
+			using (var writer = new StreamWriter(fs))
+			{
+				writer.WriteLine(line);
 			}
 		}
 
