@@ -114,7 +114,19 @@ namespace ForestReco
 			Tuple<int, int> index = GetPositionInField(pPoint);
 			if (!IsWithinBounds(index))
 			{
-				return null;
+				if (index.Item1 == -1) { index = new Tuple<int, int>(0, index.Item2);}
+				if (index.Item2 == -1) { index = new Tuple<int, int>(index.Item1, 0); }
+				if (index.Item1 == arrayXRange) { index = new Tuple<int, int>(arrayXRange - 1, index.Item2); }
+				if (index.Item2 == arrayYRange) { index = new Tuple<int, int>(index.Item1, arrayYRange - 1); }
+
+				if (!IsWithinBounds(index))
+				{
+					return null;
+				}
+				else
+				{
+					CDebug.Error($"pPoint {pPoint} was OOB and was moved to {index}");
+				}
 			}
 			return array[index.Item1, index.Item2];
 		}

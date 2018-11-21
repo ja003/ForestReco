@@ -186,6 +186,11 @@ namespace ForestReco
 			treeIndex++;
 
 			CGroundField element = CProjectData.array.GetElementContainingPoint(pPoint);
+			if (element == null)
+			{	
+				CDebug.Error($"Cant create tree. point {pPoint} is OOB!");
+				return;
+			}
 			element.DetectedTrees.Add(newTree);
 
 			newTree.groundField = element;

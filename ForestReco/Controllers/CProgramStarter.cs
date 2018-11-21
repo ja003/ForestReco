@@ -111,7 +111,7 @@ namespace ForestReco
 			}
 			catch (Exception e)
 			{
-				CDebug.Error("exception: " + e.Message);
+				CDebug.Error($"\nexception: {e.Message} \nStackTrace:{e.StackTrace}\n");
 				Abort();
 			}
 
