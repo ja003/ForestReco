@@ -136,7 +136,7 @@ namespace ForestReco
 		{
 			switch (pType)
 			{
-				case ECsvAnalytics.InputParams:
+				/*case ECsvAnalytics.InputParams:
 					ExportCsv(new List<object>
 						{
 							CProjectData.header.Width,
@@ -164,34 +164,37 @@ namespace ForestReco
 							totalDuration
 						},
 						pType.ToString());
-					break;
+					break;*/
 
 				case ECsvAnalytics.Summary:
-					ExportCsv(new List<object>
+					ExportCsv(new List<Tuple<string, object>>
 						{
-							CProjectData.header.Width,
-							CProjectData.header.Height,
-							CParameterSetter.GetFloatSettings(ESettings.treeExtent),
-							CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply),
-							loadedPoints,
+							new Tuple<string, object>("width", CProjectData.header.Width),
+							new Tuple<string, object>("Height",CProjectData.header.Height),
+							new Tuple<string, object>("treeExtent", 
+								CParameterSetter.GetFloatSettings(ESettings.treeExtent)),
+							new Tuple<string, object>("treeExtentMultiply", 
+								CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply)),
+							new Tuple<string, object>("loadedPoints",loadedPoints),
 
-							firstDetectedTrees,
-							GetFirstMergedCount(),
-							GetSecondMergedCount(),
-							detectedTrees,
+							new Tuple<string, object>("firstDetectedTrees",firstDetectedTrees),
+							new Tuple<string, object>("FirstMergedCount",GetFirstMergedCount()),
+							new Tuple<string, object>("SecondMerged",GetSecondMergedCount()),
+							new Tuple<string, object>("detectedTrees",detectedTrees),
 
-							processVegePointsDuration,
-							firstMergeDuration,
-							secondMergeDuration,
-							reftreeAssignDuration,
-							totalDuration
+							new Tuple<string, object>("processVege",processVegePointsDuration),
+							new Tuple<string, object>("firstMerge",firstMergeDuration),
+							new Tuple<string, object>("secondMerge",secondMergeDuration),
+							new Tuple<string, object>("reftreeAssign",reftreeAssignDuration),
+							new Tuple<string, object>("totalDuration",totalDuration)
 						},
-						pType.ToString());
+						pType.ToString(), true);
 					break;
 			}
 		}
 
-		private static void ExportCsv(List<object> pObjs, string pName)
+
+		private static void ExportCsv(List<Tuple<string, object>> pParams, string pName, bool pExportGlobal = false)
 		{
 			string fileName = pName + ".csv";
 			string filePath = CObjPartition.folderPath + "/" + fileName;
@@ -211,25 +214,59 @@ namespace ForestReco
 				writer.WriteLine(filePath);
 				*/
 
+				writer.WriteLine(GetHeaderString(pParams));
+
 				writer.Write(folderName);
 				line = folderName;
-				foreach (object obj in pObjs)
+				foreach (Tuple<string, object> param in pParams)
 				{
-					string val = "," + obj;
+					string val = "," + param.Item2;
 					writer.Write(val);
 					line += val;
 				}
 			}
 
-			//TODO: smazat, pouze pro mě
-			string mainSummaryFile =
-				"D:\\ja004\\OneDrive - MUNI\\ŠKOLA [old]\\SDIPR\\_thesis\\evaluation\\summary\\Summary_03.csv";
-			//using (var outStream = File.OpenWrite(mainSummaryFile))
-			using(FileStream fs = new FileStream(mainSummaryFile, FileMode.Append, FileAccess.Write))
+			string mainSummaryFile = CParameterSetter.GetStringSettings(ESettings.analyticsFilePath);
+			FileMode fileMode = FileMode.Append;
+			if (!File.Exists(mainSummaryFile))
+			{
+				CDebug.WriteLine("analytics file not defined");
+				if (!string.IsNullOrEmpty(mainSummaryFile))
+				{
+					//File.Create(mainSummaryFile);
+					fileMode = FileMode.Create;
+					CDebug.WriteLine(" - creating");
+				}
+				else
+				{
+					return;
+				}
+			}
+
+			//if Append => file exists
+			//just check if already contains some text
+			//we expect, that if it already has text, it also contains header
+			bool hasHeader = fileMode == FileMode.Append && File.ReadAllLines(mainSummaryFile).Length != 0;
+
+			using (FileStream fs = new FileStream(mainSummaryFile, fileMode, FileAccess.Write))
 			using (var writer = new StreamWriter(fs))
 			{
+				if (!hasHeader)
+				{
+					writer.WriteLine(GetHeaderString(pParams));
+				}
 				writer.WriteLine(line);
 			}
+		}
+
+		private static string GetHeaderString(List<Tuple<string, object>> pParams)
+		{
+			string header = "name";
+			foreach (Tuple<string, object> param in pParams)
+			{
+				header += "," + param.Item1;
+			}
+			return header;
 		}
 
 		public static void WriteErrors()

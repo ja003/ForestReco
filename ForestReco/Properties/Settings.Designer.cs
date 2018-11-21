@@ -298,5 +298,17 @@ namespace ForestReco.Properties {
                 this["export3d"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string analyticsFilePath {
+            get {
+                return ((string)(this["analyticsFilePath"]));
+            }
+            set {
+                this["analyticsFilePath"] = value;
+            }
+        }
     }
 }

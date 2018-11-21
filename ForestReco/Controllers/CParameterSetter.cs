@@ -50,6 +50,10 @@ namespace ForestReco
 
 		public static void SetParameter(ESettings pKey, object pArg)
 		{
+			if (pKey == ESettings.analyticsFilePath)
+			{
+				Console.WriteLine();
+			}
 			SetParameter(pKey.ToString(), pArg);
 		}
 
@@ -118,6 +122,7 @@ namespace ForestReco
 		reftreeFolderPath,
 		outputFolderPath,
 		checkTreeFilePath,
+		analyticsFilePath,
 
 		//ints
 		partitionStep,

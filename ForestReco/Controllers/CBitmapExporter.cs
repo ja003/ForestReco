@@ -326,9 +326,9 @@ namespace ForestReco
 			const int smallSize = 3;
 			int size = smallSize;
 			if (!pSmall) { size *= 2;}
-			if(isArrayLarge) { size -= 2; }
+			if(isArrayLarge) { size /= 2; }
 
-			size = Math.Max(2, size);
+			size = Math.Max(pSmall ? 1 : 2, size);
 
 			return size;
 
