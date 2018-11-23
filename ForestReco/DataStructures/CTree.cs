@@ -552,9 +552,9 @@ namespace ForestReco
 			{
 				Console.WriteLine("");
 			}
-
+			
 			//too many branch points are too far from peak
-			const float maxDistOfFirstBranchPoint = 1;
+			const float maxDistOfFirstBranchPoint = 1.5f;
 			int tooFarPointsCount = 0;
 			foreach (CBranch branch in branches)
 			{
@@ -634,7 +634,7 @@ namespace ForestReco
 			return true;
 		}
 
-		private int debugTree = 52;
+		private int debugTree = 9;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.

@@ -84,6 +84,7 @@ namespace ForestReco
 		private static void AddTreesToBitmap(CGroundArray pArray, Bitmap pBitmap, bool pTreePostition, bool pTreeBorder)
 		{
 			Color treeColor = Color.Blue;
+			Color invalidTreeColor = Color.DarkSlateGray;
 			Color treeBorderColor = Color.FromArgb(255, 0, 255);
 			Color branchColor = Color.Yellow;
 
@@ -92,10 +93,15 @@ namespace ForestReco
 			SolidBrush treeBorderBrush = new SolidBrush(treeBorderColor);
 			SolidBrush branchBrush = new SolidBrush(branchColor);
 			SolidBrush treeBrush = new SolidBrush(treeColor);
+			SolidBrush invalidTreeBrush = new SolidBrush(invalidTreeColor);
 			Pen treeBorderPen = new Pen(treeBorderBrush);
 			Pen branchPen = new Pen(branchBrush);
 
-			foreach (CTree tree in CTreeManager.Trees)
+
+			List<CTree> allTrees = CTreeManager.Trees;
+			allTrees.AddRange(CTreeManager.InvalidTrees);
+
+			foreach (CTree tree in allTrees)
 			{
 				try
 				{
@@ -122,7 +128,7 @@ namespace ForestReco
 					}
 
 					//draw branch extents
-					if (pTreeBorder)
+					if (pTreeBorder && tree.isValid)
 					{
 						List<Vector3> furthestPoints = new List<Vector3>();
 						foreach (CBranch branch in tree.Branches)
@@ -174,7 +180,7 @@ namespace ForestReco
 					//mark tree position
 					if (pTreePostition)
 					{
-						pBitmap.SetPixel(x, y, treeColor);
+						//pBitmap.SetPixel(x, y, treeColor);
 						using (Graphics g = Graphics.FromImage(pBitmap))
 						{
 							//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
@@ -182,7 +188,7 @@ namespace ForestReco
 							if (_x < 0) { _x = x; }
 							int _y = y - treeMarkerSize / 2;
 							if (_y < 0) { _y = y; }
-							g.FillRectangle(treeBrush, _x, _y, treeMarkerSize, treeMarkerSize);
+							g.FillRectangle(tree.isValid ? treeBrush : invalidTreeBrush, _x, _y, treeMarkerSize, treeMarkerSize);
 						}
 					}
 				}
