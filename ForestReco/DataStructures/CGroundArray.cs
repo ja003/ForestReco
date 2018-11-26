@@ -198,7 +198,7 @@ namespace ForestReco
 
 		public void FilterFakeVegePoints()
 		{
-			//clear vege points - they will be added back in field.FilterFakeVegePoints()
+			//clear vege points - they will be added back in field.ApplyFilteredPoints()
 			CProjectData.vegePoints.Clear();
 
 			float averageHeight = GetAveragePreProcessVegeHeight();
@@ -210,6 +210,12 @@ namespace ForestReco
 				{
 					Console.WriteLine($"field {field.indexInField} = {field.fakePoints.Count}");
 				}
+			}
+
+
+			foreach (CGroundField field in fields)
+			{
+				field.ApplyFilteredPoints();
 			}
 
 			Console.WriteLine($"total =  {GetFakePointsCount()}");

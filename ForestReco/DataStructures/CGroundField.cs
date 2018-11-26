@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -296,14 +297,14 @@ namespace ForestReco
 			{
 				//CDebug.Count(this + " devalidated ", validBefore - validAfter, validBefore);
 			}
-		}
+		}*/
 
 		/// <summary>
 		/// Checks if fake points are close to some valid point.
 		/// If so, the point is considered valid.
 		/// All valid points are added in vegePoints
 		/// </summary>
-		public void TryAddFakePoints()
+		/*public void TryAddFakePoints()
 		{
 			bool tryAddFakePoints = true;
 			int fakeBefore = fakePoints.Count;
@@ -344,8 +345,8 @@ namespace ForestReco
 				//CDebug.Count(this + " validated ", fakeBefore - fakeAfter, fakeBefore);
 			}
 
-			CProjectData.vegePoints.AddRange(validPoints);
-			CProjectData.fakePoints.AddRange(fakePoints);
+			//CProjectData.vegePoints.AddRange(validPoints);
+			//CProjectData.fakePoints.AddRange(fakePoints);
 		}
 		*/
 		const float MIN_FAKE_POINT_HEIGHT_OFFSET = 4;
@@ -353,7 +354,6 @@ namespace ForestReco
 		private const float MAX_NEIGHBOUR_HEIGHT_DIFF = 2;
 
 		/// <summary>
-		/// Filters fake vege points - assigns them into CProjectData.vegePoints and fakePoints
 		/// </summary>
 		public void FilterFakeVegePoints(float pMinHeight)
 		{
@@ -366,22 +366,21 @@ namespace ForestReco
 				float? groundHeight = GetHeight();
 				//is much higher than average => minBadHeightDiffCount gets smaller
 				bool isTooHigh = height - groundHeight > pMinHeight + MIN_FAKE_POINT_HEIGHT_OFFSET;
-				//isTooHigh = false;
 
-				//if (!isTooHigh)
+				foreach (CGroundField neighbour in GetNeighbours())
 				{
-					foreach (CGroundField neighbour in GetNeighbours())
+					float? neighbourHeight = neighbour.validPoints.Count > 0 ?
+						neighbour.validPoints.Last().Y : neighbour.MaxPreProcessVege;
+					if (height - neighbourHeight > MAX_NEIGHBOUR_HEIGHT_DIFF)
 					{
-						if (height - neighbour.MaxPreProcessVege > MAX_NEIGHBOUR_HEIGHT_DIFF)
+						badHeighDiffCount++;
+						if (badHeighDiffCount > minBadHeightDiffCount)
 						{
-							badHeighDiffCount++;
-							if (badHeighDiffCount > minBadHeightDiffCount)
-							{
-								break;
-							}
+							break;
 						}
 					}
 				}
+
 
 				if (badHeighDiffCount > (isTooHigh ? minBadHeightDiffCount - 2 : minBadHeightDiffCount))
 				{
@@ -394,9 +393,18 @@ namespace ForestReco
 				}
 				break;
 			}
+			//CProjectData.vegePoints.AddRange(validPoints);
+			//CProjectData.fakePoints.AddRange(fakePoints);
+
+		}
+
+		/// <summary>
+		/// Assigns vege points into CProjectData.vegePoints and fakePoints
+		/// </summary>
+		public void ApplyFilteredPoints()
+		{
 			CProjectData.vegePoints.AddRange(validPoints);
 			CProjectData.fakePoints.AddRange(fakePoints);
-
 		}
 
 		/// <summary>
