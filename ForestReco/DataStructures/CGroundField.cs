@@ -127,6 +127,11 @@ namespace ForestReco
 			return count;
 		}*/
 
+		/// <summary>
+		/// Returns neighbour using 8-neighbourhood
+		/// </summary>
+		/// <param name="pIncludeThis"></param>
+		/// <returns></returns>
 		public List<CGroundField> GetNeighbours(bool pIncludeThis = false)
 		{
 			if (neighbours != null)
@@ -255,7 +260,7 @@ namespace ForestReco
 		/// Remove points, which were not filtered and dont have any close neighbour defined under them.
 		/// Apply only on a few top points. this criterium would discard the most of the lower valid points
 		/// </summary>
-		public void TryRemoveValidPoints()
+		/*public void TryRemoveValidPoints()
 		{
 			bool tryRemoveValidPoints = false;
 			int validBefore = validPoints.Count;
@@ -342,13 +347,62 @@ namespace ForestReco
 			CProjectData.vegePoints.AddRange(validPoints);
 			CProjectData.fakePoints.AddRange(fakePoints);
 		}
+		*/
+		const float MIN_FAKE_POINT_HEIGHT_OFFSET = 4;
 
-		const float MIN_FAKE_POINT_HEIGHT_OFFSET = 3;
+		private const float MAX_NEIGHBOUR_HEIGHT_DIFF = 2;
+
+		/// <summary>
+		/// Filters fake vege points - assigns them into CProjectData.vegePoints and fakePoints
+		/// </summary>
+		public void FilterFakeVegePoints(float pMinHeight)
+		{
+			for (int i = preProcessPoints.Count - 1; i >= 0; i--)
+			{
+				float height = preProcessPoints[i].Y;
+
+				int badHeighDiffCount = 0;
+				const int minBadHeightDiffCount = 4;
+				float? groundHeight = GetHeight();
+				//is much higher than average => minBadHeightDiffCount gets smaller
+				bool isTooHigh = height - groundHeight > pMinHeight + MIN_FAKE_POINT_HEIGHT_OFFSET;
+				//isTooHigh = false;
+
+				//if (!isTooHigh)
+				{
+					foreach (CGroundField neighbour in GetNeighbours())
+					{
+						if (height - neighbour.MaxPreProcessVege > MAX_NEIGHBOUR_HEIGHT_DIFF)
+						{
+							badHeighDiffCount++;
+							if (badHeighDiffCount > minBadHeightDiffCount)
+							{
+								break;
+							}
+						}
+					}
+				}
+
+				if (badHeighDiffCount > (isTooHigh ? minBadHeightDiffCount - 2 : minBadHeightDiffCount))
+				{
+					fakePoints.Add(preProcessPoints[i]);
+					continue;
+				}
+				for (int j = 0; j < i; j++)
+				{
+					validPoints.Add(preProcessPoints[j]);
+				}
+				break;
+			}
+			CProjectData.vegePoints.AddRange(validPoints);
+			CProjectData.fakePoints.AddRange(fakePoints);
+
+		}
 
 		/// <summary>
 		/// Adds all points higher than pMaxHeight in fakePoints and other in validPoints
 		/// </summary>
-		public void FilterFakeVegePoints(float pMaxHeight, bool pStrickFilter)
+		/*public void FilterFakeVegePoints(float pMaxHeight, bool pStrickFilter)
 		{
 			List<Vector3> okPoints = new List<Vector3>();
 			List<Vector3> nokPoints = new List<Vector3>();
@@ -395,7 +449,7 @@ namespace ForestReco
 			//CProjectData.vegePoints.AddRange(okPoints);
 			//CProjectData.fakePoints.AddRange(nokPoints);
 		}
-
+		*/
 		public bool IsDefined()
 		{
 			return goundPoints.Count > 0;

@@ -195,11 +195,33 @@ namespace ForestReco
 			}
 		}
 
+
+		public void FilterFakeVegePoints()
+		{
+			//clear vege points - they will be added back in field.FilterFakeVegePoints()
+			CProjectData.vegePoints.Clear();
+
+			float averageHeight = GetAveragePreProcessVegeHeight();
+
+			foreach (CGroundField field in fields)
+			{
+				field.FilterFakeVegePoints(averageHeight);
+				if (field.fakePoints.Count > 0)
+				{
+					Console.WriteLine($"field {field.indexInField} = {field.fakePoints.Count}");
+				}
+			}
+
+			Console.WriteLine($"total =  {GetFakePointsCount()}");
+			Console.WriteLine();
+
+		}
+
 		/// <summary>
 		/// Filters points, which are fake (unnaturally higher than average vege poins).
 		/// Assigns them in vegePoints and fakePoints
 		/// </summary>
-		public void FilterFakeVegePoints()
+		/*public void FilterFakeVegePoints()
 		{
 			CDebug.WriteLine("FilterFakeVegePoints", true);
 			CProjectData.vegePoints.Clear();
@@ -233,7 +255,7 @@ namespace ForestReco
 
 			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
 			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
-		}
+		}*/
 
 		private int GetFakePointsCount()
 		{
