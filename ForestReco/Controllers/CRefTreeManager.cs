@@ -157,7 +157,7 @@ namespace ForestReco
 				//refTree.Obj.UseMtl = CMaterialManager.GetRefTreeMaterial(counter);
 
 				Trees.Add(refTree);
-				CDebug.WriteLine("Loaded tree: " + fileName);
+				CDebug.WriteLine($"Loaded tree: {fileName}. height = {refTree.GetTreeHeight()}");
 
 				counter++;
 			}
@@ -227,7 +227,7 @@ namespace ForestReco
 
 			if (debugSimilarites)
 			{
-				CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity);
+				CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity.similarity);
 				CDebug.WriteLine($"tree height = {pTree.GetTreeHeight()}");
 				CDebug.WriteLine($"reftree height = {mostSuitableTree.GetTreeHeight()}");
 			}
