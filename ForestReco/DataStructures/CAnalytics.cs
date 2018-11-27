@@ -26,6 +26,10 @@ namespace ForestReco
 		public static float maxTreeHeight;
 		public static float minTreeHeight;
 
+		public static int loadedReftrees;
+		public static float averageReftreeSimilarity;
+
+
 		public static int loadedCheckTrees;
 		public static int assignedCheckTrees;
 		public static int invalidCheckTrees;
@@ -72,6 +76,9 @@ namespace ForestReco
 			output += $"averageTreeHeight = {averageTreeHeight} \n";
 			output += $"maxTreeHeight = {maxTreeHeight} \n";
 			output += $"minTreeHeight = {minTreeHeight} \n\n";
+
+			output += $"loadedReftrees = {loadedReftrees} \n";
+			output += $"averageReftreeSimilarity = {averageReftreeSimilarity} \n\n";
 
 
 			output += "Duration\n";
@@ -171,9 +178,9 @@ namespace ForestReco
 						{
 							new Tuple<string, object>("width", CProjectData.header.Width),
 							new Tuple<string, object>("Height",CProjectData.header.Height),
-							new Tuple<string, object>("treeExtent", 
+							new Tuple<string, object>("treeExtent",
 								CParameterSetter.GetFloatSettings(ESettings.treeExtent)),
-							new Tuple<string, object>("treeExtentMultiply", 
+							new Tuple<string, object>("treeExtentMultiply",
 								CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply)),
 							new Tuple<string, object>("loadedPoints",loadedPoints),
 
@@ -182,6 +189,9 @@ namespace ForestReco
 							new Tuple<string, object>("SecondMerged",GetSecondMergedCount()),
 							new Tuple<string, object>("detectedTrees",detectedTrees),
 
+							new Tuple<string, object>("loadedReftrees",loadedReftrees),
+							new Tuple<string, object>("averageReftreeSimilarity",averageReftreeSimilarity),
+							
 							new Tuple<string, object>("processVege",processVegePointsDuration),
 							new Tuple<string, object>("firstMerge",firstMergeDuration),
 							new Tuple<string, object>("secondMerge",secondMergeDuration),
