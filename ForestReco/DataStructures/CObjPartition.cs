@@ -204,8 +204,6 @@ namespace ForestReco
 			{
 				for (int y = 0; y < partitionYRange; y++)
 				{
-					if (CProgramStarter.abort) { return; }
-
 					counter++;
 					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName +
 						"_[" + x + "," + y + "]" + pFileSuffix, folderPath);

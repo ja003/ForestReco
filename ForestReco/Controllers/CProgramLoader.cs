@@ -231,8 +231,6 @@ namespace ForestReco
 			int counter = 1;
 			while (!CProjectData.array.IsAllDefined())
 			{
-				if (CProgramStarter.abort) { return; }
-
 				DateTime fillHeightsStart = DateTime.Now;
 
 				CDebug.Count("FillMissingHeights", counter);
@@ -290,8 +288,6 @@ namespace ForestReco
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
-				if (CProgramStarter.abort) { return; }
-
 				Vector3 point = CProjectData.vegePoints[i];
 				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.PreProcess);
 
@@ -338,8 +334,6 @@ namespace ForestReco
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
-				if (CProgramStarter.abort) { return; }
-
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
 
@@ -353,8 +347,6 @@ namespace ForestReco
 		{
 			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
-				if (CProgramStarter.abort) { return; }
-
 				Vector3 point = CProjectData.groundPoints[i];
 				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground);
 				CProjectData.detailArray?.AddPointInField(point, CGroundArray.EPointType.Ground);

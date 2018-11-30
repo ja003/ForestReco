@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
@@ -63,14 +64,17 @@ namespace ForestReco
 		private TextBox textAnalyticsFile;
 		private Button buttonAnalytics;
 		private CheckBox checkBoxExportBitmap;
+		private System.ComponentModel.BackgroundWorker backgroundWorker1;
 		private Button btnSellectForest;
 
 		public CMainForm()
 		{
-			CProjectData.mainForm = this;
-
 			InitializeComponent();
 			InitializeValues();
+
+			CProjectData.backgroundWorker = backgroundWorker1;
+			backgroundWorker1.WorkerSupportsCancellation = true;
+			backgroundWorker1.WorkerReportsProgress = true;
 
 			//CProgramStarter.Start();
 		}
@@ -187,12 +191,25 @@ namespace ForestReco
 				return;
 			}
 			CProgramStarter.PrepareSequence();
-			CProgramStarter.Start();
+			SetStartBtnEnabled(false);
+
+			if (backgroundWorker1.IsBusy != true)
+			{
+				// Start the asynchronous operation.
+				backgroundWorker1.RunWorkerAsync();
+			}
+
+			//CProgramStarter.Start();
 		}
 
 		private void btnAbort_Click(object sender, EventArgs e)
 		{
-			CProgramStarter.Abort();
+			//CProgramStarter.Abort();
+			if (backgroundWorker1.WorkerSupportsCancellation)
+			{
+				// Cancel the asynchronous operation.
+				backgroundWorker1.CancelAsync();
+			}
 		}
 
 		private void btnToggleConsole_Click(object sender, EventArgs e)
@@ -256,6 +273,7 @@ namespace ForestReco
 			this.textAnalyticsFile = new System.Windows.Forms.TextBox();
 			this.buttonAnalytics = new System.Windows.Forms.Button();
 			this.checkBoxExportBitmap = new System.Windows.Forms.CheckBox();
+			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -788,6 +806,15 @@ namespace ForestReco
 			this.checkBoxExportBitmap.UseVisualStyleBackColor = true;
 			this.checkBoxExportBitmap.CheckedChanged += new System.EventHandler(this.checkBoxExportBitmap_CheckedChanged);
 			// 
+			// backgroundWorker1
+			// 
+			this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+
+			this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+
+			this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+
+			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
@@ -1154,6 +1181,51 @@ namespace ForestReco
 		{
 			btnStart.Enabled = pValue;
 			btnAbort.Enabled = !pValue;
+		}
+
+		private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+		{
+			CProgramStarter.Start();
+		}
+
+		// This event handler updates the progress.
+		private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			//resultLabel.Text = (e.ProgressPercentage.ToString() + "%");
+			progressBar.Value = e.ProgressPercentage;
+			string[] results = (string[])e.UserState;
+			if(results == null){ return;}
+
+			string resultText = "";
+			for (int i = 0; i < results.Length; i++)
+			{
+				resultText += results[i] + Environment.NewLine;
+			}
+			if (resultText.Length > 0)
+			{
+				textProgress.Text = resultText;
+			}
+
+		}
+
+		// This event handler deals with the results of the background operation.
+		private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			SetStartBtnEnabled(true);
+
+			CDebug.WriteLine(backgroundWorker1.CancellationPending + "ů");
+			if (e.Cancelled == true)
+			{
+				CDebug.WriteLine("Canceled!");
+			}
+			else if (e.Error != null)
+			{
+				CDebug.WriteLine("Error: " + e.Error.Message);
+			}
+			else
+			{
+				CDebug.WriteLine("Done!");
+			}
 		}
 	}
 }

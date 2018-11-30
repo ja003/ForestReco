@@ -366,8 +366,6 @@ namespace ForestReco
 			int maxIterations = Trees.Count;
 			for (int i = Trees.Count - 1; i >= 0; i--)
 			{
-				if (CProgramStarter.abort) { return; }
-
 				if (i >= Trees.Count)
 				{
 					//CDebug.WriteLine("Tree was deleted");

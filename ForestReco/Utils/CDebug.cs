@@ -60,7 +60,7 @@ namespace ForestReco
 		{
 			if (pIteration % pDebugFrequency == 0 && pIteration > 0)
 			{
-				WriteProgress(pIteration, pMaxIteration);
+				//WriteProgress(pIteration, pMaxIteration);
 
 				string comment = "\n" + pText + " " + pIteration + " out of " + pMaxIteration;
 				WriteLine(comment);
@@ -73,7 +73,10 @@ namespace ForestReco
 				//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
 				float remainsRatio = ((float)pMaxIteration / pIteration);
 				double estimatedTotalSeconds = remainsRatio * timeFromStart;
-				WriteExtimatedTimeLeft(estimatedTotalSeconds - timeFromStart, comment);
+
+				int percentage = pIteration * 100 / pMaxIteration;
+
+				WriteExtimatedTimeLeft(percentage, estimatedTotalSeconds - timeFromStart, comment);
 				pPreviousDebugStart = DateTime.Now;
 			}
 
@@ -81,24 +84,20 @@ namespace ForestReco
 			//next step doesnt have to use progressbar and it wouldnt get refreshed
 			if (pIteration == pMaxIteration - 1)
 			{
-				WriteProgress(0, pMaxIteration);
+				WriteExtimatedTimeLeft(100, 0, "done");
 			}
 		}
 
-		private static void WriteProgress(int pIteration, int pMaxIteration)
+		/*private static void WriteProgress(int pIteration, int pMaxIteration)
 		{
-			if (CProjectData.mainForm == null)
-			{
-				return;
-			}
-			CProjectData.mainForm.progressBar.Minimum = 0;
-			CProjectData.mainForm.progressBar.Maximum = pMaxIteration;
-			CProjectData.mainForm.progressBar.Value = pIteration;
-			Application.DoEvents();
-		}
+			//CProjectData.mainForm.progressBar.Minimum = 0;
+			//CProjectData.mainForm.progressBar.Maximum = pMaxIteration;
+			//CProjectData.mainForm.progressBar.Value = pIteration;
+			CProjectData.backgroundWorker.ReportProgress(pIteration * 100 / pMaxIteration);
+		}*/
 
 		private static string lastTextProgress;
-		private static void WriteExtimatedTimeLeft(double pSecondsLeft, string pComment)
+		private static void WriteExtimatedTimeLeft(int pPercentage, double pSecondsLeft, string pComment)
 		{
 			TimeSpan ts = new TimeSpan(0, 0, 0, (int)pSecondsLeft);
 			string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
@@ -107,12 +106,14 @@ namespace ForestReco
 				$"- estimated time left = {timeString}\n";
 			WriteLine(timeLeftString);
 
+			CProjectData.backgroundWorker.ReportProgress(pPercentage, new[]
+			{
+				lastTextProgress , pComment , timeLeftString
+			});
 
-			CProjectData.mainForm.textProgress.Text = lastTextProgress
-				+ Environment.NewLine + pComment
-				+ Environment.NewLine + timeLeftString;
-
-			Application.DoEvents();
+			//CProjectData.mainForm.textProgress.Text = lastTextProgress
+			//	+ Environment.NewLine + pComment
+			//	+ Environment.NewLine + timeLeftString;
 		}
 
 
@@ -128,15 +129,19 @@ namespace ForestReco
 		}*/
 		public static void Step(EProgramStep pStep)
 		{
-			if (CProjectData.mainForm == null)
+			lastTextProgress = GetStepText(pStep);
+			string[] message = new[] { lastTextProgress };
+			if (pStep == EProgramStep.Exception)
 			{
+				CAnalytics.WriteErrors();
 				return;
 			}
-			lastTextProgress = GetStepText(pStep);
-			CProjectData.mainForm.textProgress.Text = lastTextProgress;
 
-			Application.DoEvents();
-			Thread.Sleep(100);
+			CProjectData.backgroundWorker.ReportProgress(0, message);
+			//CProjectData.mainForm.textProgress.Text = lastTextProgress;
+
+			//Application.DoEvents();
+			//Thread.Sleep(100);
 		}
 
 		public static void WriteProblems(List<string> problems)
@@ -147,12 +152,10 @@ namespace ForestReco
 			{
 				message += p + Environment.NewLine;
 			}
-			CDebug.WriteLine(message);
-			if (CProjectData.mainForm == null)
-			{
-				return;
-			}
-			CProjectData.mainForm.textProgress.Text = message;
+			WriteLine(message);
+			CProjectData.backgroundWorker.ReportProgress(0, new string[] { message });
+
+			//CProjectData.mainForm.textProgress.Text = message;
 		}
 
 
@@ -160,13 +163,9 @@ namespace ForestReco
 
 		private static string GetStepText(EProgramStep pStep)
 		{
-			if (pStep == EProgramStep.Aborting)
+			if (pStep == EProgramStep.Exception)
 			{
-				return "ABORTING! please wait.";
-			}
-			if (pStep == EProgramStep.Aborted)
-			{
-				return "ABORTED";
+				return "EXCEPTION";
 			}
 
 			//calledSteps.Add(pStep);
@@ -174,7 +173,7 @@ namespace ForestReco
 			stepCallCount++;
 			int maxSteps = (Enum.GetNames(typeof(EProgramStep)).Length - 2);
 			stepCallCount = Math.Min(stepCallCount, maxSteps); //bug: sometimes writes higher value
-			string progress = stepCallCount + "/" +	maxSteps + ": ";
+			string progress = stepCallCount + "/" + maxSteps + ": ";
 			//-2 for abort states
 			string text;
 			switch (pStep)
@@ -265,7 +264,7 @@ namespace ForestReco
 		Bitmap = 16,
 		Done = 17,
 
-		Aborting,
-		Aborted
+		Cancelled,
+		Exception
 	}
 }

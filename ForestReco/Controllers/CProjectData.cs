@@ -1,6 +1,7 @@
 ﻿using ObjParser;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -15,7 +16,9 @@ namespace ForestReco
 	{
 		public static string saveFileName;
 
-		public static CMainForm mainForm;
+		//public static CMainForm mainForm;
+		public static BackgroundWorker backgroundWorker;
+
 		//public static int maxLinesToLoad;
 		//public static bool useMaxLines;
 

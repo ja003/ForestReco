@@ -476,8 +476,6 @@ namespace ForestReco
 
 			foreach (CGroundField el in fieldsRandom)
 			{
-				if (CProgramStarter.abort) { return; }
-
 				if (!el.IsDefined())
 				{
 					el.FillMissingHeight(pMethod, pKernelMultiplier);

@@ -281,17 +281,18 @@ namespace ForestReco
 
 		public static void WriteErrors()
 		{
-			if (CProjectData.mainForm == null)
+			/*if (CProjectData.mainForm == null)
 			{
 				return;
-			}
-			string progressText = CProjectData.mainForm.textProgress.Text;
-			progressText += "\n - ERRORS: \n";
+			}*/
+			//string progressText = CProjectData.mainForm.textProgress.Text;
+			string message = "ERRORS:" + Environment.NewLine;
 			foreach (string error in errors)
 			{
-				progressText += error + "\n";
+				message += error + Environment.NewLine;
 			}
-			CProjectData.mainForm.textProgress.Text = progressText;
+			CProjectData.backgroundWorker.ReportProgress(0, new {message});
+			//CProjectData.mainForm.textProgress.Text = progressText;
 		}
 
 		public static double GetDuration(DateTime pStartTime)

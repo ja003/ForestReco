@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Numerics;
 using System.Threading;
@@ -9,8 +10,7 @@ namespace ForestReco
 {
 	public static class CProgramStarter
 	{
-		public static bool abort;
-
+		//public static bool abort;
 
 		public static void PrepareSequence()
 		{
@@ -20,10 +20,9 @@ namespace ForestReco
 		public static void Start()
 		{
 			CSequenceController.SetValues();
-			CProjectData.mainForm.SetStartBtnEnabled(false);
+			//CProjectData.mainForm.SetStartBtnEnabled(false);
 
 			DateTime startTime = DateTime.Now;
-			abort = false;
 			CProjectData.Init();
 			CDebug.Init();
 			CTreeManager.Init();
@@ -37,16 +36,17 @@ namespace ForestReco
 
 			CMaterialManager.Init();
 
+			string[] workerResult = new string[2];
+			workerResult[0] = "this string";
+			workerResult[1] = "some other string";
+			CProjectData.backgroundWorker.ReportProgress(10, workerResult);
+
 			try
 			{
 
 				string[] lines = CProgramLoader.GetFileLines();
 
-				if (abort)
-				{
-					OnAborted();
-					return;
-				}
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 				if (CHeaderInfo.HasHeader(lines[0]))
 				{
@@ -55,36 +55,21 @@ namespace ForestReco
 				else
 				{
 					CDebug.Error("No header is defined");
-					Abort();
+					throw new Exception("No header is defined");
 				}
 
 				CRefTreeManager.Init();
-
-				if (abort)
-				{
-					OnAborted();
-					return;
-				}
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, CProjectData.header != null, true);
 				CProgramLoader.ProcessParsedLines(parsedLines);
 
-				//CTreeManager.AssignMaterials(); //call before export
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
-				if (abort)
-				{
-					OnAborted();
-					return;
-				}
 
 				//has to be called after array initialization
 				CCheckTreeManager.Init();
-
-				if (abort)
-				{
-					OnAborted();
-					return;
-				}
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 				CTreeManager.DebugTrees();
 
@@ -92,6 +77,7 @@ namespace ForestReco
 				//CObjExporter.ExportObjsToExport();
 				CDebug.Step(EProgramStep.Export);
 				CObjPartition.ExportPartition();
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 				//has to be called after ExportPartition where final folder location is determined
 
@@ -116,12 +102,13 @@ namespace ForestReco
 			catch (Exception e)
 			{
 				CDebug.Error($"\nexception: {e.Message} \nStackTrace:{e.StackTrace}\n");
-				Abort();
+				OnException();
+				return;
 			}
 
-			if (abort)
+			if (CProjectData.backgroundWorker.CancellationPending)
 			{
-				OnAborted();
+				CDebug.Step(EProgramStep.Cancelled);
 				return;
 			}
 
@@ -130,28 +117,18 @@ namespace ForestReco
 			if (CSequenceController.IsLastSequence())
 			{
 				CSequenceController.OnLastSequenceEnd();
+				//CProjectData.mainForm.SetStartBtnEnabled(true);
 				return;
 			}
 
 			CSequenceController.currentConfigIndex++;
 			Start();
-
-			CProjectData.mainForm.SetStartBtnEnabled(true);
 		}
 
-		public static void Abort()
-		{
-			CDebug.Warning("ABORT");
-			if (abort) { return; }
-			abort = true;
-			CDebug.Step(EProgramStep.Aborting);
-		}
 
-		public static void OnAborted()
+		public static void OnException()
 		{
-			CDebug.Step(EProgramStep.Aborted);
-			CAnalytics.WriteErrors();
-			CProjectData.mainForm.SetStartBtnEnabled(true);
+			CDebug.Step(EProgramStep.Exception);
 		}
 	}
 }
