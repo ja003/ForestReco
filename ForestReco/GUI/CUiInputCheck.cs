@@ -53,7 +53,7 @@ namespace ForestReco
 				CheckPath("Checktree", CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath), true);
 			}
 
-			CheckExportTrees();
+			CheckExport();
 
 			bool hasProblems = problems.Count > 0;
 			if (hasProblems)
@@ -63,8 +63,24 @@ namespace ForestReco
 			return !hasProblems;
 		}
 
-		private static void CheckExportTrees()
+		private static void CheckExport()
 		{
+			bool export3D = CParameterSetter.GetBoolSettings(ESettings.export3d);
+			bool exportBitmap = CParameterSetter.GetBoolSettings(ESettings.exportBitmap);
+			if (!export3D && !exportBitmap)
+			{
+				problems.Add($"No reason to process when export3D and exportBitmap are false. Result will be empty.");
+				return;
+			}
+			//if we export at least a bitmap, it is ok
+			if(exportBitmap){ return;}
+
+			/*if (!export3D)
+			{
+				problems.Add($"No reason to process when export3D is false. Result will be empty.");
+				return;
+			}*/
+
 			bool exportTreeStructures = CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
 			bool exportReftrees = CParameterSetter.GetBoolSettings(ESettings.exportRefTrees);
 			bool exportTreeBoxes = CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes);

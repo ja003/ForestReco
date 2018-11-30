@@ -310,5 +310,17 @@ namespace ForestReco.Properties {
                 this["analyticsFilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool exportBitmap {
+            get {
+                return ((bool)(this["exportBitmap"]));
+            }
+            set {
+                this["exportBitmap"] = value;
+            }
+        }
     }
 }

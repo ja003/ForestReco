@@ -135,6 +135,7 @@ namespace ForestReco
 
 		//bools
 		export3d,
+		exportBitmap,
 		exportTreeStructures,
 		exportInvalidTrees,
 		exportRefTrees,

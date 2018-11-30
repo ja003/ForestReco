@@ -36,7 +36,8 @@ namespace ForestReco
 				case ESettings.filterPoints:
 					return "Filters points which are too much above average height and points which do not have many points defined under them (in this case these points are probably not part of vegetation, but some unwanted source like flying animal).\n" +
 						"Use this only if you see some unwanted points in result.";
-
+				case ESettings.exportBitmap:
+					return "Export bitmap representation of a result. Creates a) heightmap, b) tree positions and c) tree borders.";
 
 				case ESettings.useCheckTreeFile:
 					return "Loads checktree file defined above and evaluates an accuracy of the detection.";

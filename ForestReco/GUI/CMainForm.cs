@@ -62,6 +62,7 @@ namespace ForestReco
 		private Button btnSequence;
 		private TextBox textAnalyticsFile;
 		private Button buttonAnalytics;
+		private CheckBox checkBoxExportBitmap;
 		private Button btnSellectForest;
 
 		public CMainForm()
@@ -109,6 +110,10 @@ namespace ForestReco
 			//bools
 			checkBoxExport3d.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.export3d);
+			checkBoxExort3d_CheckedChanged(this, EventArgs.Empty); //force refresh
+
+			checkBoxExportBitmap.Checked =
+				CParameterSetter.GetBoolSettings(ESettings.exportBitmap);
 			checkBoxExportTreeStructures.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
 			checkBoxExportInvalidTrees.Checked =
@@ -119,6 +124,8 @@ namespace ForestReco
 				CParameterSetter.GetBoolSettings(ESettings.assignRefTreesRandom);
 			checkBoxUseCheckTree.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile);
+			checkBoxUseCheckTree_CheckedChanged(this, EventArgs.Empty); //force refresh
+
 			checkBoxExportCheckTrees.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.exportCheckTrees);
 			checkBoxExportTreeBoxes.Checked =
@@ -134,7 +141,10 @@ namespace ForestReco
 			checkBoxAutoTreeHeight.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.autoAverageTreeHeight);
 
+			SetStartBtnEnabled(true);
+
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExport3d, ESettings.export3d);
+			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportBitmap, ESettings.exportBitmap);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxAssignRefTreesRandom, ESettings.assignRefTreesRandom);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportInvalidTrees, ESettings.exportInvalidTrees);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportRefTrees, ESettings.exportRefTrees);
@@ -241,6 +251,7 @@ namespace ForestReco
 			this.btnSequence = new System.Windows.Forms.Button();
 			this.textAnalyticsFile = new System.Windows.Forms.TextBox();
 			this.buttonAnalytics = new System.Windows.Forms.Button();
+			this.checkBoxExportBitmap = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -534,7 +545,7 @@ namespace ForestReco
 			// checkBoxExportTreeStructures
 			// 
 			this.checkBoxExportTreeStructures.AutoSize = true;
-			this.checkBoxExportTreeStructures.Location = new System.Drawing.Point(238, 352);
+			this.checkBoxExportTreeStructures.Location = new System.Drawing.Point(245, 302);
 			this.checkBoxExportTreeStructures.Name = "checkBoxExportTreeStructures";
 			this.checkBoxExportTreeStructures.Size = new System.Drawing.Size(165, 21);
 			this.checkBoxExportTreeStructures.TabIndex = 38;
@@ -546,7 +557,7 @@ namespace ForestReco
 			// checkBoxExportInvalidTrees
 			// 
 			this.checkBoxExportInvalidTrees.AutoSize = true;
-			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(238, 402);
+			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(245, 352);
 			this.checkBoxExportInvalidTrees.Name = "checkBoxExportInvalidTrees";
 			this.checkBoxExportInvalidTrees.Size = new System.Drawing.Size(149, 21);
 			this.checkBoxExportInvalidTrees.TabIndex = 39;
@@ -558,7 +569,7 @@ namespace ForestReco
 			// checkBoxExportRefTrees
 			// 
 			this.checkBoxExportRefTrees.AutoSize = true;
-			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(238, 427);
+			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(245, 377);
 			this.checkBoxExportRefTrees.Name = "checkBoxExportRefTrees";
 			this.checkBoxExportRefTrees.Size = new System.Drawing.Size(122, 21);
 			this.checkBoxExportRefTrees.TabIndex = 40;
@@ -582,7 +593,7 @@ namespace ForestReco
 			// checkBoxUseCheckTree
 			// 
 			this.checkBoxUseCheckTree.AutoSize = true;
-			this.checkBoxUseCheckTree.Location = new System.Drawing.Point(238, 275);
+			this.checkBoxUseCheckTree.Location = new System.Drawing.Point(12, 402);
 			this.checkBoxUseCheckTree.Name = "checkBoxUseCheckTree";
 			this.checkBoxUseCheckTree.Size = new System.Drawing.Size(141, 21);
 			this.checkBoxUseCheckTree.TabIndex = 42;
@@ -594,7 +605,7 @@ namespace ForestReco
 			// checkBoxExportCheckTrees
 			// 
 			this.checkBoxExportCheckTrees.AutoSize = true;
-			this.checkBoxExportCheckTrees.Location = new System.Drawing.Point(238, 302);
+			this.checkBoxExportCheckTrees.Location = new System.Drawing.Point(245, 427);
 			this.checkBoxExportCheckTrees.Name = "checkBoxExportCheckTrees";
 			this.checkBoxExportCheckTrees.Size = new System.Drawing.Size(142, 21);
 			this.checkBoxExportCheckTrees.TabIndex = 43;
@@ -630,7 +641,7 @@ namespace ForestReco
 			// checkBoxExportPoints
 			// 
 			this.checkBoxExportPoints.AutoSize = true;
-			this.checkBoxExportPoints.Location = new System.Drawing.Point(238, 452);
+			this.checkBoxExportPoints.Location = new System.Drawing.Point(245, 402);
 			this.checkBoxExportPoints.Name = "checkBoxExportPoints";
 			this.checkBoxExportPoints.Size = new System.Drawing.Size(111, 21);
 			this.checkBoxExportPoints.TabIndex = 46;
@@ -644,9 +655,9 @@ namespace ForestReco
 			this.checkBoxAutoTreeHeight.AutoSize = true;
 			this.checkBoxAutoTreeHeight.Location = new System.Drawing.Point(12, 275);
 			this.checkBoxAutoTreeHeight.Name = "checkBoxAutoTreeHeight";
-			this.checkBoxAutoTreeHeight.Size = new System.Drawing.Size(219, 21);
+			this.checkBoxAutoTreeHeight.Size = new System.Drawing.Size(163, 21);
 			this.checkBoxAutoTreeHeight.TabIndex = 48;
-			this.checkBoxAutoTreeHeight.Text = "automatic average tree height";
+			this.checkBoxAutoTreeHeight.Text = "automatic tree height";
 			this.myToolTip.SetToolTip(this.checkBoxAutoTreeHeight, "include all points into final export file");
 			this.checkBoxAutoTreeHeight.UseVisualStyleBackColor = true;
 			this.checkBoxAutoTreeHeight.CheckedChanged += new System.EventHandler(this.checkBoxAutoTreeHeight_CheckedChanged);
@@ -654,7 +665,7 @@ namespace ForestReco
 			// checkBoxExportTreeBoxes
 			// 
 			this.checkBoxExportTreeBoxes.AutoSize = true;
-			this.checkBoxExportTreeBoxes.Location = new System.Drawing.Point(238, 377);
+			this.checkBoxExportTreeBoxes.Location = new System.Drawing.Point(245, 327);
 			this.checkBoxExportTreeBoxes.Name = "checkBoxExportTreeBoxes";
 			this.checkBoxExportTreeBoxes.Size = new System.Drawing.Size(139, 21);
 			this.checkBoxExportTreeBoxes.TabIndex = 53;
@@ -667,7 +678,7 @@ namespace ForestReco
 			// 
 			this.checkBoxExport3d.AutoSize = true;
 			this.checkBoxExport3d.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.checkBoxExport3d.Location = new System.Drawing.Point(217, 329);
+			this.checkBoxExport3d.Location = new System.Drawing.Point(217, 278);
 			this.checkBoxExport3d.Name = "checkBoxExport3d";
 			this.checkBoxExport3d.Size = new System.Drawing.Size(118, 21);
 			this.checkBoxExport3d.TabIndex = 55;
@@ -724,7 +735,7 @@ namespace ForestReco
 			// checkBoxColorTrees
 			// 
 			this.checkBoxColorTrees.AutoSize = true;
-			this.checkBoxColorTrees.Location = new System.Drawing.Point(238, 495);
+			this.checkBoxColorTrees.Location = new System.Drawing.Point(13, 433);
 			this.checkBoxColorTrees.Name = "checkBoxColorTrees";
 			this.checkBoxColorTrees.Size = new System.Drawing.Size(97, 21);
 			this.checkBoxColorTrees.TabIndex = 54;
@@ -742,7 +753,7 @@ namespace ForestReco
 			this.btnSequence.UseVisualStyleBackColor = true;
 			this.btnSequence.Click += new System.EventHandler(this.btnSequence_Click);
 			// 
-			// textBoxAnalyticsFile
+			// textAnalyticsFile
 			// 
 			this.textAnalyticsFile.Location = new System.Drawing.Point(143, 123);
 			this.textAnalyticsFile.Name = "textAnalyticsFile";
@@ -756,14 +767,28 @@ namespace ForestReco
 			this.buttonAnalytics.Name = "buttonAnalytics";
 			this.buttonAnalytics.Size = new System.Drawing.Size(121, 31);
 			this.buttonAnalytics.TabIndex = 57;
-			this.buttonAnalytics.Text = "Analytics file";
+			this.buttonAnalytics.Text = "analytics file";
 			this.buttonAnalytics.UseVisualStyleBackColor = true;
 			this.buttonAnalytics.Click += new System.EventHandler(this.buttonAnalytics_Click);
+			// 
+			// checkBoxExportBitmap
+			// 
+			this.checkBoxExportBitmap.AutoSize = true;
+			this.checkBoxExportBitmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.checkBoxExportBitmap.Location = new System.Drawing.Point(217, 456);
+			this.checkBoxExportBitmap.Name = "checkBoxExportBitmap";
+			this.checkBoxExportBitmap.Size = new System.Drawing.Size(154, 21);
+			this.checkBoxExportBitmap.TabIndex = 59;
+			this.checkBoxExportBitmap.Text = "EXPORT BITMAP";
+			this.myToolTip.SetToolTip(this.checkBoxExportBitmap, "hh");
+			this.checkBoxExportBitmap.UseVisualStyleBackColor = true;
+			this.checkBoxExportBitmap.CheckedChanged += new System.EventHandler(this.checkBoxExportBitmap_CheckedChanged);
 			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
 			this.ClientSize = new System.Drawing.Size(835, 528);
+			this.Controls.Add(this.checkBoxExportBitmap);
 			this.Controls.Add(this.textAnalyticsFile);
 			this.Controls.Add(this.buttonAnalytics);
 			this.Controls.Add(this.btnSequence);
@@ -1044,6 +1069,8 @@ namespace ForestReco
 		{
 			CParameterSetter.SetParameter(ESettings.useCheckTreeFile,
 				checkBoxUseCheckTree.Checked);
+
+			btnSelectCheckTree.Enabled = checkBoxUseCheckTree.Checked;
 		}
 
 		private void checkBoxAssignRefTreesRandom_CheckedChanged(object sender, EventArgs e)
@@ -1099,8 +1126,30 @@ namespace ForestReco
 
 		private void checkBoxExort3d_CheckedChanged(object sender, EventArgs e)
 		{
-			//todo: disable export checkboxes
 			CParameterSetter.SetParameter(ESettings.export3d, checkBoxExport3d.Checked);
+
+			SetExport3DchekboxesEnabled(checkBoxExport3d.Checked);
+		}
+
+		private void SetExport3DchekboxesEnabled(bool pValue)
+		{
+			checkBoxExportTreeStructures.Enabled = pValue;
+			checkBoxExportTreeBoxes.Enabled = pValue;
+			checkBoxExportInvalidTrees.Enabled = pValue;
+			checkBoxExportRefTrees.Enabled = pValue;
+			checkBoxExportPoints.Enabled = pValue;
+			checkBoxExportCheckTrees.Enabled = pValue;
+		}
+
+		private void checkBoxExportBitmap_CheckedChanged(object sender, EventArgs e)
+		{
+			CParameterSetter.SetParameter(ESettings.exportBitmap, checkBoxExportBitmap.Checked);
+		}
+
+		public void SetStartBtnEnabled(bool pValue)
+		{
+			btnStart.Enabled = pValue;
+			btnAbort.Enabled = !pValue;
 		}
 	}
 }

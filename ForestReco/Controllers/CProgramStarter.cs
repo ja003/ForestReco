@@ -20,6 +20,7 @@ namespace ForestReco
 		public static void Start()
 		{
 			CSequenceController.SetValues();
+			CProjectData.mainForm.SetStartBtnEnabled(false);
 
 			DateTime startTime = DateTime.Now;
 			abort = false;
@@ -97,7 +98,10 @@ namespace ForestReco
 				try
 				{
 					CDebug.Step(EProgramStep.Bitmap);
-					CBitmapExporter.Export();
+					if (CParameterSetter.GetBoolSettings(ESettings.exportBitmap))
+					{
+						CBitmapExporter.Export();
+					}
 				}
 				catch (Exception e)
 				{
@@ -120,7 +124,7 @@ namespace ForestReco
 				OnAborted();
 				return;
 			}
-			
+
 			CDebug.Step(EProgramStep.Done);
 
 			if (CSequenceController.IsLastSequence())
@@ -131,6 +135,8 @@ namespace ForestReco
 
 			CSequenceController.currentConfigIndex++;
 			Start();
+
+			CProjectData.mainForm.SetStartBtnEnabled(true);
 		}
 
 		public static void Abort()
@@ -145,6 +151,7 @@ namespace ForestReco
 		{
 			CDebug.Step(EProgramStep.Aborted);
 			CAnalytics.WriteErrors();
+			CProjectData.mainForm.SetStartBtnEnabled(true);
 		}
 	}
 }
