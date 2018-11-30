@@ -13,6 +13,10 @@ namespace ForestReco
 		{
 			switch (pSettings)
 			{
+				//buttons
+				case ESettings.forestFilePath:
+					return "The main processed file. Read the specification of required fiel frmat in the documentation.";
+
 				//bools
 				case ESettings.assignRefTreesRandom:
 					return "The selection of most appropriate reftree to every detected tree (the most time consuming part of process) is skipped and reftree is selected randomly.";
@@ -89,6 +93,9 @@ namespace ForestReco
 				case ETooltip.avgTreeHeighSlider:
 					return "Set average tree height manually or let it be calculated automatically by checking 'automatic average tree height' checkbox.";
 
+				case ETooltip.sequenceFile:
+					return "A file containing a configuration of a sequence process. Replaces the forest file. Read a required file format in the documentation.";
+
 			}
 
 			return "- no tooltip defined";
@@ -111,5 +118,6 @@ namespace ForestReco
 		EstimatedTotalSize,
 		EstimatedPartitionSize,
 		avgTreeHeighSlider,
+		sequenceFile
 	}
 }

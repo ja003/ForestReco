@@ -76,10 +76,11 @@ namespace ForestReco
 			return "";
 		}
 
-		public static string SelectFile(string pTitle)
+		public static string SelectFile(string pTitle, string pExtension)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.RestoreDirectory = true;
+			ofd.Filter = $"{pExtension} files (*.{pExtension})|*.{pExtension}";//|All files (*.*)|*.*";
 			ofd.Title = pTitle;
 			ofd.ShowHelp = true;
 			DialogResult dr = ofd.ShowDialog();

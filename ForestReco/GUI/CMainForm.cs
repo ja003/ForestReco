@@ -143,6 +143,10 @@ namespace ForestReco
 
 			SetStartBtnEnabled(true);
 
+			CTooltipManager.AssignTooltip(myToolTip, btnSellectForest, ESettings.forestFilePath);
+			CTooltipManager.AssignTooltip(myToolTip, btnSellectForest, ETooltip.sequenceFile);
+
+
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExport3d, ESettings.export3d);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxExportBitmap, ESettings.exportBitmap);
 			CTooltipManager.AssignTooltip(myToolTip, checkBoxAssignRefTreesRandom, ESettings.assignRefTreesRandom);
@@ -893,7 +897,7 @@ namespace ForestReco
 
 		private void btnSellectForest_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select forest file");
+			string path = CParameterSetter.SelectFile("Select forest file", "txt");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
@@ -906,7 +910,7 @@ namespace ForestReco
 
 		private void btnSequence_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select sequence config");
+			string path = CParameterSetter.SelectFile("Select sequence config", "seq");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
@@ -943,7 +947,7 @@ namespace ForestReco
 
 		private void btnSelectCheckTree_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select checktree file");
+			string path = CParameterSetter.SelectFile("Select checktree file", "txt");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
@@ -955,7 +959,7 @@ namespace ForestReco
 		
 		private void buttonAnalytics_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select analytics file (CSV)");
+			string path = CParameterSetter.SelectFile("Select analytics file (CSV)", "csv");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
