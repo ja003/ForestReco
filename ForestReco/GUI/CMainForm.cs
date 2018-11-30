@@ -1183,9 +1183,14 @@ namespace ForestReco
 			btnAbort.Enabled = !pValue;
 		}
 
-		private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+		private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
 		{
-			CProgramStarter.Start();
+			EProcessResult processResult = CProgramStarter.Start();
+			switch (processResult)
+			{
+				case EProcessResult.Cancelled: e.Cancel = true;
+					break;
+			}
 		}
 
 		// This event handler updates the progress.
@@ -1213,11 +1218,13 @@ namespace ForestReco
 		{
 			SetStartBtnEnabled(true);
 
-			CDebug.WriteLine(backgroundWorker1.CancellationPending + "ů");
-			if (e.Cancelled == true)
+			if (e.Cancelled)
 			{
-				CDebug.WriteLine("Canceled!");
+				//CDebug.Step(EProgramStep.Cancelled); //cant call from this thread!
+				textProgress.Text = "CANCELLED";
 			}
+
+			//ERROR and DONE messages should be handelend during the process. no need to write to textProgress
 			else if (e.Error != null)
 			{
 				CDebug.WriteLine("Error: " + e.Error.Message);

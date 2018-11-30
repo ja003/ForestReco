@@ -8,6 +8,13 @@ using System.Windows.Forms;
 
 namespace ForestReco
 {
+	public enum EProcessResult
+	{
+		Cancelled,
+		Exception,
+		Done
+	}
+
 	public static class CProgramStarter
 	{
 		//public static bool abort;
@@ -17,7 +24,9 @@ namespace ForestReco
 			CSequenceController.Init();
 		}
 
-		public static void Start()
+		
+
+		public static EProcessResult Start()
 		{
 			CSequenceController.SetValues();
 			//CProjectData.mainForm.SetStartBtnEnabled(false);
@@ -46,7 +55,7 @@ namespace ForestReco
 
 				string[] lines = CProgramLoader.GetFileLines();
 
-				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 				if (CHeaderInfo.HasHeader(lines[0]))
 				{
@@ -59,17 +68,17 @@ namespace ForestReco
 				}
 
 				CRefTreeManager.Init();
-				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, CProjectData.header != null, true);
 				CProgramLoader.ProcessParsedLines(parsedLines);
 
-				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 
 				//has to be called after array initialization
 				CCheckTreeManager.Init();
-				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 				CTreeManager.DebugTrees();
 
@@ -77,7 +86,7 @@ namespace ForestReco
 				//CObjExporter.ExportObjsToExport();
 				CDebug.Step(EProgramStep.Export);
 				CObjPartition.ExportPartition();
-				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 				//has to be called after ExportPartition where final folder location is determined
 
@@ -103,13 +112,13 @@ namespace ForestReco
 			{
 				CDebug.Error($"\nexception: {e.Message} \nStackTrace:{e.StackTrace}\n");
 				OnException();
-				return;
+				return EProcessResult.Exception;
 			}
 
 			if (CProjectData.backgroundWorker.CancellationPending)
 			{
 				CDebug.Step(EProgramStep.Cancelled);
-				return;
+				return EProcessResult.Cancelled;
 			}
 
 			CDebug.Step(EProgramStep.Done);
@@ -118,11 +127,11 @@ namespace ForestReco
 			{
 				CSequenceController.OnLastSequenceEnd();
 				//CProjectData.mainForm.SetStartBtnEnabled(true);
-				return;
+				return EProcessResult.Done;
 			}
 
 			CSequenceController.currentConfigIndex++;
-			Start();
+			return Start();
 		}
 
 
