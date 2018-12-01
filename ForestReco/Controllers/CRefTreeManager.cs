@@ -138,6 +138,8 @@ namespace ForestReco
 			int counter = 0;
 			for (int i = 0; i < pFileNames.Count; i++)
 			{
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+
 				string fileName = pFileNames[i];
 				CDebug.Progress(i, pFileNames.Count, 1, ref lastDebugTime, loadTreesStartTime, "load reftree");
 
@@ -220,6 +222,7 @@ namespace ForestReco
 					bestSimilarity.similarity = similarity;
 				}
 				if (bestSimilarity.similarity > 0.9f && !forceAlgorithm) { break; }
+				if (CProjectData.backgroundWorker.CancellationPending) { break; }
 			}
 
 			if (debugSimilarites)

@@ -13,7 +13,7 @@ namespace ForestReco
 	public static class CProgramLoader
 	{
 		public static bool useDebugData = false;
-			   		
+
 		public static string[] GetFileLines()
 		{
 			CDebug.Step(EProgramStep.LoadLines);
@@ -209,7 +209,7 @@ namespace ForestReco
 				CObjPartition.AddRefTrees();
 			}
 
-			
+
 			CObjPartition.AddTrees(true);
 			if (CParameterSetter.GetBoolSettings(ESettings.exportInvalidTrees))
 			{
@@ -231,6 +231,8 @@ namespace ForestReco
 			int counter = 1;
 			while (!CProjectData.array.IsAllDefined())
 			{
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+
 				DateTime fillHeightsStart = DateTime.Now;
 
 				CDebug.Count("FillMissingHeights", counter);
@@ -259,8 +261,9 @@ namespace ForestReco
 
 			CDebug.Step(EProgramStep.ProcessGroundPoints);
 			ProcessGroundPoints();
-			CDebug.Step(EProgramStep.FilterVegePoints);
-			FilterVegePoints();
+			CDebug.Step(EProgramStep.PreprocessVegePoints);
+			PreprocessVegePoints();
+			
 
 			CAnalytics.vegePoints = CProjectData.vegePoints.Count;
 			CAnalytics.groundPoints = CProjectData.groundPoints.Count;
@@ -276,26 +279,28 @@ namespace ForestReco
 		/// <summary>
 		/// Assigns all vege points in array and filters fake points.
 		/// </summary>
-		private static void FilterVegePoints()
+		private static void PreprocessVegePoints()
 		{
 			const int debugFrequency = 10000;
 
-			DateTime FilterVegePointsStart = DateTime.Now;
-			CDebug.WriteLine("FilterVegePoints", true);
+			DateTime PreprocessVegePointsStart = DateTime.Now;
+			CDebug.WriteLine("PreprocessVegePoints", true);
 
-			DateTime filterVegePointsStart = DateTime.Now;
+			DateTime preprocessVegePointsStart = DateTime.Now;
 			DateTime previousDebugStart = DateTime.Now;
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
-				Vector3 point = CProjectData.vegePoints[i];
-				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.PreProcess);
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
-				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, filterVegePointsStart, "preprocessed point");
+				Vector3 point = CProjectData.vegePoints[i];
+				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.Preprocess);
+
+				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, preprocessVegePointsStart, "preprocessed point");
 			}
 			CProjectData.array.SortPreProcessPoints();
 
-			CDebug.Duration("FilterVegePoints", FilterVegePointsStart);
+			CDebug.Duration("PreprocessVegePoints", PreprocessVegePointsStart);
 
 			//determine average tree height
 			if (CParameterSetter.GetBoolSettings(ESettings.autoAverageTreeHeight))
@@ -312,14 +317,15 @@ namespace ForestReco
 				CTreeManager.AVERAGE_TREE_HEIGHT = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
 			}
 
-			Console.WriteLine("");
 			if (CParameterSetter.GetBoolSettings(ESettings.filterPoints))
 			{
 				CProjectData.array.FilterFakeVegePoints();
 			}
 		}
 
-
+		/// <summary>
+		/// Assigns vege poins to trees. Handled in TreeManager
+		/// </summary>
 		private static void ProcessVegePoints()
 		{
 			//todo: check if has to be sorted somewhere else as well
@@ -334,6 +340,8 @@ namespace ForestReco
 
 			for (int i = 0; i < CProjectData.vegePoints.Count; i++)
 			{
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+
 				Vector3 point = CProjectData.vegePoints[i];
 				CTreeManager.AddPoint(point, i);
 
@@ -343,10 +351,16 @@ namespace ForestReco
 			CDebug.Duration("ProcessVegePoints", processVegePointsStart);
 		}
 
+		/// <summary>
+		/// Assigns ground points into arrays (main and detailed for precess and later bitmap generation).
+		/// Fills missing heights in the array and applies smoothing.
+		/// </summary>
 		private static void ProcessGroundPoints()
 		{
 			for (int i = 0; i < CProjectData.groundPoints.Count; i++)
 			{
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+
 				Vector3 point = CProjectData.groundPoints[i];
 				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground);
 				CProjectData.detailArray?.AddPointInField(point, CGroundArray.EPointType.Ground);
@@ -363,9 +377,6 @@ namespace ForestReco
 
 			//todo: fail při array step = 1.1
 			CProjectData.array?.SmoothenArray(1);
-
-
-
 		}
 
 		private static void ClassifyPoints(List<Tuple<EClass, Vector3>> pParsedLines)

@@ -190,8 +190,8 @@ namespace ForestReco
 				case EProgramStep.ProcessVegePoints:
 					text = "process vege points";
 					break;
-				case EProgramStep.FilterVegePoints:
-					text = "filter vege points";
+				case EProgramStep.PreprocessVegePoints:
+					text = "preprocess vege points";
 					break;
 				case EProgramStep.ValidateTrees1:
 					text = "first tree validation";
@@ -250,7 +250,7 @@ namespace ForestReco
 		LoadReftrees = 2,
 		ParseLines = 3,
 		ProcessGroundPoints = 4,
-		FilterVegePoints = 5,
+		PreprocessVegePoints = 5,
 		ProcessVegePoints = 6,
 		ValidateTrees1 = 7,
 		MergeTrees1 = 8,

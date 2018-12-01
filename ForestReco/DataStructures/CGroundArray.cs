@@ -162,7 +162,7 @@ namespace ForestReco
 		{
 			Ground,
 			Vege,
-			PreProcess
+			Preprocess
 		}
 
 		public void AddPointInField(Vector3 pPoint, EPointType pType)
@@ -181,7 +181,7 @@ namespace ForestReco
 				case EPointType.Vege:
 					array[index.Item1, index.Item2].AddVegePoint(pPoint);
 					break;
-				case EPointType.PreProcess:
+				case EPointType.Preprocess:
 					array[index.Item1, index.Item2].AddPreProcessVegePoint(pPoint);
 					break;
 			}
@@ -476,6 +476,8 @@ namespace ForestReco
 
 			foreach (CGroundField el in fieldsRandom)
 			{
+				if (CProjectData.backgroundWorker.CancellationPending) { return; }
+
 				if (!el.IsDefined())
 				{
 					el.FillMissingHeight(pMethod, pKernelMultiplier);

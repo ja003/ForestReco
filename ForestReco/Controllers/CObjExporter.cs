@@ -173,6 +173,8 @@ namespace ForestReco
 				int vertexIndexOffset = 0;
 				foreach (Obj obj in pObjs)
 				{
+					if (CProjectData.backgroundWorker.CancellationPending) { return; }
+
 					if (obj == null)
 					{
 						CDebug.WriteLine("Error: obj is null...WTF!");

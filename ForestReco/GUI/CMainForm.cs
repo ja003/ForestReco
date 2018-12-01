@@ -211,7 +211,7 @@ namespace ForestReco
 
 		private void btnAbort_Click(object sender, EventArgs e)
 		{
-			//CProgramStarter.Abort();
+			//CProjectData.backgroundWorker.CancellationPending();
 			if (backgroundWorker1.WorkerSupportsCancellation)
 			{
 				// Cancel the asynchronous operation.
