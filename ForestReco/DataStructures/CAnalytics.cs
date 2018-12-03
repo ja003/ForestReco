@@ -96,7 +96,7 @@ namespace ForestReco
 
 			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
-				output += "Checktree";
+				output += "Checktree\n";
 				output += $"loadedCheckTrees = {loadedCheckTrees} \n";
 				output += $"assignedCheckTrees = {assignedCheckTrees} \n";
 				output += $"invalidCheckTrees = {invalidCheckTrees} \n";
@@ -291,7 +291,7 @@ namespace ForestReco
 			{
 				message += error + Environment.NewLine;
 			}
-			CProjectData.backgroundWorker.ReportProgress(0, new {message});
+			CProjectData.backgroundWorker.ReportProgress(0, new string[]{message});
 			//CProjectData.mainForm.textProgress.Text = progressText;
 		}
 

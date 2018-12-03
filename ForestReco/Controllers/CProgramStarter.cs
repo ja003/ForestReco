@@ -57,7 +57,8 @@ namespace ForestReco
 
 				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
-				if (CHeaderInfo.HasHeader(lines[0]))
+				bool linesOk = lines != null && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]);
+				if (linesOk && CHeaderInfo.HasHeader(lines[0]))
 				{
 					CProjectData.header = new CHeaderInfo(lines);
 				}
@@ -110,7 +111,9 @@ namespace ForestReco
 			}
 			catch (Exception e)
 			{
-				CDebug.Error($"\nexception: {e.Message} \nStackTrace:{e.StackTrace}\n");
+				CDebug.Error(
+					$"{Environment.NewLine}exception: {e.Message} {Environment.NewLine}{Environment.NewLine}" +
+					$"StackTrace: {e.StackTrace}{Environment.NewLine}");
 				OnException();
 				return EProcessResult.Exception;
 			}

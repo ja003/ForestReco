@@ -263,7 +263,7 @@ namespace ForestReco
 			ProcessGroundPoints();
 			CDebug.Step(EProgramStep.PreprocessVegePoints);
 			PreprocessVegePoints();
-			
+
 
 			CAnalytics.vegePoints = CProjectData.vegePoints.Count;
 			CAnalytics.groundPoints = CProjectData.groundPoints.Count;
@@ -386,6 +386,14 @@ namespace ForestReco
 			{
 				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
 				CProjectData.AddPoint(parsedLine);
+			}
+			if (CProjectData.vegePoints.Count == 0)
+			{
+				throw new Exception("no vegetation point loaded!");
+			}
+			if (CProjectData.groundPoints.Count == 0)
+			{
+				throw new Exception("no ground point loaded!");
 			}
 		}
 	}
