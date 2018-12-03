@@ -105,7 +105,7 @@ namespace ForestReco
 
 			foreach (string line in allLines)
 			{
-				Tuple<int, Vector3> parsedLine = CCheckTreeTxtParser.ParseLine(line, true);
+				Tuple<int, Vector3, string> parsedLine = CCheckTreeTxtParser.ParseLine(line, true);
 				if (parsedLine != null && IsCheckTree(parsedLine))
 				{
 					AddNewTree(parsedLine);
@@ -116,7 +116,7 @@ namespace ForestReco
 			CDebug.Duration("Load check trees", loadTreesStartTime);
 		}
 
-		private static void AddNewTree(Tuple<int, Vector3> pParsedLine)
+		private static void AddNewTree(Tuple<int, Vector3, string> pParsedLine)
 		{
 			CCheckTree newTree = new CCheckTree(pParsedLine.Item1, pParsedLine.Item2, Trees.Count);
 
@@ -132,16 +132,27 @@ namespace ForestReco
 			}
 		}
 
-		private static bool IsCheckTree(Tuple<int, Vector3> pParsedLine)
+		private static bool IsCheckTree(Tuple<int, Vector3, string> pParsedLine)
 		{
+			bool classOk = false;
 			switch (pParsedLine.Item1)
 			{
 				case 11:
 				case 12:
 				case 13:
-					return true;
+					classOk = true;
+					break;
 			}
-			return false;
+			if (!classOk) { return false; }
+
+			//not solving the problem
+			/*if (pParsedLine.Item3.Contains("vne"))
+			{
+				CDebug.Warning($"skip checktree {pParsedLine}");
+				return false;
+			}*/
+
+			return true;
 		}
 
 		private static int GetAssignedTreesCount()

@@ -501,12 +501,12 @@ namespace ForestReco
 			// labelTreeExtent
 			// 
 			this.labelTreeExtent.AutoSize = true;
-			this.labelTreeExtent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.labelTreeExtent.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.labelTreeExtent.Location = new System.Drawing.Point(189, 204);
 			this.labelTreeExtent.Name = "labelTreeExtent";
-			this.labelTreeExtent.Size = new System.Drawing.Size(128, 18);
+			this.labelTreeExtent.Size = new System.Drawing.Size(86, 17);
 			this.labelTreeExtent.TabIndex = 27;
-			this.labelTreeExtent.Text = "base tree extent";
+			this.labelTreeExtent.Text = "tree extent";
 			// 
 			// trackBarTreeExtentMultiply
 			// 
@@ -534,12 +534,12 @@ namespace ForestReco
 			// labelTreeExtentMultiply
 			// 
 			this.labelTreeExtentMultiply.AutoSize = true;
-			this.labelTreeExtentMultiply.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.labelTreeExtentMultiply.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.labelTreeExtentMultiply.Location = new System.Drawing.Point(353, 204);
 			this.labelTreeExtentMultiply.Name = "labelTreeExtentMultiply";
-			this.labelTreeExtentMultiply.Size = new System.Drawing.Size(149, 18);
+			this.labelTreeExtentMultiply.Size = new System.Drawing.Size(112, 17);
 			this.labelTreeExtentMultiply.TabIndex = 31;
-			this.labelTreeExtentMultiply.Text = "tree extent multiply";
+			this.labelTreeExtentMultiply.Text = "extent multiply";
 			// 
 			// trackBarAvgTreeHeight
 			// 
@@ -568,10 +568,10 @@ namespace ForestReco
 			// labelAvgTreeHeight
 			// 
 			this.labelAvgTreeHeight.AutoSize = true;
-			this.labelAvgTreeHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.labelAvgTreeHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.labelAvgTreeHeight.Location = new System.Drawing.Point(12, 204);
 			this.labelAvgTreeHeight.Name = "labelAvgTreeHeight";
-			this.labelAvgTreeHeight.Size = new System.Drawing.Size(151, 18);
+			this.labelAvgTreeHeight.Size = new System.Drawing.Size(151, 17);
 			this.labelAvgTreeHeight.TabIndex = 35;
 			this.labelAvgTreeHeight.Text = "average tree height";
 			// 
@@ -580,9 +580,9 @@ namespace ForestReco
 			this.checkBoxExportTreeStructures.AutoSize = true;
 			this.checkBoxExportTreeStructures.Location = new System.Drawing.Point(245, 302);
 			this.checkBoxExportTreeStructures.Name = "checkBoxExportTreeStructures";
-			this.checkBoxExportTreeStructures.Size = new System.Drawing.Size(165, 21);
+			this.checkBoxExportTreeStructures.Size = new System.Drawing.Size(122, 21);
 			this.checkBoxExportTreeStructures.TabIndex = 38;
-			this.checkBoxExportTreeStructures.Text = "export tree structures";
+			this.checkBoxExportTreeStructures.Text = "tree structures";
 			this.myToolTip.SetToolTip(this.checkBoxExportTreeStructures, "hh");
 			this.checkBoxExportTreeStructures.UseVisualStyleBackColor = true;
 			this.checkBoxExportTreeStructures.CheckedChanged += new System.EventHandler(this.checkBoxExportTreeStructures_CheckedChanged);
@@ -600,9 +600,9 @@ namespace ForestReco
 			this.checkBoxExportInvalidTrees.AutoSize = true;
 			this.checkBoxExportInvalidTrees.Location = new System.Drawing.Point(245, 352);
 			this.checkBoxExportInvalidTrees.Name = "checkBoxExportInvalidTrees";
-			this.checkBoxExportInvalidTrees.Size = new System.Drawing.Size(149, 21);
+			this.checkBoxExportInvalidTrees.Size = new System.Drawing.Size(106, 21);
 			this.checkBoxExportInvalidTrees.TabIndex = 39;
-			this.checkBoxExportInvalidTrees.Text = "export invalid trees";
+			this.checkBoxExportInvalidTrees.Text = "invalid trees";
 			this.myToolTip.SetToolTip(this.checkBoxExportInvalidTrees, "hh");
 			this.checkBoxExportInvalidTrees.UseVisualStyleBackColor = true;
 			this.checkBoxExportInvalidTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportInvalidTrees_CheckedChanged);
@@ -612,9 +612,9 @@ namespace ForestReco
 			this.checkBoxExportRefTrees.AutoSize = true;
 			this.checkBoxExportRefTrees.Location = new System.Drawing.Point(245, 377);
 			this.checkBoxExportRefTrees.Name = "checkBoxExportRefTrees";
-			this.checkBoxExportRefTrees.Size = new System.Drawing.Size(122, 21);
+			this.checkBoxExportRefTrees.Size = new System.Drawing.Size(79, 21);
 			this.checkBoxExportRefTrees.TabIndex = 40;
-			this.checkBoxExportRefTrees.Text = "export reftrees";
+			this.checkBoxExportRefTrees.Text = "reftrees";
 			this.myToolTip.SetToolTip(this.checkBoxExportRefTrees, "hh");
 			this.checkBoxExportRefTrees.UseVisualStyleBackColor = true;
 			this.checkBoxExportRefTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportRefTrees_CheckedChanged);
@@ -648,9 +648,9 @@ namespace ForestReco
 			this.checkBoxExportCheckTrees.AutoSize = true;
 			this.checkBoxExportCheckTrees.Location = new System.Drawing.Point(245, 427);
 			this.checkBoxExportCheckTrees.Name = "checkBoxExportCheckTrees";
-			this.checkBoxExportCheckTrees.Size = new System.Drawing.Size(142, 21);
+			this.checkBoxExportCheckTrees.Size = new System.Drawing.Size(99, 21);
 			this.checkBoxExportCheckTrees.TabIndex = 43;
-			this.checkBoxExportCheckTrees.Text = "export checktrees";
+			this.checkBoxExportCheckTrees.Text = "checktrees";
 			this.myToolTip.SetToolTip(this.checkBoxExportCheckTrees, "hh");
 			this.checkBoxExportCheckTrees.UseVisualStyleBackColor = true;
 			this.checkBoxExportCheckTrees.CheckedChanged += new System.EventHandler(this.checkBoxExportCheckTrees_CheckedChanged);
@@ -684,9 +684,9 @@ namespace ForestReco
 			this.checkBoxExportPoints.AutoSize = true;
 			this.checkBoxExportPoints.Location = new System.Drawing.Point(245, 402);
 			this.checkBoxExportPoints.Name = "checkBoxExportPoints";
-			this.checkBoxExportPoints.Size = new System.Drawing.Size(111, 21);
+			this.checkBoxExportPoints.Size = new System.Drawing.Size(68, 21);
 			this.checkBoxExportPoints.TabIndex = 46;
-			this.checkBoxExportPoints.Text = "export points";
+			this.checkBoxExportPoints.Text = "points";
 			this.myToolTip.SetToolTip(this.checkBoxExportPoints, "include all points into final export file");
 			this.checkBoxExportPoints.UseVisualStyleBackColor = true;
 			this.checkBoxExportPoints.CheckedChanged += new System.EventHandler(this.checkBoxExportPoints_CheckedChanged);
@@ -708,9 +708,9 @@ namespace ForestReco
 			this.checkBoxExportTreeBoxes.AutoSize = true;
 			this.checkBoxExportTreeBoxes.Location = new System.Drawing.Point(245, 327);
 			this.checkBoxExportTreeBoxes.Name = "checkBoxExportTreeBoxes";
-			this.checkBoxExportTreeBoxes.Size = new System.Drawing.Size(139, 21);
+			this.checkBoxExportTreeBoxes.Size = new System.Drawing.Size(96, 21);
 			this.checkBoxExportTreeBoxes.TabIndex = 53;
-			this.checkBoxExportTreeBoxes.Text = "export tree boxes";
+			this.checkBoxExportTreeBoxes.Text = "tree boxes";
 			this.myToolTip.SetToolTip(this.checkBoxExportTreeBoxes, "hh");
 			this.checkBoxExportTreeBoxes.UseVisualStyleBackColor = true;
 			this.checkBoxExportTreeBoxes.CheckedChanged += new System.EventHandler(this.checkBoxExportTreeBoxes_CheckedChanged);
@@ -942,7 +942,7 @@ namespace ForestReco
 
 		private void btnSellectForest_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select forest file", "txt");
+			string path = CParameterSetter.SelectFile("Select forest file", "txt", "forest");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
@@ -955,7 +955,7 @@ namespace ForestReco
 
 		private void btnSequence_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select sequence config", "seq");
+			string path = CParameterSetter.SelectFile("Select sequence config", "seq", "sequence");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
@@ -992,7 +992,7 @@ namespace ForestReco
 
 		private void btnSelectCheckTree_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select checktree file", "txt");
+			string path = CParameterSetter.SelectFile("Select checktree file", "txt", "checktree");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
@@ -1004,7 +1004,7 @@ namespace ForestReco
 		
 		private void buttonAnalytics_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select analytics file (CSV)", "csv");
+			string path = CParameterSetter.SelectFile("Select analytics file (CSV)", "csv", "csv");
 			if (path.Length == 0)
 			{
 				CDebug.Warning("no path selected");

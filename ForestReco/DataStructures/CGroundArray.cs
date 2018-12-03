@@ -125,7 +125,8 @@ namespace ForestReco
 				}
 				else
 				{
-					CDebug.Error($"pPoint {pPoint} was OOB and was moved to {index}");
+					//todo: some points are 1 index away from the range
+					CDebug.Error($"pPoint {pPoint} was OOB and was moved to {index}", false);
 				}
 			}
 			return array[index.Item1, index.Item2];

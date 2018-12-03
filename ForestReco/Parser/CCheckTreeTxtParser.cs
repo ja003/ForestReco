@@ -20,8 +20,8 @@ namespace ForestReco
 			return new Vector3(x, y, z);
 		}
 
-		//class, position
-		public static Tuple<int, Vector3> ParseLine(string pLine, bool pUseHeader)
+		//class, position, note
+		public static Tuple<int, Vector3, string> ParseLine(string pLine, bool pUseHeader)
 		{
 			string[] split = pLine.Split(null);
 
@@ -33,6 +33,8 @@ namespace ForestReco
 			if (!double.TryParse(split[1], out double x)) { return null; }
 			if (!double.TryParse(split[2], out double y)) { return null; }
 			if (!double.TryParse(split[3], out double z)) { return null; }
+			string _note = split[4];
+			if (string.IsNullOrEmpty(_note)) { return null; }
 			if (!int.TryParse(split[5], out int _class)) { return null; }
 
 			if (x > maxInputX) { maxInputX = x; }
@@ -56,7 +58,7 @@ namespace ForestReco
 			//{
 			//	_class = (int)EClass.Other;
 			//}
-			return new Tuple<int, Vector3>(_class, new Vector3(xFloat, yFloat, zFloat));
+			return new Tuple<int, Vector3, string>(_class, new Vector3(xFloat, yFloat, zFloat), _note);
 		}
 
 		public static void Debug()

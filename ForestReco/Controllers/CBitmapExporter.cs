@@ -205,7 +205,7 @@ namespace ForestReco
 			Color checktreeFail = Color.Red;
 			Color checktreeInvalid = Color.Orange;
 
-			int treeMarkerSize = GetTreeBrushSize(true);
+			int treeMarkerSize = GetTreeBrushSize(false);
 
 			SolidBrush checktreeFailBrush = new SolidBrush(checktreeFail);
 			SolidBrush checktreeInvalidBrush = new SolidBrush(checktreeInvalid);
