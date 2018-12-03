@@ -125,7 +125,7 @@ namespace ForestReco
 						if (t.mostSuitableRefTreeObj == null)
 						{
 							//not error if reftrees were not loaded
-							if (CRefTreeManager.Trees.Count > 0)
+							if (CReftreeManager.Trees.Count > 0)
 							{
 								CDebug.Error($"{t} has no ref tree assigned");
 							}

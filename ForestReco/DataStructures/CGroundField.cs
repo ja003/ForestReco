@@ -117,17 +117,7 @@ namespace ForestReco
 					   Right.Bot.IsDefined();
 			}
 		}
-
-		/*public int GetPointCountInNeighbourhood()
-		{
-			int count = vegePoints.Count;
-			foreach (CGroundField neighbour in GetNeighbours())
-			{
-				count += neighbour.vegePoints.Count;
-			}
-			return count;
-		}*/
-
+		
 		/// <summary>
 		/// Returns neighbour using 8-neighbourhood
 		/// </summary>
@@ -168,11 +158,6 @@ namespace ForestReco
 
 		//PUBLIC
 
-		/*private float? GetMaxVege(int pKernelSize)
-		{
-			if(MaxVege != null){ return MaxVege; }
-		}*/
-
 		public int? GetColorValue()
 		{
 			float? vegeHeight = MaxVege;
@@ -189,13 +174,11 @@ namespace ForestReco
 			if (value < 0 || value > 255)
 			{
 				//not error - comparing just to AVERAGE_MAX_TREE_HEIGHT, not MAX
-				//CDebug.Error($"color value = {value}!", false);
 				value = Math.Max(0, value);
 				value = Math.Min(255, value);
 			}
 
 			int intVal = (int)value;
-			//color = Color.FromArgb(intVal, intVal, intVal);
 			return intVal;
 		}
 
@@ -256,99 +239,7 @@ namespace ForestReco
 			preProcessPoints.Sort((a, b) => a.Y.CompareTo(b.Y));
 
 		}
-
-		/// <summary>
-		/// Remove points, which were not filtered and dont have any close neighbour defined under them.
-		/// Apply only on a few top points. this criterium would discard the most of the lower valid points
-		/// </summary>
-		/*public void TryRemoveValidPoints()
-		{
-			bool tryRemoveValidPoints = false;
-			int validBefore = validPoints.Count;
-			validPoints.Sort((a, b) => a.Y.CompareTo(b.Y)); //sort ascending
-			int indexInvalid = -1;
-			if (tryRemoveValidPoints)
-			{
-				int maxRemoveCount = 7;
-				int minIndex = Math.Max(0, validPoints.Count - maxRemoveCount);
-				for (int i = validPoints.Count - 2; i >= minIndex; i--)
-				{
-					Vector3 validPoint = validPoints[i];
-					Vector3 previousValidPoint = validPoints[i + 1];
-					if (Vector3.Distance(validPoint, previousValidPoint) > 1)
-					{
-						indexInvalid = i;
-						break;
-					}
-				}
-			}
-
-			if (indexInvalid > 0)
-			{
-				List<Vector3> removedPoints = validPoints.GetRange(indexInvalid, validPoints.Count - indexInvalid);
-				fakePoints.AddRange(removedPoints);
-
-				validPoints.RemoveRange(indexInvalid, validPoints.Count - indexInvalid);
-			}
-
-
-			int validAfter = validPoints.Count;
-			if (validAfter != validBefore)
-			{
-				//CDebug.Count(this + " devalidated ", validBefore - validAfter, validBefore);
-			}
-		}*/
-
-		/// <summary>
-		/// Checks if fake points are close to some valid point.
-		/// If so, the point is considered valid.
-		/// All valid points are added in vegePoints
-		/// </summary>
-		/*public void TryAddFakePoints()
-		{
-			bool tryAddFakePoints = true;
-			int fakeBefore = fakePoints.Count;
-			if (tryAddFakePoints)
-			{
-				//List<CGroundField> neighbours = GetNeighbours();
-				for (int i = fakePoints.Count - 1; i >= 0; i--)
-				{
-					Vector3 fakePoint = fakePoints[i];
-					bool validated = false;
-					foreach (CGroundField neighbour in GetNeighbours())
-					{
-						float lastDistance = int.MaxValue;
-						//validPoints are sorted ascending. start with the highest
-						for (int j = neighbour.validPoints.Count - 1; j >= 0; j--)
-						{
-							Vector3 validPoint = neighbour.validPoints[j];
-							float distance = Vector3.Distance(fakePoint, validPoint);
-							if (distance < 0.6f)
-							{
-								fakePoints.RemoveAt(i);
-								validPoints.Add(fakePoint);
-								validated = true;
-							}
-							else if (distance > lastDistance)
-							{
-								break;
-							}
-							if (validated) { break; }
-						}
-						if (validated) { break; }
-					}
-				}
-			}
-			int fakeAfter = fakePoints.Count;
-			if (fakeAfter != fakeBefore)
-			{
-				//CDebug.Count(this + " validated ", fakeBefore - fakeAfter, fakeBefore);
-			}
-
-			//CProjectData.vegePoints.AddRange(validPoints);
-			//CProjectData.fakePoints.AddRange(fakePoints);
-		}
-		*/
+		
 		const float MIN_FAKE_POINT_HEIGHT_OFFSET = 4;
 
 		private const float MAX_NEIGHBOUR_HEIGHT_DIFF = 2;
@@ -393,9 +284,6 @@ namespace ForestReco
 				}
 				break;
 			}
-			//CProjectData.vegePoints.AddRange(validPoints);
-			//CProjectData.fakePoints.AddRange(fakePoints);
-
 		}
 
 		/// <summary>
@@ -406,58 +294,7 @@ namespace ForestReco
 			CProjectData.vegePoints.AddRange(validPoints);
 			CProjectData.fakePoints.AddRange(fakePoints);
 		}
-
-		/// <summary>
-		/// Adds all points higher than pMaxHeight in fakePoints and other in validPoints
-		/// </summary>
-		/*public void FilterFakeVegePoints(float pMaxHeight, bool pStrickFilter)
-		{
-			List<Vector3> okPoints = new List<Vector3>();
-			List<Vector3> nokPoints = new List<Vector3>();
-			float? groundHeight = GetHeight();
-
-			Vector3 maxOkPoint = new Vector3(-666);
-			for (int i = 0; i < preProcessPoints.Count; i++)
-			{
-				Vector3 point = preProcessPoints[i];
-				float? height = point.Y - groundHeight;
-				if (height == null)
-				{
-					Console.Write("");
-
-				}
-
-				bool isPointTooMuchAboveLimit = height > pMaxHeight + MIN_FAKE_POINT_HEIGHT_OFFSET;
-				//bool isPointTooFarFromMaxOkPoint = point.Y - maxOkPointHeight > 0.3f;
-				if (height != null && height > pMaxHeight)
-				{
-					if (pStrickFilter && height - pMaxHeight > 0.5f)
-					{
-						nokPoints.Add(point);
-						continue;
-					}
-
-					Console.Write("");
-				}
-
-				bool isPointTooFarFromMaxOkPoint = Vector3.Distance(point, maxOkPoint) > 0.3f;
-				if (groundHeight != null && isPointTooMuchAboveLimit && isPointTooFarFromMaxOkPoint)
-				{
-					nokPoints.Add(point);
-				}
-				else
-				{
-					okPoints.Add(point);
-					maxOkPoint = point;
-				}
-			}
-
-			fakePoints = nokPoints;
-			validPoints = okPoints;
-			//CProjectData.vegePoints.AddRange(okPoints);
-			//CProjectData.fakePoints.AddRange(nokPoints);
-		}
-		*/
+		
 		public bool IsDefined()
 		{
 			return goundPoints.Count > 0;
@@ -484,14 +321,6 @@ namespace ForestReco
 						//is checked
 						heightSum += (float)el.GetHeight();
 					}
-					//average height will be also affected by filled values
-					//result should be smoother
-					//todo: doesnt help much
-					/*else if (el?.MaxGroundFilled != null)
-					{
-						defined++;
-						heightSum += (float)el.MaxGroundFilled;
-					}*/
 				}
 			}
 			if (defined == 0) { return null; }
@@ -521,12 +350,7 @@ namespace ForestReco
 				closestFirst = closestTop;
 				closestSecond = closestBot;
 			}
-
-			//if (closestFirst == null) { closestFirst = closestTop; }
-			//if (closestSecond == null) { closestSecond = closestTop; }
-			//if (closestFirst == null) { closestFirst = closestBot; }
-			//if (closestSecond == null) { closestSecond = closestBot; }
-
+			
 			if (closestFirst != null && closestSecond != null)
 			{
 				CGroundField smaller = closestFirst;
@@ -542,9 +366,7 @@ namespace ForestReco
 				{
 					float? smallerHeight = smaller.GetHeight();
 					float distanceToSmaller = GetDistanceTo(smaller);
-
-					//if (totalDistance == 0) { return smallerHeight; }
-
+					
 					return smallerHeight + distanceToSmaller / totalDistance * heightDiff;
 				}
 			}
@@ -567,40 +389,7 @@ namespace ForestReco
 		{
 			AddGroundPoint(new Vector3(center.X, pHeight, center.Z));
 		}
-
-		///// <summary>
-		///// Returns height of given type.
-		///// pGetHeightFromNeighbour: True = ifNotDefined => closest defined height will be used (runs DFS)
-		///// pVisited: dont use these points in DFS
-		///// </summary>
-		//public float? GetHeight(bool pGetHeightFromNeighbour = false, List<CGroundField> pVisited = null, int pMaxIterations = 5)
-		//{
-		//	pMaxIterations--;
-		//	if (!IsDefined() && pGetHeightFromNeighbour)
-		//	{
-		//		if (pMaxIterations <= 0) { return null;}
-
-		//		if (pVisited == null) { pVisited = new List<CGroundField>(); }
-
-		//		if (pVisited.Contains(this)) { return null;}
-
-		//		List<CGroundField> _neighbours = GetNeighbours();
-		//		foreach (CGroundField n in _neighbours)
-		//		{
-		//			if (!pVisited.Contains(n))
-		//			{
-		//				pVisited.Add(this);
-		//				return n.GetHeight(true, pVisited, pMaxIterations);
-		//			}
-		//		}
-		//		return null;
-		//	}
-		//	//todo: decide which height to return on default
-		//	return MinGround;
-		//	//return MaxGround;
-		//	//return GetHeightAverage();
-		//}
-
+		
 		public float? GetHeight(bool pUseSmoothHeight = true)
 		{
 			if (pUseSmoothHeight && SmoothHeight != null)
@@ -640,15 +429,11 @@ namespace ForestReco
 			float a01 = (float)h3.GetHeight() - (float)h1.GetHeight();
 			float a11 = (float)h1.GetHeight() - (float)h2.GetHeight() - (float)h3.GetHeight() + (float)h4.GetHeight();
 
-			//sračka
-			//float x = pPoint.X - center.X;/
-			//float z = CParameterSetter.groundArrayStep - (center.Z - pPoint.Z);
 			float step = CParameterSetter.groundArrayStep;
 
 			float x = pPoint.X - center.X;
 			x += step / 2;
 			x = x / step;
-			//float z = 1 - (center.Z - pPoint.Z );
 			float z = center.Z - pPoint.Z;
 			z += step / 2;
 			z = z / step;
@@ -717,12 +502,10 @@ namespace ForestReco
 		public void CalculateSmoothHeight(double[,] pGaussKernel)
 		{
 			if (!IsDefined()) { return; }
-			//if (!HasAllNeighbours()) { return; } //creates unsmooth step on borders
 
 			//int defined = 0;
 			float heightSum = 0;
 
-			//double[,] gaussKernel = CUtils.CalculateGaussKernel(kernelSize, 1);
 			float midHeight = (float)GetHeight();
 
 			int kernelSize = CGroundArray.GetKernelSize();
@@ -745,11 +528,9 @@ namespace ForestReco
 					}
 					float gaussWeight = (float)pGaussKernel[x, y];
 					gaussWeightSum += gaussWeight;
-					//CDebug.WriteLine($"definedHeight = {definedHeight}, gaussWeight = {gaussWeight}");
 					heightSum += definedHeight * gaussWeight;
 				}
 			}
-			//CDebug.WriteLine($"gaussWeightSum = {gaussWeightSum}");
 
 			SmoothHeight = heightSum;
 		}
@@ -894,7 +675,6 @@ namespace ForestReco
 				}
 			}
 
-			//CDebug.WriteLine("added " + pCheckTree);
 			CheckTrees.Add(pCheckTree);
 			pCheckTree.groundField = this;
 			return true;

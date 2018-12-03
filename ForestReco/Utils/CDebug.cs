@@ -88,14 +88,6 @@ namespace ForestReco
 			}
 		}
 
-		/*private static void WriteProgress(int pIteration, int pMaxIteration)
-		{
-			//CProjectData.mainForm.progressBar.Minimum = 0;
-			//CProjectData.mainForm.progressBar.Maximum = pMaxIteration;
-			//CProjectData.mainForm.progressBar.Value = pIteration;
-			CProjectData.backgroundWorker.ReportProgress(pIteration * 100 / pMaxIteration);
-		}*/
-
 		private static string lastTextProgress;
 		private static void WriteExtimatedTimeLeft(int pPercentage, double pSecondsLeft, string pComment)
 		{
@@ -110,12 +102,8 @@ namespace ForestReco
 			{
 				lastTextProgress , pComment , timeLeftString
 			});
-
-			//CProjectData.mainForm.textProgress.Text = lastTextProgress
-			//	+ Environment.NewLine + pComment
-			//	+ Environment.NewLine + timeLeftString;
 		}
-		
+
 		public static void Step(EProgramStep pStep)
 		{
 			lastTextProgress = GetStepText(pStep);
@@ -127,10 +115,6 @@ namespace ForestReco
 			}
 
 			CProjectData.backgroundWorker.ReportProgress(0, message);
-			//CProjectData.mainForm.textProgress.Text = lastTextProgress;
-
-			//Application.DoEvents();
-			//Thread.Sleep(100);
 		}
 
 		public static void WriteProblems(List<string> problems)
@@ -142,13 +126,16 @@ namespace ForestReco
 				message += p + Environment.NewLine;
 			}
 			WriteLine(message);
-			CProjectData.backgroundWorker.ReportProgress(0, new string[] { message });
-
-			//CProjectData.mainForm.textProgress.Text = message;
+			try
+			{
+				CProjectData.backgroundWorker.ReportProgress(0, new string[] { message });
+			}
+			//should not happen
+			catch (Exception e)
+			{
+				Error(e.Message, false);
+			}
 		}
-
-
-		//private static List<EProgramStep> calledSteps = new List<EProgramStep>();
 
 		private static string GetStepText(EProgramStep pStep)
 		{
@@ -157,13 +144,11 @@ namespace ForestReco
 				return "EXCEPTION";
 			}
 
-			//calledSteps.Add(pStep);
-
 			stepCallCount++;
+			//-2 for abort states
 			int maxSteps = (Enum.GetNames(typeof(EProgramStep)).Length - 2);
 			stepCallCount = Math.Min(stepCallCount, maxSteps); //bug: sometimes writes higher value
 			string progress = stepCallCount + "/" + maxSteps + ": ";
-			//-2 for abort states
 			string text;
 			switch (pStep)
 			{

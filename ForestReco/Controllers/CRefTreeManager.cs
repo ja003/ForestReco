@@ -7,7 +7,7 @@ using ObjParser;
 
 namespace ForestReco
 {
-	public static class CRefTreeManager
+	public static class CReftreeManager
 	{
 		public static List<CRefTree> Trees;
 		private const float TREE_POINT_EXTENT = 0.2f;
@@ -166,10 +166,10 @@ namespace ForestReco
 
 			CAnalytics.loadedReftrees = Trees.Count;
 
-			DebugRefTrees();
+			DebugReftrees();
 		}
 
-		private static void DebugRefTrees()
+		private static void DebugReftrees()
 		{
 			CDebug.WriteLine("Loaded reftrees: ");
 			foreach (CRefTree refTree in Trees)

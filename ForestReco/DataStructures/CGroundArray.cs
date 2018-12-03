@@ -39,8 +39,6 @@ namespace ForestReco
 			float width = topRightCorner.X - botLeftCorner.X;
 			float height = topRightCorner.Z - botLeftCorner.Z;
 
-			//TODO: if not +2, GetPositionInField is OOR
-			//todo: 2 is incorrect, all array was shifted
 			arrayXRange = (int)(width / stepSize) + 1;
 			arrayYRange = (int)(height / stepSize) + 1;
 
@@ -75,13 +73,10 @@ namespace ForestReco
 					}
 					if (y > 0)
 					{
-						//todo: check if change (Bot-Top) is ok
-						//array[x, y].Top = array[x, y + 1];
 						array[x, y].Top = array[x, y - 1]; //orig
 					}
 					if (y < arrayYRange - 1)
 					{
-						//array[x, y].Bot = array[x, y - 1];
 						array[x, y].Bot = array[x, y + 1]; //orig
 					}
 				}
@@ -139,11 +134,8 @@ namespace ForestReco
 
 		private Tuple<int, int> GetPositionInField(Vector3 pPoint)
 		{
-			//int xPos = (int) ((pPoint.X - topLeftCorner.X + stepSize / 2) / stepSize);
 			int xPos = (int)Math.Floor((pPoint.X - topLeftCorner.X) / stepSize);
 			//due to array orientation
-			//int yPos = arrayYRange - (int)((pPoint.Z - botLeftCorner.Z) / stepSize) - 1;
-			//int yPos = (int)((topLeftCorner.Z - pPoint.Z) / stepSize);
 			int yPos = (int)Math.Floor((topLeftCorner.Z - pPoint.Z) / stepSize);
 
 			//todo: delete this check, it has to be correct for realease!
@@ -223,47 +215,7 @@ namespace ForestReco
 			Console.WriteLine();
 
 		}
-
-		/// <summary>
-		/// Filters points, which are fake (unnaturally higher than average vege poins).
-		/// Assigns them in vegePoints and fakePoints
-		/// </summary>
-		/*public void FilterFakeVegePoints()
-		{
-			CDebug.WriteLine("FilterFakeVegePoints", true);
-			CProjectData.vegePoints.Clear();
-
-			//float averageHeight = GetAveragePreProcessVegeHeight();
-
-
-			float maxHeight = GetMaxPreProcessVegeHeight();
-
-
-			//CDebug.WriteLine("Average vege height = " + averageHeight, true, true);
-			CDebug.WriteLine("Max vege height = " + maxHeight, true, true);
-
-			//first filter points too much higher that average height
-			foreach (CGroundField field in fields)
-			{
-				field.FilterFakeVegePoints(maxHeight, true);
-			}
-			int fakePointsCount = GetFakePointsCount();
-
-			//then remove points, which were not filtered and dont have any close neighbour defined under them
-			foreach (CGroundField field in fields)
-			{
-				field.TryRemoveValidPoints();
-			}
-			//finally try add points, which were classified as fake, but are close to some valid point
-			foreach (CGroundField field in fields)
-			{
-				field.TryAddFakePoints();
-			}
-
-			CDebug.Count("vegePoints", CProjectData.vegePoints.Count);
-			CDebug.Count("fakePoints", CProjectData.fakePoints.Count);
-		}*/
-
+		
 		private int GetFakePointsCount()
 		{
 			int count = 0;
@@ -287,26 +239,7 @@ namespace ForestReco
 		{
 			float sumHeight = 0;
 			int definedCount = 0;
-
-			/*foreach (CGroundField field in fields)
-			{
-				float? groundHeight = field.GetHeight();
-				float? preProcessVegeHeight = field.MaxPreProcessVege;
-				if (preProcessVegeHeight != null && groundHeight != null)
-				{
-					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
-
-					sumHeight += vegeHeight;
-					definedCount++;
-				}
-			}
-
-			float averageHeight = sumHeight / definedCount;
-			CDebug.WriteLine("averageHeight = " + averageHeight, true);
-
-			sumHeight = 0;
-			definedCount = 0;*/
-
+			
 			foreach (CGroundField field in fields)
 			{
 				float? groundHeight = field.GetHeight();
@@ -315,9 +248,6 @@ namespace ForestReco
 				{
 					float vegeHeight = (float)preProcessVegeHeight - (float)groundHeight;
 					if (vegeHeight > MIN_PREPROCESS_VEGE_HEIGHT && vegeHeight < MAX_PREPROCESS_VEGE_HEIGHT)
-					//if (vegeHeight > averageHeight - 1 && vegeHeight < averageHeight + 1)
-					//if (vegeHeight > CTreeManager.AVERAGE_MAX_TREE_HEIGHT - PREPROCESS_VEGE_HEIGHT_OFFSET &&
-					//	vegeHeight < CTreeManager.AVERAGE_MAX_TREE_HEIGHT + PREPROCESS_VEGE_HEIGHT_OFFSET)
 					{
 						sumHeight += vegeHeight;
 						definedCount++;
@@ -446,9 +376,7 @@ namespace ForestReco
 		}
 
 		private const float DEFAULT_KERNEL_SIZE = 5; //IN METERS
-
-		//public static int KernelSize => (int)(DEFAULT_KERNEL_SIZE / CParameterSetter.groundArrayStep);
-
+		
 		public static int GetKernelSize()
 		{
 			int size = (int)(DEFAULT_KERNEL_SIZE / CParameterSetter.groundArrayStep);
@@ -527,10 +455,7 @@ namespace ForestReco
 					{
 						foreach (CTree tree in detectedTrees)
 						{
-							//if (!tree.isPeakInvalid)
-							{
-								trees.Add(tree);
-							}
+							trees.Add(tree);
 						}
 					}
 				}

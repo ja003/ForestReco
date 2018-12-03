@@ -25,7 +25,7 @@ namespace ForestReco
 				for (int y = 0; y < array.arrayYRange; y++)
 				{
 					CGroundField groundElement = array.GetElement(x, y);
-					int? colorVal = groundElement.GetColorValue();//from detailed array
+					int? colorVal = groundElement.GetColorValue(); //from detailed array
 
 					if (colorVal == null)
 					{
@@ -39,7 +39,6 @@ namespace ForestReco
 			}
 
 			StretchColorRange(ref bitmap, maxValue);
-			//ExportBitmap(bitmap, "tree_beforeMax");
 
 			FilterBitmap(ref bitmap, GetKernelSize(array.stepSize, .2f), EFilter.Max);
 
@@ -70,8 +69,7 @@ namespace ForestReco
 			ExportBitmap(bitmapTreeBorder, "tree_borders");
 
 			CDebug.Progress(bitmapsCount, bitmapsCount, 1, ref bitmapStart, bitmapStart, "bitmap: ");
-
-
+			
 			CAnalytics.bitmapExportDuration = CAnalytics.GetDuration(bitmapStart);
 			CDebug.Duration("bitmap export", bitmapStart);
 		}
@@ -118,9 +116,7 @@ namespace ForestReco
 
 					int x = fieldWithTree.indexInField.Item1;
 					int y = fieldWithTree.indexInField.Item2;
-
-
-					//if (x < 0 || x > pBitmap.Width || y < 0 || y > pBitmap.Height)
+					
 					if (IsOOB(x, y, pBitmap))
 					{
 						CDebug.Error($"{x},{y} is OOB {pBitmap.Width}x{pBitmap.Height}");
@@ -180,10 +176,8 @@ namespace ForestReco
 					//mark tree position
 					if (pTreePostition)
 					{
-						//pBitmap.SetPixel(x, y, treeColor);
 						using (Graphics g = Graphics.FromImage(pBitmap))
 						{
-							//g.FillRectangle(treeBrush, x, y, treeMarkerSize, treeMarkerSize);
 							int _x = x - treeMarkerSize / 2;
 							if (_x < 0) { _x = x; }
 							int _y = y - treeMarkerSize / 2;
@@ -210,8 +204,6 @@ namespace ForestReco
 			SolidBrush checktreeFailBrush = new SolidBrush(checktreeFail);
 			SolidBrush checktreeInvalidBrush = new SolidBrush(checktreeInvalid);
 			SolidBrush checktreeOkBrush = new SolidBrush(checktreeOk);
-			//Pen treeBorderPen = new Pen(checktreeFailBrush);
-			//Pen branchPen = new Pen(checktreeInvalidBrush);
 
 			foreach (CCheckTree tree in CCheckTreeManager.Trees)
 			{
@@ -337,11 +329,6 @@ namespace ForestReco
 			size = Math.Max(pSmall ? 1 : 2, size);
 
 			return size;
-
-			/*int size = (int)(0.6f / pArrayStepSize);
-			if (pSmall) { size -= 1; }
-			size = Math.Max(1, size);
-			return size;*/
 		}
 
 		private static int GetKernelSize(float pArrayStepSize, float pRadius)
@@ -353,7 +340,7 @@ namespace ForestReco
 
 		private static void ResizeBitmap(ref Bitmap pBitmap)
 		{
-			const int resultWidth = 800; //todo: set from GUI
+			const int resultWidth = 800; //todo: set from GUI?
 			float scale = (float)resultWidth / pBitmap.Width;
 			Bitmap resized = new Bitmap(pBitmap, new Size((int)(pBitmap.Width * scale), (int)(pBitmap.Height * scale)));
 			pBitmap = resized;

@@ -29,7 +29,6 @@ namespace ForestReco
 		public static EProcessResult Start()
 		{
 			CSequenceController.SetValues();
-			//CProjectData.mainForm.SetStartBtnEnabled(false);
 
 			DateTime startTime = DateTime.Now;
 			CProjectData.Init();
@@ -68,7 +67,7 @@ namespace ForestReco
 					throw new Exception("No header is defined");
 				}
 
-				CRefTreeManager.Init();
+				CReftreeManager.Init();
 				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 				List<Tuple<EClass, Vector3>> parsedLines = CProgramLoader.ParseLines(lines, CProjectData.header != null, true);
@@ -83,14 +82,11 @@ namespace ForestReco
 
 				CTreeManager.DebugTrees();
 
-
-				//CObjExporter.ExportObjsToExport();
 				CDebug.Step(EProgramStep.Export);
 				CObjPartition.ExportPartition();
 				if (CProjectData.backgroundWorker.CancellationPending) { return EProcessResult.Cancelled; }
 
 				//has to be called after ExportPartition where final folder location is determined
-
 				try
 				{
 					CDebug.Step(EProgramStep.Bitmap);
@@ -129,7 +125,6 @@ namespace ForestReco
 			if (CSequenceController.IsLastSequence())
 			{
 				CSequenceController.OnLastSequenceEnd();
-				//CProjectData.mainForm.SetStartBtnEnabled(true);
 				return EProcessResult.Done;
 			}
 
