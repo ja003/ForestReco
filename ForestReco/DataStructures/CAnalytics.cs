@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 
 namespace ForestReco
 {
@@ -49,61 +50,64 @@ namespace ForestReco
 		public static double bitmapExportDuration;
 		public static double totalDuration;
 
+		private static string newLine => Environment.NewLine;
+		private static string newLine2 => newLine + newLine;
+
 		public static void Write(bool pToFile)
 		{
-			string output = " - ANALYTICS - \n\n";
-			output += $"treeExtent = {CParameterSetter.GetFloatSettings(ESettings.treeExtent)} \n";
-			output += $"treeExtentMultiply = {CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply)} \n\n";
+			string output = " - ANALYTICS - " + newLine2;
+			output += $"treeExtent = {CParameterSetter.GetFloatSettings(ESettings.treeExtent)} " + newLine;
+			output += $"treeExtentMultiply = {CParameterSetter.GetFloatSettings(ESettings.treeExtentMultiply)} " + newLine2;
 
-			output += $"loadedPoints = {loadedPoints} \n";
-			output += $"vegePoints = {vegePoints} \n";
-			output += $"groundPoints = {groundPoints} \n";
-			output += $"filteredPoints = {filteredPoints} \n\n";
+			output += $"loadedPoints = {loadedPoints} " + newLine;
+			output += $"vegePoints = {vegePoints} " + newLine;
+			output += $"groundPoints = {groundPoints} " + newLine;
+			output += $"filteredPoints = {filteredPoints}" + newLine2;
 
-			output += $"arrayWidth = {arrayWidth} m\n";
-			output += $"arrayHeight = {arrayHeight} m\n\n";
+			output += $"arrayWidth = {arrayWidth} m" + newLine;
+			output += $"arrayHeight = {arrayHeight} m" + newLine2;
 
-			output += $"firstDetectedTrees = {firstDetectedTrees} \n";
-			output += $"firstMergedCount = {GetFirstMergedCount()} \n";
-			output += $"secondMergedCount = {GetSecondMergedCount()} \n";
-			output += $"detectedTrees = {detectedTrees} \n";
-
-
-			output += $"trees density = 1 per {GetTreesDensity():0.00} m\xB2 \n";
-			output += $"invalidTrees = {invalidTrees} ({invalidTreesAtBorder} of them at border)\n\n";
-
-			output += $"inputAverageTreeHeight = {inputAverageTreeHeight} \n";
-			output += $"averageTreeHeight = {averageTreeHeight} \n";
-			output += $"maxTreeHeight = {maxTreeHeight} \n";
-			output += $"minTreeHeight = {minTreeHeight} \n\n";
-
-			output += $"loadedReftrees = {loadedReftrees} \n";
-			output += $"averageReftreeSimilarity = {averageReftreeSimilarity} \n\n";
+			output += $"firstDetectedTrees = {firstDetectedTrees} " + newLine;
+			output += $"firstMergedCount = {GetFirstMergedCount()} " + newLine;
+			output += $"secondMergedCount = {GetSecondMergedCount()} " + newLine;
+			output += $"detectedTrees = {detectedTrees} " + newLine;
 
 
-			output += "Duration\n";
-			output += $"load reftrees = {loadReftreesDuration} \n";
-			output += $"fill missing ground = {fillAllHeightsDuration} \n";
-			output += $"add vege points = {processVegePointsDuration} \n";
-			output += $"first merge = {firstMergeDuration} \n";
-			output += $"second merge = {secondMergeDuration} \n";
-			output += $"reftree assignment = {reftreeAssignDuration} \n";
-			output += $"bitmap export = {bitmapExportDuration} \n";
-			output += $"-------------------\n";
-			output += $"total = {totalDuration} \n";
+			output += $"trees density = 1 per {GetTreesDensity():0.00} m\xB2 " + newLine;
+			output += $"invalidTrees = {invalidTrees} ({invalidTreesAtBorder} of them at border)\n" + newLine;
+
+			output += $"inputAverageTreeHeight = {inputAverageTreeHeight} " + newLine;
+			output += $"averageTreeHeight = {averageTreeHeight} " + newLine;
+			output += $"maxTreeHeight = {maxTreeHeight} " + newLine;
+			output += $"minTreeHeight = {minTreeHeight}" + newLine2;
+
+			output += $"loadedReftrees = {loadedReftrees} " + newLine;
+			output += $"averageReftreeSimilarity = {averageReftreeSimilarity} " + newLine2;
+
+
+			output += "Duration" + newLine;
+			output += $"load reftrees = {loadReftreesDuration} " + newLine;
+			output += $"fill missing ground = {fillAllHeightsDuration} " + newLine;
+			output += $"add vege points = {processVegePointsDuration} " + newLine;
+			output += $"first merge = {firstMergeDuration} " + newLine;
+			output += $"second merge = {secondMergeDuration} " + newLine;
+			output += $"reftree assignment = {reftreeAssignDuration} " + newLine;
+			output += $"bitmap export = {bitmapExportDuration} " + newLine;
+			output += $"-------------------" + newLine;
+			output += $"total = {totalDuration} " + newLine;
 
 			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
-				output += "Checktree\n";
-				output += $"loadedCheckTrees = {loadedCheckTrees} \n";
-				output += $"assignedCheckTrees = {assignedCheckTrees} \n";
-				output += $"invalidCheckTrees = {invalidCheckTrees} \n";
+				output += "Checktree" + newLine;
+				output += $"loadedCheckTrees = {loadedCheckTrees} " + newLine;
+				output += $"assignedCheckTrees = {assignedCheckTrees} " + newLine;
+				output += $"invalidCheckTrees = {invalidCheckTrees} " + newLine;
 			}
 
-			output += $"\nERRORS\n";
+			output += $"\nERRORS" + newLine;
 			foreach (string error in errors)
 			{
-				output += $"- {error} \n";
+				output += $"- {error} " + newLine;
 			}
 
 			//before WriteToFile (it can fail there too)
@@ -190,7 +194,7 @@ namespace ForestReco
 
 							new Tuple<string, object>("loadedReftrees",loadedReftrees),
 							new Tuple<string, object>("averageReftreeSimilarity",averageReftreeSimilarity),
-							
+
 							new Tuple<string, object>("processVege",processVegePointsDuration),
 							new Tuple<string, object>("firstMerge",firstMergeDuration),
 							new Tuple<string, object>("secondMerge",secondMergeDuration),
@@ -275,7 +279,7 @@ namespace ForestReco
 			{
 				message += error + Environment.NewLine;
 			}
-			CProjectData.backgroundWorker.ReportProgress(0, new string[]{message});
+			CProjectData.backgroundWorker.ReportProgress(0, new string[] { message });
 		}
 
 		public static double GetDuration(DateTime pStartTime)
