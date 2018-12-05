@@ -87,16 +87,8 @@ namespace ForestReco
 
 			foreach (CGroundField f in CProjectData.array.fields)
 			{
-				//todo: k ničemu, výsledek stejně není seřaděn
-				//- do OBJ předat informaci o pořadí a pak je sesortit
-				//f.DetectedTrees.Sort((x, y) => x.treeIndex.CompareTo(y.treeIndex));
 				foreach (CTree t in f.DetectedTrees)
 				{
-					if (t.Equals(13))
-					{
-						CDebug.WriteLine("");
-					}
-
 					if (t.isValid == pValid)
 					{
 						treesToExport.Add(new Tuple<Tuple<int, int>, CTree>(f.indexInField, t));
@@ -108,7 +100,6 @@ namespace ForestReco
 			{
 				Obj obj = exportTree.Item2.GetObj(exportTreeStrucure, false, exportBoxes);
 				if (!pValid) { obj.UseMtl = CMaterialManager.GetInvalidMaterial(); }
-				//if (pFake) { obj.UseMtl = CMaterialManager.GetFakeMaterial(); }
 
 				AddObj(exportTree.Item1, obj);
 			}
@@ -127,7 +118,7 @@ namespace ForestReco
 							//not error if reftrees were not loaded
 							if (CReftreeManager.Trees.Count > 0)
 							{
-								CDebug.Error($"{t} has no ref tree assigned");
+								CDebug.Error($"{t} has no reftree assigned");
 							}
 							return;
 						}

@@ -54,12 +54,7 @@ namespace ForestReco
 			{
 				Vector3 treePosition = checkTree.position;
 				List<CTree> possibleTrees = CTreeManager.GetPossibleTreesFor(treePosition, CTreeManager.EPossibleTreesMethos.ClosestHigher);
-
-				if (checkTree.index == 53)
-				{
-					CDebug.WriteLine("");
-				}
-
+				
 				if (possibleTrees.Count > 0)
 				{
 					foreach (CTree possibleTree in possibleTrees)

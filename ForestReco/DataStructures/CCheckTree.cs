@@ -74,10 +74,6 @@ namespace ForestReco
 			{
 				return;
 			}
-			if (index == 17)
-			{
-				Console.Write("");
-			}
 
 			//groundField not assigned = checkTree is out of this array 
 			if (groundField == null)

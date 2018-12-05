@@ -25,7 +25,7 @@ namespace ObjParser.Types
 		public Face(List<Vertex> pVertices)
 		{
 			VertexIndexList = new int[pVertices.Count];
-			TextureVertexIndexList = new int[0]; //TODO: implement texture coords
+			TextureVertexIndexList = new int[0];
 			for (int i = 0; i < pVertices.Count; i++)
 			{
 				VertexIndexList[i] = pVertices[i].Index;

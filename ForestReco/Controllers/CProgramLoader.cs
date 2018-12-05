@@ -133,7 +133,6 @@ namespace ForestReco
 
 			CTreeManager.CheckAllTrees();
 
-
 			CDebug.Step(EProgramStep.ValidateTrees1);
 			//dont move invalid trees to invalid list yet, some invalid trees will be merged
 			CTreeManager.ValidateTrees(false, false);
@@ -272,7 +271,6 @@ namespace ForestReco
 			CDebug.Step(EProgramStep.ProcessVegePoints);
 			ProcessVegePoints();
 
-			//CAnalytics.detectionDuration = CAnalytics.GetDuration(processStartTime);
 			CDebug.Duration("All points added", processStartTime);
 		}
 
@@ -294,7 +292,7 @@ namespace ForestReco
 				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 				Vector3 point = CProjectData.vegePoints[i];
-				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.Preprocess);
+				CProjectData.array.AddPointInField(point, CGroundArray.EPointType.Preprocess, true);
 
 				CDebug.Progress(i, CProjectData.vegePoints.Count, debugFrequency, ref previousDebugStart, preprocessVegePointsStart, "preprocessed point");
 			}
@@ -328,7 +326,6 @@ namespace ForestReco
 		/// </summary>
 		private static void ProcessVegePoints()
 		{
-			//todo: check if has to be sorted somewhere else as well
 			CProjectData.vegePoints.Sort((y, x) => x.Y.CompareTo(y.Y)); //sort descending by height
 
 			const int debugFrequency = 10000;
@@ -362,8 +359,9 @@ namespace ForestReco
 				if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 				Vector3 point = CProjectData.groundPoints[i];
-				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground);
-				CProjectData.detailArray?.AddPointInField(point, CGroundArray.EPointType.Ground);
+				CProjectData.array?.AddPointInField(point, CGroundArray.EPointType.Ground, true);
+				//some points can be at border of detail array - not error -> dont log
+				CProjectData.detailArray?.AddPointInField(point, CGroundArray.EPointType.Ground, false);
 			}
 
 			if (CProjectData.array == null)
@@ -375,7 +373,6 @@ namespace ForestReco
 
 			FillArray();
 
-			//todo: fail při array step = 1.1
 			CProjectData.array?.SmoothenArray(1);
 		}
 

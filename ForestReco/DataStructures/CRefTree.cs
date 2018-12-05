@@ -61,7 +61,7 @@ namespace ForestReco
 
 				if (!useReducedReftreeModels)
 				{
-					CDebug.WriteLine("Ref tree " + refTreePath + " OBJ does not exist.");
+					CDebug.WriteLine("Reftree " + refTreePath + " OBJ does not exist.");
 					CDebug.WriteLine("Try reduced file: " + reducedObjFileName);
 				}
 				refTreePath = GetRefTreeFilePath(pFileName, reducedObjFileName);
@@ -217,15 +217,7 @@ namespace ForestReco
 		{
 			return Obj.Size.YMax - Obj.Size.YMin;
 		}
-
-		/// <summary>
-		/// In reference tree the tree is defined in great detail from peak to the ground.
-		/// </summary>
-		/*public override float GetGroundHeight() //todo: no need anymore, GetTreeHeight is enough in reftree
-		{
-			return minBB.Y;
-		}*/
-
+		
 		protected override void OnProcess()
 		{
 			string filePath = GetRefTreeFilePath(fileName, fileName + ".reftree");
@@ -294,9 +286,6 @@ namespace ForestReco
 			return pFileName + "-" + firstString + "-" + frontString + "-" + jehliciString + ".xyz";
 		}
 
-		/// <summary>
-		/// TODO: maybe cancel arrays and just work woth list?
-		/// </summary>
 		private static string[] GetFileLines(string pFileName)
 		{
 			string firstFrontJehliciPath = GetRefTreeFilePath(pFileName, GetXyzFileName(pFileName, true, true, true));
@@ -311,7 +300,6 @@ namespace ForestReco
 
 			List<string> lines = new List<string>();
 
-			//TODO: refactor these XYZ getters
 			if (refTreeFirst)
 			{
 				if (refTreeFront)
@@ -380,7 +368,7 @@ namespace ForestReco
 			if (!File.Exists(refTreeXyzPath))
 			{
 				//not errror. all files doesnt have to be specified
-				CDebug.Warning("Ref tree " + refTreeXyzPath + " XYZ does not exist.");
+				CDebug.Warning("Reftree " + refTreeXyzPath + " XYZ does not exist.");
 				return new string[0];
 			}
 
@@ -403,38 +391,17 @@ namespace ForestReco
 
 			for (int i = 1; i < Math.Min(pParsedLines.Count, pointsToAddCount); i++)
 			{
-				//DateTime lineStartTime = DateTime.Now;
-
 				Tuple<EClass, Vector3> parsedLine = pParsedLines[i];
 				Vector3 point = parsedLine.Item2;
 
 				//all points belong to 1 tree. force add it
 				AddPoint(point);
-
-				//TimeSpan duration = DateTime.Now - lineStartTime;
-				//if (duration.Milliseconds > 1) { CDebug.WriteLine(i + ": " + duration); }
-
+				
 				CDebug.Progress(i, pParsedLines.Count, 100000, ref lineStartTime, addStartTime, "added point:");
-				//if (i % 100000 == 0)
-				//{
-				//	TimeSpan duration = DateTime.Now - lineStartTime;
-				//	CDebug.WriteLine("added point: " + i + "/" + pParsedLines.Count + ". time = " + duration.TotalSeconds);
-				//	lineStartTime = DateTime.Now;
-				//}
 			}
 			CDebug.Duration("All points added", addStartTime);
 		}
-
-		/*public CRefTree Clone(string pNameAppendix)
-		{
-			CRefTree cloneTree = new CRefTree(forestFullFilePath + pNameAppendix, treeIndex, false);
-			cloneTree.Obj = Obj.Clone();
-			cloneTree.peak = peak.Clone();
-
-			//TODO: is it necessary to copy other parts?
-			return cloneTree;
-		}*/
-
+		
 		public override string ToString()
 		{
 			return $"[{treeIndex}] : {GetTreeHeight()}m. {Obj.Name}";

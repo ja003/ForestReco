@@ -1155,6 +1155,7 @@ namespace ForestReco
 		{
 			string folderPath = CObjPartition.folderPath;
 			if (string.IsNullOrEmpty(folderPath)) { return; }
+			if (!Directory.Exists(folderPath)) { return; }
 			System.Diagnostics.Process.Start(folderPath);
 		}
 

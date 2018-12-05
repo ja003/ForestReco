@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Web.WebSockets;
+
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace ForestReco
@@ -138,7 +140,6 @@ namespace ForestReco
 			//due to array orientation
 			int yPos = (int)Math.Floor((topLeftCorner.Z - pPoint.Z) / stepSize);
 
-			//todo: delete this check, it has to be correct for realease!
 			CGroundField el = GetElement(xPos, yPos);
 			if (el != null && el.IsPointOutOfField(pPoint))
 			{
@@ -158,12 +159,12 @@ namespace ForestReco
 			Preprocess
 		}
 
-		public void AddPointInField(Vector3 pPoint, EPointType pType)
+		public void AddPointInField(Vector3 pPoint, EPointType pType, bool pLogErrorInAnalytics)
 		{
 			Tuple<int, int> index = GetPositionInField(pPoint);
 			if (!IsWithinBounds(index))
 			{
-				CDebug.Error($"point {pPoint} is OOB {index}");
+				CDebug.Error($"point {pPoint} is OOB {index}", pLogErrorInAnalytics);
 				return;
 			}
 			switch (pType)
@@ -204,16 +205,13 @@ namespace ForestReco
 					Console.WriteLine($"field {field.indexInField} = {field.fakePoints.Count}");
 				}
 			}
-
-
+			
 			foreach (CGroundField field in fields)
 			{
 				field.ApplyFilteredPoints();
 			}
 
 			Console.WriteLine($"total =  {GetFakePointsCount()}");
-			Console.WriteLine();
-
 		}
 		
 		private int GetFakePointsCount()
@@ -232,9 +230,6 @@ namespace ForestReco
 		const float MAX_PREPROCESS_VEGE_HEIGHT = 35;
 		const float PREPROCESS_VEGE_HEIGHT_OFFSET = 1;
 
-		/// <summary>
-		/// TODO: count weighted average. areas with no trees affect average height 
-		/// </summary>
 		public float GetAveragePreProcessVegeHeight()
 		{
 			float sumHeight = 0;

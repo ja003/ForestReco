@@ -22,7 +22,6 @@ namespace ForestReco
 			float similarity = 0;
 			int definedSimilarityCount = 0;
 
-			//todo: compare stems
 			foreach (CBranch otherBranch in pOtherTree.Branches)
 			{
 				int indexOfOtherBranch = pOtherTree.Branches.IndexOf(otherBranch);
@@ -74,18 +73,12 @@ namespace ForestReco
 		{
 			CBranch mostDefinedBranch = pOtherTree.GetMostDefinedBranch();
 
-			//todo: try rotate other tree to find bestMatch and include this rotation in similarity calculation
 			CBranch bestMatchBranch = GetBestMatchBranch(pRefTree, mostDefinedBranch);
 
 			int indexOfMostDefined = pOtherTree.Branches.IndexOf(mostDefinedBranch);
 			int indexOfBestMatch = pRefTree.Branches.IndexOf(bestMatchBranch);
 			int indexOffset = indexOfBestMatch - indexOfMostDefined;
 
-			//CDebug.WriteLine("mostDefinedBranch = " + mostDefinedBranch);
-			//CDebug.WriteLine("bestMatchBranch = " + bestMatchBranch);
-			//CDebug.WriteLine("indexOfMostDefined = " + indexOfMostDefined);
-			//CDebug.WriteLine("indexOfBestMatch = " + indexOfBestMatch);
-			//CDebug.WriteLine("indexOffset = " + indexOffset);
 			return indexOffset;
 		}
 

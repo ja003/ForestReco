@@ -91,8 +91,6 @@ namespace ForestReco
 			output += $"bitmap export = {bitmapExportDuration} \n";
 			output += $"-------------------\n";
 			output += $"total = {totalDuration} \n";
-			//todo: other
-
 
 			if (CParameterSetter.GetBoolSettings(ESettings.useCheckTreeFile))
 			{
@@ -215,15 +213,6 @@ namespace ForestReco
 			using (var outStream = File.OpenWrite(filePath))
 			using (var writer = new StreamWriter(outStream))
 			{
-				//todo: colums name?
-				/*writer.Write("file");
-				foreach (object obj in pObjs)
-				{
-					writer.Write("," + obj.get);
-				}
-				writer.WriteLine(filePath);
-				*/
-
 				writer.WriteLine(GetHeaderString(pParams));
 
 				writer.Write(folderName);

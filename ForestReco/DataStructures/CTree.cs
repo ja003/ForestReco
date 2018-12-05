@@ -83,24 +83,10 @@ namespace ForestReco
 		//MOST IMPORTANT
 
 		/// <summary>
-		/// Assigns all points to branches/peak
+		/// Used only in reftree
 		/// </summary>
 		public void Process()
 		{
-			//TODO: Process not used anymore
-			/*
-			foreach (Vector3 point in Points)
-			{
-				if (peak.Includes(point))
-				{
-					peak.AddPoint(point); //this should already be done
-				}
-				else
-				{
-					GetBranchFor(point).AddPoint(point);
-				}
-			}
-			*/
 			OnProcess();
 		}
 
@@ -108,23 +94,7 @@ namespace ForestReco
 		{
 			//CDebug.WriteLine("OnProcess");
 		}
-
-		//public bool CheckPeak(Vector3 pPoint)
-		//{
-		//	if(GetAddPointFactor)
-		//	return true;
-		//}
-
-		/*public bool TryAddPoint(Vector3 pPoint, bool pForce)
-		{
-			if (pForce || BelongsToTree(pPoint))
-			{
-				AddPoint(pPoint);
-				return true;
-			}
-			return false;
-		}*/
-
+		
 		/// <summary>
 		/// pMerging is used during merging process
 		/// </summary>
@@ -145,66 +115,13 @@ namespace ForestReco
 				}
 			}
 
-			else if (pTreeToMerge != null && pTreeToMerge.isValid)
+			else if (pTreeToMerge.isValid)
 			{
-				if (pTreeToMerge.Equals(140))
-				{
-					CDebug.WriteLine("");
-				}
-
 				float peakPointDist = CUtils.Get2DDistance(pPoint, peak.Center);
 				if (peakPointDist > GetTreeExtentFor(pPoint, CParameterSetter.treeExtentMultiply))
 				{
 					return 0;
 				}
-
-				float furthestPointDistance = -int.MaxValue;
-
-				CBranch rightNeighbour = branchForPoint.GetNeigbourBranch(1);
-				CBranch leftNeighbour = branchForPoint.GetNeigbourBranch(-1);
-
-
-				//use this criterium only if furthest point is close
-				const float maxFurthestPointDistance = 1;
-				if (Vector3.Distance(pPoint, branchForPoint.furthestPoint) < maxFurthestPointDistance)
-				{
-					furthestPointDistance = branchForPoint.furthestPointDistance;
-				}
-				if (Vector3.Distance(pPoint, rightNeighbour.furthestPoint) < maxFurthestPointDistance)
-				{
-					furthestPointDistance = Math.Max(furthestPointDistance, rightNeighbour.furthestPointDistance);
-				}
-				if (Vector3.Distance(pPoint, leftNeighbour.furthestPoint) < maxFurthestPointDistance)
-				{
-					furthestPointDistance = Math.Max(furthestPointDistance, leftNeighbour.furthestPointDistance);
-				}
-
-				//todo: was not very efficient, produced some buggy results
-				//measure only if point is further from peak than the furthest point
-				/*if (distToPeak - furthestPointDistance > 0.2f)
-				{
-					Vector3 closestHigherPoint = branchForPoint.GetClosestHigherTo(pPoint);
-					Vector3 closestHigherPoinNeighbour1 = rightNeighbour.GetClosestHigherTo(pPoint);
-					Vector3 closestHigherPoinNeighbour2 = leftNeighbour.GetClosestHigherTo(pPoint);
-
-					//choose closest from neighbours
-					float distToClosest = Vector3.Distance(pPoint, closestHigherPoint);
-					distToClosest = Math.Min(distToClosest,
-						Vector3.Distance(pPoint, closestHigherPoinNeighbour1));
-					distToClosest = Math.Min(distToClosest,
-						Vector3.Distance(pPoint, closestHigherPoinNeighbour2));
-
-					float distToClosest2D = CUtils.Get2DDistance(pPoint, closestHigherPoint);
-					distToClosest2D = Math.Min(distToClosest2D,
-						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour1));
-					distToClosest2D = Math.Min(distToClosest2D,
-						CUtils.Get2DDistance(pPoint, closestHigherPoinNeighbour2));
-
-					if (distToClosest > 0.5f && distToClosest2D > 0.2f)
-					{
-						return 0;
-					}
-				}*/
 			}
 
 			float bestFactor = 0;
@@ -226,8 +143,7 @@ namespace ForestReco
 
 		public void AddPoint(Vector3 pPoint)
 		{
-			//if (peak.Includes(pPoint))
-			if (peak.Includes(pPoint) || pPoint.Y > peak.minBB.Y) //todo: test if doesnt screw up
+			if (peak.Includes(pPoint) || pPoint.Y > peak.minBB.Y)
 			{
 				peak.AddPoint(pPoint);
 			}
@@ -246,7 +162,7 @@ namespace ForestReco
 			{
 				CDebug.WriteLine(this.ToString(EDebug.Peak) + " MergeWith " + pSubTree.ToString(EDebug.Peak));
 			}
-			//todo: make effective
+
 			if (pSubTree.Equals(this))
 			{
 				CDebug.Error("cant merge with itself.");
@@ -257,44 +173,9 @@ namespace ForestReco
 			{
 				AddPoint(point);
 			}
-
-			/*Points.AddRange(pSubTree.Points);
-
-			//only points from subTree peak can be part of this tree peak. Try to add them
-			List<Vector3> peakPoints = pSubTree.peak.Points;
-			for (int i = peakPoints.Count - 1; i >= 0; i--)
-			{
-				if (peak.Includes(peakPoints[i]))
-				{
-					peak.AddPoint(peakPoints[i]);
-					//peakPoints.RemoveAt(i);
-				}
-			}
-			//Points.AddRange(peakPoints); //no need, all points are in pSubTree.Points
-
-			//sort in descending order. //TODO: this step can be inefective
-			Points.Sort((b, a) => a.Y.CompareTo(b.Y));
-			//update extents
-			OnAddPoint(pSubTree.minBB);
-			OnAddPoint(pSubTree.maxBB);*/
 		}
 
 		//GETTERS
-
-
-		//public bool isFake;
-		//const float MAX_POINTS_HEIGHT_DIFF = 1;
-
-		/*public bool IsPeakValidWith(Vector3 pNewPoint)
-		{
-			if (peak.Includes(pNewPoint)) { return true; }
-			if(Points.Count - peak.Points.Count > 5){ return true; }
-
-			float newPointLowestPointHeightDiff = minBB.Y - pNewPoint.Y;
-			return newPointLowestPointHeightDiff < MAX_POINTS_HEIGHT_DIFF;
-			//CBranch branch = GetBranchFor(pNewPoint);
-			//return branch.IsPeakValidWith(pNewPoint);
-		}*/
 
 		/// <summary>
 		/// Returns a branch with biggest number of tree points
@@ -315,9 +196,7 @@ namespace ForestReco
 
 		public float GetDistanceTo(Vector3 pPoint)
 		{
-			//todo: pick closest point
 			float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
-			float distToBranch = GetBranchFor(pPoint).GetDistanceTo(pPoint);
 
 			float distanceToAnyPoint = int.MaxValue;
 			foreach (Vector3 p in Points)
@@ -327,10 +206,6 @@ namespace ForestReco
 				{
 					distanceToAnyPoint = dist;
 				}
-				//else
-				//{
-				//	break;
-				//}
 			}
 
 			return Math.Min(distToPeak, distanceToAnyPoint);
@@ -520,10 +395,6 @@ namespace ForestReco
 
 		public bool Validate(bool pRestrictive, bool pFinal = false)
 		{
-			if (Equals(debugTree))
-			{
-				Console.WriteLine("");
-			}
 			isValid = ValidateBranches(pRestrictive);
 
 			if (pFinal && !isValid && !IsAtBorder())
@@ -531,28 +402,16 @@ namespace ForestReco
 				isValid = ValidatePoints();
 			}
 
-
-
 			if (Equals(debugTree))
 			{
 				CDebug.WriteLine(isValid + " Validate " + this);
 			}
-
-			//if (pRestrictive)
-			//{ isValid = ValidateScale() && ValidateBranches(); }
-			//else
-			//{ isValid = ValidateScale() || ValidateBranches(); }
 
 			return isValid;
 		}
 
 		private bool ValidateFirstBranchPoints()
 		{
-			if (Equals(7))
-			{
-				Console.WriteLine("");
-			}
-			
 			//too many branch points are too far from peak
 			const float maxDistOfFirstBranchPoint = 1.5f;
 			int tooFarPointsCount = 0;
@@ -570,15 +429,7 @@ namespace ForestReco
 
 		private bool ValidatePoints()
 		{
-			if (Equals(debugTree))
-			{
-				Console.WriteLine("");
-			}
-
-			//if(!ValidateFirstBranchPoints()){ return false; }
-			
 			int totalPointCount = GetBranchesPointCount();
-			//float definedHeight = GetTreeHeight() / 2;
 			float definedHeight = Extent.Y;
 
 			//in case only few points are defined at bottom. in this case the mniddle part is almost not defined (its ok)
@@ -591,19 +442,12 @@ namespace ForestReco
 			int requiredPointCount = (int)definedHeight * requiredPointsPerMeter;
 			return totalPointCount > requiredPointCount;
 		}
-
-
+		
 		/// <summary>
 		/// Checks if all branches have good scale ration with its opposite branch
 		/// </summary>
 		private bool ValidateScale()
 		{
-			//if (isFake) { return false; }
-			if (Equals(50))
-			{
-				CDebug.WriteLine("");
-			}
-
 			foreach (CBranch b in branches)
 			{
 				if (b.GetPointCount() == 0) { return false; }
@@ -630,11 +474,10 @@ namespace ForestReco
 					return false;
 				}
 			}
-			//isValidScale = true;
 			return true;
 		}
 
-		private int debugTree = 9;
+		private int debugTree = -1;
 
 		/// <summary>
 		/// Determines whether the tree is defined enough.
@@ -643,11 +486,6 @@ namespace ForestReco
 		/// </summary>
 		private bool ValidateBranches(bool pAllBranchesDefined)
 		{
-			if (Equals(debugTree) && pAllBranchesDefined)
-			{
-				Console.WriteLine("");
-			}
-
 			if (!ValidateFirstBranchPoints()) { return false; }
 
 			float branchDefinedFactor = 0;
@@ -879,11 +717,6 @@ namespace ForestReco
 
 		public void CheckTree()
 		{
-
-			if (treeIndex == 236)
-			{
-				Console.WriteLine();
-			}
 			//CDebug.WriteLine("Check tree " + ToString());
 			foreach (CBranch b in branches)
 			{

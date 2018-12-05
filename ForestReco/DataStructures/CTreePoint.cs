@@ -58,7 +58,6 @@ namespace ForestReco
 		public Vector3 GetClosestPointTo(Vector3 pPoint)
 		{
 			Vector3 closestPoint = Points[0];
-			//todo: maybe better to return point on bounding box?
 			foreach (Vector3 p in Points)
 			{
 				if (Vector3.Distance(p, pPoint) < Vector3.Distance(closestPoint, pPoint))

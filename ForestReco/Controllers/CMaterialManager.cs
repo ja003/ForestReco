@@ -73,25 +73,9 @@ namespace ForestReco
 
 		public static string GetTreeMaterial(CTree pTree)
 		{
-			if (pTree.Equals(2) || pTree.Equals(3))
-			{
-				Console.Write("");
-			}
-
-			//based on position in field
-			//- not very good with big ground array step
-			//int xIndex = pTree.groundField.indexInField.Item1;
-			//int yIndex = pTree.groundField.indexInField.Item2;
-			//int selectedIndex = (xIndex + 1) * (yIndex - 1);
-
 			int selectedIndex = pTree.treeIndex;
 
-			List<CTree> neighbourTrees = CProjectData.array.GetTreesInDistanceFrom(pTree.Center, 5);			
-			//new List<CTree>();
-			//foreach (CGroundField field in pTree.groundField.GetNeighbours())
-			//{
-			//	neighbourTrees.AddRange(field.DetectedTrees);
-			//}
+			List<CTree> neighbourTrees = CProjectData.array.GetTreesInDistanceFrom(pTree.Center, 5);		
 			List<string> assignedMaterials = new List<string>();
 			foreach (CTree tree in neighbourTrees)
 			{
@@ -126,13 +110,7 @@ namespace ForestReco
 
 			return materials.MaterialList[treeIndexes[matIndex]].Name;
 		}
-
-		/*public static string GetRefTreeMaterial(int pIndex)
-		{
-			return GetTreeMaterial(pIndex); //todo: select reftree material based on reftree type?
-			//return materials.MaterialList[materialSet[EMaterial.RefTree][0]].Name;
-		}*/
-
+		
 		public static string GetInvalidMaterial()
 		{
 			return materials.MaterialList[materialSet[EMaterial.Invalid][0]].Name;

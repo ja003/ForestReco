@@ -12,27 +12,7 @@ namespace ForestReco
 			float angleBetweenPointAndTreetop = AngleBetweenThreePoints(botPoint, pTreetop, pPoint);
 			return angleBetweenPointAndTreetop < 45;
 		}
-
-		//TODO: check if correct
-		//copied from: https://stackoverflow.com/questions/43493711/the-angle-between-two-3d-vectors-with-a-result-range-0-360
-		//("The answer is to provide a reference UP vector:")
-		/*public static float AngleBetweenThreePoints(List<Vector3> points, Vector3 up, bool pToDegree = true)
-		{
-			Vector3 v1 = points[1] - points[0];
-			Vector3 v2 = points[2] - points[1];
-
-			Vector3 cross = Vector3.Cross(v1, v2);
-			float dot = Vector3.Dot(v1, v2);
-
-			var angle = Math.Atan2(cross.Length(), dot);
-
-			var test = Vector3.Dot(up, cross);
-			if (test < 0.0) angle = -angle;
-
-			if (pToDegree) { return (float)ToDegree(angle); }
-			return (float)angle;
-		}*/
-
+		
 		public static float GetAngle(Vector2 a, Vector2 b)
 		{
 			a = Vector2.Normalize(a);

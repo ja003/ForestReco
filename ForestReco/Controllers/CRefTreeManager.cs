@@ -15,35 +15,8 @@ namespace ForestReco
 		public static void Init()
 		{
 			Trees = new List<CRefTree>();
-			//string podkladyPath = CPlatformManager.GetPodkladyPath();
 			List<string> treeFileNames = GetTreeFileNames();
-			/*
-			List<string> treeFileNames = new List<string>()
-			{
-				"R1",
-				"R2",
-				"R3",
-				"R4",
-				"R5",
-				"R6",
-				"R7",
-				"R8",
-				"R9",
-				"R10",
-				"R11",
-				"R12",
-				"R13",
-				"R14",
-				"R15",
-
-				//"R7_test"
-			};*/
-
-			//todo: dont load if not specified
-			//if (CProjectData.loadRefTrees)
-			{
-				LoadTrees(treeFileNames);
-			}
+			LoadTrees(treeFileNames);
 		}
 
 		private static List<string> GetTreeFileNames()
@@ -57,6 +30,8 @@ namespace ForestReco
 				string subfolderPath = subfolders[i];
 				string[] pathSplit = subfolderPath.Split('\\');
 				string subfolderName = pathSplit[pathSplit.Length - 1];
+				//skip folder named "ignore"
+				if(subfolderName.Contains("ignore")){ continue;}
 				names.Add(subfolderName);
 			}
 
@@ -75,7 +50,7 @@ namespace ForestReco
 			}
 
 			DateTime addTreeObjModelsStart = DateTime.Now;
-			CDebug.WriteLine("Get ref tree models");
+			CDebug.WriteLine("Get reftree models");
 
 			const int debugFrequency = 10;
 
@@ -118,7 +93,7 @@ namespace ForestReco
 			CAnalytics.averageReftreeSimilarity = similaritySum / CTreeManager.Trees.Count;
 
 			CAnalytics.reftreeAssignDuration = CAnalytics.GetDuration(addTreeObjModelsStart);
-			CDebug.Duration("Assign ref tree models", addTreeObjModelsStart);
+			CDebug.Duration("Assign reftree models", addTreeObjModelsStart);
 		}
 
 
@@ -129,7 +104,7 @@ namespace ForestReco
 			DateTime loadTreesStartTime = DateTime.Now;
 			DateTime lastDebugTime = DateTime.Now;
 
-			CDebug.WriteLine("Load ref trees: ");
+			CDebug.WriteLine("Load reftrees: ");
 			foreach (string fileName in pFileNames)
 			{
 				CDebug.WriteLine(" - " + fileName);
@@ -162,7 +137,7 @@ namespace ForestReco
 				counter++;
 			}
 			CAnalytics.loadReftreesDuration = CAnalytics.GetDuration(loadTreesStartTime);
-			CDebug.Duration("Load ref trees", loadTreesStartTime);
+			CDebug.Duration("Load reftrees", loadTreesStartTime);
 
 			CAnalytics.loadedReftrees = Trees.Count;
 
@@ -227,7 +202,7 @@ namespace ForestReco
 
 			if (debugSimilarites)
 			{
-				CDebug.WriteLine("Most suitable ref tree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity.similarity);
+				CDebug.WriteLine("Most suitable reftree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity.similarity);
 				CDebug.WriteLine($"tree height = {pTree.GetTreeHeight()}");
 				CDebug.WriteLine($"reftree height = {mostSuitableTree.GetTreeHeight()}");
 			}
@@ -240,7 +215,7 @@ namespace ForestReco
 		}
 
 		/// <summary>
-		/// Sets position, scale and todo: rotation of tree obj to match given pTargetTree 
+		/// Sets position, scale and rotation of tree obj to match given pTargetTree 
 		/// </summary>
 		private static void SetRefTreeObjTransform(ref CRefTree pRefTree, CTree pTargetTree, int pAngleOffset)
 		{
@@ -250,29 +225,19 @@ namespace ForestReco
 			//float treeHeight = pTargetTree.peak.maxHeight.Y - (float)groundHeight;
 			float treeHeight = pTargetTree.GetTreeHeight();
 			float heightRatio = treeHeight / pRefTree.GetTreeHeight();
-			//todo: scale X and Z based on pTargetTree extents
 			pRefTree.Obj.Scale = heightRatio * Vector3.One;
 
 
 			//align position to tree
 			pRefTree.Obj.Position = pTargetTree.peak.Center;
 			pRefTree.Obj.Position.Y -= pRefTree.GetTreeHeight() * heightRatio;
-			//pRefTree.Obj.Position.Y = pTargetTree.GetGroundHeight();
 
 			//move obj so it is at 0,0,0
 			pRefTree.Obj.Position -= arrayCenter;
 			pRefTree.Obj.Position -= new Vector3(0, minHeight, 2 * pRefTree.Obj.Position.Z);
 
 			pRefTree.Obj.Rotation = new Vector3(0, -pAngleOffset, 0);
-			//pRefTree.Obj.Rotation = new Vector3(0, -CTreeMath.GetOffsetAngleTo(pRefTree, pTargetTree), 0);
 
-			/*if (DEBUG)
-			{
-				CDebug.WriteLine(pRefTree.treeIndex +
-					"[" + pRefTree.Obj.Position + "], " +
-					"[" + pRefTree.Obj.Rotation + "]" +
-					". treeHeight = " + treeHeight + ". heightRatio = " + heightRatio);
-			}*/
 		}
 	}
 }

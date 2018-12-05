@@ -103,10 +103,6 @@ namespace ForestReco
 			{
 				try
 				{
-					if (tree.treeIndex == 128)
-					{
-						Console.WriteLine();
-					}
 					CGroundField fieldWithTree = pArray.GetElementContainingPoint(tree.peak.Center);
 					if (fieldWithTree == null)
 					{

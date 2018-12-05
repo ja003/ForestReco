@@ -557,8 +557,6 @@ namespace ForestReco
 			switch (pMethod)
 			{
 				case EFillMethod.ClosestDefined:
-					//todo: maybe maxSteps should be infinite
-					//todo: does not produce very good results
 					MaxGroundFilled = GetAverageHeightFromClosestDefined(10 * maxSteps, false);
 					break;
 				case EFillMethod.FromNeighbourhood:

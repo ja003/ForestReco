@@ -64,7 +64,6 @@ namespace ForestReco
 			foreach (CTreePoint p in pTreePoints)
 			{
 				//big performance improve and space reduction
-				//todo: investigate
 				if(p.Points.Count < 2){ continue; }
 
 				//bot side

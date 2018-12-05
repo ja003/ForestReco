@@ -8,9 +8,6 @@ namespace ForestReco
 
 		public CPeak(Vector3 pPoint, float pTreePointExtent) : base(pPoint, pTreePointExtent) { }
 
-		/// <summary>
-		/// TODO: merge with CTreePoint method
-		/// </summary>
 		public new static CPeak Deserialize(string pLine, float pTreePointExtent)
 		{
 			string[] split = pLine.Split(null);
