@@ -18,7 +18,7 @@ namespace ForestReco
 		private static float GetResultFileSize()
 		{
 			CHeaderInfo header = CProjectData.header;
-			if(header == null){ return 0; }
+			if (header == null) { return 0; }
 
 			arrayHeight = header.Height;
 			arrayWidth = header.Width;
@@ -26,7 +26,7 @@ namespace ForestReco
 			const float treeStructure = .05f;
 			const float reftreeSize = 1;
 			const float treeBoxSize = .01f;
-			
+
 			const float treeDensity = .1f; //1 tree per 10 squared meters
 			float groundSize = 5; //its just small, no reason to count it in
 
@@ -43,7 +43,7 @@ namespace ForestReco
 			}
 			if (CParameterSetter.GetBoolSettings(ESettings.exportRefTrees))
 			{
-				totalSize += area* treeDensity * reftreeSize;
+				totalSize += area * treeDensity * reftreeSize;
 			}
 			return totalSize;
 
@@ -53,7 +53,7 @@ namespace ForestReco
 		{
 			int partitionStep = CParameterSetter.GetIntSettings(ESettings.partitionStep);
 			int xParts = (int)Math.Ceiling(arrayWidth / partitionStep);
-			int zParts = (int)Math.Ceiling(arrayHeight/ partitionStep);
+			int zParts = (int)Math.Ceiling(arrayHeight / partitionStep);
 			int parts = xParts * zParts;
 			return size / Math.Max(1, parts);
 		}

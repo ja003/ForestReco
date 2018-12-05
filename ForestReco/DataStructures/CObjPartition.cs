@@ -11,13 +11,28 @@ namespace ForestReco
 		private static int partitionXRange;
 		private static int partitionYRange;
 
-		public static int partitionStep => CParameterSetter.GetIntSettings(ESettings.partitionStep);
+		private static int partitionStepSize;
+
+		/// <summary>
+		/// Calculate partition step size in proportion to used ground array step
+		/// </summary>
+		private static void SetPartitionStepSize()
+		{
+			float scaledPartitionStep =
+				CParameterSetter.GetIntSettings(ESettings.partitionStep) /
+				CParameterSetter.GetFloatSettings(ESettings.groundArrayStep);
+			partitionStepSize = Math.Max(1, (int)scaledPartitionStep);
+		}
 
 		public static void Init()
 		{
-			partitionXRange = CProjectData.array.arrayXRange / partitionStep + 1;
-			partitionYRange = CProjectData.array.arrayYRange / partitionStep + 1;
+			SetPartitionStepSize();
+
+			partitionXRange = CProjectData.array.arrayXRange / partitionStepSize + 1; //has to be +1
+			partitionYRange = CProjectData.array.arrayYRange / partitionStepSize + 1;
+
 			objPartition = new List<Obj>[partitionXRange, partitionYRange];
+			Console.WriteLine($"objPartition: {partitionXRange} x {partitionYRange}");
 			for (int x = 0; x < partitionXRange; x++)
 			{
 				for (int y = 0; y < partitionYRange; y++)
@@ -29,16 +44,16 @@ namespace ForestReco
 
 		public static void AddArray()
 		{
-			for (int x = 0; x < CProjectData.array.arrayXRange; x += partitionStep)
+			for (int x = 0; x < CProjectData.array.arrayXRange; x += partitionStepSize)
 			{
-				for (int y = 0; y < CProjectData.array.arrayYRange; y += partitionStep)
+				for (int y = 0; y < CProjectData.array.arrayYRange; y += partitionStepSize)
 				{
 					Obj groundArrayPartObj = CGroundFieldExporter.ExportToObj("array_[" + x + "," + y + "]",
 						EExportStrategy.ZeroAroundDefined, true,
-						new Tuple<int, int>(x, y), new Tuple<int, int>(x + partitionStep, y + partitionStep));
+						new Tuple<int, int>(x, y), new Tuple<int, int>(x + partitionStepSize, y + partitionStepSize));
 
-					//int partitionIndexX = x / partitionStep;
-					//int partitionIndexY = y / partitionStep;
+					//int partitionIndexX = x / partitionStepSize;
+					//int partitionIndexY = y / partitionStepSize;
 					AddObj(x, y, groundArrayPartObj);
 
 					if (CParameterSetter.GetBoolSettings(ESettings.exportPoints))
@@ -46,9 +61,9 @@ namespace ForestReco
 						List<Vector3> vegePoints = new List<Vector3>();
 						List<Vector3> groundPoints = new List<Vector3>();
 						List<Vector3> fakePoints = new List<Vector3>();
-						for (int _x = x; _x < x + partitionStep; _x++)
+						for (int _x = x; _x < x + partitionStepSize; _x++)
 						{
-							for (int _y = y; _y < y + partitionStep; _y++)
+							for (int _y = y; _y < y + partitionStepSize; _y++)
 							{
 								CGroundField element = CProjectData.array.GetElement(_x, _y);
 								if (element != null)
@@ -81,7 +96,7 @@ namespace ForestReco
 			bool exportTreeStrucure = CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
 			bool exportBoxes = CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes);
 
-			if(!exportBoxes && !exportTreeStrucure){ return; }
+			if (!exportBoxes && !exportTreeStrucure) { return; }
 
 			foreach (CGroundField f in CProjectData.array.fields)
 			{
@@ -167,6 +182,17 @@ namespace ForestReco
 
 		private static void AddToPartition(Obj pObj, Tuple<int, int> pIndex)
 		{
+			//TODO: error, incorrect partition
+			if (pIndex.Item1 >= partitionXRange)
+			{
+				CDebug.Error($"obj {pObj.Name} has partition index {pIndex} OOB");
+				pIndex = new Tuple<int, int>(partitionXRange - 1, pIndex.Item2);
+			}
+			if (pIndex.Item2 >= partitionYRange)
+			{
+				CDebug.Error($"obj {pObj.Name} has partition index {pIndex} OOB");
+				pIndex = new Tuple<int, int>(pIndex.Item1, partitionYRange - 1);
+			}
 			objPartition[pIndex.Item1, pIndex.Item2].Add(pObj);
 		}
 
@@ -196,8 +222,13 @@ namespace ForestReco
 					if (CProjectData.backgroundWorker.CancellationPending) { return; }
 
 					counter++;
-					CObjExporter.ExportObjs(objPartition[x, y], CProjectData.saveFileName +
-						"_[" + x + "," + y + "]" + pFileSuffix, folderPath);
+					List<Obj> objsInPartition = objPartition[x, y];
+					//export only if partition contains some objects (doesn't have to)
+					if (objsInPartition.Count > 0)
+					{
+						CObjExporter.ExportObjs(objsInPartition, CProjectData.saveFileName +
+						 "_[" + x + "," + y + "]" + pFileSuffix, folderPath);
+					}
 
 					CDebug.Progress(counter, partsCount, debugFrequency, ref previousDebugStart, exportPartitionStart, "Export of part");
 				}
@@ -206,7 +237,7 @@ namespace ForestReco
 
 		private static Tuple<int, int> GetIndexInArray(int pArrayIndexX, int pArrayIndexY)
 		{
-			return new Tuple<int, int>(pArrayIndexX / partitionStep, pArrayIndexY / partitionStep);
+			return new Tuple<int, int>(pArrayIndexX / partitionStepSize, pArrayIndexY / partitionStepSize);
 		}
 	}
 }
