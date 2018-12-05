@@ -75,12 +75,6 @@ namespace ForestReco
 			//if we export at least a bitmap, it is ok
 			if(exportBitmap){ return;}
 
-			/*if (!export3D)
-			{
-				problems.Add($"No reason to process when export3D is false. Result will be empty.");
-				return;
-			}*/
-
 			bool exportTreeStructures = CParameterSetter.GetBoolSettings(ESettings.exportTreeStructures);
 			bool exportReftrees = CParameterSetter.GetBoolSettings(ESettings.exportRefTrees);
 			bool exportTreeBoxes = CParameterSetter.GetBoolSettings(ESettings.exportTreeBoxes);

@@ -8,18 +8,13 @@ namespace ForestReco
 	{
 		public List<Vector3> Points = new List<Vector3>();
 
-		//public Vector3 Center;
 		public float X => Center.X;
 		public float Y => Center.Y;
 		public float Z => Center.Z;
 		
-		//private Vector3 botLeft => minBB;
-		//private Vector3 botLeft => minBB;
-		
 		public Vector3 maxHeight;
 		public Vector3 minHeight;
 
-		//private const float POINT_EXTENT = 0.1f;
 		public float treePointExtent;
 
 		public CTreePoint(Vector3 pPoint, float pTreePointExtent) : base(pPoint)

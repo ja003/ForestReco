@@ -93,24 +93,7 @@ namespace ForestReco
 
 			return bestFactor;
 		}
-
-
-		/*const float MAX_POINTS_HEIGHT_DIFF = 1;
-		public bool IsPeakValidWith(Vector3 pNewPoint)
-		{
-			//if(TreePoints.Count == 0)
-			//{
-			//	float pointPeakHeightDiff = tree.peak.Y - pNewPoint.Y;
-			//	return pointPeakHeightDiff < MAX_POINTS_HEIGHT_DIFF;
-			//}
-			if (TreePoints.Count < 5)
-			{
-				float newPointLastPointHeightDiff = GetLastPoint().Y - pNewPoint.Y;
-				return newPointLastPointHeightDiff < MAX_POINTS_HEIGHT_DIFF;
-			}
-			return true;
-		}*/
-
+		
 		public CBranch GetNeigbourBranch(int pIndexIncrement)
 		{
 			int indexOfthis = tree.Branches.IndexOf(this);
@@ -167,8 +150,7 @@ namespace ForestReco
 			}
 			return closestPoint;
 		}
-
-
+		
 		private Vector3 GetLastPoint()
 		{
 			return TreePoints.Count == 0 ? tree.peak.Center : TreePoints.Last().Center;
@@ -349,10 +331,6 @@ namespace ForestReco
 			if (tp.minHeight.Y > previousTp.maxHeight.Y)
 			{
 				CDebug.Error("CheckAddedPoint. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
-				/*if (Math.Abs(tp.Y - previousTp.Y) > tree.treePointExtent)
-				{
-					CDebug.Error("CheckAddedPoint. tree " + tree.treeIndex + ": " + tp + " is higher than " + previousTp);
-				}*/
 			}
 		}
 
@@ -438,9 +416,7 @@ namespace ForestReco
 			}
 
 			if (counter > 20) { CDebug.Warning("GetAproxIndexOfPoint " + pPoint + " = " + counter); }
-			//float firstLastDiff = TreePoints[fromIndex].Y - TreePoints[toIndex].Y;
-			//float step = firstLastDiff / (toIndex - fromIndex);
-			//float peakPointDiff = tree.peak.Y - pPoint.Y;
+
 			return selectedIndex;
 		}
 
@@ -460,9 +436,6 @@ namespace ForestReco
 		/// </summary>
 		public float GetSimilarityWith(CBranch pOtherBranch, Vector3 offsetToThisTree, Matrix4x4 scaleMatrix)
 		{
-			//Vector3 offsetToThisTree = CTreeMath.GetOffsetTo(pOtherBranch.tree, tree);
-			//float scaleRatio = CTreeMath.GetScaleRatioTo(pOtherBranch.tree, tree);
-
 			if (pOtherBranch.TreePoints.Count == 0)
 			{
 				if (TreePoints.Count == 0) { return 1; }
@@ -472,12 +445,10 @@ namespace ForestReco
 			}
 
 			float similarity = 0;
-			//Vector3 groundPosition = tree.GetGroundPosition();
 
 			//CreateRotationY rotates point counter-clockwise => -pAngleOffset
 			//rotation has to be calculated in each branch
 			float angleOffsetRadians = CUtils.ToRadians(-(angleFrom - pOtherBranch.angleFrom));
-			//Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(scaleRatio, scaleRatio, scaleRatio, tree.peak.Center);
 			Matrix4x4 rotationMatrix = Matrix4x4.CreateRotationY(angleOffsetRadians, tree.peak.Center);
 
 			foreach (CTreePoint p in pOtherBranch.TreePoints)
@@ -520,7 +491,6 @@ namespace ForestReco
 
 		public override string ToString()
 		{
-			//return "br_<" + angleFrom + "," + angleTo + "> " + points.Count + " [" + GetPointCount() + "] |";
 			return "br_<" + angleTo / CTree.BRANCH_ANGLE_STEP + "> " +
 					//GetPointCount().ToString("000") + 
 					"[" + TreePoints.Count.ToString("00") + "] |";
@@ -537,7 +507,6 @@ namespace ForestReco
 
 			bool rightBranchInExtent = GetNeigbourBranch(1).furthestPointDistance > pointDistToPeak;
 			return rightBranchInExtent;
-			//return rightBranchInExtent && leftBranchInExtent;
 		}
 
 		public float GetDefinedFactor()
@@ -554,19 +523,9 @@ namespace ForestReco
 					return 0;
 				}
 			}
-			/*else
-			{
-				int treePointCountFactor = 2 * CTreeManager.MIN_BRANCH_POINT_COUNT / TreePoints.Count;
-				return treePointCountFactor;
-			}*/
-
 
 			float height = tree.GetTreeHeight();
 			float distLowestToPeak = Vector3.Distance(TreePoints.Last().Center, tree.peak.Center);
-			//distLowestToPeak += 5; //first meters from ground is not well defined
-
-			//distLowestToPeak += GetMinDefinedHeightOffset(height);
-			//distLowestToPeak = Math.Min(height, distLowestToPeak);
 
 			float lowestPointRatio = (distLowestToPeak + GetMinDefinedHeightOffset(height)) / height;
 

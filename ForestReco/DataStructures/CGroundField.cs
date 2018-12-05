@@ -44,7 +44,6 @@ namespace ForestReco
 
 		public Vector3 center;
 
-
 		//--------------------------------------------------------------
 
 		public CGroundField(Tuple<int, int> pIndexInField, Vector3 pCenter)
@@ -413,7 +412,7 @@ namespace ForestReco
 				}
 				return GetHeight();
 			}
-			//return GetHeight(); //to cancel interpolation
+			//return GetHeight(); //uncomment to cancel interpolation
 
 			//http://www.geocomputation.org/1999/082/gc_082.htm
 			//3.4 Bilinear interpolation

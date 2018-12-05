@@ -19,8 +19,6 @@ namespace ForestReco
 		public float stepSize { get; }
 		public int arrayXRange { get; }
 		public int arrayYRange { get; }
-		// ReSharper disable once NotAccessedField.Local
-		//private int coordinatesCount;
 
 		Vector3 botLeftCorner;
 		Vector3 topRightCorner;
@@ -149,7 +147,6 @@ namespace ForestReco
 			return new Tuple<int, int>(xPos, yPos);
 		}
 
-
 		//PUBLIC
 
 		public enum EPointType
@@ -189,7 +186,6 @@ namespace ForestReco
 			}
 		}
 
-
 		public void FilterFakeVegePoints()
 		{
 			//clear vege points - they will be added back in field.ApplyFilteredPoints()
@@ -200,10 +196,6 @@ namespace ForestReco
 			foreach (CGroundField field in fields)
 			{
 				field.FilterFakeVegePoints(averageHeight);
-				if (field.fakePoints.Count > 0)
-				{
-					Console.WriteLine($"field {field.indexInField} = {field.fakePoints.Count}");
-				}
 			}
 			
 			foreach (CGroundField field in fields)
@@ -323,7 +315,6 @@ namespace ForestReco
 
 		public void SetHeight(float pHeight, int pXindex, int pYindex)
 		{
-			//array[pXindex, pYindex].MaxGround = pHeight;
 			CGroundField field = array[pXindex, pYindex];
 			field.SetHeight(pHeight);
 		}
@@ -379,7 +370,6 @@ namespace ForestReco
 			return size;
 		}
 
-
 		///PRIVATE
 
 		private void ApplyFillMissingHeights()
@@ -409,7 +399,6 @@ namespace ForestReco
 			}
 			ApplyFillMissingHeights();
 		}
-
 
 		//OTHER
 		/// <summary>

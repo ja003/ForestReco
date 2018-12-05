@@ -15,7 +15,6 @@ namespace ForestReco
 	{
 		public Obj Obj;
 		public string fileName;
-		//public bool isInvalid;
 
 		public CRefTree() { }
 
@@ -82,7 +81,6 @@ namespace ForestReco
 			isValid = true;
 
 			branches = new List<CBranch>();
-			//List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
 			List<CTreePoint> _treepointsOnBranch = new List<CTreePoint>();
 
 			foreach (string line in pSerializedLines)
@@ -254,18 +252,7 @@ namespace ForestReco
 		private static string GetRefTreeFolder(string pSubfolder)
 		{
 			return CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath) + "\\" + pSubfolder;
-			//return CPlatformManager.GetPodkladyPath() + "\\tree_models\\reftrees\\" + pSubfolder;
 		}
-
-
-		//private static bool refTreeFirst => CProjectData.refTreeFirst;
-		//private static bool refTreeLast => CProjectData.refTreeLast;
-
-		//private static bool refTreeFront => CProjectData.refTreeFront;
-		//private static bool refTreeBack => CProjectData.refTreeBack;
-
-		//private static bool refTreeJehlici => CProjectData.refTreeJehlici;
-		//private static bool refTreeKmeny => CProjectData.refTreeKmeny;
 
 		//use all by default
 		private static bool refTreeFirst = true;

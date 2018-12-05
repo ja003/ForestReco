@@ -45,7 +45,6 @@ namespace ForestReco
 				_class = (int)EClass.Other;
 			}
 			return new Tuple<EClass, Vector3>((EClass)_class, new Vector3(xFloat, yFloat, zFloat));
-			///* * pHeader.ScaleFactor*/ - pHeader.Offset);
 		}
 	}
 }

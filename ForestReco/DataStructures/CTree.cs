@@ -18,7 +18,6 @@ namespace ForestReco
 	public class CTree : CBoundingBoxObject
 	{
 		public CPeak peak;
-		//public List<CTreePoint> points = new List<CTreePoint>();
 		protected List<CBranch> branches = new List<CBranch>();
 		public List<CBranch> Branches => branches;
 		public CBranch stem { get; protected set; }
@@ -30,20 +29,15 @@ namespace ForestReco
 		public Vector3 possibleNewPoint;
 
 		public int treeIndex { get; protected set; }
-		//public bool isPeakInvalid;
 
 		public List<Vector3> Points = new List<Vector3>();
 
-		//public CRefTree mostSuitableRefTree;
 		public Obj mostSuitableRefTreeObj;
 
 		public CCheckTree assignedCheckTree;
 		public string assignedMaterial;
 
-		//public bool isValid = false; //invalid by default - until Validate is called
-		public bool isValid = false;
-		//public bool isValidScale = false; 
-		//public bool isValidBranches = false; 
+		public bool isValid; //invalid by default - until Validate is called
 
 		//INIT
 
@@ -58,7 +52,6 @@ namespace ForestReco
 		{
 			treePointExtent = pTreePointExtent;
 			peak = new CPeak(pPoint, treePointExtent);
-			//isValid = false;
 
 			if (CTreeManager.DEBUG) { CDebug.WriteLine("new tree " + pTreeIndex); }
 
@@ -71,7 +64,6 @@ namespace ForestReco
 			stem = new CBranch(this, 0, 0);
 
 			AddPoint(pPoint);
-
 		}
 
 		public void AssignMaterial()
@@ -108,7 +100,6 @@ namespace ForestReco
 			float distToPeak = CUtils.Get2DDistance(pPoint, peak.Center);
 			if (!merging)
 			{
-				//if (GetTreeExtentFor(pPoint, 1) < CUtils.Get2DDistance(pPoint, peak.Center))
 				if (CParameterSetter.treeExtent < distToPeak)
 				{
 					return 0;
@@ -213,9 +204,7 @@ namespace ForestReco
 
 		public virtual float GetTreeHeight()
 		{
-			//float treeHeight = peak.Center.Y - GetGroundHeight();
 			float treeHeight = maxBB.Y - GetGroundHeight();
-			//float treeHeight = Extent.Y;
 			return treeHeight;
 		}
 
@@ -318,7 +307,6 @@ namespace ForestReco
 		{
 			Vector3 gp = new Vector3(peak.X, GetGroundHeight(), peak.Z);
 			return gp;
-			//return peak.Center - GetTreeHeight() * Vector3.UnitY;
 		}
 
 		public Obj GetObj(bool pExportBranches, bool pExportPoints, bool pExportSimple)
@@ -326,11 +314,9 @@ namespace ForestReco
 			//if (CTreeManager.DEBUG) CDebug.WriteLine("GetObj " + pName);
 
 			string prefix = isValid ? "tree_" : "invalidTree_";
-			//if (isFake) { prefix = "fake_"; }
 
 			Obj obj = new Obj(prefix + treeIndex);
 
-			//obj.UseMtl = CMaterialManager.GetTreeMaterial(this);
 			obj.UseMtl = assignedMaterial;
 
 			List<CTreePoint> allTreePoints = GetAllPoints();
@@ -343,8 +329,6 @@ namespace ForestReco
 
 			//display highest peak point
 			allTreePoints.Add(new CTreePoint(peak.maxHeight, treePointExtent));
-
-			
 
 			if (pExportPoints)
 			{
@@ -502,11 +486,6 @@ namespace ForestReco
 
 				if (Math.Abs(branchFactor) < 0.1f)
 				{
-					//isValidBranches = false;
-					//if (pAllBranchesDefined)
-					//{
-					//	return false;
-					//}
 					undefinedBranchesCount++;
 					continue;
 				}
@@ -526,9 +505,7 @@ namespace ForestReco
 
 			float validFactor = branchDefinedFactor / (branches.Count - undefinedBranchesCount);
 			//CDebug.WriteLine("VALID " + treeIndex + " height = " + height + " validFactor = " + validFactor);
-			//isValidBranches = validFactor > 0.5f;
 			return validFactor > 0.5f;
-			//return isValid;
 		}
 
 		public override bool Contains(Vector3 pPoint)
@@ -554,10 +531,8 @@ namespace ForestReco
 			const float MAX_DIST_TO_TREE_BB = 0.1f;
 			float dist2D = CUtils.Get2DDistance(peak.Center, pPoint);
 			float distToBB = Get2DDistanceFromBBTo(pPoint);
-			//bool contains = Contains(pPoint);
 			//it must be close to peak of some tree or to its BB
 
-			//float treeHeight = GetTreeHeight();
 			float maxTreeExtent = GetTreeExtentFor(pPoint, 1);
 
 			if (dist2D > maxTreeExtent && distToBB > MAX_DIST_TO_TREE_BB)
@@ -589,7 +564,6 @@ namespace ForestReco
 			float maxExtent = Math.Max(CParameterSetter.treeExtent, ratio * CParameterSetter.treeExtent);
 			maxExtent *= pMaxExtentMultiplier;
 			float yDiff = peak.Center.Y - pNewPoint.Y;
-			//const float MIN_TREE_EXTENT = .5f;
 			const float Y_DIFF_STEP = 0.1f;
 			const float EXTENT_VALUE_STEP = 0.12f;
 
@@ -598,7 +572,7 @@ namespace ForestReco
 			return Math.Min(extent, maxExtent);
 		}
 
-		//DEBUG TRANSLATIONS - NOT CORRECT ON ALL TREES
+		//DEBUG TRANSFORMATIONS - NOT CORRECT ON ALL TREES
 
 		public void Rotate(int pYangle)
 		{
@@ -653,19 +627,6 @@ namespace ForestReco
 			peak.Points[0] += pOffset;
 			peak.ResetBounds(peak.Points[0]);
 		}
-
-		//public bool IsTreeFake()
-		//{
-		//	if (GetTreeHeight() > CTreeManager.MIN_FAKE_TREE_HEIGHT)
-		//	{
-		//		if (GetAllPoints().Count < 5)
-		//		{
-		//			return true;
-		//		}
-		//	}
-		//	return false;
-		//}
-
 
 		public override string ToString()
 		{
@@ -744,13 +705,6 @@ namespace ForestReco
 			float borderDistExtentDiff = distanceToBorder - Math.Min(Extent.X, Extent.Z);
 
 			return borderDistExtentDiff < 0;
-
-			/*bool isCornerAtBorder = !CProjectData.array.GetElementContainingPoint(b000).HasAllNeighbours();
-			if (isCornerAtBorder) { return true; }
-			isCornerAtBorder = !CProjectData.array.GetElementContainingPoint(b111).HasAllNeighbours();
-			if (isCornerAtBorder) { return true; }
-
-			return false;*/
 		}
 	}
 }

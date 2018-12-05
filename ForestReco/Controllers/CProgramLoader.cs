@@ -71,7 +71,6 @@ namespace ForestReco
 		{
 			CDebug.Step(EProgramStep.ParseLines);
 
-			//float stepSize = .4f; //in meters
 			if (pArray)
 			{
 				CProjectData.array = new CGroundArray(CParameterSetter.groundArrayStep);
@@ -137,7 +136,6 @@ namespace ForestReco
 			//dont move invalid trees to invalid list yet, some invalid trees will be merged
 			CTreeManager.ValidateTrees(false, false);
 
-
 			//export before merge
 			if (CProjectData.exportBeforeMerge)
 			{
@@ -150,7 +148,6 @@ namespace ForestReco
 				CObjPartition.AddArray();
 			}
 
-
 			CAnalytics.firstDetectedTrees = CTreeManager.Trees.Count;
 
 			CDebug.Step(EProgramStep.MergeTrees1);
@@ -160,7 +157,6 @@ namespace ForestReco
 				CTreeManager.TryMergeAllTrees(false);
 			}
 			CAnalytics.afterFirstMergedTrees = CTreeManager.Trees.Count;
-
 
 			//validate restrictive
 			// ReSharper disable once ReplaceWithSingleAssignment.False
@@ -201,13 +197,11 @@ namespace ForestReco
 
 			CDebug.Step(EProgramStep.AssignReftrees);
 			CReftreeManager.AssignRefTrees();
-			//CProjectData.objsToExport.AddRange(trees);
 			if (CParameterSetter.GetBoolSettings(ESettings.exportRefTrees)) //no reason to export when no refTrees were assigned
 			{
 				//CRefTreeManager.ExportTrees();
 				CObjPartition.AddRefTrees();
 			}
-
 
 			CObjPartition.AddTrees(true);
 			if (CParameterSetter.GetBoolSettings(ESettings.exportInvalidTrees))
@@ -256,7 +250,6 @@ namespace ForestReco
 
 			DateTime processStartTime = DateTime.Now;
 			CDebug.Count("ProcessParsedLines", pParsedLines.Count);
-			//+ ". Start = " + processStartTime);
 
 			CDebug.Step(EProgramStep.ProcessGroundPoints);
 			ProcessGroundPoints();

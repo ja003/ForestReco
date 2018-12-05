@@ -6,12 +6,9 @@ namespace ForestReco
 {
 	public class CBoundingBoxObject
 	{
-
 		//bounding box corners
 		public Vector3 minBB;
 		public Vector3 maxBB;
-
-		//public Vector3 minY = new Vector3(0, int.MaxValue, 0);
 
 		public Vector3 botCenter => (b000 + b101) / 2;
 
@@ -69,8 +66,6 @@ namespace ForestReco
 			if (pPoint.X > maxBB.X) { maxBB.X = pPoint.X; }
 			if (pPoint.Y > maxBB.Y) { maxBB.Y = pPoint.Y; }
 			if (pPoint.Z > maxBB.Z) { maxBB.Z = pPoint.Z; }
-
-			//if (pPoint.Y < minY.Y) { minY = pPoint; }
 		}
 
 
@@ -115,28 +110,5 @@ namespace ForestReco
 			bbPoints.Add(b111);
 			return bbPoints;
 		}
-
-		/*public bool IsPointInside(Vector3 pPoint)
-		{
-			return IsPointInsideX(pPoint) && IsPointInsideY(pPoint) && IsPointInsideZ(pPoint);
-		}
-
-		private bool IsPointInsideX(Vector3 pPoint)
-		{
-			return IsPointInside1D(pPoint.X, Center.X, Extent.X);
-		}
-		private bool IsPointInsideZ(Vector3 pPoint)
-		{
-			return IsPointInside1D(pPoint.Z, Center.Z, Extent.Z);
-		}
-		private bool IsPointInsideY(Vector3 pPoint)
-		{
-			return IsPointInside1D(pPoint.Y, Center.Y, Extent.Y);
-		}
-
-		private static bool IsPointInside1D(float pPoint, float pCenter, float pExtent)
-		{
-			return Math.Abs(pPoint - pCenter) < pExtent / 2;
-		}*/
 	}
 }

@@ -48,7 +48,7 @@ namespace ForestReco
 			float angle = (float) Math.Acos(res);
 			if (pToDegree)
 			{
-				return (float) ToDegree(angle);
+				return ToDegree(angle);
 			}
 			return angle;
 		}
@@ -113,9 +113,6 @@ namespace ForestReco
 			float o2maxY = pObject2.b111.Y;
 			float o2maxZ = pObject2.b111.Z;
 
-			//float xOverlap = Math.Max(Math.Min(a2, x2) - Math.Max(a, x), 0);
-			//float yOverlap = Math.Max(Math.Min(b2, y2) - Math.Max(b, y), 0);
-			//float zOverlap = Math.Max(Math.Min(c2, z2) - Math.Max(c, z), 0);
 			float xOverlap = Math.Min(o2maxX, o1maxX) - Math.Max(o2minX, o1minX);
 			float yOverlap = Math.Min(o2maxY, o1maxY) - Math.Max(o2minY, o1minY);
 			float zOverlap = Math.Min(o2maxZ, o1maxZ) - Math.Max(o2minZ, o1minZ);

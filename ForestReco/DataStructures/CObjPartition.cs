@@ -11,8 +11,6 @@ namespace ForestReco
 		private static int partitionXRange;
 		private static int partitionYRange;
 
-		//public static int partitionStep = 10;
-
 		public static int partitionStep => CParameterSetter.GetIntSettings(ESettings.partitionStep);
 
 		public static void Init()
@@ -202,20 +200,6 @@ namespace ForestReco
 						"_[" + x + "," + y + "]" + pFileSuffix, folderPath);
 
 					CDebug.Progress(counter, partsCount, debugFrequency, ref previousDebugStart, exportPartitionStart, "Export of part");
-					//if (counter % debugFrequency == 0 && counter > 0)
-					//{
-					//	CDebug.WriteLine("\nExport of part " + counter + " out of " + partsCount);
-					//	double lastExportTime = (DateTime.Now - previousDebugStart).TotalSeconds;
-					//	CDebug.WriteLine("- export time of this part = " + lastExportTime);
-
-					//	float remainsRatio = (float)(partsCount - counter) / 1;
-					//	double totalSeconds = remainsRatio * lastExportTime;
-					//	TimeSpan ts = new TimeSpan(0, 0, 0, (int)totalSeconds);
-					//	string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-					//	CDebug.WriteLine("- estimated time left = " + timeString + "\n");
-
-					//	previousDebugStart = DateTime.Now;
-					//}
 				}
 			}
 		}
@@ -224,6 +208,5 @@ namespace ForestReco
 		{
 			return new Tuple<int, int>(pArrayIndexX / partitionStep, pArrayIndexY / partitionStep);
 		}
-
 	}
 }

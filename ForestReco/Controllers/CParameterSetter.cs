@@ -59,7 +59,6 @@ namespace ForestReco
 			Properties.Settings.Default.Save();
 		}
 
-		//public static string SelectFolder(string pParamKey)
 		public static string SelectFolder()
 		{
 			FolderBrowserDialog fbd = new FolderBrowserDialog();

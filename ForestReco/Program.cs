@@ -19,7 +19,6 @@ namespace ForestReco
 			CMainForm mainForm = new CMainForm();
 			Application.Run(mainForm);
 
-
 			Console.ReadKey();
 		}
 	}

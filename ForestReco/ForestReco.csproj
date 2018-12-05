@@ -75,7 +75,6 @@
     <Compile Include="Enums\EClass.cs" />
     <Compile Include="Enums\EDirection.cs" />
     <Compile Include="Enums\EExportStrategy.cs" />
-    <Compile Include="GUI\CHintManager.cs" />
     <Compile Include="GUI\CTooltipManager.cs" />
     <Compile Include="GUI\CUiInputCheck.cs" />
     <Compile Include="ObjParser\Extent.cs" />
@@ -114,9 +113,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Unused\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="GUI\CMainForm.resx">
       <DependentUpon>CMainForm.cs</DependentUpon>

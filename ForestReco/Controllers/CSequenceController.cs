@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace ForestReco
 {
-
 	public static class CSequenceController
 	{
 		public const string SEQ_EXTENSION = ".seq";
@@ -33,7 +32,6 @@ namespace ForestReco
 			CParameterSetter.SetParameter(ESettings.treeExtent, currentConfig.treeExtent);
 			CParameterSetter.SetParameter(ESettings.treeExtentMultiply, currentConfig.treeExtentMultiply);
 		}
-
 
 		public static void OnLastSequenceEnd()
 		{

@@ -54,10 +54,6 @@ namespace ForestReco
 			yFloat = zFloat;
 			zFloat = tmp;
 
-			//if (_class != (int)EClass.Undefined && _class != (int)EClass.Ground && _class != (int)EClass.Vege)
-			//{
-			//	_class = (int)EClass.Other;
-			//}
 			return new Tuple<int, Vector3, string>(_class, new Vector3(xFloat, yFloat, zFloat), _note);
 		}
 

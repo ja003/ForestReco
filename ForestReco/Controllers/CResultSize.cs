@@ -11,6 +11,10 @@ namespace ForestReco
 	{
 		private static float arrayWidth;
 		private static float arrayHeight;
+
+		/// <summary>
+		/// Calculates estimated file size
+		/// </summary>
 		private static float GetResultFileSize()
 		{
 			CHeaderInfo header = CProjectData.header;
@@ -24,9 +28,6 @@ namespace ForestReco
 			const float treeBoxSize = .01f;
 			
 			const float treeDensity = .1f; //1 tree per 10 squared meters
-
-			//float groundSize = area / 100;
-			//groundSize = Math.Max(10, groundSize);
 			float groundSize = 5; //its just small, no reason to count it in
 
 			float totalSize = groundSize;

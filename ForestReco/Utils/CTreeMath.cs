@@ -53,17 +53,6 @@ namespace ForestReco
 			return new STreeSimilarity(similarity, indexOffset * CTree.BRANCH_ANGLE_STEP);
 		}
 
-		
-
-		/// <summary>
-		/// Returns offset angle between best defined branch of pOtherTree and best matching branch 
-		/// from this tree
-		/// </summary>
-		//public static int GetOffsetAngleTo(CRefTree pRefTree, CTree pOtherTree)
-		//{
-		//	return GetIndexOffsetBetweenBestMatchBranches(pRefTree, pOtherTree) * CTree.BRANCH_ANGLE_STEP;
-		//}
-
 		/// <summary>
 		/// First finds most defined branch of pOtherTree.
 		/// Then finds the branch on this reference tree which best matches found most defined branch.
@@ -108,7 +97,6 @@ namespace ForestReco
 			//CDebug.WriteLine(bestSimilarity + " GetBestMatchBranch = " + bestMatchBranch);
 			return bestMatchBranch;
 		}
-
 
 		/// <summary>
 		/// Returns ratio of tree heights

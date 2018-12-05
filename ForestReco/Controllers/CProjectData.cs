@@ -16,47 +16,23 @@ namespace ForestReco
 	{
 		public static string saveFileName;
 
-		//public static CMainForm mainForm;
 		public static BackgroundWorker backgroundWorker;
 
-		//public static int maxLinesToLoad;
-		//public static bool useMaxLines;
-
 		//during one session is always processed one array file
-		//public static List<Vector3> allPoints = new List<Vector3>();
 		public static List<Vector3> groundPoints = new List<Vector3>();
 		public static List<Vector3> vegePoints = new List<Vector3>();
 		public static List<Vector3> fakePoints = new List<Vector3>();
-		
 
 		public static CGroundArray array;
 		public static CGroundArray detailArray;
-		//public static float groundArrayStep;
 
 		public static CHeaderInfo header;
 
-		public static bool tryMergeTrees = true; //automatically true, user dont choose
-		public static bool tryMergeTrees2 = true;//automatically true, user dont choose
-		//public static bool mergeOnlyInvalidTrees;
+		public static bool tryMergeTrees = true; //default true, user dont choose
+		public static bool tryMergeTrees2 = true;//default true, user dont choose
 		public static bool exportBeforeMerge = false;
 		
-		//public static bool validateTrees;
-
-		//public static bool loadRefTrees;
-		//public static bool assignRefTrees;
-		//public static bool assignRandomRefTree;
-		//public static bool useReducedRefTreeObjs;
-		//public static bool exportRefTrees;
-
-		//public static bool loadCheckTrees;
-		//public static bool exportCheckTrees;
-		
-		//public static bool exportPoints;
 		public static bool useMaterial;
-		//public static bool exportRefTreePoints; 
-		//public static bool exportTrees;
-		//public static bool exportInvalidTrees;
-		//public static bool exportSimpleTreeModel;
 
 		public static float lowestHeight = int.MaxValue;
 		public static float highestHeight = int.MinValue;

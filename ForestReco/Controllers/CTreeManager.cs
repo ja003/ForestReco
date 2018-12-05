@@ -34,7 +34,6 @@ namespace ForestReco
 			pointCounter = 0;
 		}
 
-		//public const float MIN_PEAKS_DISTANCE = DEFAULT_TREE_EXTENT;
 		public static float GetMinPeakDistance(float pMultiply)
 		{
 			return CParameterSetter.treeExtent * pMultiply;
@@ -99,7 +98,6 @@ namespace ForestReco
 					}
 				}
 			}
-
 
 			if (selectedTree != null)
 			{

@@ -17,14 +17,10 @@ namespace ForestReco
 
 	public static class CProgramStarter
 	{
-		//public static bool abort;
-
 		public static void PrepareSequence()
 		{
 			CSequenceController.Init();
 		}
-
-		
 
 		public static EProcessResult Start()
 		{
@@ -40,7 +36,6 @@ namespace ForestReco
 			//GENERAL
 			CProjectData.useMaterial = true;
 			CObjExporter.simplePointsObj = false;
-
 
 			CMaterialManager.Init();
 
@@ -131,7 +126,6 @@ namespace ForestReco
 			CSequenceController.currentConfigIndex++;
 			return Start();
 		}
-
 
 		public static void OnException()
 		{

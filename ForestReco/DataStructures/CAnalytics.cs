@@ -132,6 +132,7 @@ namespace ForestReco
 
 		public enum ECsvAnalytics
 		{
+			//todo: only Summary is used in project
 			InputParams,
 			ComputationTime,
 			Summary
@@ -232,7 +233,6 @@ namespace ForestReco
 				CDebug.WriteLine("analytics file not defined");
 				if (!string.IsNullOrEmpty(mainSummaryFile))
 				{
-					//File.Create(mainSummaryFile);
 					fileMode = FileMode.Create;
 					CDebug.WriteLine(" - creating");
 				}

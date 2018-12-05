@@ -72,7 +72,6 @@ namespace ForestReco
 							}
 						}
 
-						//else if (possibleTree.isValid  && distToTree < CParameterSetter.treeExtent)
 						else
 						{
 							if (possibleTree.isValid && (distToTree < maxDistToTree || possibleTree.Contains2D(checkTree.position)))
@@ -90,13 +89,10 @@ namespace ForestReco
 		{
 			DateTime loadTreesStartTime = DateTime.Now;
 
-			//string fullFilepath = CPlatformManager.GetPodkladyPath() + "\\check\\" + pFileName + ".txt";
 			string fullFilepath = CParameterSetter.GetStringSettings(ESettings.checkTreeFilePath);
 			CDebug.WriteLine("Load check trees: " + fullFilepath, true);
 
 			string[] allLines = File.ReadAllLines(fullFilepath);
-
-			//CProjectData.array.WriteBounds();
 
 			foreach (string line in allLines)
 			{
@@ -139,13 +135,6 @@ namespace ForestReco
 					break;
 			}
 			if (!classOk) { return false; }
-
-			//not solving the problem
-			/*if (pParsedLine.Item3.Contains("vne"))
-			{
-				CDebug.Warning($"skip checktree {pParsedLine}");
-				return false;
-			}*/
 
 			return true;
 		}

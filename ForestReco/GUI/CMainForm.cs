@@ -984,12 +984,7 @@ namespace ForestReco
 		{
 			CResultSize.WriteEstimatedSize(textBoxEstimatedSize, textBoxPartitionSize);
 		}
-
-		private void btnHintPartition_Click(object sender, EventArgs e)
-		{
-			CHintManager.ShowHint(EHint.PartitionStep);
-		}
-
+		
 		private void btnSelectCheckTree_Click(object sender, EventArgs e)
 		{
 			string path = CParameterSetter.SelectFile("Select checktree file", "txt", "checktree");

@@ -56,27 +56,28 @@ namespace ForestReco
 			WriteLine(pText + " | duration = " + totalSeconds);
 		}
 
-		public static void Progress(int pIteration, int pMaxIteration, int pDebugFrequency, ref DateTime pPreviousDebugStart, DateTime pStart, string pText)
+		public static void Progress(int pIteration, int pMaxIteration, int pDebugFrequency, ref DateTime pPreviousDebugStart, DateTime pStart, string pText, bool pShowInConsole = false)
 		{
 			if (pIteration % pDebugFrequency == 0 && pIteration > 0)
 			{
-				//WriteProgress(pIteration, pMaxIteration);
-
-				string comment = "\n" + pText + " " + pIteration + " out of " + pMaxIteration;
-				WriteLine(comment);
+				
 				double lastIterationBatchTime = (DateTime.Now - pPreviousDebugStart).TotalSeconds;
-				WriteLine("- time of last " + pDebugFrequency + " = " + lastIterationBatchTime);
 
 				double timeFromStart = (DateTime.Now - pStart).TotalSeconds;
-				WriteLine($"- total time = {timeFromStart}");
 
-				//double totalTime = (DateTime.Now - previousDebugStart).TotalSeconds;
 				float remainsRatio = ((float)pMaxIteration / pIteration);
 				double estimatedTotalSeconds = remainsRatio * timeFromStart;
 
 				int percentage = pIteration * 100 / pMaxIteration;
 
-				WriteExtimatedTimeLeft(percentage, estimatedTotalSeconds - timeFromStart, comment);
+				string comment = "\n" + pText + " " + pIteration + " out of " + pMaxIteration;
+				if (pShowInConsole)
+				{
+					WriteLine(comment);
+					WriteLine("- time of last " + pDebugFrequency + " = " + lastIterationBatchTime);
+					WriteLine($"- total time = {timeFromStart}");
+				}
+				WriteExtimatedTimeLeft(percentage, estimatedTotalSeconds - timeFromStart, comment, pShowInConsole);
 				pPreviousDebugStart = DateTime.Now;
 			}
 
@@ -84,19 +85,19 @@ namespace ForestReco
 			//next step doesnt have to use progressbar and it wouldnt get refreshed
 			if (pIteration == pMaxIteration - 1)
 			{
-				WriteExtimatedTimeLeft(100, 0, "done");
+				WriteExtimatedTimeLeft(100, 0, "done", pShowInConsole);
 			}
 		}
 
 		private static string lastTextProgress;
-		private static void WriteExtimatedTimeLeft(int pPercentage, double pSecondsLeft, string pComment)
+		private static void WriteExtimatedTimeLeft(int pPercentage, double pSecondsLeft, string pComment, bool pShowInConsole)
 		{
 			TimeSpan ts = new TimeSpan(0, 0, 0, (int)pSecondsLeft);
 			string timeString = ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
 
 			string timeLeftString =
 				$"- estimated time left = {timeString}\n";
-			WriteLine(timeLeftString);
+			if(pShowInConsole){WriteLine(timeLeftString);}
 
 			CProjectData.backgroundWorker.ReportProgress(pPercentage, new[]
 			{
@@ -208,11 +209,6 @@ namespace ForestReco
 					text = "comment not specified";
 					break;
 			}
-
-			//foreach (EProgramStep step in calledSteps)
-			//{
-			//	WriteLine(step.ToString());
-			//}
 
 			return progress + text;
 		}

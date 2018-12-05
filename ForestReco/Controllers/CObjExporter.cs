@@ -13,7 +13,6 @@ namespace ForestReco
 		public const float POINT_OFFSET = 0.05f;
 
 		private static Vector3 arrayCenter => CProjectData.GetArrayCenter();
-		//private static float minHeight => CProjectData.GetMinHeight();
 
 		public static void ExportPoints(List<Vector3> pPoints, string pFileName)
 		{
@@ -205,8 +204,6 @@ namespace ForestReco
 
 		public static string CreateFolder(string pFileName)
 		{
-			//string path = Path.GetDirectoryName(
-			//	              System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\output\\";
 			string path = CParameterSetter.GetStringSettings(ESettings.outputFolderPath);
 
 			int folderIndex = 0;
@@ -247,8 +244,6 @@ namespace ForestReco
 		{
 			if (CProgramLoader.useDebugData) { return; }
 			pPoint = GetMovedPoint(pPoint);
-			//pPoint -= arrayCenter;
-			//pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 2 * pPoint.Z);
 		}
 
 		private static void MoveByOffset(ref Vector3 pPoint, Vector3 pOffset)

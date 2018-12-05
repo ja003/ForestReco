@@ -89,11 +89,6 @@ namespace ForestReco
 			}
 
 			const int minVegePointsPerField = 10;
-			//if (count < minVegePointsPerField)
-			//{
-			//	isInvalid = true;
-			//	return;
-			//}
 
 			int vegePointsCount = 0;
 			int undefinedNeighboursCount = 0;

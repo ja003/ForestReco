@@ -110,7 +110,6 @@ namespace ForestReco
 				CDebug.WriteLine(" - " + fileName);
 			}
 
-			int counter = 0;
 			for (int i = 0; i < pFileNames.Count; i++)
 			{
 				if (CProjectData.backgroundWorker.CancellationPending) { return; }
@@ -133,8 +132,6 @@ namespace ForestReco
 
 				Trees.Add(refTree);
 				CDebug.WriteLine($"Loaded tree: {fileName}. height = {refTree.GetTreeHeight()}");
-
-				counter++;
 			}
 			CAnalytics.loadReftreesDuration = CAnalytics.GetDuration(loadTreesStartTime);
 			CDebug.Duration("Load reftrees", loadTreesStartTime);
@@ -207,10 +204,6 @@ namespace ForestReco
 				CDebug.WriteLine($"reftree height = {mostSuitableTree.GetTreeHeight()}");
 			}
 
-			//Obj suitableTree = bestTree.Obj.Clone();
-			//suitableTree.Name += "_" + counter;
-			//counter++;
-
 			return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, bestSimilarity);
 		}
 
@@ -227,7 +220,6 @@ namespace ForestReco
 			float heightRatio = treeHeight / pRefTree.GetTreeHeight();
 			pRefTree.Obj.Scale = heightRatio * Vector3.One;
 
-
 			//align position to tree
 			pRefTree.Obj.Position = pTargetTree.peak.Center;
 			pRefTree.Obj.Position.Y -= pRefTree.GetTreeHeight() * heightRatio;
@@ -237,7 +229,6 @@ namespace ForestReco
 			pRefTree.Obj.Position -= new Vector3(0, minHeight, 2 * pRefTree.Obj.Position.Z);
 
 			pRefTree.Obj.Rotation = new Vector3(0, -pAngleOffset, 0);
-
 		}
 	}
 }

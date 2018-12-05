@@ -47,10 +47,6 @@ namespace ForestReco
 				Max = new Vector3(defaultArraySize, 0, defaultArraySize);
 				Offset = Vector3.Zero;
 			}
-
-			//we set Z offset so the lowest point will have height 0 (better visualization)
-			//Offset.Z = ParseLineVector3(pMinLine).Z;
-			//CDebug.WriteLine(this.ToString());
 		}
 
 		private string GetLine(string[] lines, EHeaderAttribute pAttribute)
