@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
-using System.Numerics;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -65,6 +62,7 @@ namespace ForestReco
 		private Button btnAnalytics;
 		private CheckBox checkBoxExportBitmap;
 		private System.ComponentModel.BackgroundWorker backgroundWorker1;
+		private Button button1;
 		private Button btnSellectForest;
 
 		public CMainForm()
@@ -193,14 +191,14 @@ namespace ForestReco
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
-			if (!CUiInputCheck.CheckProblems())
+			if(!CUiInputCheck.CheckProblems())
 			{
 				return;
 			}
 			CProgramStarter.PrepareSequence();
 			SetStartBtnEnabled(false);
 
-			if (backgroundWorker1.IsBusy != true)
+			if(backgroundWorker1.IsBusy != true)
 			{
 				// Start the asynchronous operation.
 				backgroundWorker1.RunWorkerAsync();
@@ -212,7 +210,7 @@ namespace ForestReco
 		private void btnAbort_Click(object sender, EventArgs e)
 		{
 			//CProjectData.backgroundWorker.CancellationPending();
-			if (backgroundWorker1.WorkerSupportsCancellation)
+			if(backgroundWorker1.WorkerSupportsCancellation)
 			{
 				// Cancel the asynchronous operation.
 				backgroundWorker1.CancelAsync();
@@ -281,6 +279,7 @@ namespace ForestReco
 			this.textAnalyticsFile = new System.Windows.Forms.TextBox();
 			this.btnAnalytics = new System.Windows.Forms.Button();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+			this.button1 = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -831,10 +830,21 @@ namespace ForestReco
 			this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
 			this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
 			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(901, 10);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(117, 62);
+			this.button1.TabIndex = 60;
+			this.button1.Text = "test 1";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.buttonTest1_Click);
+			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
-			this.ClientSize = new System.Drawing.Size(882, 528);
+			this.ClientSize = new System.Drawing.Size(1182, 528);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.checkBoxExportBitmap);
 			this.Controls.Add(this.textAnalyticsFile);
 			this.Controls.Add(this.btnAnalytics);
@@ -911,7 +921,7 @@ namespace ForestReco
 		private void btnOutputFolder_Click(object sender, EventArgs e)
 		{
 			string folder = CParameterSetter.SelectFolder();
-			if (folder.Length == 0)
+			if(folder.Length == 0)
 			{
 				CDebug.Warning("no folder selected");
 				return;
@@ -924,7 +934,7 @@ namespace ForestReco
 		private void btnSellectReftreeFodlers_Click(object sender, EventArgs e)
 		{
 			string folder = CParameterSetter.SelectFolder();
-			if (folder.Length == 0)
+			if(folder.Length == 0)
 			{
 				CDebug.Warning("no folder selected");
 				return;
@@ -943,7 +953,7 @@ namespace ForestReco
 		private void btnSellectForest_Click(object sender, EventArgs e)
 		{
 			string path = CParameterSetter.SelectFile("Select forest file", "txt", "forest");
-			if (path.Length == 0)
+			if(path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
 				return;
@@ -956,7 +966,7 @@ namespace ForestReco
 		private void btnSequence_Click(object sender, EventArgs e)
 		{
 			string path = CParameterSetter.SelectFile("Select sequence config", "seq", "sequence");
-			if (path.Length == 0)
+			if(path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
 				return;
@@ -972,9 +982,11 @@ namespace ForestReco
 
 			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
-			if (lines == null) { return; }
+			if(lines == null)
+			{ return; }
 
-			if (CSequenceController.IsSequence()) { return; }
+			if(CSequenceController.IsSequence())
+			{ return; }
 
 			CProjectData.header = new CHeaderInfo(lines);
 			RefreshEstimatedSize();
@@ -984,11 +996,11 @@ namespace ForestReco
 		{
 			CResultSize.WriteEstimatedSize(textBoxEstimatedSize, textBoxPartitionSize);
 		}
-		
+
 		private void btnSelectCheckTree_Click(object sender, EventArgs e)
 		{
 			string path = CParameterSetter.SelectFile("Select checktree file", "txt", "checktree");
-			if (path.Length == 0)
+			if(path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
 				return;
@@ -1000,7 +1012,7 @@ namespace ForestReco
 		private void buttonAnalytics_Click(object sender, EventArgs e)
 		{
 			string path = CParameterSetter.SelectFile("Select analytics file (CSV)", "csv", "csv");
-			if (path.Length == 0)
+			if(path.Length == 0)
 			{
 				CDebug.Warning("no path selected");
 				return;
@@ -1023,9 +1035,10 @@ namespace ForestReco
 
 		private void trackBarPartition_Scroll(object sender, EventArgs e)
 		{
-			if (blockRecursion) { return; }
+			if(blockRecursion)
+			{ return; }
 			trackValue = trackBarPartition.Value;
-			if (trackValue % smallChangeValue != 0)
+			if(trackValue % smallChangeValue != 0)
 			{
 				trackValue = trackValue / smallChangeValue * smallChangeValue;
 
@@ -1045,9 +1058,10 @@ namespace ForestReco
 		private int trackValue;
 		private void trackBarGroundArrayStep_Scroll(object sender, EventArgs e)
 		{
-			if (blockRecursion) { return; }
+			if(blockRecursion)
+			{ return; }
 			trackValue = trackBarGroundArrayStep.Value;
-			if (trackValue % smallChangeValue != 0)
+			if(trackValue % smallChangeValue != 0)
 			{
 				trackValue = trackValue / smallChangeValue * smallChangeValue;
 
@@ -1149,8 +1163,10 @@ namespace ForestReco
 		private void btnOpenResult_Click(object sender, EventArgs e)
 		{
 			string folderPath = CObjPartition.folderPath;
-			if (string.IsNullOrEmpty(folderPath)) { return; }
-			if (!Directory.Exists(folderPath)) { return; }
+			if(string.IsNullOrEmpty(folderPath))
+			{ return; }
+			if(!Directory.Exists(folderPath))
+			{ return; }
 			System.Diagnostics.Process.Start(folderPath);
 		}
 
@@ -1200,7 +1216,7 @@ namespace ForestReco
 		private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
 		{
 			EProcessResult processResult = CProgramStarter.Start();
-			switch (processResult)
+			switch(processResult)
 			{
 				//case EProcessResult.Exception:
 				case EProcessResult.Cancelled:
@@ -1243,20 +1259,21 @@ namespace ForestReco
 			{
 				results = (string[])e.UserState;
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				CDebug.Error("backgroundWorker exception. " + ex.Message);
 				results = new string[1] { ex.Message };
 			}
 
-			if (results == null) { return; }
+			if(results == null)
+			{ return; }
 
 			string resultText = "";
-			for (int i = 0; i < results.Length; i++)
+			for(int i = 0; i < results.Length; i++)
 			{
 				resultText += results[i] + Environment.NewLine;
 			}
-			if (resultText.Length > 0)
+			if(resultText.Length > 0)
 			{
 				textProgress.Text = resultText;
 			}
@@ -1268,20 +1285,90 @@ namespace ForestReco
 		{
 			SetStartBtnEnabled(true);
 
-			if (e.Cancelled)
+			if(e.Cancelled)
 			{
 				//CDebug.Step(EProgramStep.Cancelled); //cant call from this thread!
 				textProgress.Text = "CANCELLED";
 			}
 
 			//ERROR and DONE messages should be handelend during the process. no need to write to textProgress
-			else if (e.Error != null)
+			else if(e.Error != null)
 			{
 				CDebug.WriteLine("Error: " + e.Error.Message);
 			}
 			else
 			{
 				CDebug.WriteLine("Done!");
+			}
+		}
+
+		/// <summary>
+		/// https://stackoverflow.com/questions/1469764/run-command-prompt-commands
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void buttonTest1_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process currentProcess;
+
+			string fileName = "ANE_2000AGL";
+			string heightFileFullName = fileName + "_h.las";
+			bool heightFileExists = File.Exists(heightFileFullName);
+			CDebug.WriteLine($"height file: {heightFileFullName} exists = {heightFileExists}");
+
+			if(!heightFileExists)
+			{
+				string height =
+					"/C " +
+					"lasheight -i " +
+					"D:\\Resources\\ForestReco\\podklady\\LAStools\\MINE\\1_my_LAS_height\\" + fileName + ".laz " +
+					"-o " +
+					"ANE_2000AGL_h.las";
+				currentProcess = System.Diagnostics.Process.Start("CMD.exe", height);
+
+				while(!currentProcess.HasExited)
+				{
+					Thread.Sleep(1000);
+					CDebug.WriteLine("waiting for lasheight to finish");
+				}
+			}
+
+
+			string classifyFileFullName = fileName + "_h_c.las";
+			bool classifyFileExists = File.Exists(classifyFileFullName);
+			CDebug.WriteLine($"classify file: {classifyFileFullName} exists = {classifyFileExists}");
+
+			if(!classifyFileExists)
+			{
+				string classify =
+				"/C " +
+				"lasclassify -i " +
+				"ANE_2000AGL_h.las " +
+				"-o " +
+				"ANE_2000AGL_h_c.las";
+				currentProcess = System.Diagnostics.Process.Start("CMD.exe", classify);
+
+				while(!currentProcess.HasExited)
+				{
+					Thread.Sleep(1000);
+					CDebug.WriteLine("waiting for lasclassify to finish");
+				}
+			}
+
+			string txtFileFullName = fileName + ".txt";
+			bool txtFileExists = File.Exists(txtFileFullName);
+			CDebug.WriteLine($"txt file: {txtFileFullName} exists = {txtFileExists}");
+
+			if(!txtFileExists)
+			{
+				string toTxt =
+				"/C " +
+				"las2txt -i " +
+				"ANE_2000AGL_h_c.las " +
+				"-o " +
+				"ANE_2000AGL.txt " +
+				"-parse xyzcu -sep tab -header percent";
+				currentProcess = System.Diagnostics.Process.Start("CMD.exe", toTxt);
 			}
 		}
 	}
