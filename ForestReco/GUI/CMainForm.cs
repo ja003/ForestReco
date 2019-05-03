@@ -1310,17 +1310,22 @@ namespace ForestReco
 		{
 			System.Diagnostics.Process currentProcess;
 
+			//X: 506000		- 506350
+			//Y: 6489940	- 5490200
 			string fileName = "ANE_2000AGL";
-					  
-			string splitFileFullName = fileName + "_s.las"; 
-			bool splitFileExists = File.Exists(splitFileFullName);
-			CDebug.WriteLine($"split file: {splitFileFullName} exists = {splitFileExists}");
 
 			float min_x, min_y, max_x, max_y;
 			min_x = 506100;
 			max_x = 506150;
-			min_y = 5489900;
-			max_y = 5489950;
+			min_y = 5489950;
+			max_y = 5490000;
+
+			string splitFileName = $"{fileName}_s[{min_x},{max_x}]-[{min_y},{max_y}]";
+			const string LAS = ".las";
+			bool splitFileExists = File.Exists(splitFileName + LAS);
+			CDebug.WriteLine($"split file: {splitFileName} exists = {splitFileExists}");
+
+			
 
 			if(!splitFileExists)
 			{
@@ -1331,7 +1336,7 @@ namespace ForestReco
 					"D:\\Resources\\ForestReco\\podklady\\LAStools\\MINE\\" + fileName + ".laz " +
 					keepXY +
 					" -o " +
-					splitFileFullName;
+					splitFileName + LAS;
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", split);
 
 				while(!currentProcess.HasExited)
@@ -1345,29 +1350,29 @@ namespace ForestReco
 
 			//todo: move to Utils
 			// Source file to be renamed  
-			string sourceFile = fileName + "_s_0000000.las";
+			string sourceFile = splitFileName + "_0000000" + LAS;
 			// Create a FileInfo  
 			FileInfo fi = new FileInfo(sourceFile);
 			// Check if file is there  
 			if(fi.Exists)
 			{
 				// Move file with a new name. Hence renamed.  
-				fi.MoveTo(splitFileFullName);
+				fi.MoveTo(splitFileName + LAS);
 				Console.WriteLine("Split file Renamed.");
 			}
 
-			string heightFileFullName = fileName + "_s_h.las";
-			bool heightFileExists = File.Exists(heightFileFullName);
-			CDebug.WriteLine($"height file: {heightFileFullName} exists = {heightFileExists}");
+			string heightFileName = splitFileName + "_h";
+			bool heightFileExists = File.Exists(heightFileName + LAS);
+			CDebug.WriteLine($"height file: {heightFileName} exists = {heightFileExists}");
 
 			if(!heightFileExists)
 			{
 				string height =
 					"/C " +
 					"lasheight -i " +
-					splitFileFullName +
+					splitFileName + LAS +
 					" -o " +
-					heightFileFullName;
+					heightFileName + LAS;
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", height);
 
 				while(!currentProcess.HasExited)
@@ -1378,18 +1383,18 @@ namespace ForestReco
 			}
 
 
-			string classifyFileFullName = fileName + "_s_h_c.las";
-			bool classifyFileExists = File.Exists(classifyFileFullName);
-			CDebug.WriteLine($"classify file: {classifyFileFullName} exists = {classifyFileExists}");
+			string classifyFileName = heightFileName + "_c";
+			bool classifyFileExists = File.Exists(classifyFileName + LAS);
+			CDebug.WriteLine($"classify file: {classifyFileName} exists = {classifyFileExists}");
 
 			if(!classifyFileExists)
 			{
 				string classify =
 				"/C " +
 				"lasclassify -i " +
-				heightFileFullName +
+				heightFileName + LAS +
 				" -o " +
-				classifyFileFullName;
+				classifyFileName + LAS;
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", classify);
 
 				while(!currentProcess.HasExited)
@@ -1399,18 +1404,19 @@ namespace ForestReco
 				}
 			}
 
-			string txtFileFullName = fileName + ".txt";
-			bool txtFileExists = File.Exists(txtFileFullName);
-			CDebug.WriteLine($"txt file: {txtFileFullName} exists = {txtFileExists}");
+			//use split file name to get unique file name
+			string txtFileName = splitFileName + ".txt";
+			bool txtFileExists = File.Exists(txtFileName);
+			CDebug.WriteLine($"txt file: {txtFileName} exists = {txtFileExists}");
 
 			if(!txtFileExists)
 			{
 				string toTxt =
 				"/C " +
 				"las2txt -i " +
-				classifyFileFullName +
+				classifyFileName + LAS +
 				" -o " +
-				txtFileFullName +
+				txtFileName +
 				" -parse xyzcu -sep tab -header percent";
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", toTxt);
 			}
