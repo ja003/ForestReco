@@ -1304,15 +1304,59 @@ namespace ForestReco
 
 		/// <summary>
 		/// https://stackoverflow.com/questions/1469764/run-command-prompt-commands
+		/// TODO: check spaces in commands!
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonTest1_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process currentProcess;
 
 			string fileName = "ANE_2000AGL";
-			string heightFileFullName = fileName + "_h.las";
+					  
+			string splitFileFullName = fileName + "_s.las"; 
+			bool splitFileExists = File.Exists(splitFileFullName);
+			CDebug.WriteLine($"split file: {splitFileFullName} exists = {splitFileExists}");
+
+			float min_x, min_y, max_x, max_y;
+			min_x = 506100;
+			max_x = 506150;
+			min_y = 5489900;
+			max_y = 5489950;
+
+			if(!splitFileExists)
+			{
+				string keepXY = $"-keep_xy {min_x} {min_y} {max_x} {max_y}";
+				string split =
+					"/C " +
+					"lassplit -i " +
+					"D:\\Resources\\ForestReco\\podklady\\LAStools\\MINE\\" + fileName + ".laz " +
+					keepXY +
+					" -o " +
+					splitFileFullName;
+				currentProcess = System.Diagnostics.Process.Start("CMD.exe", split);
+
+				while(!currentProcess.HasExited)
+				{
+					Thread.Sleep(1000);
+					CDebug.WriteLine("waiting for lassplit to finish");
+				}
+			}
+			//rename split file
+			//for some reason output split file gets appendix: "_0000000" => remove it
+
+			//todo: move to Utils
+			// Source file to be renamed  
+			string sourceFile = fileName + "_s_0000000.las";
+			// Create a FileInfo  
+			FileInfo fi = new FileInfo(sourceFile);
+			// Check if file is there  
+			if(fi.Exists)
+			{
+				// Move file with a new name. Hence renamed.  
+				fi.MoveTo(splitFileFullName);
+				Console.WriteLine("Split file Renamed.");
+			}
+
+			string heightFileFullName = fileName + "_s_h.las";
 			bool heightFileExists = File.Exists(heightFileFullName);
 			CDebug.WriteLine($"height file: {heightFileFullName} exists = {heightFileExists}");
 
@@ -1321,9 +1365,9 @@ namespace ForestReco
 				string height =
 					"/C " +
 					"lasheight -i " +
-					"D:\\Resources\\ForestReco\\podklady\\LAStools\\MINE\\1_my_LAS_height\\" + fileName + ".laz " +
-					"-o " +
-					"ANE_2000AGL_h.las";
+					splitFileFullName +
+					" -o " +
+					heightFileFullName;
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", height);
 
 				while(!currentProcess.HasExited)
@@ -1334,7 +1378,7 @@ namespace ForestReco
 			}
 
 
-			string classifyFileFullName = fileName + "_h_c.las";
+			string classifyFileFullName = fileName + "_s_h_c.las";
 			bool classifyFileExists = File.Exists(classifyFileFullName);
 			CDebug.WriteLine($"classify file: {classifyFileFullName} exists = {classifyFileExists}");
 
@@ -1343,9 +1387,9 @@ namespace ForestReco
 				string classify =
 				"/C " +
 				"lasclassify -i " +
-				"ANE_2000AGL_h.las " +
-				"-o " +
-				"ANE_2000AGL_h_c.las";
+				heightFileFullName +
+				" -o " +
+				classifyFileFullName;
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", classify);
 
 				while(!currentProcess.HasExited)
@@ -1364,10 +1408,10 @@ namespace ForestReco
 				string toTxt =
 				"/C " +
 				"las2txt -i " +
-				"ANE_2000AGL_h_c.las " +
-				"-o " +
-				"ANE_2000AGL.txt " +
-				"-parse xyzcu -sep tab -header percent";
+				classifyFileFullName +
+				" -o " +
+				txtFileFullName +
+				" -parse xyzcu -sep tab -header percent";
 				currentProcess = System.Diagnostics.Process.Start("CMD.exe", toTxt);
 			}
 		}
