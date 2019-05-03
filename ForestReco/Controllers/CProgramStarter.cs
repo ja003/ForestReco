@@ -99,6 +99,9 @@ namespace ForestReco
 				CDebug.Duration("total time", startTime);
 
 				CAnalytics.Write(true);
+
+				CDartTxt.Export();
+
 			}
 			catch (Exception e)
 			{

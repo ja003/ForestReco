@@ -55,6 +55,7 @@
     <Compile Include="Controllers\CProgramStarter.cs" />
     <Compile Include="Controllers\CResultSize.cs" />
     <Compile Include="Controllers\CSequenceController.cs" />
+    <Compile Include="DataStructures\CDartTxt.cs" />
     <Compile Include="DataStructures\CAnalytics.cs" />
     <Compile Include="DataStructures\CCheckTree.cs" />
     <Compile Include="DataStructures\CObjPartition.cs" />
