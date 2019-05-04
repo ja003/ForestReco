@@ -33,6 +33,7 @@ namespace ForestReco
 		public List<Vector3> Points = new List<Vector3>();
 
 		public Obj mostSuitableRefTreeObj;
+		public string RefTreeTypeName;
 
 		public CCheckTree assignedCheckTree;
 		public string assignedMaterial;

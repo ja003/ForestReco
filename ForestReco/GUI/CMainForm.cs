@@ -1305,6 +1305,7 @@ namespace ForestReco
 		/// <summary>
 		/// https://stackoverflow.com/questions/1469764/run-command-prompt-commands
 		/// TODO: check spaces in commands!
+		/// TODO: add folder selection for lastools EXE files
 		/// </summary>
 		private void buttonTest1_Click(object sender, EventArgs e)
 		{

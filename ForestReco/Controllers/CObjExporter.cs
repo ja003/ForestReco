@@ -253,8 +253,12 @@ namespace ForestReco
 
 		public static Vector3 GetMovedPoint(Vector3 pPoint)
 		{
+			//for better visualization:
+			//- move to array center be at 0,0,0
 			pPoint -= arrayCenter;
+			//- move to 0 height, flip Z axis (to match OBJ view format) 
 			pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 2 * pPoint.Z);
+			//pPoint -= new Vector3(0, CProjectData.GetMinHeight(), 0);
 			return pPoint;
 		}
 

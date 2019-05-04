@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Xml;
 
 namespace ForestReco
@@ -38,16 +39,25 @@ namespace ForestReco
 			string output = "0 ";
 			ObjParser.Obj treeObj = pTree.mostSuitableRefTreeObj;
 			if(treeObj == null){ return null; }
-				
 
+			//get coordinates relative to botleft corner of the area
+			Vector3 treePos = GetMovedPoint(pTree.Center);
 			//in final file Z = height, but here Y = height
-			output += $"{pTree.Center.X} {pTree.Center.Z} 0 ";
+			output += $"{treePos.X} {treePos.Z} 0 ";
 			//scale will be same at all axix
 			output += $"{treeObj.Scale.X} {treeObj.Scale.Z} {treeObj.Scale.Y} ";
 			//rotation
-			output += $"0 0 {treeObj.Rotation.Y}";
+			output += $"0 0 {treeObj.Rotation.Y} ";
+			//todo: reftree type
+			output += pTree.RefTreeTypeName;
 
 			return output;
+		}
+
+		private static Vector3 GetMovedPoint(Vector3 pPoint)
+		{
+			pPoint -= CProjectData.header.BotLeftCorner;
+			return pPoint;
 		}
 
 		/// <summary>

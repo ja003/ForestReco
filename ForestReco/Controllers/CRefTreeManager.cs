@@ -78,6 +78,7 @@ namespace ForestReco
 				Obj suitableTreeObj = mostSuitableRefTree.Obj.Clone();
 				suitableTreeObj.Name += "_" + t.treeIndex;
 				t.mostSuitableRefTreeObj = suitableTreeObj;
+				t.RefTreeTypeName = mostSuitableRefTree.RefTreeTypeName; //copy the type name
 
 				suitableTreeObj.UseMtl = t.assignedMaterial;
 
@@ -121,6 +122,8 @@ namespace ForestReco
 				CRefTree refTree = deserializedRefTree ??
 										 new CRefTree(fileName, pFileNames.IndexOf(fileName), TREE_POINT_EXTENT, true);
 
+				refTree.RefTreeTypeName = fileName; //GetTypeName(fileName);
+
 				if (!refTree.isValid)
 				{
 					//this reftree is not valid. case for reftrees in 'ignore' folder
@@ -140,7 +143,7 @@ namespace ForestReco
 
 			DebugReftrees();
 		}
-
+		
 		private static void DebugReftrees()
 		{
 			CDebug.WriteLine("Loaded reftrees: ");
@@ -177,6 +180,7 @@ namespace ForestReco
 			if (forceRandom || randomReftree)
 			{
 				int random = new Random().Next(0, Trees.Count);
+				//if (debugSimilarites) { CDebug.WriteLine($"random = {random}"); }
 				return new Tuple<CRefTree, STreeSimilarity>(Trees[random], treeSimilarity);
 			}
 			if (debugSimilarites) { CDebug.WriteLine("\n" + pTree.treeIndex + " similarities = "); }
@@ -185,13 +189,13 @@ namespace ForestReco
 			foreach (CRefTree refTree in Trees)
 			{
 				treeSimilarity = CTreeMath.GetSimilarityWith(refTree, pTree);
-				float similarity = treeSimilarity.similarity;
-				if (debugSimilarites) { CDebug.WriteLine($"{refTree.fileName} similarity = {similarity}"); }
+				//float similarity = treeSimilarity.similarity;
+				if (debugSimilarites) { CDebug.WriteLine($"{refTree.fileName} similarity = {treeSimilarity.similarity}"); }
 
-				if (similarity > bestSimilarity.similarity)
+				if (treeSimilarity.similarity > bestSimilarity.similarity)
 				{
 					mostSuitableTree = refTree;
-					bestSimilarity.similarity = similarity;
+					bestSimilarity = treeSimilarity;
 				}
 				if (bestSimilarity.similarity > 0.9f && !forceAlgorithm) { break; }
 				if (CProjectData.backgroundWorker.CancellationPending) { break; }
@@ -202,6 +206,7 @@ namespace ForestReco
 				CDebug.WriteLine("Most suitable reftree = " + mostSuitableTree.Obj.Name + ". similarity = " + bestSimilarity.similarity);
 				CDebug.WriteLine($"tree height = {pTree.GetTreeHeight()}");
 				CDebug.WriteLine($"reftree height = {mostSuitableTree.GetTreeHeight()}");
+				CDebug.WriteLine($"angle offset = {bestSimilarity.angleOffset}");
 			}
 
 			return new Tuple<CRefTree, STreeSimilarity>(mostSuitableTree, bestSimilarity);
