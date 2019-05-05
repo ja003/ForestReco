@@ -31,9 +31,9 @@ namespace ForestReco
 
 		public static string[] GetFileLines(string pFile, int pLines)
 		{
-
-			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
-			if (!File.Exists(fullFilePath)) { return null; }
+			//string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
+			//if (!File.Exists(fullFilePath)) { return null; }
+			if (!File.Exists(pFile)) { return null; }
 
 			string[] lines = new string[pLines];
 			

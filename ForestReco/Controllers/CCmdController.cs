@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Threading;
 
 namespace ForestReco
 {
 	public static class CCmdController
 	{
+		private static string LasToolsFolder => CParameterSetter.GetStringSettings(ESettings.lasToolsFolderPath);
+
 		public static string[] GetHeaderLines(string pForestFileFullPath)
 		{
 			string infoFileName = Path.GetFileNameWithoutExtension(pForestFileFullPath) + "_i.txt";
@@ -13,7 +14,7 @@ namespace ForestReco
 			string infoFileFullPath = tmpFolder + "//" + infoFileName;
 			bool infoFileExists = File.Exists(infoFileFullPath);
 			CDebug.WriteLine($"info file: {infoFileName} exists = {infoFileExists}");
-			
+
 			if(!infoFileExists)
 			{
 				string info =
@@ -22,18 +23,37 @@ namespace ForestReco
 					pForestFileFullPath +
 					" -o " +
 					infoFileFullPath;
-				Process currentProcess = Process.Start("CMD.exe", info);
 
-				while(!currentProcess.HasExited)
+				ProcessStartInfo processStartInfo = new ProcessStartInfo
+				{
+					WorkingDirectory = LasToolsFolder,
+					FileName = "cmd.exe",
+					Arguments = info
+				};
+
+				Process currentProcess = Process.Start(processStartInfo);
+				//currentProcess = Process.Start("CMD.exe", info);
+				currentProcess.WaitForExit();
+
+				int result = currentProcess.ExitCode;
+
+				//todo: throw and handle exception?
+				if(result == 1) //0 = OK, 1 = error...i.e. the .exe file is missing
+				{
+					CDebug.Error("GetHeaderLines -lasinfo error");
+					return null;
+				}
+
+				/*while(!currentProcess.HasExited)
 				{
 					Thread.Sleep(1000);
 					CDebug.WriteLine("waiting for lasinfo to finish");
-				}
+				}*/
 			}
 
 			return CProgramLoader.GetFileLines(infoFileFullPath, 20);
-
 		}
+
 
 		//TODO: not working! output always = ""
 		//	// Start the child process.
