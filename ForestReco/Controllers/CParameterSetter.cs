@@ -130,6 +130,7 @@ namespace ForestReco
 		checkTreeFilePath,
 		analyticsFilePath,
 		tmpFilesFolderPath,
+		lasToolsFolderPath,
 
 		//ints
 		partitionStep,

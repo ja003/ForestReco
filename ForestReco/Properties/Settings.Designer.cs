@@ -382,5 +382,17 @@ namespace ForestReco.Properties {
                 this["rangeYmax"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string lasToolsFolderPath {
+            get {
+                return ((string)(this["lasToolsFolderPath"]));
+            }
+            set {
+                this["lasToolsFolderPath"] = value;
+            }
+        }
     }
 }
