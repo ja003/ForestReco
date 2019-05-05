@@ -206,5 +206,16 @@ namespace ForestReco
 		{
 			return Vector3.Distance(pPoint, new Vector3(675.94f, 128.04f, 1140.9f)) < pTolerance;
 		}
+
+
+		public static float LimitToRange(
+		  this float value, float inclusiveMinimum, float inclusiveMaximum)
+		{
+			if(value < inclusiveMinimum)
+			{ return inclusiveMinimum; }
+			if(value > inclusiveMaximum)
+			{ return inclusiveMaximum; }
+			return value;
+		}
 	}
 }

@@ -334,5 +334,29 @@ namespace ForestReco.Properties {
                 this["tmpFilesFolderPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int rangeXmin {
+            get {
+                return ((int)(this["rangeXmin"]));
+            }
+            set {
+                this["rangeXmin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int rangeXmax {
+            get {
+                return ((int)(this["rangeXmax"]));
+            }
+            set {
+                this["rangeXmax"] = value;
+            }
+        }
     }
 }

@@ -64,6 +64,10 @@ namespace ForestReco
 		private CheckBox checkBoxExportBitmap;
 		private System.ComponentModel.BackgroundWorker backgroundWorker1;
 		private Button button1;
+		private TrackBar trackBarRangeXmin;
+		private TextBox textRangeX;
+		private Label label1;
+		private TrackBar trackBarRangeXmax;
 		private Button btnSellectForest;
 
 		public CMainForm()
@@ -109,6 +113,16 @@ namespace ForestReco
 			//average tree height
 			textAvgTreeHeight.Text = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh) + " m";
 			trackBarAvgTreeHeight.Value = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
+
+			//RANGE
+			//int min = (int)CParameterSetter.GetFloatSettings(ESettings.rangeXmin);
+			//trackBarRangeXmin.SetRange(min, min);
+			//trackBarRangeXmin.Value = trackBarRangeXmin.Minimum;
+			//trackBarRangeXmax.Value = trackBarRangeXmax.Maximum;
+			//int max = (int)CParameterSetter.GetFloatSettings(ESettings.rangeXmax);
+			//trackBarRangeXmax.SetRange(max, max);
+			//trackBarRangeXmax.Value = max;
+
 
 			//bools
 			checkBoxExport3d.Checked =
@@ -181,8 +195,6 @@ namespace ForestReco
 			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedTotalSize, ETooltip.EstimatedTotalSize);
 			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedPartitionSize, ETooltip.EstimatedPartitionSize);
 			CTooltipManager.AssignTooltip(myToolTip, trackBarAvgTreeHeight, ETooltip.avgTreeHeighSlider);
-
-
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -281,11 +293,17 @@ namespace ForestReco
 			this.btnAnalytics = new System.Windows.Forms.Button();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.button1 = new System.Windows.Forms.Button();
+			this.trackBarRangeXmin = new System.Windows.Forms.TrackBar();
+			this.textRangeX = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.trackBarRangeXmax = new System.Windows.Forms.TrackBar();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtentMultiply)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmin)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmax)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnSellectForest
@@ -841,10 +859,63 @@ namespace ForestReco
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.buttonTest1_Click);
 			// 
+			// trackBarRangeXmin
+			// 
+			this.trackBarRangeXmin.AutoSize = false;
+			this.trackBarRangeXmin.LargeChange = 10;
+			this.trackBarRangeXmin.Location = new System.Drawing.Point(901, 123);
+			this.trackBarRangeXmin.Maximum = 30;
+			this.trackBarRangeXmin.Minimum = 5;
+			this.trackBarRangeXmin.Name = "trackBarRangeXmin";
+			this.trackBarRangeXmin.Size = new System.Drawing.Size(92, 30);
+			this.trackBarRangeXmin.SmallChange = 5;
+			this.trackBarRangeXmin.TabIndex = 63;
+			this.trackBarRangeXmin.TickFrequency = 5;
+			this.trackBarRangeXmin.Value = 10;
+			this.trackBarRangeXmin.Scroll += new System.EventHandler(this.trackBarRangeXmin_Scroll);
+			this.trackBarRangeXmin.ValueChanged += new System.EventHandler(this.trackBarRangeXmin_Scroll);
+			// 
+			// textRangeX
+			// 
+			this.textRangeX.Location = new System.Drawing.Point(972, 98);
+			this.textRangeX.Name = "textRangeX";
+			this.textRangeX.ReadOnly = true;
+			this.textRangeX.Size = new System.Drawing.Size(119, 22);
+			this.textRangeX.TabIndex = 62;
+			this.textRangeX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(908, 100);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(58, 17);
+			this.label1.TabIndex = 61;
+			this.label1.Text = "range X";
+			// 
+			// trackBarRangeXmax
+			// 
+			this.trackBarRangeXmax.AutoSize = false;
+			this.trackBarRangeXmax.LargeChange = 10;
+			this.trackBarRangeXmax.Location = new System.Drawing.Point(999, 123);
+			this.trackBarRangeXmax.Maximum = 30;
+			this.trackBarRangeXmax.Minimum = 5;
+			this.trackBarRangeXmax.Name = "trackBarRangeXmax";
+			this.trackBarRangeXmax.Size = new System.Drawing.Size(92, 30);
+			this.trackBarRangeXmax.SmallChange = 5;
+			this.trackBarRangeXmax.TabIndex = 64;
+			this.trackBarRangeXmax.TickFrequency = 5;
+			this.trackBarRangeXmax.Value = 10;
+			this.trackBarRangeXmax.Scroll += new System.EventHandler(this.trackBarRangeXmax_Scroll);
+			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
 			this.ClientSize = new System.Drawing.Size(1182, 528);
+			this.Controls.Add(this.trackBarRangeXmax);
+			this.Controls.Add(this.trackBarRangeXmin);
+			this.Controls.Add(this.textRangeX);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.checkBoxExportBitmap);
 			this.Controls.Add(this.textAnalyticsFile);
@@ -907,6 +978,8 @@ namespace ForestReco
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtentMultiply)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmin)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmax)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -981,8 +1054,8 @@ namespace ForestReco
 			CParameterSetter.SetParameter(
 				ESettings.forestFilePath, textForestFilePath.Text);
 
-			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);			
-			
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
+
 			string[] lines = CCmdController.GetHeaderLines(fullFilePath);
 
 			//string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
@@ -994,6 +1067,7 @@ namespace ForestReco
 
 			CProjectData.header = new CHeaderInfo(lines);
 			RefreshEstimatedSize();
+			UpdateRangeXBounds();
 		}
 
 		private void RefreshEstimatedSize()
@@ -1424,6 +1498,41 @@ namespace ForestReco
 				" -parse xyzcu -sep tab -header percent";
 				currentProcess = Process.Start("CMD.exe", toTxt);
 			}
+		}
+
+		private void SetRangeX()
+		{
+			textRangeX.Text = 
+				$"[{(trackBarRangeXmin.Value / 10f).ToString("0.0")}]-" +
+				$"[{(trackBarRangeXmax.Value / 10f).ToString("0.0")}]";
+			CParameterSetter.SetParameter(ESettings.rangeXmin, trackBarRangeXmin.Value);
+			CParameterSetter.SetParameter(ESettings.rangeXmax, trackBarRangeXmax.Value);
+		}
+
+		private void UpdateRangeXBounds()
+		{
+			trackBarRangeXmin.SetRange((int)CProjectData.header.Min.X * 10, (int)CProjectData.header.Max.X * 10);
+			trackBarRangeXmax.SetRange((int)CProjectData.header.Min.X * 10, (int)CProjectData.header.Max.X * 10);
+
+			int minValue = (int)(CParameterSetter.GetIntSettings(ESettings.rangeXmin));
+			int maxValue = (int)(CParameterSetter.GetIntSettings(ESettings.rangeXmax));
+
+			trackBarRangeXmin.Value = (int)CUtils.LimitToRange(minValue, 
+				trackBarRangeXmin.Minimum, trackBarRangeXmin.Maximum);
+			trackBarRangeXmax.Value = (int)CUtils.LimitToRange(maxValue,
+				trackBarRangeXmax.Minimum, trackBarRangeXmax.Maximum);
+
+			SetRangeX();
+		}
+
+		private void trackBarRangeXmax_Scroll(object sender, EventArgs e)
+		{
+			SetRangeX();
+		}
+
+		private void trackBarRangeXmin_Scroll(object sender, EventArgs e)
+		{
+			SetRangeX();
 		}
 	}
 }

@@ -129,6 +129,8 @@ namespace ForestReco
 		groundArrayStep,
 		treeExtent,
 		treeExtentMultiply,
+		rangeXmin,
+		rangeXmax,
 
 		//bools
 		export3d,
