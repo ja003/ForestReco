@@ -21,10 +21,10 @@ namespace ForestReco
 
 		public CHeaderInfo(string[] lines)
 		{
-			string pScaleFactorLine = GetLine(lines, EHeaderAttribute.Scale);
-			string pOffsetLine = GetLine(lines, EHeaderAttribute.Offset);
-			string pMinLine = GetLine(lines, EHeaderAttribute.Min);
-			string pMaxLine = GetLine(lines, EHeaderAttribute.Max);
+			string pScaleFactorLine = GetLineContaining(lines, EHeaderAttribute.Scale);
+			string pOffsetLine = GetLineContaining(lines, EHeaderAttribute.Offset);
+			string pMinLine = GetLineContaining(lines, EHeaderAttribute.Min);
+			string pMaxLine = GetLineContaining(lines, EHeaderAttribute.Max);
 
 			ScaleFactor = ParseLineVector3(pScaleFactorLine);
 			Offset = ParseLineVector3(pOffsetLine);
@@ -49,7 +49,7 @@ namespace ForestReco
 			}
 		}
 
-		private string GetLine(string[] lines, EHeaderAttribute pAttribute)
+		/*private string GetLine(string[] lines, EHeaderAttribute pAttribute)
 		{
 			switch (pAttribute)
 			{
@@ -57,6 +57,32 @@ namespace ForestReco
 				case EHeaderAttribute.Offset: return lines[16];
 				case EHeaderAttribute.Min: return lines[17];
 				case EHeaderAttribute.Max: return lines[18];
+			}
+			return "";
+		}*/
+
+		private string GetLineContaining(string[] pLines, EHeaderAttribute pKey)
+		{
+			for(int i = 0; i < pLines.Length; i++)
+			{
+				string line = pLines[i];
+				if(line.Contains(GetHeaderAttributeKeyString(pKey)))
+					return line;
+			}
+			return "";
+		}
+
+		private string GetHeaderAttributeKeyString(EHeaderAttribute pKey){
+			switch(pKey)
+			{
+				case EHeaderAttribute.Scale:
+					return "scale factor x y z";
+				case EHeaderAttribute.Offset:
+					return "offset x y z";
+				case EHeaderAttribute.Min:
+					return "min x y z";
+				case EHeaderAttribute.Max:
+					return "max x y z";
 			}
 			return "";
 		}

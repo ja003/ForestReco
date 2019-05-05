@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -980,10 +981,13 @@ namespace ForestReco
 			CParameterSetter.SetParameter(
 				ESettings.forestFilePath, textForestFilePath.Text);
 
-			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
-			string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
+			string fullFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);			
+			
+			string[] lines = CCmdController.GetHeaderLines(fullFilePath);
+
+			//string[] lines = CProgramLoader.GetFileLines(fullFilePath, 20);
 			if(lines == null)
-			{ return; }
+				return;
 
 			if(CSequenceController.IsSequence())
 			{ return; }
@@ -1167,7 +1171,7 @@ namespace ForestReco
 			{ return; }
 			if(!Directory.Exists(folderPath))
 			{ return; }
-			System.Diagnostics.Process.Start(folderPath);
+			Process.Start(folderPath);
 		}
 
 		private void checkBoxAutoTreeHeight_CheckedChanged(object sender, EventArgs e)
@@ -1309,7 +1313,7 @@ namespace ForestReco
 		/// </summary>
 		private void buttonTest1_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process currentProcess;
+			Process currentProcess;
 
 			//X: 506000		- 506350
 			//Y: 6489940	- 5490200
@@ -1326,7 +1330,6 @@ namespace ForestReco
 			bool splitFileExists = File.Exists(splitFileName + LAS);
 			CDebug.WriteLine($"split file: {splitFileName} exists = {splitFileExists}");
 
-			
 
 			if(!splitFileExists)
 			{
@@ -1338,7 +1341,7 @@ namespace ForestReco
 					keepXY +
 					" -o " +
 					splitFileName + LAS;
-				currentProcess = System.Diagnostics.Process.Start("CMD.exe", split);
+				currentProcess = Process.Start("CMD.exe", split);
 
 				while(!currentProcess.HasExited)
 				{
@@ -1396,7 +1399,7 @@ namespace ForestReco
 				heightFileName + LAS +
 				" -o " +
 				classifyFileName + LAS;
-				currentProcess = System.Diagnostics.Process.Start("CMD.exe", classify);
+				currentProcess = Process.Start("CMD.exe", classify);
 
 				while(!currentProcess.HasExited)
 				{
@@ -1419,7 +1422,7 @@ namespace ForestReco
 				" -o " +
 				txtFileName +
 				" -parse xyzcu -sep tab -header percent";
-				currentProcess = System.Diagnostics.Process.Start("CMD.exe", toTxt);
+				currentProcess = Process.Start("CMD.exe", toTxt);
 			}
 		}
 	}

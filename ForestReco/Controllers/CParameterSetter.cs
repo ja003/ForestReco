@@ -119,6 +119,7 @@ namespace ForestReco
 		outputFolderPath,
 		checkTreeFilePath,
 		analyticsFilePath,
+		tmpFilesFolderPath,
 
 		//ints
 		partitionStep,

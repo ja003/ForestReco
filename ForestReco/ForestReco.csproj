@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CBitmapExporter.cs" />
+    <Compile Include="Controllers\CCmdController.cs" />
     <Compile Include="Controllers\CMaterialManager.cs" />
     <Compile Include="Controllers\CCheckTreeManager.cs" />
     <Compile Include="Controllers\CParameterSetter.cs" />

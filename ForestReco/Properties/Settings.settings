@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="forestFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">D:\Resources\ForestReco\podklady\data-small\TXT\BK_1000AGL_59_72_97_x90_y62.txt</Value>
     </Setting>
     <Setting Name="reftreeFolderPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -76,6 +76,9 @@
     </Setting>
     <Setting Name="exportBitmap" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="tmpFilesFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\Resources\ForestReco\podklady\data-small\tmpFiles</Value>
     </Setting>
   </Settings>
 </SettingsFile>

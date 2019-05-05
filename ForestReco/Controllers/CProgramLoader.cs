@@ -2,10 +2,12 @@
 using ObjParser;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ForestReco
@@ -34,7 +36,7 @@ namespace ForestReco
 			if (!File.Exists(fullFilePath)) { return null; }
 
 			string[] lines = new string[pLines];
-
+			
 			int count = 0;
 			using (StreamReader sr = File.OpenText(pFile))
 			{
