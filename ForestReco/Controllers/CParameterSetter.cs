@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Security;
 using System.Windows.Forms;
 
 namespace ForestReco
@@ -13,10 +10,10 @@ namespace ForestReco
 		public static float treeExtent => GetFloatSettings(ESettings.treeExtent);
 		public static float treeExtentMultiply => GetFloatSettings(ESettings.treeExtentMultiply);
 		public static float groundArrayStep => GetFloatSettings(ESettings.groundArrayStep);
-		
+
 		public static void Init()
 		{
-			if (!GetBoolSettings(ESettings.consoleVisible))
+			if(!GetBoolSettings(ESettings.consoleVisible))
 			{
 				IntPtr handle = CConsole.GetConsoleWindow();
 				CConsole.ShowWindow(handle, SW_HIDE);
@@ -63,7 +60,7 @@ namespace ForestReco
 		{
 			FolderBrowserDialog fbd = new FolderBrowserDialog();
 			DialogResult dr = fbd.ShowDialog();
-			if (dr == DialogResult.OK)
+			if(dr == DialogResult.OK)
 			{
 				return fbd.SelectedPath;
 			}
@@ -71,24 +68,37 @@ namespace ForestReco
 			return "";
 		}
 
-		public static string SelectFile(string pTitle, string pExtension, string pFileDescription)
+		public static string SelectFile(string pTitle, string pExtension, string pFileDescription) =>
+			SelectFile(pTitle, new List<string>() { pExtension }, pFileDescription);
+
+		public static string SelectFile(string pTitle, List<string> pExtensions, string pFileDescription)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.RestoreDirectory = true;
-			ofd.Filter = $"{pFileDescription} files (*.{pExtension})|*.{pExtension}";
+			string extensionString = "";
+			foreach(string e in pExtensions)
+			{
+				//extensionString += $"(*.{e})|*.{e}" + (pExtensions.IndexOf(e) == pExtensions.Count - 1 ? "" : ";");
+				bool isLast = pExtensions.IndexOf(e) == pExtensions.Count - 1;
+				extensionString += $"*.{e}" + (isLast ? "" : ";");
+			}
+
+			string filterText = $"{pFileDescription} files [{extensionString}] |{extensionString}";
+			//string filterText = $"{extensionString}";
+			ofd.Filter = filterText;
+			//ofd.Filter = $"{pFileDescription} files (*.{pExtension})|*.{pExtension}";
 			ofd.Title = pTitle;
 			ofd.ShowHelp = true;
 			DialogResult dr = ofd.ShowDialog();
-			if (dr == DialogResult.OK)
+			if(dr == DialogResult.OK)
 			{
 				return ofd.FileName;
 			}
 			return "";
 		}
 
-
-		const int SW_HIDE = 0;
-		const int SW_SHOW = 5;
+		private const int SW_HIDE = 0;
+		private const int SW_SHOW = 5;
 
 		public static void ToggleConsoleVisibility()
 		{

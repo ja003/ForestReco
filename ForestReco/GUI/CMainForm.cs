@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ForestReco.GUI;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -11,11 +12,12 @@ namespace ForestReco
 {
 	public class CMainForm : Form
 	{
-		private TextBox textForestFilePath;
+		#region properties
+		public TextBox textForestFilePath;
 		private Button btnReftreesFolder;
-		private TextBox textReftreeFolder;
+		public TextBox textReftreeFolder;
 		private Button btnStart;
-		private TextBox textOutputFolder;
+		public TextBox textOutputFolder;
 		private Button btnOutputFolder;
 		public ProgressBar progressBar;
 		public TextBox textProgress;
@@ -24,7 +26,7 @@ namespace ForestReco
 		private Label labelPartition;
 		private TextBox textPartition;
 		private TrackBar trackBarPartition;
-		private TextBox textCheckTreePath;
+		public TextBox textCheckTreePath;
 		private Button btnSelectCheckTree;
 		private TrackBar trackBarGroundArrayStep;
 		private TextBox textGroundArrayStep;
@@ -59,8 +61,8 @@ namespace ForestReco
 		private CheckBox checkBoxColorTrees;
 		private CheckBox checkBoxExport3d;
 		private Button btnSequence;
-		private TextBox textAnalyticsFile;
-		private Button btnAnalytics;
+		public TextBox textAnalyticsFile;
+		public Button btnAnalytics;
 		private CheckBox checkBoxExportBitmap;
 		private System.ComponentModel.BackgroundWorker backgroundWorker1;
 		private Button button1;
@@ -74,10 +76,19 @@ namespace ForestReco
 		private Label label2;
 		private Button btnSellectForest;
 
+		private TextBox textLasTools;
+		private Button btnLasTools;
+		#endregion
+
+
 		private CUiRangeController rangeController;
+		private CUiPathSelection pathSelection;
 
 		public CMainForm()
 		{
+
+			rangeController = new CUiRangeController(this);
+			pathSelection = new CUiPathSelection(this);
 
 			InitializeComponent();
 			InitializeValues();
@@ -86,12 +97,10 @@ namespace ForestReco
 			backgroundWorker1.WorkerSupportsCancellation = true;
 			backgroundWorker1.WorkerReportsProgress = true;
 
-			rangeController = new CUiRangeController(this);
 		}
 
 		private void InitializeValues()
 		{
-
 			CParameterSetter.Init();
 			textForestFilePath.Text = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			textReftreeFolder.Text = CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath);
@@ -121,17 +130,7 @@ namespace ForestReco
 			//average tree height
 			textAvgTreeHeight.Text = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh) + " m";
 			trackBarAvgTreeHeight.Value = CParameterSetter.GetIntSettings(ESettings.avgTreeHeigh);
-
-			//RANGE
-			//int min = (int)CParameterSetter.GetFloatSettings(ESettings.rangeXmin);
-			//trackBarRangeXmin.SetRange(min, min);
-			//trackBarRangeXmin.Value = trackBarRangeXmin.Minimum;
-			//trackBarRangeXmax.Value = trackBarRangeXmax.Maximum;
-			//int max = (int)CParameterSetter.GetFloatSettings(ESettings.rangeXmax);
-			//trackBarRangeXmax.SetRange(max, max);
-			//trackBarRangeXmax.Value = max;
-
-
+			
 			//bools
 			checkBoxExport3d.Checked =
 				CParameterSetter.GetBoolSettings(ESettings.export3d);
@@ -168,6 +167,7 @@ namespace ForestReco
 
 			SetStartBtnEnabled(true);
 
+			#region tooltip
 			CTooltipManager.AssignTooltip(myToolTip, btnSellectForest, ESettings.forestFilePath);
 			CTooltipManager.AssignTooltip(myToolTip, btnSequence, ETooltip.sequenceFile);
 			CTooltipManager.AssignTooltip(myToolTip, btnReftreesFolder, ESettings.reftreeFolderPath);
@@ -203,6 +203,7 @@ namespace ForestReco
 			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedTotalSize, ETooltip.EstimatedTotalSize);
 			CTooltipManager.AssignTooltip(myToolTip, labelEstimatedPartitionSize, ETooltip.EstimatedPartitionSize);
 			CTooltipManager.AssignTooltip(myToolTip, trackBarAvgTreeHeight, ETooltip.avgTreeHeighSlider);
+			#endregion
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -243,7 +244,7 @@ namespace ForestReco
 			CParameterSetter.ToggleConsoleVisibility();
 		}
 
-
+		#region INIT
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
@@ -309,6 +310,8 @@ namespace ForestReco
 			this.trackBarRangeYmin = new System.Windows.Forms.TrackBar();
 			this.textRangeY = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
+			this.textLasTools = new System.Windows.Forms.TextBox();
+			this.btnLasTools = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -886,6 +889,7 @@ namespace ForestReco
 			this.trackBarRangeXmin.TabIndex = 63;
 			this.trackBarRangeXmin.TickFrequency = 5;
 			this.trackBarRangeXmin.Value = 10;
+			this.trackBarRangeXmin.Scroll += new System.EventHandler(this.trackBarRangeXmin_Scroll);
 			// 
 			// textRangeX
 			// 
@@ -918,6 +922,7 @@ namespace ForestReco
 			this.trackBarRangeXmax.TabIndex = 64;
 			this.trackBarRangeXmax.TickFrequency = 5;
 			this.trackBarRangeXmax.Value = 10;
+			this.trackBarRangeXmax.Scroll += new System.EventHandler(this.trackBarRangeXmax_Scroll);
 			// 
 			// trackBarRangeYmax
 			// 
@@ -932,6 +937,7 @@ namespace ForestReco
 			this.trackBarRangeYmax.TabIndex = 68;
 			this.trackBarRangeYmax.TickFrequency = 5;
 			this.trackBarRangeYmax.Value = 10;
+			this.trackBarRangeYmax.Scroll += new System.EventHandler(this.trackBarRangeYmax_Scroll);
 			// 
 			// trackBarRangeYmin
 			// 
@@ -946,6 +952,7 @@ namespace ForestReco
 			this.trackBarRangeYmin.TabIndex = 67;
 			this.trackBarRangeYmin.TickFrequency = 5;
 			this.trackBarRangeYmin.Value = 10;
+			this.trackBarRangeYmin.Scroll += new System.EventHandler(this.trackBarRangeYmin_Scroll);
 			// 
 			// textRangeY
 			// 
@@ -965,10 +972,28 @@ namespace ForestReco
 			this.label2.TabIndex = 65;
 			this.label2.Text = "range Y";
 			// 
+			// textLasTools
+			// 
+			this.textLasTools.Location = new System.Drawing.Point(1021, 232);
+			this.textLasTools.Name = "textLasTools";
+			this.textLasTools.Size = new System.Drawing.Size(149, 22);
+			this.textLasTools.TabIndex = 70;
+			// 
+			// btnLasTools
+			// 
+			this.btnLasTools.Location = new System.Drawing.Point(886, 228);
+			this.btnLasTools.Name = "btnLasTools";
+			this.btnLasTools.Size = new System.Drawing.Size(121, 31);
+			this.btnLasTools.TabIndex = 69;
+			this.btnLasTools.Text = "LAStools";
+			this.btnLasTools.UseVisualStyleBackColor = true;
+			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
 			this.ClientSize = new System.Drawing.Size(1182, 528);
+			this.Controls.Add(this.textLasTools);
+			this.Controls.Add(this.btnLasTools);
 			this.Controls.Add(this.trackBarRangeYmax);
 			this.Controls.Add(this.trackBarRangeYmin);
 			this.Controls.Add(this.textRangeY);
@@ -1045,71 +1070,40 @@ namespace ForestReco
 			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeYmin)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
+		#endregion
 
+		#region path selection
 		private void textOutputFolder_TextChanged(object sender, EventArgs e)
 		{
-			//CDebug.Warning("txt change " + textOutputFolder.Text);
-			CParameterSetter.SetParameter(
-				ESettings.outputFolderPath, textOutputFolder.Text);
+			pathSelection.textOutputFolder_TextChanged();
 		}
 
 		private void btnOutputFolder_Click(object sender, EventArgs e)
 		{
-			string folder = CParameterSetter.SelectFolder();
-			if(folder.Length == 0)
-			{
-				CDebug.Warning("no folder selected");
-				return;
-			}
-			textOutputFolder.Clear();
-			textOutputFolder.Text = folder;
+			pathSelection.btnOutputFolder_Click();
 		}
-
-
+		
 		private void btnSellectReftreeFodlers_Click(object sender, EventArgs e)
 		{
-			string folder = CParameterSetter.SelectFolder();
-			if(folder.Length == 0)
-			{
-				CDebug.Warning("no folder selected");
-				return;
-			}
-			textReftreeFolder.Clear();
-			textReftreeFolder.Text = folder;
+			pathSelection.btnSellectReftreeFodlers_Click();
 		}
 
 		private void textReftreeFolder_TextChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(
-				ESettings.reftreeFolderPath, textReftreeFolder.Text);
+			pathSelection.textReftreeFolder_TextChanged();
 		}
 
 
 		private void btnSellectForest_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select forest file", "txt", "forest");
-			if(path.Length == 0)
-			{
-				CDebug.Warning("no path selected");
-				return;
-			}
-			textForestFilePath.Clear();
-			textForestFilePath.Text = path;
+			pathSelection.btnSellectForest_Click();
 		}
 
 
 		private void btnSequence_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select sequence config", "seq", "sequence");
-			if(path.Length == 0)
-			{
-				CDebug.Warning("no path selected");
-				return;
-			}
-			textForestFilePath.Clear();
-			textForestFilePath.Text = path;
+			pathSelection.btnSequence_Click();
 		}
 
 		private void textForestFilePath_TextChanged(object sender, EventArgs e)
@@ -1135,47 +1129,34 @@ namespace ForestReco
 			rangeController?.UpdateRangeBounds();
 		}
 
-		private void RefreshEstimatedSize()
-		{
-			CResultSize.WriteEstimatedSize(textBoxEstimatedSize, textBoxPartitionSize);
-		}
 
 		private void btnSelectCheckTree_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select checktree file", "txt", "checktree");
-			if(path.Length == 0)
-			{
-				CDebug.Warning("no path selected");
-				return;
-			}
-			textCheckTreePath.Clear();
-			textCheckTreePath.Text = path;
+			pathSelection.btnSelectCheckTree_Click();
 		}
 
 		private void buttonAnalytics_Click(object sender, EventArgs e)
 		{
-			string path = CParameterSetter.SelectFile("Select analytics file (CSV)", "csv", "csv");
-			if(path.Length == 0)
-			{
-				CDebug.Warning("no path selected");
-				return;
-			}
-			textAnalyticsFile.Clear();
-			textAnalyticsFile.Text = path;
+			pathSelection.buttonAnalytics_Click();
 		}
 
 		private void textAnalyticsFile_TextChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(
-				ESettings.analyticsFilePath, textAnalyticsFile.Text);
+			pathSelection.textAnalyticsFile_TextChanged();
 		}
 
 		private void textCheckTreePath_TextChanged(object sender, EventArgs e)
 		{
-			CParameterSetter.SetParameter(
-				ESettings.checkTreeFilePath, textCheckTreePath.Text);
+			pathSelection.textCheckTreePath_TextChanged();
 		}
 
+		#endregion
+
+		private void RefreshEstimatedSize()
+		{
+			CResultSize.WriteEstimatedSize(textBoxEstimatedSize, textBoxPartitionSize);
+		}
+		
 		private void trackBarPartition_Scroll(object sender, EventArgs e)
 		{
 			if(blockRecursion)
@@ -1564,6 +1545,29 @@ namespace ForestReco
 				currentProcess = Process.Start("CMD.exe", toTxt);
 			}
 		}
+
+		#region range
+		private void trackBarRangeXmin_Scroll(object sender, EventArgs e)
+		{
+			rangeController.trackBarRangeXmin_Scroll(sender, e);
+		}
+
+		private void trackBarRangeXmax_Scroll(object sender, EventArgs e)
+		{
+			rangeController.trackBarRangeXmax_Scroll(sender, e);
+		}
+
+		private void trackBarRangeYmin_Scroll(object sender, EventArgs e)
+		{
+			rangeController.trackBarRangeYmin_Scroll(sender, e);
+		}
+
+		private void trackBarRangeYmax_Scroll(object sender, EventArgs e)
+		{
+			rangeController.trackBarRangeYmax_Scroll(sender, e);
+		}
+
+		#endregion
 
 
 		//TODO: test if CUiRangeController is ok, then delete

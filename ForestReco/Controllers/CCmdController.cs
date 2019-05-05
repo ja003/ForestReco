@@ -27,7 +27,7 @@ namespace ForestReco
 				while(!currentProcess.HasExited)
 				{
 					Thread.Sleep(1000);
-					CDebug.WriteLine("waiting for lassplit to finish");
+					CDebug.WriteLine("waiting for lasinfo to finish");
 				}
 			}
 

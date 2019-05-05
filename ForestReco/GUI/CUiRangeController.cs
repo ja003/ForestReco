@@ -9,17 +9,8 @@ namespace ForestReco
 		public CUiRangeController(CMainForm pForm)
 		{
 			form = pForm;
-
-			form.trackBarRangeXmin.Scroll += new EventHandler(trackBarRangeXmin_Scroll);
-			form.trackBarRangeXmin.ValueChanged += new EventHandler(trackBarRangeXmin_Scroll);
-			form.trackBarRangeXmax.Scroll += new EventHandler(trackBarRangeXmax_Scroll);
-			form.trackBarRangeYmax.Scroll += new EventHandler(trackBarRangeYmax_Scroll);
-			form.trackBarRangeYmin.Scroll += new System.EventHandler(trackBarRangeYmin_Scroll);
-
-			UpdateRangeBounds();
 		}
-
-
+		
 		private void SetRangeX()
 		{
 			form.textRangeX.Text =
