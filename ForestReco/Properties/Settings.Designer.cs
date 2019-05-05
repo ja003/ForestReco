@@ -358,5 +358,29 @@ namespace ForestReco.Properties {
                 this["rangeXmax"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int rangeYmin {
+            get {
+                return ((int)(this["rangeYmin"]));
+            }
+            set {
+                this["rangeYmin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int rangeYmax {
+            get {
+                return ((int)(this["rangeYmax"]));
+            }
+            set {
+                this["rangeYmax"] = value;
+            }
+        }
     }
 }

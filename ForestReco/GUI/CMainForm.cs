@@ -68,6 +68,10 @@ namespace ForestReco
 		private TextBox textRangeX;
 		private Label label1;
 		private TrackBar trackBarRangeXmax;
+		private TrackBar trackBarRangeYmax;
+		private TrackBar trackBarRangeYmin;
+		private TextBox textRangeY;
+		private Label label2;
 		private Button btnSellectForest;
 
 		public CMainForm()
@@ -297,6 +301,10 @@ namespace ForestReco
 			this.textRangeX = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.trackBarRangeXmax = new System.Windows.Forms.TrackBar();
+			this.trackBarRangeYmax = new System.Windows.Forms.TrackBar();
+			this.trackBarRangeYmin = new System.Windows.Forms.TrackBar();
+			this.textRangeY = new System.Windows.Forms.TextBox();
+			this.label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPartition)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarGroundArrayStep)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTreeExtent)).BeginInit();
@@ -304,6 +312,8 @@ namespace ForestReco
 			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmin)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmax)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeYmax)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeYmin)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnSellectForest
@@ -908,10 +918,62 @@ namespace ForestReco
 			this.trackBarRangeXmax.Value = 10;
 			this.trackBarRangeXmax.Scroll += new System.EventHandler(this.trackBarRangeXmax_Scroll);
 			// 
+			// trackBarRangeYmax
+			// 
+			this.trackBarRangeYmax.AutoSize = false;
+			this.trackBarRangeYmax.LargeChange = 10;
+			this.trackBarRangeYmax.Location = new System.Drawing.Point(999, 195);
+			this.trackBarRangeYmax.Maximum = 30;
+			this.trackBarRangeYmax.Minimum = 5;
+			this.trackBarRangeYmax.Name = "trackBarRangeYmax";
+			this.trackBarRangeYmax.Size = new System.Drawing.Size(92, 30);
+			this.trackBarRangeYmax.SmallChange = 5;
+			this.trackBarRangeYmax.TabIndex = 68;
+			this.trackBarRangeYmax.TickFrequency = 5;
+			this.trackBarRangeYmax.Value = 10;
+			this.trackBarRangeYmax.Scroll += new System.EventHandler(this.trackBarRangeYmax_Scroll);
+			// 
+			// trackBarRangeYmin
+			// 
+			this.trackBarRangeYmin.AutoSize = false;
+			this.trackBarRangeYmin.LargeChange = 10;
+			this.trackBarRangeYmin.Location = new System.Drawing.Point(901, 195);
+			this.trackBarRangeYmin.Maximum = 30;
+			this.trackBarRangeYmin.Minimum = 5;
+			this.trackBarRangeYmin.Name = "trackBarRangeYmin";
+			this.trackBarRangeYmin.Size = new System.Drawing.Size(92, 30);
+			this.trackBarRangeYmin.SmallChange = 5;
+			this.trackBarRangeYmin.TabIndex = 67;
+			this.trackBarRangeYmin.TickFrequency = 5;
+			this.trackBarRangeYmin.Value = 10;
+			this.trackBarRangeYmin.Scroll += new System.EventHandler(this.trackBarRangeYmin_Scroll);
+			// 
+			// textRangeY
+			// 
+			this.textRangeY.Location = new System.Drawing.Point(972, 170);
+			this.textRangeY.Name = "textRangeY";
+			this.textRangeY.ReadOnly = true;
+			this.textRangeY.Size = new System.Drawing.Size(119, 22);
+			this.textRangeY.TabIndex = 66;
+			this.textRangeY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(908, 172);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(58, 17);
+			this.label2.TabIndex = 65;
+			this.label2.Text = "range Y";
+			// 
 			// CMainForm
 			// 
 			this.BackColor = System.Drawing.SystemColors.MenuBar;
 			this.ClientSize = new System.Drawing.Size(1182, 528);
+			this.Controls.Add(this.trackBarRangeYmax);
+			this.Controls.Add(this.trackBarRangeYmin);
+			this.Controls.Add(this.textRangeY);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.trackBarRangeXmax);
 			this.Controls.Add(this.trackBarRangeXmin);
 			this.Controls.Add(this.textRangeX);
@@ -980,6 +1042,8 @@ namespace ForestReco
 			((System.ComponentModel.ISupportInitialize)(this.trackBarAvgTreeHeight)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmin)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeXmax)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeYmax)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarRangeYmin)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1067,7 +1131,7 @@ namespace ForestReco
 
 			CProjectData.header = new CHeaderInfo(lines);
 			RefreshEstimatedSize();
-			UpdateRangeXBounds();
+			UpdateRangeBounds();
 		}
 
 		private void RefreshEstimatedSize()
@@ -1503,19 +1567,29 @@ namespace ForestReco
 		private void SetRangeX()
 		{
 			textRangeX.Text = 
-				$"[{(trackBarRangeXmin.Value / 10f).ToString("0.0")}]-" +
+				$"[{(trackBarRangeXmin.Value / 10f).ToString("0.0")}] - " +
 				$"[{(trackBarRangeXmax.Value / 10f).ToString("0.0")}]";
 			CParameterSetter.SetParameter(ESettings.rangeXmin, trackBarRangeXmin.Value);
 			CParameterSetter.SetParameter(ESettings.rangeXmax, trackBarRangeXmax.Value);
 		}
 
-		private void UpdateRangeXBounds()
+		private void SetRangeY()
 		{
+			textRangeY.Text =
+				$"[{(trackBarRangeYmin.Value / 10f).ToString("0.0")}] - " +
+				$"[{(trackBarRangeYmax.Value / 10f).ToString("0.0")}]";
+			CParameterSetter.SetParameter(ESettings.rangeYmin, trackBarRangeYmin.Value);
+			CParameterSetter.SetParameter(ESettings.rangeYmax, trackBarRangeYmax.Value);
+		}
+
+		private void UpdateRangeBounds()
+		{
+			//X
 			trackBarRangeXmin.SetRange((int)CProjectData.header.Min.X * 10, (int)CProjectData.header.Max.X * 10);
 			trackBarRangeXmax.SetRange((int)CProjectData.header.Min.X * 10, (int)CProjectData.header.Max.X * 10);
 
-			int minValue = (int)(CParameterSetter.GetIntSettings(ESettings.rangeXmin));
-			int maxValue = (int)(CParameterSetter.GetIntSettings(ESettings.rangeXmax));
+			int minValue = CParameterSetter.GetIntSettings(ESettings.rangeXmin);
+			int maxValue = CParameterSetter.GetIntSettings(ESettings.rangeXmax);
 
 			trackBarRangeXmin.Value = (int)CUtils.LimitToRange(minValue, 
 				trackBarRangeXmin.Minimum, trackBarRangeXmin.Maximum);
@@ -1523,6 +1597,21 @@ namespace ForestReco
 				trackBarRangeXmax.Minimum, trackBarRangeXmax.Maximum);
 
 			SetRangeX();
+
+			//Y
+			//in project Y = elevation, but in lidar it is Z 
+			trackBarRangeYmin.SetRange((int)CProjectData.header.Min.Z * 10, (int)CProjectData.header.Max.Z * 10);
+			trackBarRangeYmax.SetRange((int)CProjectData.header.Min.Z * 10, (int)CProjectData.header.Max.Z * 10);
+
+			minValue = CParameterSetter.GetIntSettings(ESettings.rangeYmin);
+			maxValue = CParameterSetter.GetIntSettings(ESettings.rangeYmax);
+
+			trackBarRangeYmin.Value = (int)CUtils.LimitToRange(minValue,
+				trackBarRangeYmin.Minimum, trackBarRangeYmin.Maximum);
+			trackBarRangeYmax.Value = (int)CUtils.LimitToRange(maxValue,
+				trackBarRangeYmax.Minimum, trackBarRangeYmax.Maximum);
+
+			SetRangeY();
 		}
 
 		private void trackBarRangeXmax_Scroll(object sender, EventArgs e)
@@ -1533,6 +1622,16 @@ namespace ForestReco
 		private void trackBarRangeXmin_Scroll(object sender, EventArgs e)
 		{
 			SetRangeX();
+		}
+
+		private void trackBarRangeYmin_Scroll(object sender, EventArgs e)
+		{
+			SetRangeY();
+		}
+
+		private void trackBarRangeYmax_Scroll(object sender, EventArgs e)
+		{
+			SetRangeY();
 		}
 	}
 }
