@@ -64,18 +64,21 @@ namespace ForestReco
 		private CheckBox checkBoxExportBitmap;
 		private System.ComponentModel.BackgroundWorker backgroundWorker1;
 		private Button button1;
-		private TrackBar trackBarRangeXmin;
-		private TextBox textRangeX;
+		public TrackBar trackBarRangeXmin;
+		public TextBox textRangeX;
 		private Label label1;
-		private TrackBar trackBarRangeXmax;
-		private TrackBar trackBarRangeYmax;
-		private TrackBar trackBarRangeYmin;
-		private TextBox textRangeY;
+		public TrackBar trackBarRangeXmax;
+		public TrackBar trackBarRangeYmax;
+		public TrackBar trackBarRangeYmin;
+		public TextBox textRangeY;
 		private Label label2;
 		private Button btnSellectForest;
 
+		private CUiRangeController rangeController;
+
 		public CMainForm()
 		{
+
 			InitializeComponent();
 			InitializeValues();
 
@@ -83,11 +86,12 @@ namespace ForestReco
 			backgroundWorker1.WorkerSupportsCancellation = true;
 			backgroundWorker1.WorkerReportsProgress = true;
 
-			//CProgramStarter.Start();
+			rangeController = new CUiRangeController(this);
 		}
 
 		private void InitializeValues()
 		{
+
 			CParameterSetter.Init();
 			textForestFilePath.Text = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			textReftreeFolder.Text = CParameterSetter.GetStringSettings(ESettings.reftreeFolderPath);
@@ -882,8 +886,6 @@ namespace ForestReco
 			this.trackBarRangeXmin.TabIndex = 63;
 			this.trackBarRangeXmin.TickFrequency = 5;
 			this.trackBarRangeXmin.Value = 10;
-			this.trackBarRangeXmin.Scroll += new System.EventHandler(this.trackBarRangeXmin_Scroll);
-			this.trackBarRangeXmin.ValueChanged += new System.EventHandler(this.trackBarRangeXmin_Scroll);
 			// 
 			// textRangeX
 			// 
@@ -916,7 +918,6 @@ namespace ForestReco
 			this.trackBarRangeXmax.TabIndex = 64;
 			this.trackBarRangeXmax.TickFrequency = 5;
 			this.trackBarRangeXmax.Value = 10;
-			this.trackBarRangeXmax.Scroll += new System.EventHandler(this.trackBarRangeXmax_Scroll);
 			// 
 			// trackBarRangeYmax
 			// 
@@ -931,7 +932,6 @@ namespace ForestReco
 			this.trackBarRangeYmax.TabIndex = 68;
 			this.trackBarRangeYmax.TickFrequency = 5;
 			this.trackBarRangeYmax.Value = 10;
-			this.trackBarRangeYmax.Scroll += new System.EventHandler(this.trackBarRangeYmax_Scroll);
 			// 
 			// trackBarRangeYmin
 			// 
@@ -946,7 +946,6 @@ namespace ForestReco
 			this.trackBarRangeYmin.TabIndex = 67;
 			this.trackBarRangeYmin.TickFrequency = 5;
 			this.trackBarRangeYmin.Value = 10;
-			this.trackBarRangeYmin.Scroll += new System.EventHandler(this.trackBarRangeYmin_Scroll);
 			// 
 			// textRangeY
 			// 
@@ -1131,7 +1130,9 @@ namespace ForestReco
 
 			CProjectData.header = new CHeaderInfo(lines);
 			RefreshEstimatedSize();
-			UpdateRangeBounds();
+
+			//dont update if not inited yet
+			rangeController?.UpdateRangeBounds();
 		}
 
 		private void RefreshEstimatedSize()
@@ -1564,6 +1565,9 @@ namespace ForestReco
 			}
 		}
 
+
+		//TODO: test if CUiRangeController is ok, then delete
+		/*
 		private void SetRangeX()
 		{
 			textRangeX.Text = 
@@ -1632,6 +1636,6 @@ namespace ForestReco
 		private void trackBarRangeYmax_Scroll(object sender, EventArgs e)
 		{
 			SetRangeY();
-		}
+		}*/
 	}
 }

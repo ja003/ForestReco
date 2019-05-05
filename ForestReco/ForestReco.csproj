@@ -79,6 +79,7 @@
     <Compile Include="Enums\EExportStrategy.cs" />
     <Compile Include="GUI\CTooltipManager.cs" />
     <Compile Include="GUI\CUiInputCheck.cs" />
+    <Compile Include="GUI\CUiRangeController.cs" />
     <Compile Include="ObjParser\Extent.cs" />
     <Compile Include="ObjParser\Mtl.cs" />
     <Compile Include="ObjParser\Obj.cs" />
