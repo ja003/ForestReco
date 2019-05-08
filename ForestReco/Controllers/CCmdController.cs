@@ -6,29 +6,41 @@ namespace ForestReco
 	public static class CCmdController
 	{
 		private static string LasToolsFolder => CParameterSetter.GetStringSettings(ESettings.lasToolsFolderPath);
+		private static string tmpFolder => CParameterSetter.GetStringSettings(ESettings.tmpFilesFolderPath) + "\\";
 
 		public static string[] GetHeaderLines(string pForestFileFullPath)
 		{
 			string infoFileName = Path.GetFileNameWithoutExtension(pForestFileFullPath) + "_i.txt";
-			string tmpFolder = CParameterSetter.GetStringSettings(ESettings.tmpFilesFolderPath);
-			string infoFileFullPath = tmpFolder + "//" + infoFileName;
-			bool infoFileExists = File.Exists(infoFileFullPath);
-			CDebug.WriteLine($"info file: {infoFileName} exists = {infoFileExists}");
+			string infoFileFullPath = tmpFolder + infoFileName;
 
-			if(!infoFileExists)
-			{
-				string info =
-					"/C " +
+			string command =
 					"lasinfo " +
 					pForestFileFullPath +
 					" -o " +
 					infoFileFullPath;
 
+			RunLasToolsCmd(command, infoFileName);
+
+			return CProgramLoader.GetFileLines(infoFileFullPath, 20);
+		}
+
+		public static void RunLasToolsCmd(string pLasToolCommand, string pOutputFileName)
+		{
+			string outputFilePath = tmpFolder + pOutputFileName;
+			bool outputFileExists = File.Exists(outputFilePath);
+			CDebug.WriteLine($"split file: {pOutputFileName} exists = {outputFileExists}");
+
+			if(!outputFileExists)
+			{
+				string command = "/C " 
+					//+"pushd " + LasToolsFolder + " "
+					+ pLasToolCommand;
+
 				ProcessStartInfo processStartInfo = new ProcessStartInfo
 				{
 					WorkingDirectory = LasToolsFolder,
-					FileName = "cmd.exe",
-					Arguments = info
+					FileName = "CMD.exe",
+					Arguments = command
 				};
 
 				Process currentProcess = Process.Start(processStartInfo);
@@ -41,17 +53,11 @@ namespace ForestReco
 				if(result == 1) //0 = OK, 1 = error...i.e. the .exe file is missing
 				{
 					CDebug.Error("GetHeaderLines -lasinfo error");
-					return null;
+					//return null;
 				}
-
-				/*while(!currentProcess.HasExited)
-				{
-					Thread.Sleep(1000);
-					CDebug.WriteLine("waiting for lasinfo to finish");
-				}*/
 			}
+			//return outputFilePath;
 
-			return CProgramLoader.GetFileLines(infoFileFullPath, 20);
 		}
 
 

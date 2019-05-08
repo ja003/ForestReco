@@ -11,6 +11,9 @@ namespace ForestReco
 		public Vector3 Min;
 		public Vector3 Max;
 
+		public Vector3 Min_noOffset => Min + Offset;
+		public Vector3 Max_noOffset => Max + Offset;
+
 		public Vector3 BotLeftCorner => new Vector3(Min.X, 0, Min.Z);
 		public Vector3 TopRightCorner => new Vector3(Max.X, 0, Max.Z);
 		public Vector3 Center => (BotLeftCorner + TopRightCorner) / 2;

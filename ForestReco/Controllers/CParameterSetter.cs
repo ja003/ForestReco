@@ -11,6 +11,23 @@ namespace ForestReco
 		public static float treeExtentMultiply => GetFloatSettings(ESettings.treeExtentMultiply);
 		public static float groundArrayStep => GetFloatSettings(ESettings.groundArrayStep);
 
+		public static float GetRange(ESettings pRangeSetting)
+		{
+			switch(pRangeSetting)
+			{
+				case ESettings.rangeXmax:
+					return GetIntSettings(ESettings.rangeXmax) / 10f;
+				case ESettings.rangeXmin:
+					return GetIntSettings(ESettings.rangeXmin) / 10f;
+				case ESettings.rangeYmax:
+					return GetIntSettings(ESettings.rangeYmax) / 10f;
+				case ESettings.rangeYmin:
+					return GetIntSettings(ESettings.rangeYmin) / 10f;
+			}
+			CDebug.Error("GetRange - invalid arg");
+			return 0;
+		}
+
 		public static void Init()
 		{
 			if(!GetBoolSettings(ESettings.consoleVisible))
