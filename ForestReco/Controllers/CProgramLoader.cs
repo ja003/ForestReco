@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Numerics;
-using System.Threading;
 
 namespace ForestReco
 {
@@ -40,7 +39,9 @@ namespace ForestReco
 			min_y = CParameterSetter.GetRange(ESettings.rangeYmin);
 			max_y = CParameterSetter.GetRange(ESettings.rangeYmax);
 
-			string splitFileName = $"{fileName}_s[{min_x},{max_x}]-[{min_y},{max_y}]";
+			string resultFileName = $"{fileName}_s[{min_x},{max_x}]-[{min_y},{max_y}]";
+
+			string splitFileName = $"{resultFileName}_s";
 			const string LAS = ".las";
 			string tmpFolder = CParameterSetter.GetStringSettings(ESettings.tmpFilesFolderPath) + "\\";
 
@@ -54,86 +55,75 @@ namespace ForestReco
 					" -o " +
 					splitFilePath;
 
-					//todo: split file not created but no error...
-			CCmdController.RunLasToolsCmd(split, splitFileName + LAS);
+			//todo: split file not created but no error...
+			try
+			{
+				CCmdController.RunLasToolsCmd(split, splitFilePath);
+			}
+			catch(Exception e)
+			{
+				//split command creates file with other name...
+				CDebug.WriteLine($"exception {e}");
+			}
 
+			#region rename
 			//rename split file
-			//for some reason output split file gets appendix: "_0000000" => remove it
+			//for some reason output split file gets appendix: "_0000000" => rename it
 
 			//todo: move to Utils
 			// Source file to be renamed  
 			string sourceFile = splitFileName + "_0000000" + LAS;
 			// Create a FileInfo  
-			FileInfo fi = new FileInfo(sourceFile);
+			FileInfo fi = new FileInfo(tmpFolder + sourceFile);
 			// Check if file is there  
 			if(fi.Exists)
 			{
 				// Move file with a new name. Hence renamed.  
-				fi.MoveTo(splitFileName + LAS);
+				fi.MoveTo(tmpFolder + splitFileName + LAS);
 				Console.WriteLine("Split file Renamed.");
 			}
+			//else
+			//{
+			//	//todo: implement my own exception
+			//	throw new Exception("Split file not created");
+			//}
+			#endregion
 
-			string heightFileName = splitFileName + "_h";
-			bool heightFileExists = File.Exists(heightFileName + LAS);
-			CDebug.WriteLine($"height file: {heightFileName} exists = {heightFileExists}");
+			string heightFileName = resultFileName + "_h" + LAS;
+			string heightFilePath = tmpFolder + heightFileName;
 
-			if(!heightFileExists)
-			{
-				string height =
-					"/C " +
+			string height =
 					"lasheight -i " +
-					splitFileName + LAS +
+					splitFilePath +
 					" -o " +
-					heightFileName + LAS;
-				currentProcess = System.Diagnostics.Process.Start("CMD.exe", height);
-
-				while(!currentProcess.HasExited)
-				{
-					Thread.Sleep(1000);
-					CDebug.WriteLine("waiting for lasheight to finish");
-				}
-			}
+					heightFilePath;
+			CCmdController.RunLasToolsCmd(height, heightFilePath);
 
 
-			string classifyFileName = heightFileName + "_c";
-			bool classifyFileExists = File.Exists(classifyFileName + LAS);
-			CDebug.WriteLine($"classify file: {classifyFileName} exists = {classifyFileExists}");
+			string classifyFileName = resultFileName + "_c" + LAS;
+			string classifyFilePath = tmpFolder + classifyFileName;
 
-			if(!classifyFileExists)
-			{
-				string classify =
-				"/C " +
+			string classify =
 				"lasclassify -i " +
-				heightFileName + LAS +
+				heightFilePath +
 				" -o " +
-				classifyFileName + LAS;
-				currentProcess = Process.Start("CMD.exe", classify);
+				classifyFilePath;
+			CCmdController.RunLasToolsCmd(classify, classifyFilePath);
 
-				while(!currentProcess.HasExited)
-				{
-					Thread.Sleep(1000);
-					CDebug.WriteLine("waiting for lasclassify to finish");
-				}
-			}
 
 			//use split file name to get unique file name
-			string txtFileName = splitFileName + ".txt";
-			bool txtFileExists = File.Exists(txtFileName);
-			CDebug.WriteLine($"txt file: {txtFileName} exists = {txtFileExists}");
+			string txtFileName = resultFileName + ".txt";
+			string txtFilePath = tmpFolder + txtFileName;
 
-			if(!txtFileExists)
-			{
-				string toTxt =
-				"/C " +
+			string toTxt =
 				"las2txt -i " +
-				classifyFileName + LAS +
+				classifyFilePath +
 				" -o " +
-				txtFileName +
+				txtFilePath +
 				" -parse xyzcu -sep tab -header percent";
-				currentProcess = Process.Start("CMD.exe", toTxt);
-			}
+			CCmdController.RunLasToolsCmd(toTxt, txtFilePath);
 
-			return "";
+			return txtFilePath;
 		}
 
 

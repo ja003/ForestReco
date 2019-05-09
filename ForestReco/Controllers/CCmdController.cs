@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace ForestReco
@@ -11,30 +12,28 @@ namespace ForestReco
 		public static string[] GetHeaderLines(string pForestFileFullPath)
 		{
 			string infoFileName = Path.GetFileNameWithoutExtension(pForestFileFullPath) + "_i.txt";
-			string infoFileFullPath = tmpFolder + infoFileName;
+			string infoFilePath = tmpFolder + infoFileName;
 
 			string command =
 					"lasinfo " +
 					pForestFileFullPath +
 					" -o " +
-					infoFileFullPath;
+					infoFilePath;
 
-			RunLasToolsCmd(command, infoFileName);
+			RunLasToolsCmd(command, infoFilePath);
 
-			return CProgramLoader.GetFileLines(infoFileFullPath, 20);
+			return CProgramLoader.GetFileLines(infoFilePath, 20);
 		}
 
-		public static void RunLasToolsCmd(string pLasToolCommand, string pOutputFileName)
+		public static void RunLasToolsCmd(string pLasToolCommand, string pOutputFilePath)
 		{
-			string outputFilePath = tmpFolder + pOutputFileName;
-			bool outputFileExists = File.Exists(outputFilePath);
-			CDebug.WriteLine($"split file: {pOutputFileName} exists = {outputFileExists}");
+			//string outputFilePath = tmpFolder + pOutputFilePath;
+			bool outputFileExists = File.Exists(pOutputFilePath);
+			CDebug.WriteLine($"split file: {pOutputFilePath} exists = {outputFileExists}");
 
 			if(!outputFileExists)
 			{
-				string command = "/C " 
-					//+"pushd " + LasToolsFolder + " "
-					+ pLasToolCommand;
+				string command = "/C " + pLasToolCommand;
 
 				ProcessStartInfo processStartInfo = new ProcessStartInfo
 				{
@@ -52,12 +51,16 @@ namespace ForestReco
 				//todo: throw and handle exception?
 				if(result == 1) //0 = OK, 1 = error...i.e. the .exe file is missing
 				{
-					CDebug.Error("GetHeaderLines -lasinfo error");
-					//return null;
+					throw new Exception($"Command {command} resulted in error");
+				}
+				// Check if command generated desired result
+				outputFileExists = File.Exists(pOutputFilePath);
+				if(!outputFileExists)
+				{
+					throw new Exception($"File {pOutputFilePath} not created");
 				}
 			}
 			//return outputFilePath;
-
 		}
 
 
