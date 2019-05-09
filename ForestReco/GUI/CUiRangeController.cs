@@ -13,12 +13,12 @@ namespace ForestReco
 		}
 
 		private void SetRangeX()
-		{
+		{			
+			CParameterSetter.SetParameter(ESettings.rangeXmin, form.trackBarRangeXmin.Value);
+			CParameterSetter.SetParameter(ESettings.rangeXmax, form.trackBarRangeXmax.Value);
 			form.textRangeX.Text =
 				$"[{CParameterSetter.GetRange(ESettings.rangeXmin).ToString("0.0")}] - " +
 				$"[{CParameterSetter.GetRange(ESettings.rangeXmax).ToString("0.0")}]";
-			CParameterSetter.SetParameter(ESettings.rangeXmin, form.trackBarRangeXmin.Value);
-			CParameterSetter.SetParameter(ESettings.rangeXmax, form.trackBarRangeXmax.Value);
 		}
 
 		private void SetRangeY()
