@@ -28,27 +28,63 @@ namespace ForestReco
 
 		private static string GetPreprocessedFilePath()
 		{
-			string fileName = GetFileName(CParameterSetter.GetStringSettings(ESettings.forestFilePath));
+			string forestFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
+			string forestFileName = GetFileName(forestFilePath);
 
-			SSplitRange range = CParameterSetter.GetSplitRange();
-
-			string resultFileName = $"{fileName}_s[{range.MinX},{range.MaxX}]-[{range.MinY},{range.MaxY}]";
-
-			string splitFileName = $"{resultFileName}_s";
 			const string LAS = ".las";
 			string tmpFolder = CParameterSetter.TmpFolder;
 
+			/////// lasground_new //////////
+
+			string groundFileName = forestFileName + "_g" + LAS;
+			string groundFilePath = tmpFolder + groundFileName;
+
+			string ground =
+					"lasground_new -i " +
+					forestFilePath +
+					" -o " +
+					groundFilePath;
+			CCmdController.RunLasToolsCmd(ground, groundFilePath);
+
+			/////// lasheight //////////
+
+			string heightFileName = forestFileName + "_h" + LAS;
+			string heightFilePath = tmpFolder + heightFileName;
+
+			string height =
+					"lasheight -i " +
+					groundFilePath +
+					" -o " +
+					heightFilePath;
+			CCmdController.RunLasToolsCmd(height, heightFilePath);
+			
+			string classifyFileName = forestFileName + "_c" + LAS;
+			string classifyFilePath = tmpFolder + classifyFileName;
+
+			string classify =
+				"lasclassify -i " +
+				heightFilePath +
+				" -o " +
+				classifyFilePath;
+			CCmdController.RunLasToolsCmd(classify, classifyFilePath);
+
+			/////// lassplit //////////
+
+			SSplitRange range = CParameterSetter.GetSplitRange();
+			
+			string splitFileName = $"{forestFileName}_s[{range.MinX},{range.MinY}]-[{range.MaxX},{range.MaxY}]";
+			
+
 			string keepXY = $" -keep_xy {range.MinX} {range.MinY} {range.MaxX} {range.MaxY}";
-			string forestFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			string splitFilePath = tmpFolder + splitFileName + LAS;
 			string split =
 					"lassplit -i " +
-					forestFilePath +
+					classifyFilePath +
 					keepXY +
 					" -o " +
 					splitFilePath;
 
-			//todo: split file not created but no error...
+			//todo: when split file not created there is no error...(ie when invalid range is given)
 			try
 			{
 				CCmdController.RunLasToolsCmd(split, splitFilePath);
@@ -59,9 +95,9 @@ namespace ForestReco
 				CDebug.WriteLine($"exception {e}");
 			}
 
+			//for some reason output split file gets appendix: "_0000000" => rename it
 			#region rename
 			//rename split file
-			//for some reason output split file gets appendix: "_0000000" => rename it
 
 			//todo: move to Utils
 			// Source file to be renamed  
@@ -82,35 +118,15 @@ namespace ForestReco
 			//}
 			#endregion
 
-			string heightFileName = resultFileName + "_h" + LAS;
-			string heightFilePath = tmpFolder + heightFileName;
-
-			string height =
-					"lasheight -i " +
-					splitFilePath +
-					" -o " +
-					heightFilePath;
-			CCmdController.RunLasToolsCmd(height, heightFilePath);
-
-
-			string classifyFileName = resultFileName + "_c" + LAS;
-			string classifyFilePath = tmpFolder + classifyFileName;
-
-			string classify =
-				"lasclassify -i " +
-				heightFilePath +
-				" -o " +
-				classifyFilePath;
-			CCmdController.RunLasToolsCmd(classify, classifyFilePath);
-
+			/////// las2txt //////////
 
 			//use split file name to get unique file name
-			string txtFileName = resultFileName + ".txt";
+			string txtFileName = splitFileName + ".txt";
 			string txtFilePath = tmpFolder + txtFileName;
 
 			string toTxt =
 				"las2txt -i " +
-				classifyFilePath +
+				splitFilePath +
 				" -o " +
 				txtFilePath +
 				" -parse xyzcu -sep tab -header percent";
