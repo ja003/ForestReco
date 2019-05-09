@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 
@@ -10,6 +11,27 @@ namespace ForestReco
 		public static float treeExtent => GetFloatSettings(ESettings.treeExtent);
 		public static float treeExtentMultiply => GetFloatSettings(ESettings.treeExtentMultiply);
 		public static float groundArrayStep => GetFloatSettings(ESettings.groundArrayStep);
+
+		/// <summary>
+		/// Returns saved "tmp files" folder path with added "\\" 
+		/// - if no value is specified => creates "tmp" folder in StartupPath
+		/// </summary>
+		public static string TmpFolder
+		{
+			get
+			{
+				string savedVal = GetStringSettings(ESettings.tmpFilesFolderPath);
+				//use app path as tmp folder if no folder is specified
+				if(!Directory.Exists(savedVal))
+				{
+					string newTmpFolder = Application.StartupPath + "\\tmp";
+					Directory.CreateDirectory(newTmpFolder);
+					SetParameter(ESettings.tmpFilesFolderPath, newTmpFolder);
+					savedVal = newTmpFolder;
+				};
+				return savedVal + "\\";
+			}
+		}
 
 		private static float GetRangeSettings(ESettings pRangeSetting)
 		{

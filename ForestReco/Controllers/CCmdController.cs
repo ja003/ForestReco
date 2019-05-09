@@ -7,16 +7,22 @@ namespace ForestReco
 	public static class CCmdController
 	{
 		private static string LasToolsFolder => CParameterSetter.GetStringSettings(ESettings.lasToolsFolderPath);
-		private static string tmpFolder => CParameterSetter.GetStringSettings(ESettings.tmpFilesFolderPath) + "\\";
 
-		public static string[] GetHeaderLines(string pForestFileFullPath)
+
+		public static string[] GetHeaderLines(string pForestFilePath)
 		{
-			string infoFileName = Path.GetFileNameWithoutExtension(pForestFileFullPath) + "_i.txt";
-			string infoFilePath = tmpFolder + infoFileName;
+			if(!File.Exists(pForestFilePath))
+			{
+				CDebug.Error($"file: {pForestFilePath} not found");
+				return null;
+			}
+
+			string infoFileName = Path.GetFileNameWithoutExtension(pForestFilePath) + "_i.txt";
+			string infoFilePath = CParameterSetter.TmpFolder + infoFileName;
 
 			string command =
 					"lasinfo " +
-					pForestFileFullPath +
+					pForestFilePath +
 					" -o " +
 					infoFilePath;
 
