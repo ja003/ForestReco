@@ -16,18 +16,18 @@ namespace ForestReco
 		{			
 			CParameterSetter.SetParameter(ESettings.rangeXmin, form.trackBarRangeXmin.Value);
 			CParameterSetter.SetParameter(ESettings.rangeXmax, form.trackBarRangeXmax.Value);
-			form.textRangeX.Text =
-				$"[{CParameterSetter.GetRange(ESettings.rangeXmin).ToString("0.0")}] - " +
-				$"[{CParameterSetter.GetRange(ESettings.rangeXmax).ToString("0.0")}]";
+
+			SSplitRange range = CParameterSetter.GetSplitRange();
+			form.textRangeX.Text = range.ToStringX();
 		}
 
 		private void SetRangeY()
 		{
-			form.textRangeY.Text =
-				$"[{CParameterSetter.GetRange(ESettings.rangeYmin).ToString("0.0")}] - " +
-				$"[{CParameterSetter.GetRange(ESettings.rangeYmax).ToString("0.0")}]";
 			CParameterSetter.SetParameter(ESettings.rangeYmin, form.trackBarRangeYmin.Value);
 			CParameterSetter.SetParameter(ESettings.rangeYmax, form.trackBarRangeYmax.Value);
+
+			SSplitRange range = CParameterSetter.GetSplitRange();
+			form.textRangeY.Text = range.ToStringY();
 		}
 
 		public void UpdateRangeBounds()

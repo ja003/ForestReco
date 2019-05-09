@@ -28,24 +28,23 @@ namespace ForestReco
 
 		private static string GetPreprocessedFilePath()
 		{
-			Process currentProcess;
-
 			string fileName = GetFileName(CParameterSetter.GetStringSettings(ESettings.forestFilePath));
 			//FileInfo fileInfo = new FileInfo(CParameterSetter.GetStringSettings(ESettings.forestFilePath));
 
-			float min_x, min_y, max_x, max_y;
-			min_x = CParameterSetter.GetRange(ESettings.rangeXmin);
-			max_x = CParameterSetter.GetRange(ESettings.rangeXmax);
-			min_y = CParameterSetter.GetRange(ESettings.rangeYmin);
-			max_y = CParameterSetter.GetRange(ESettings.rangeYmax);
+			SSplitRange range = CParameterSetter.GetSplitRange();
+			//float min_x, min_y, max_x, max_y;
+			//min_x = CParameterSetter.GetRange(ESettings.rangeXmin);
+			//max_x = CParameterSetter.GetRange(ESettings.rangeXmax);
+			//min_y = CParameterSetter.GetRange(ESettings.rangeYmin);
+			//max_y = CParameterSetter.GetRange(ESettings.rangeYmax);
 
-			string resultFileName = $"{fileName}_s[{min_x},{max_x}]-[{min_y},{max_y}]";
+			string resultFileName = $"{fileName}_s[{range.MinX},{range.MaxX}]-[{range.MinY},{range.MaxY}]";
 
 			string splitFileName = $"{resultFileName}_s";
 			const string LAS = ".las";
 			string tmpFolder = CParameterSetter.GetStringSettings(ESettings.tmpFilesFolderPath) + "\\";
 
-			string keepXY = $" -keep_xy {min_x} {min_y} {max_x} {max_y}";
+			string keepXY = $" -keep_xy {range.MinX} {range.MinY} {range.MaxX} {range.MaxY}";
 			string forestFilePath = CParameterSetter.GetStringSettings(ESettings.forestFilePath);
 			string splitFilePath = tmpFolder + splitFileName + LAS;
 			string split =

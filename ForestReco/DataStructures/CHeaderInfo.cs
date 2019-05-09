@@ -8,10 +8,10 @@ namespace ForestReco
 	{
 		public Vector3 ScaleFactor;
 		public Vector3 Offset;
-		public Vector3 Min; //used in project (Y = elevation)
+		public Vector3 Min; //used in project (Y = elevation), moved by offset
 		public Vector3 Max;
 
-		public Vector3 Min_orig;
+		public Vector3 Min_orig; //values from input forest file
 		public Vector3 Max_orig;
 
 		public Vector3 BotLeftCorner => new Vector3(Min.X, 0, Min.Z);

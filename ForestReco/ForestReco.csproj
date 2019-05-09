@@ -68,6 +68,7 @@
     <Compile Include="DataStructures\CBoundingBoxObject.cs" />
     <Compile Include="DataStructures\CBranch.cs" />
     <Compile Include="DataStructures\CPeak.cs" />
+    <Compile Include="DataStructures\SSplitRange.cs" />
     <Compile Include="DataStructures\CTree.cs" />
     <Compile Include="DataStructures\CRefTree.cs" />
     <Compile Include="DataStructures\CTreePoint.cs" />

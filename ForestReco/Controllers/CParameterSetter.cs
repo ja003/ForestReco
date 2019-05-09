@@ -11,7 +11,7 @@ namespace ForestReco
 		public static float treeExtentMultiply => GetFloatSettings(ESettings.treeExtentMultiply);
 		public static float groundArrayStep => GetFloatSettings(ESettings.groundArrayStep);
 
-		public static float GetRange(ESettings pRangeSetting)
+		private static float GetRangeSettings(ESettings pRangeSetting)
 		{
 			switch(pRangeSetting)
 			{
@@ -26,6 +26,25 @@ namespace ForestReco
 			}
 			CDebug.Error("GetRange - invalid arg");
 			return 0;
+		}
+
+		/// <summary>
+		/// Returns CSplitRange structure with valid values
+		/// - min < max
+		/// </summary>
+		/// <returns></returns>
+		public static SSplitRange GetSplitRange()
+		{
+			float min_x = GetRangeSettings(ESettings.rangeXmin);
+			float max_x = GetRangeSettings(ESettings.rangeXmax);
+			float min_y = GetRangeSettings(ESettings.rangeYmin);
+			float max_y = GetRangeSettings(ESettings.rangeYmax);
+
+			return new SSplitRange(
+				Math.Min(min_x, max_x),
+				Math.Min(min_y, max_y),
+				Math.Max(min_x, max_x),
+				Math.Max(min_y, max_y));
 		}
 
 		public static void Init()
