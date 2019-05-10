@@ -54,9 +54,15 @@ namespace ForestReco
 			return output;
 		}
 
+		/// <summary>
+		/// Dart file starts at topleft corner -> transform
+		/// </summary>
 		private static Vector3 GetMovedPoint(Vector3 pPoint)
 		{
-			pPoint -= CProjectData.header.BotLeftCorner;
+			pPoint.Z = CProjectData.header.TopRightCorner.Z - pPoint.Z;
+			pPoint.X -= CProjectData.header.BotLeftCorner.X;
+
+			//pPoint -= CProjectData.header.BotLeftCorner; //use this for botleft corner
 			return pPoint;
 		}
 
