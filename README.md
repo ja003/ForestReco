@@ -10,10 +10,10 @@ input data<br/>
 <img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/input_data.png">
 
 result 1<br/>
-<img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/modelBig.png">
+<img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/modelBig.jpg">
 
 result 2<br/>
-<img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/model_0003b.png">
+<img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/model_0003b.jpg">
 
 evaluation<br/>
-<img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/eval_00_78.png">
+<img width="500" src="https://github.com/ja003/Portfolio/blob/main/ForestReco/eval_00_78.jpg">
